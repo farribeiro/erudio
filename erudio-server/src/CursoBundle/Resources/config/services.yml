@@ -1,0 +1,16 @@
+services:
+    facade.curso.turmas:
+      class: CursoBundle\Service\TurmaFacade
+      arguments: ["@doctrine"]
+    
+    facade.curso.disciplinas_ofertadas:
+      class: CursoBundle\Service\DisciplinaOfertadaFacade
+      arguments: ["@doctrine"]
+
+    facade.curso.vagas:
+      class: CursoBundle\Service\VagaFacade
+      arguments: ["@doctrine"]
+      
+    facade.curso.solicitacaoVagas:
+      class: CursoBundle\Service\SolicitacaoVagaFacade
+      arguments: ["@doctrine"]

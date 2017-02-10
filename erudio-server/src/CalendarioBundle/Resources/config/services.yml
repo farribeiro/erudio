@@ -1,0 +1,10 @@
+services:
+    facade.calendario.horarios_disciplinas:
+      class: CalendarioBundle\Service\HorarioDisciplinaFacade
+      arguments: ["@doctrine"]
+      
+    facade.calendario.aulas:
+      class: CalendarioBundle\Service\AulaFacade
+      arguments: ["@doctrine"]
+      calls:
+          - [setHorarioDisciplinaFacade, ["@facade.calendario.horarios_disciplinas"]]

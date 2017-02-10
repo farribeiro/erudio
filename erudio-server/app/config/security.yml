@@ -1,0 +1,17 @@
+security:
+            
+    providers:
+        main:
+            entity:
+                class: AuthBundle\Entity\Usuario
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        
+        wsse_secured:
+            pattern: ^/apix/
+            stateless: true
+            wsse: { lifetime: 133200 } 

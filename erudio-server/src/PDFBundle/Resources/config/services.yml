@@ -1,0 +1,6 @@
+parameters:
+    pdf.class: PDFBundle\Service\PDF
+
+services:
+    pdf:
+      class: "%pdf.class%"

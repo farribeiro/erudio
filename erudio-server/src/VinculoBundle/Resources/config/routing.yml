@@ -1,0 +1,12 @@
+vinculos:
+    resource: VinculoBundle\Controller\VinculoController
+    type:     rest
+    
+cargos:
+    resource: VinculoBundle\Controller\CargoController
+    type:     rest
+    
+        
+alocacoes:
+    resource: VinculoBundle\Controller\AlocacaoController
+    type:     rest
