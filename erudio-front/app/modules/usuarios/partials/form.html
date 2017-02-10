@@ -1,0 +1,86 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate" class="row form-geral">
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div class="card-panel">
+                <form id="usuarioForm">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 20px">{{ acao }} Usuário</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m12 l6 input-field">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="nomeExibicao" type="text" focus-on="focusMe" class="validate" data-ng-model="usuario.nomeExibicao" required />
+                            <label for="nomeExibicao">Nome de Exibição*</label>
+                        </div>
+                        <div class="col s12 m12 l6 input-field">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="username" type="text" class="validate counter numeros cpf" length="14" data-ng-model="usuario.username" required/>
+                            <label data-error="CPF INVÁLIDO" for="username">Nome de Usuário(CPF)*</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6 l6 input-field">
+                            <i class="material-icons prefix">vpn_key</i>
+                            <input id="senha" type="password" data-ng-model="senha" />
+                            <label for="senha">Senha</label>
+                        </div>
+                        <div class="col s12 m6 l6 input-field">
+                            <i class="material-icons prefix">vpn_key</i>
+                            <input id="repeteSenha" type="password" data-ng-model="repeteSenha" />
+                            <label for="repeteSenha">Repetir Senha</label>
+                        </div>
+                    </div>
+                    <!-- <div class="row" data-ng-hide="usuario.id">
+                        <div class="col s12 m6 l6 input-field">
+                            <i class="material-icons prefix">domain</i>                            
+                            <select id="grupoPermissao" data-ng-model="grupoId">
+                                <option disabled selected></option>
+                                <option data-ng-repeat="grupo in grupos" value="{{grupo.id}}">{{grupo.nome}}</option>
+                            </select>
+                            <label for="grupoPermissao">Grupo de Permissões</label>
+                        </div>
+                        <div class="col s12 m6 l6 input-field">
+                            <i class="material-icons prefix">account_balance</i>
+                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                            <input id="unidadeUsuarioForm" type="text" class="auto-complete" data-ng-model="unidadeNome" data-ng-change="buscarUnidades(unidadeNome)" data-activates="unidade-usuario-dropdown" data-ng-disabled="!isAdmin">
+                            <label for="unidadeUsuarioForm">Unidade</label>
+                        </div>
+                        <ul id='unidade-usuario-dropdown' class='dropdown-content' data-ng-show="unidadeNome.length > 3">
+                            <li class="divider"></li>
+                            <li data-ng-repeat="u in unidades" data-ng-click="selecionarUnidade(u)"><a>{{u.nomeCompleto}}</a></li>
+                        </ul>
+                    </div> -->                
+                    <div class="row end-card">
+                        <a id="salvarUsuario" data-ng-click="finalizar()" class="right waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

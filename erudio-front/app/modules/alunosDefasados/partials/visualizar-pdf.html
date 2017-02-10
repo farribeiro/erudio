@@ -1,0 +1,113 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                          *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 l12 mobile-full">
+        <div class="card-panel">
+            <form id="cargoForm">
+                <div class="row center espacamento">
+                    <img src="app/modules/matriculas/assets/images/logo-municipio.jpg">
+                </div>
+                <div class="row center espacamento">
+                    <h5><b>Demonstrativo de Alunos Desafados Nominal Idade/Serie - {{anoAtual}}</b></h5>
+                </div>
+                <div class="tabela-frequencia" style="padding-bottom: 5rem">
+                    <table class="bordas" border="1px solid black">
+                        <tr>
+                            <td rowspan="2" class="titulo-tabela serie">Série</td>
+                            <td rowspan="2" class="titulo-tabela">Nome Aluno</td>
+                            <td rowspan="2" class="titulo-tabela center-align">Anos Diferença</td>
+                            <td rowspan="2" class="titulo-tabela center-align">Data Nascimento</td>
+                            <td colspan="2" class="titulo-tabela center-align">Sexo</td>
+                            <td colspan="2" class="titulo-tabela center-align">ANNE</td>
+                            <td colspan="2" class="titulo-tabela center-align">Alfab.</td>
+                        </tr>
+                        <tr>
+                            <td class="center-align">M</td>
+                            <td class="center-align">F</td>
+                            <td class="center-align">S</td>
+                            <td class="center-align">N</td>
+                            <td class="center-align">S</td>
+                            <td class="center-align">N</td>
+                        </tr>
+                        <tr>
+                            <td class="serie">6°</td>
+                            <td class="">Jimmy Anderson dos Santos Junior</td>
+                            <td class="center-align">4</td>
+                            <td class="center-align">14/02/1997</td>
+                            <td class="center-align">X</td>
+                            <td class="center-align"></td>
+                            <td class="center-align"></td>
+                            <td class="center-align">X</td>
+                            <td class="center-align"></td>
+                            <td class="center-align">X</td>
+                        </tr>
+                        <tr>
+                            <td class="total" colspan="4"><b>Total de Faltas:</b></td>
+                            <td class="center-align">6</td>
+                            <td class="center-align">1</td>
+                            <td class="center-align">0</td>
+                            <td class="center-align">7</td>
+                            <td class="center-align">7</td>
+                            <td class="center-align">0</td>
+                        </tr>
+                        <tr>
+                            <td class="total" colspan="4"><b>Total Curso Ensino Fundamental de 9 Anos:</b></td>
+                            <td class="center-align">6</td>
+                            <td class="center-align">1</td>
+                            <td class="center-align">0</td>
+                            <td class="center-align">7</td>
+                            <td class="center-align">7</td>
+                            <td class="center-align">0</td>
+                        </tr>
+                    </table>
+                </div>                
+            </form>
+            <div class="row espacamento">
+                <hr style="width: 33rem">
+                <p class="content center-align" style="margin-top: 0rem">                                
+                    <b>{{vinculo.funcionario.nome}}</b><br>
+                    {{vinculo.cargo.nome}}
+                </p>
+            </div>
+            <div class="row espacamento" style="padding-bottom: 1rem!important">
+                <hr>
+                <p class="content center-align" style="margin-top: 0rem">                                
+                    <b>{{alocacao.instituicao.tipo.nome}} {{alocacao.instituicao.nome}}</b><br>
+                    {{alocacao.instituicao.endereco.logradouro}}, N°{{alocacao.instituicao.endereco.numero}}, {{alocacao.instituicao.endereco.bairro}}
+                    , CEP: {{alocacao.instituicao.endereco.cep}}, {{alocacao.instituicao.endereco.cidade.nome}}/{{alocacao.instituicao.endereco.cidade.estado.sigla}}<br>
+                    E-mail: {{alocacao.instituicao.email}} -
+                    Fone: {{alocacao.instituicao.telefones[0].numero | telefone}}
+                </p>
+            </div>
+            <div class="row end-card" style="padding-top: 15px; padding-bottom: 15px;">
+                <div class="col s12 right-align">
+                    <a data-ng-click="gerarPdf()" class="waves-effect waves-azul btn-flat"><i class="material-icons left">local_printshop</i>Imprimir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

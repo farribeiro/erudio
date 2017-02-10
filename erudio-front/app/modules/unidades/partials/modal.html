@@ -1,0 +1,100 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Modal de Exclusão -->
+<div id="remove-modal-unidade" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover unidade</h4>
+                </div>
+                <p>Você realmente deseja remover esta Unidade de Ensino?</p>
+            </div>
+            <div class="row">
+                <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="remover()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-modal-unidade" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+<!--                <i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal('info-modal-unidade')">close</i>-->
+                <div class="modal-title-info-aluno">
+                    <h4 style="color:white;position:relative;top:87px;padding-left:10px;">{{ unidade.nome }}</h4>
+                </div>
+                <div class="row">
+                    <div class="col s6" style="padding-top:1rem;">
+                        <strong>E-mail:</strong> {{ unidade.email }}
+                    </div>
+                    <div class="col s6" style="padding-top:1rem;">
+                        <strong data-ng-show="unidade.telefones.length">Contatos:</strong>
+                        <span data-ng-show="unidade.telefones.length"    data-ng-repeat="telefone in unidade.telefones">
+                            {{ telefone.numero }} - Falar com: {{ telefone.falarCom }}<br />
+                        </span>
+                    </div>
+                    <div class="col s12" style="padding-top:2rem;padding-bottom: 0.5rem">
+                        <strong>Endereço</strong>: 
+                        CEP: {{ unidade.endereco.cep }}
+                        {{ unidade.endereco.logradouro }}, {{ unidade.endereco.numero }}, Bairro {{ unidade.endereco.bairro }}, 
+                        {{ unidade.endereco.cidade.nome }}, {{ unidade.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ unidade.endereco.complemento }}">{{ unidade.endereco.complemento }}<br /></span>
+                    </div>
+                </div>
+                <div class="info-map row" style="margin-bottom: 1rem !important;">
+                    <div class="col s12">
+                        <div id="info-map" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='padding: 80px 0 0 10px; color: white; position: relative; top: 10rem;'>Deseja descartar os dados preenchidos?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom:0rem;">
+            <a data-ng-click="fecharModal('modal-certeza')" class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>
+

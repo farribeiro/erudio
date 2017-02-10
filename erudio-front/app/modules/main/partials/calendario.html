@@ -1,0 +1,114 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<link rel="stylesheet" type="text/css" href="app/modules/main/assets/css/home.css"/>
+<div class="row">
+    <div class="col s12 m12 l12">
+        <div class="card-panel" style="margin-top: -90px;">
+            <div class="row title-calendar" style="padding-top: 15px;">
+                <div class="col s1"><i class="material-icons mobile-icon-title">today</i></div>
+                <div class="col s10 mobile-font-title">Calendário Escolar</div>
+                <div class="col s12 end-card" style="height: 5px;">&nbsp;</div>
+            </div>
+            <div class="row home-calendar">
+                <div class="col s12 m12 l7 mobile-top" style="margin-bottom: 10px">
+                    <i class="material-icons pointer left calendar-left" style="font-size: 2.3rem" data-ng-click="montaCalendario(mes.num-1)">navigate_before</i>
+                    <span class="col s8 m10 l10 center-align mobile-month" style="font-size:26px;">{{mes.nome}}</span>
+                    <i class="material-icons pointer right calendar-right" style="font-size: 2.3rem; margin-left: 0;" data-ng-click="montaCalendario(mes.num+1)">navigate_next</i>
+                </div>
+                <div class="row col s12 m12 l5 right-align mobile-calendar-info" style="margin-top: 5px;">
+                    <span class="mobile-caption" style="margin-right: 15px; font-size: 12px; margin-top: 10px;"><a style="background: #ffecb3; width: 25px; height: 25px;" class="btn-floating mobile-ball">&nbsp</a> &nbsp;{{letivos}} Letivos</span>
+                    <span class="mobile-caption" style="margin-right: 15px; font-size: 12px;"><a style="background: #c8e6c9; width: 25px; height: 25px;" class="btn-floating mobile-ball">&nbsp</a> &nbsp;{{efetivos}} Efetivos</span>
+                    <span class="mobile-caption" style="margin-right: 15px; font-size: 12px;"><a style="background: #f5f5f5; width: 25px; height: 25px;" class="btn-floating mobile-ball">&nbsp</a> &nbsp;{{naoLetivos}} Não Letivos</span>
+                </div>                           
+            </div>
+            <table>
+                <thead class="head-calendar">
+                    <th> D </th>
+                    <th> S </th>
+                    <th> T </th>
+                    <th> Q </th>
+                    <th> Q </th>
+                    <th> S </th>
+                    <th> S </th>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="semana in semanas">
+                        <td class="td-dia dia{{ semana.domingo.dia.data }}" style="border-left: solid 0.5px #e0e0e0">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.domingo.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.domingo.dia.eventos" data-ng-click="carregarEvento(evento, semana.domingo.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.domingo.dia.eventos.length" data-ng-click="carregarEvento(null, semana.domingo.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.segunda.dia.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.segunda.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.segunda.dia.eventos" data-ng-click="carregarEvento(evento, semana.segunda.dia)">{{ evento.evento.nome }}</div>                                        
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.segunda.dia.eventos.length" data-ng-click="carregarEvento(null, semana.segunda.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.terca.dia.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.terca.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.terca.dia.eventos" data-ng-click="carregarEvento(evento, semana.terca.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.terca.dia.eventos.length" data-ng-click="carregarEvento(null, semana.terca.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.quarta.dia.data }}">                                    
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.quarta.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.quarta.dia.eventos" data-ng-click="carregarEvento(evento, semana.quarta.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.quarta.dia.eventos.length" data-ng-click="carregarEvento(null, semana.quarta.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.quinta.dia.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.quinta.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.quinta.dia.eventos" data-ng-click="carregarEvento(evento, semana.quinta.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.quinta.dia.eventos.length" data-ng-click="carregarEvento(null, semana.quinta.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.sexta.dia.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.sexta.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.sexta.dia.eventos" data-ng-click="carregarEvento(evento, semana.sexta.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.sexta.dia.eventos.length" data-ng-click="carregarEvento(null, semana.sexta.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                        <td class="td-dia dia{{ semana.sabado.dia.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">{{ semana.sabado.dia.data | date: 'dd' }}</div>
+                                <div class="evento hide-on-med-and-down truncate" data-ng-repeat="evento in semana.sabado.dia.eventos" data-ng-click="carregarEvento(evento, semana.sabado.dia)">{{ evento.evento.nome }}</div>
+                                <div class="hide-on-large-only center-align" data-ng-show="semana.sabado.dia.eventos.length" data-ng-click="carregarEvento(null, semana.sabado.dia)"><i class="material-icons mobile-star-calendar">stars</i></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

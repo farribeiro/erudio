@@ -1,0 +1,115 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class=" row">
+    <div class="col s12 m12 l12">
+        <div class="row form-box">
+            <div class=" row card-panel">
+                <div class="row">
+                    <h3 class='card-title-h3' style="padding: 1.4rem; margin-bottom: 0rem;">
+                        Detalhes da Movimentação
+                        <!--
+                        <div id="switchTransferencia" class="switch right" style="margin-right: 5rem; display: none" data-ng-if="transferencia.status === 'PENDENTE'">
+                            <label>
+                                Recusar 
+                                <input type="checkbox" data-ng-model="aceitar" data-ng-change="abrirEnturmacao()">
+                                <span class="lever"></span>
+                                Aceitar
+                            </label>
+                        </div>-->
+                    </h3>
+                </div>
+            </div>
+            <div class=" row card-panel" style="margin-top: 2rem;">
+                <div class="row">
+                    <div class=" col s6 m6 l12"style="padding: 2.6rem 0rem 1rem;">
+                        <div class="col s12 m12 l1 center-mobile" style="position: relative; bottom: 1rem;">
+                            <i class="large material-icons prefix para-direita" style="font-size: 9rem!important;">face</i>
+                        </div>
+                        <div class="ajusta-mobile col l10" style="padding-left: 4rem;">
+                            <div class="col s12 m12 l6 center-mobile truncate ajusta-mobile" >                  
+                                <span class="sub-titulo">NOME:</span> {{ transferencia.matricula.aluno.nome | uppercase }}         
+                            </div>                            
+                            <div class="col s12 m12 l4 center-mobile truncate">               
+                                <span class="sub-titulo">CPF:</span> {{ transferencia.matricula.aluno.cpfCnpj | uppercase }}              
+                            </div>                            
+                            <div class="col s12 m12 l6 center-mobile truncate">      
+                                <span class="sub-titulo">DATA DE NASCIMENTO:</span> {{ transferencia.matricula.aluno.dataNascimento | date: 'dd/MM/yyyy' }}                                                        
+                            </div> 
+                            <div class="col s12 m12 l6 center-mobile truncate">               
+                                <span class="sub-titulo">EMAIL:</span> {{ transferencia.matricula.aluno.email | uppercase }}              
+                            </div>
+                            <div class="col s12 m12 l6 center-mobile truncate">   
+                                <span class="sub-titulo">UNIDADE ORIGEM:</span> {{ transferencia.unidadeEnsinoOrigem.nome| uppercase }}             
+                            </div>
+                            <div class="col s12 m12 l6 center-mobile truncate">   
+                                <span class="sub-titulo">UNIDADE DESTINO:</span> {{ transferencia.unidadeEnsinoDestino.nome| uppercase }}             
+                            </div>
+                            <div class="col s12 m12 l6 center-mobile ">      
+                                <span class="sub-titulo">CURSO:</span> {{ transferencia.matricula.curso.nome | uppercase }}                                                        
+                            </div>   
+                            <div class="col s12 m12 l6 center-mobile ">      
+                                <span class="sub-titulo">CÓDIGO MATRICULA:</span> {{ transferencia.matricula.codigo}}                                                        
+                            </div>                              
+                            <div class="col s12 m12 l6 center-mobile ">      
+                                <span class="sub-titulo">JUSTIFICATIVA:</span> {{ transferencia.justificativa | uppercase }}                                                        
+                            </div> 
+                            <div class="col s12 m12 l6 center-mobile" data-ng-if="transferencia.statis === 'RECUSADO'">      
+                                <span class="sub-titulo">RESPOSTA: </span> {{ transferencia.resposta | uppercase }}                                                        
+                            </div>
+                            <div class="col s12 m12 l6   center-mobile truncate left">      
+                                <span class="sub-titulo">CADASTRADO:</span> {{ transferencia.dataCadastro | date: 'dd/MM/yyyy' }}                                                        
+                            </div>                              
+                            <div class="col s12 m12 l6 center-mobile truncate" data-ng-if="transferencia.dataAgendamento">      
+                                <span class="sub-titulo">AGENDADO:</span> {{ transferencia.dataAgendamento | date: 'dd/MM/yyyy' }}                                                        
+                            </div>
+                            <div class="col s12 m12 l6 center-mobile truncate right" data-ng-if="transferencia.status !== 'PENDENTE'">      
+                                <span class="sub-titulo">{{ transferencia.status | uppercase }}: </span> {{ transferencia.dataModificacao | date: 'dd/MM/yyyy' }}                                                        
+                            </div>   
+                        </div>
+                    </div>
+                </div>
+                <div data-ng-if="transferencia.status === 'PENDENTE'">
+                    <!-- SE FOR RECUSAR -->
+                    <div class="row " data-ng-hide="aceitar">
+                        <div class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">content_paste</i>
+                            <input id="justificativa" type="text" data-ng-model="transferencia.resposta" class="validate" required />
+                            <label for="justificativa">Resposta*</label>
+                        </div>
+                    </div>
+                    <!-- SE FOR ACEITAR -->
+                    <!--<historico-movimentacoes-enturmacao data-ng-show="aceitar"></historico-movimentacoes-enturmacao>-->
+<!--                    <div class="row end-card" data-ng-show="escrita">
+                        <div class="col s12 right-align">
+                            <a style="margin-top: 1rem; margin-bottom: 1rem;" class="waves-effect waves-blue btn-flat" data-ng-click="verificaTransferencia()"><i class="material-icons left">save</i>Salvar</a>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

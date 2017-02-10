@@ -1,0 +1,295 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+#quadroDisciplinasOfertadas {
+  width: 40%;
+  margin-left: 15px;
+  //border-radius: 30px;
+  margin-bottom: 15px;
+}
+
+.modal-title-solicitacoes {
+    background: url('../images/modal-solicitacao.jpg') center center no-repeat;
+    height: 12rem;
+    width: auto !important;
+    background-size: 100% auto !important;
+    position: relative;
+    margin-top:0px;
+}
+
+.modal-alinha-texto {
+    color: #fafafa;
+    padding: 9rem 0 0 0.5rem;
+}
+
+.item-modal {
+    padding: 0.5rem 0 0.5rem 0 !important;
+}
+
+.quadroDisciplinas {
+    margin: 20px;
+}
+
+.quadroTurma {
+    padding: 5px;     
+    padding-left: 15px;   
+}
+
+.cinza {
+    color: #7f8c8d !important;
+}
+
+.header-padding th {
+    padding-left: 2rem !important;
+}
+
+/*.collection-item {
+    padding: 30px !important;
+}*/
+
+#quadroDisciplinasCursadas {
+  width: 40%;
+  margin-right: 15px;
+  //border-radius: 30px;
+  margin-bottom: 15px;
+}   
+.btn-voltar-cadastro {
+    position: absolute;
+    left: 263px !important;
+    top: 118px !important;    
+}
+
+.icone {    
+    top: -10px !important;
+    position: relative !important;
+}
+
+/*.ajuste-header{
+    padding: 0px !important;
+}*/
+
+#particularidades {
+    color: #272727 !important;
+}
+
+/*.ajuste-topo {
+    margin-top: 25px !important;
+}*/
+
+.ajuste-titulo-card {
+    border-bottom: 0;
+}
+
+.sub-titulos {
+    margin-left: 20px;
+    margin-bottom: 33px;
+    margin-top: 33px;
+    color: #3498db;
+    width: 100%;
+}
+
+/*.card-panel {
+     margin-top: 1px !important; 
+}*/
+
+.aceitar-icon:hover {
+    color: #2ecc71 !important;
+}
+
+.topo-pagina {
+    margin-top: 0px !important;   
+}
+.select-wrapper-icon {
+    padding-left: 0px !important;
+}
+
+/*.ajusteFormulario {
+    margin-top: 1px !important;
+}*/
+
+.obriga-campos {
+    margin-left:25px; 
+    font-size: 12px
+}
+
+.lista-naturalidades { 
+    position: absolute; 
+    width: 80%; 
+    z-index: 10; 
+    background: #fff;
+    margin-left: 46px;
+    font-weight: bold;
+}
+
+.fake-select:hover {
+    background: #3498db; 
+    color: #fafafa; 
+}
+
+.fake-select {
+    padding: 10px;
+}
+
+.right-align {
+    top: 20px !important;
+}
+
+.bg-info {
+    background: #D9EDF7 !important;
+}
+
+.label-title {
+    margin-bottom: 10px;
+    font-size: 18px !important;
+}
+
+.list-title {
+    font-size: 1.2em !important; 
+    color: #2E96F3 !important;
+}
+
+.list-item {
+    cursor: pointer !important;
+    font-size: 1.2em !important;
+}
+
+.none {
+    display: none;
+}
+
+.progress {
+    top: -8px !important;
+}
+
+@media only screen and (max-width : 1445px) {    
+    .btnBusca {
+        width: 117px !important;         
+    }
+    
+    .btnBuscaIco {
+        width: 0px !important;
+        display: none !important;
+    }
+    
+    .progress{
+        /* top: 50px !important; */
+    }
+    
+    label#nomeGrande {
+        margin-top: -10px !important;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: landscape) {  
+    .progress {
+        top: 58px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 14.9% !important;
+    }
+    #adicionarBotao{
+        position: fixed; 
+        top: 42rem; 
+        right: 3rem;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: portrait) {        
+    .progress {
+        top: 50px !important;
+    }
+    .progress-sem-busca{
+        top: 7.5% !important;
+    }
+    .btn-voltar {
+        position: fixed !important;
+        top: 15px !important;
+        left: 91% !important;
+        color: #fafafa;
+        width: 5% !important;
+    }
+    #quadroDisciplinasOfertadas {
+        width: 90%;
+        margin-left: 15px;
+        //border-radius: 30px;
+        margin-bottom: 15px;
+    }
+
+    #quadroDisciplinasCursadas {
+      width: 90%;
+      margin-right: 15px;
+      //border-radius: 30px;
+      margin-bottom: 15px;
+    }    
+    
+}
+
+.vagas-banner {
+    margin-top:2px;
+    height: 20rem;
+    background: url('../images/vagas.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.correcao-padding-form{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.margin-card{
+    margin: 0 !important;
+}
+
+#disciplina{
+    background-color: black !important;
+}
+
+.espacamento{
+    padding: 4rem;
+}
+
+.modal-title-info-aluno{
+    background: url('../images/disciplinaMatricula.jpg') center bottom;
+    background-size: 100% auto;
+    height: 140px;
+    position: relative;
+}
+.efeitoBotao {margin-bottom:30px;}
+.select-busca {padding-left: 0px !important;width:100%;}
+
+.ajusta-opcao {font-size:10px;}
+
+.efeitoBotao:hover {box-shadow:0 8px 17px 0  rgba(0,0,0,0.2),0  6px 20px 0 rgba(0,0,0,0.19);}
+
+.modal-info-etapa{
+    background: url('../images/movimenta.jpg') center bottom;
+    background-size: 100% auto;
+    height: 220px;
+    
+    position: relative;
+    
+}

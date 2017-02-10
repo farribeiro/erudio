@@ -1,0 +1,129 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Modal de Exclusão -->
+<div id="remove-modal-etapa" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover Etapa</h4>
+                </div>
+                <p class="remove-content">Você realmente deseja remover esta etapa?</p>
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="remover(etapaRemover.id)" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-modal-etapa" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-info-etapa">
+                    <h4 class="white-text" style="padding: 6rem 0 0 1rem;">{{ etapa.nomeExibicao }}</h4>
+                </div>
+                <p>
+                    <b>Nome:</b> {{ etapa.nome }}<br />
+                    <b>Limite de Alunos:</b> {{ etapa.limiteAlunos }}<br />
+                    <strong data-ng-show="etapa.modulo">Módulo:</strong> {{ etapa.modulo.nome }}<br />
+                    <b>Sistema de avaliação:</b> {{ etapa.sistemaAvaliacao.nome }}<br />
+                    <b>Modelo de quadro de horário:</b> {{ etapa.modeloQuadroHorario.nome }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODULO MODAL -->
+<div id="form-modal-modulo" class="modal">
+    <div class="modal-content">
+        <div class="modal-body">
+            <div class="modal-info-etapa">
+                <h4 class="white-text" style="padding: 6rem 0 0 1rem;">Cadastrar Módulo</h4>
+            </div>
+            <div class="row">
+                <div class="col s12 m12 l12" style="padding: 1rem 2rem 1rem;">Para efetuar o cadastro da etapa é necessário criar um módulo para seu curso.</div>
+                <div class="row">
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">school</i>
+                        <input id="moduloEtapa" type="text" data-ng-model="modulo.nome">
+                        <label for="moduloEtapa">Nome do Módulo</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">school</i>
+                        <input id="cursoModulo" type="text" data-ng-model="modulo.curso.nome" disabled="true">
+                        <label for="cursoModulo">Curso</label>
+                    </div>
+                </div>                    
+                <div class="end-card">
+                    <a class="waves-effect waves-blue btn-flat right" style="padding: 1rem 2rem 3rem" data-ng-click="salvarModulo()"><i class="material-icons left">save</i>SALVAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='padding-left:10px;position:relative;top:230px;color:white;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="end-card" style="margin-bottom:0px;">
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>
+
+<!-- Adicionar outra Etapa -->
+<div id="outraEtapa" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-outraEtapa">
+            <h3 style="padding-left:10px; margin-bottom:0px; color:white; position:relative; top:240px;">Etapa salva com sucesso!</h3>
+        </div>
+        <div class="modal-content">
+            <p>Deseja adicionar mais uma etapa?</p>
+        </div>
+    </div>
+    <div class="row modal-footer right-align">
+        <div class="end-card">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat" data-ng-click="intraForms('', true);main.selecionar('disciplinas','')">Não</a>
+            <a class="modal-action modal-close waves-effect waves-red btn-flat" data-ng-click="limparFormulario(etapa.curso.id)">Sim</a>
+        </div>
+    </div>
+</div>

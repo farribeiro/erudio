@@ -1,0 +1,127 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate" class="row form-geral">    
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div class="card-panel">
+                <form id="permissaoForm">
+                    <div class="row">
+                        <h3 class='card-title-h3 col s6' style="padding: 20px">{{ acao }} Permissão</h3>
+                        <div class="input-filed col s6 right-align" style="padding-top: 2rem">
+                            <input type="checkbox" id="especifico" data-ng-model="especifico" data-ng-click="atribuicao.idEntidade = null; nomeUnidade = null; unidades = []"/>
+                            <label for="especifico">Adicionar permissão específica.</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m12" data-ng-class="{'l12': !escolherUnidade, 'l6': escolherUnidade}" data-ng-hide="especifico">
+                            <i class="material-icons prefix">domain</i>
+                            <select data-ng-change="verificarPermissao()" id="tipoAcesso" data-ng-model="permissao" class="validate" required>
+                                <option selected disabled></option>
+                                <option value="{{ role.id }}" data-ng-repeat="role in grupoRoles">{{ role.nome }}</option>
+                            </select>
+                            <label for="tipoAcesso">Grupo de Permissão</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-show="especifico">
+                            <i class="material-icons prefix">domain</i>
+                            <select id="tipoAcesso" data-ng-model="atribuicao.tipoAcesso" class="validate" required>
+                                <option value="L">LEITURA</option>
+                                <option value="E">ESCRITA</option>
+                            </select>
+                            <label for="tipoAcesso">Nível de Acesso</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-show="escolherUnidade || especifico">
+                            <i class="material-icons prefix">domain</i>
+                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                            <input id="auto-complete-unidade-permissao" class="dropdown-input" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesPermissao">
+                            <label for="auto-complete-unidade-permissao">Unidade</label>
+                        </div>
+                        <ul id='dropUnidadesPermissao' class='dropdown-content'>
+                            <li class="divider"></li>
+                            <li data-ng-repeat="unidade in unidades">
+                                <a data-ng-click="selecionarUnidade(unidade)">{{ unidade.nomeCompleto | uppercase}}</a>
+                            </li>
+                        </ul>
+                        <div class="input-field col s12 m12 l6" data-ng-show="especifico">
+                            <i class="material-icons prefix">domain</i>
+                            <select id="tipoPermissao" data-ng-model="atribuicao.permissao.id" class="validate" required>
+                                <option selected disabled></option>
+                                <option value="{{role.id}}" data-ng-repeat="role in roles">{{ role.nomeExibicao | uppercase }}</option>
+                            </select>
+                            <label for="tipoPermissao">Permissão</label>
+                        </div>                        
+                    </div>
+                    <div class="row end-card">
+                        <div class="col s12 right-align">
+                            <a id="salvarPermissao" data-ng-click="finalizar()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-panel">
+                <div data-ng-show="usuario.rolesAtribuidas.length" class="row">
+                    <div class="col s12">
+                        <h3 class='card-title-h3' style="padding: 20px">Permissões de {{atribuicao.usuario.pessoa.nome}}</h3>
+                    </div>
+                    <table class='highlight striped table-pattern'>
+                        <thead>
+                            <tr>
+                                <th data-field='nome'>Nome de Exibição</th>
+                                <th data-field='entidade'>Entidade</th>
+                                <th data-field='tipo'>Tipo</th>
+                                <th class="hide-on-small-only center">
+                                    <input id="remove_all" class="filled-in" type="checkbox" data-ng-click="selecionarRemocao()">
+                                    <label for="remove_all" class="black-text">Remover Todos</label>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="perm in usuario.rolesAtribuidas" data-ng-show="usuario.rolesAtribuidas.length">
+                                <td class="celula-link relative mobile-full">
+                                    <div data-ng-hide="verificaGrupo(perm.grupo)" style="padding: 15px">{{ perm.permissao.nomeExibicao }}</div>
+                                    <div data-ng-show="verificaGrupo(perm.grupo)" style="padding: 15px">{{ perm.grupo.nome }}</div>
+                                    <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesUsuario{{ perm.id }}">
+                                        <div style="height: 100%" data-ng-click="" class="col s4 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                    </div>
+                                </td>
+                                <td>{{ perm.idEntidade }}</td>
+                                <td data-ng-hide="verificaGrupo(perm.grupo)">{{ carregarTipoRole(perm.tipoAcesso) }}</td>
+                                <td data-ng-show="verificaGrupo(perm.grupo)">Grupo de Permissão</td>                                
+                                <td class="center-align">
+                                    <input id="p{{perm.id}}" class="filled-in check-permissao" type="checkbox" data-ng-click="selecionarRemocao(perm.id)">
+                                    <label for="p{{perm.id}}"></label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row end-card" data-ng-show="btnRemocao">
+                        <button class="btn-flat waves waves-effect waves-light right" data-ng-click="verificarRemocaoPermissoes()">Remover</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

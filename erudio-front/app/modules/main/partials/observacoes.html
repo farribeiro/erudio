@@ -1,0 +1,82 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 m12 l12">
+        <div class="card-panel" style="margin-top: -90px;">
+            <div class="row title-calendar" style="padding-top: 15px;">
+                <div class="col s1"><i class="material-icons mobile-icon-title">speaker_notes</i></div>
+                <div class="col s10 mobile-font-title">Observações de Aula</div>
+                <div class="col s12 end-card" style="height: 5px;">&nbsp;</div>
+            </div>
+            <div class="row col s12 m12 l12" style="padding:1.2rem !important;">
+                <input type="checkbox" class="filled-in" id="opcaoPesquisaPeriodo" checked="checked" data-ng-model="observacaoPeriodo"/>
+                <label for="opcaoPesquisaPeriodo">Pesquisar por Periodo</label>
+            </div>
+            <div class="row" data-ng-hide="observacaoPeriodo">
+                <div class="input-field col s12 m12 l12">
+                    <i class="material-icons prefix">today</i>
+                    <input id="dataAulaObservacao" class="data" type="text" data-ng-model="buscaObservacao.data" data-ng-change="buscarAulas(buscaObservacao.data)">
+                    <label for="dataAulaObservacao">Data da aula</label>
+                </div>
+            </div>
+            <div class="row" data-ng-show="observacaoPeriodo">
+                <div class="input-field col s12 m6 l6">
+                    <i class="material-icons prefix">today</i>
+                    <input id="dataInicioAulaObservacao" class="data" type="text" data-ng-model="buscaObservacao.inicio" data-ng-change="buscarPeriodoAulas(buscaObservacao.inicio, buscaObservacao.termino)">
+                    <label for="dataInicioAulaObservacao">Data de inicio</label>
+                </div>
+                <div class="input-field col s12 m6 l6">
+                    <i class="material-icons prefix">today</i>
+                    <input id="dataTerminoAulaObservacao" class="data" type="text" data-ng-model="buscaObservacao.termino" data-ng-change="buscarPeriodoAulas(buscaObservacao.inicio, buscaObservacao.termino)">
+                    <label for="dataTerminoAulaObservacao">Data de termino</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m12 l12" data-ng-repeat="aula in aulasObservacao">
+                    <div class="mobile-padding">
+                        <div class="col s6 m1 l1" style="padding-top: 1.7rem"><strong>{{ aula.dia.data | date: 'dd/MM/yyyy' }}</strong></div>
+                        <div class="col s6 m2 l2" style="padding-top: 1.7rem"><strong>{{ aula.horario.inicio | horario }} - {{ aula.horario.termino | horario }}</strong></div>
+                        <div class="input-field col s9 m8 l8">
+                            <input id="Obs{{aula.id}}" type="text" data-ng-model="aula.observacao">
+                            <label for="Obs{{aula.id}}">Observação</label>
+                        </div>
+                        <a class="tooltipped btn-floating btn green waves-effect waves-light right"
+                            data-position="left" data-delay="30"
+                            data-tooltip="Adicionar Telefone" data-ng-click="adicionarObservacao(aula)" style="margin: 1rem 2rem"><i class="material-icons">add</i></a>
+                    </div>
+                    <div class="col s12 m12 l12 elemento-lista" data-ng-repeat="observacao in aula.observacoes">
+                        <div class="col s11 m11 l11">{{ observacao.observacao | uppercase }}</div>
+                        <div class="col s1"><i data-ng-click="removerObservacao(aula, observacao)" data-position='left' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped" style="padding-left: 1.9rem">delete</i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row end-card" style="padding: 1rem" data-ng-if="aulasObservacao.length">
+                <a id="btn-avaliar" data-ng-click="salvarObservacoes()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>Salvar</a>
+            </div>
+        </div>
+    </div>
+</div>

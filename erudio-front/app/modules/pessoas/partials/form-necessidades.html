@@ -1,0 +1,39 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: SIGeducar                                                    *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div  id="necessPessoa">
+    <div class="row">
+        <div class="col s12 m12 l12">
+            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Necessidades Especiais</h5>
+        </div>                        
+    </div>
+    <div class="row ajuste-margin-bottom" style="margin-bottom: 2.5rem !important;">
+        <div class="input-field col s12 m12 l6" style="margin-top:2rem;"data-ng-repeat="necessidadeEspecial in necessidadesEspeciais">                           
+            <input data-ng-checked="verificaNecessidades(necessidadeEspecial.id)" data-ng-click="salvarNecessidades(necessidadeEspecial)" type="checkbox" class="filled-in" id="necess{{necessidadeEspecial.id}}" data-ng-disabled="!escrita" />
+            <label style="font-size: 0.8rem !important;" id="necessidades" for="necess{{necessidadeEspecial.id}}" >{{necessidadeEspecial.nome| uppercase}}</label>
+        </div>
+    </div> 
+</div>

@@ -1,0 +1,88 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 l12 mobile-full">
+        <div class="card-panel">
+            <form id="cargoForm">
+                <div class="row center espacamento">
+                    <img src="app/modules/matriculas/assets/images/logo-municipio.jpg">
+                </div>
+                <div class="row center espacamento">
+                    <h5><b>Diário de Frequência - {{disciplina.nomeExibicao}}</b></h5>
+                </div>
+                <div class="row center espacamento" style="padding-top: 0rem">
+                    <span class="content">Série: {{disciplina.turma.etapa.nome}}, Turma: {{disciplina.turma.apelido}}</span><br>
+                    <span class="content"><b>{{mes}} de 2016</b></span>
+                </div>
+                <div class="tabela-frequencia" style="padding-bottom: 5rem">
+                    <table class="bordas">
+                        <thead>
+                            <tr>
+                                <th class="numero-aluno">Nº</th>
+                                <th class="nome-aluno">Aluno</th>
+                                <th data-ng-repeat="aula in disciplina.aulas">{{aula.dia.data | date: 'dd'}}</th>
+                                <th class="faltas-aluno">Faltas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="enturmacao in disciplina.enturmacoes | orderBy: 'matricula.aluno.nome'">
+                                <td class="numero-aluno">{{$index+1}}</td>
+                                <td class="nome-aluno">{{enturmacao.matricula.aluno.nome}}</td>
+                                <td data-ng-repeat="frequencia in enturmacao.frequencias">
+                                    {{ frequencia.status}}
+                                </td>
+                                <td class="faltas-aluno">{{enturmacao.faltas}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row espacamento">
+                <hr style="width: 33rem">
+                <p class="content center-align" style="margin-top: 0rem">                                
+                    <b>{{vinculo.funcionario.nome}}</b><br>
+                    {{vinculo.cargo.nome}}
+                </p>
+            </div>
+            <div class="row espacamento" style="padding-bottom: 1rem!important">
+                <hr>
+                <p class="content center-align" style="margin-top: 0rem">                                
+                    <b>{{disciplina.turma.unidadeEnsino.tipo.nome}} {{disciplina.turma.unidadeEnsino.nome}}</b><br>
+                    {{disciplina.turma.unidadeEnsino.endereco.logradouro}}, N°{{disciplina.turma.unidadeEnsino.endereco.numero}}, {{disciplina.turma.unidadeEnsino.endereco.bairro}}
+                    , CEP: {{disciplina.turma.unidadeEnsino.endereco.cep}}, {{disciplina.turma.unidadeEnsino.endereco.cidade.nome}}/{{disciplina.turma.unidadeEnsino.endereco.cidade.estado.sigla}}<br>
+                    E-mail: {{disciplina.turma.unidadeEnsino.email}} -
+                    Fone: {{disciplina.turma.unidadeEnsino.telefones[0].numero | telefone}}
+                </p>
+            </div>
+            <div class="row end-card" style="padding-top: 15px; padding-bottom: 15px;">
+                <div class="col s12 right-align">
+                    <a data-ng-click="gerarPdf()" class="waves-effect waves-azul btn-flat"><i class="material-icons left">local_printshop</i>Imprimir</a>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

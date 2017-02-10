@@ -1,0 +1,165 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<link rel="stylesheet" type="text/css" href="app/modules/main/assets/css/home.css"/> 
+<div class="row">
+    <div class="col s12 m12 l12">
+        <div class="card-panel">
+            <div class="row">
+                <h3 class='card-title-h3 col s12 m12 l12' style="padding: 20px 20px">
+                    {{calendario.nome | uppercase}}
+                    <small class="right">{{calendario.dataInicio | date:'dd/MM/yyyy'}} - {{calendario.dataTermino | date: 'dd/MM/yyyy'}}</small>
+                </h3>                        
+            </div>
+            <div class="row" style="padding:25px">
+                <div class="col s12 m12 l7" style="margin-bottom: 10px">
+                    <i class="material-icons pointer left" style="font-size: 2.3rem" data-ng-click="baseCalendario(mes.num-1)">navigate_before</i>
+                    <span class="col s10 m10 l10 center-align" style="font-size:26px;">{{mes.nome}}</span>
+                    <i class="material-icons pointer right" style="font-size: 2.3rem" data-ng-click="baseCalendario(mes.num+1)">navigate_next</i>
+                </div>
+                <div class="row col s12 m12 l5 right-align" style="cursor: default">
+                    <span style="margin-right: 15px;"><a style="background: #ffecb3;" class="btn-floating">&nbsp</a> {{letivos}} Letivos</span>
+                    <span style="margin-right: 15px;"><a style="background: #c8e6c9;" class="btn-floating">&nbsp</a> {{efetivos}} Efetivos</span>
+                    <span style="margin-right: 15px;"><a style="background: #f5f5f5;" class="btn-floating">&nbsp</a> {{naoLetivos}} Não Letivos</span>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <th> D </th>
+                    <th> S </th>
+                    <th> T </th>
+                    <th> Q </th>
+                    <th> Q </th>
+                    <th> S </th>
+                    <th> S </th>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="semana in semanas">
+                        <!-- DOMINGO -->
+                        <td class="td-dia dia{{ semana.domingo.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.domingo.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.domingo.id" data-ng-mouseover="carregarDia(semana.domingo)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.domingo.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.domingo); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.domingo)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.domingo.eventos.length > 3" data-ng-click="carregarDia(semana.domingo); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- SEGUNDA-FEIRA -->
+                        <td class="td-dia dia{{ semana.segunda.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.segunda.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.segunda.id" data-ng-mouseover="carregarDia(semana.segunda)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.segunda.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.segunda); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.segunda)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.segunda.eventos.length > 3" data-ng-click="carregarDia(semana.segunda); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- TERÇA-FEIRA -->
+                        <td class="td-dia dia{{ semana.terca.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.terca.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.terca.id" data-ng-mouseover="carregarDia(semana.terca)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.terca.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.terca); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.terca)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.terca.eventos.length > 3" data-ng-click="carregarDia(semana.terca); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- QUARTA-FEIRA -->
+                        <td class="td-dia dia{{ semana.quarta.data }}">                                    
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.quarta.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.quarta.id" data-ng-mouseover="carregarDia(semana.quarta)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.quarta.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.quarta); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.quarta)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.quarta.eventos.length > 3" data-ng-click="carregarDia(semana.quarta); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- QUINTA-FEIRA -->
+                        <td class="td-dia dia{{ semana.quinta.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.quinta.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.quinta.id" data-ng-mouseover="carregarDia(semana.quinta)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.quinta.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.quinta); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.quinta)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.quinta.eventos.length > 3" data-ng-click="carregarDia(semana.quinta); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- SEXTA-FEIRA -->
+                        <td class="td-dia dia{{ semana.sexta.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.sexta.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.sexta.id" data-ng-mouseover="carregarDia(semana.sexta)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.sexta.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.sexta); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.sexta)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.sexta.eventos.length > 3" data-ng-click="carregarDia(semana.sexta); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                        <!-- SÁBADO -->
+                        <td class="td-dia dia{{ semana.sabado.data }}">
+                            <div class="dia-de-semana">
+                                <div class="dia">
+                                    {{ semana.sabado.data | date: 'dd' }}
+                                    <i class="material-icons prefix right drop-opcoes" data-ng-show="escrita && semana.sabado.id" data-ng-mouseover="carregarDia(semana.sabado)" data-activates='drop'>keyboard_arrow_down</i>
+                                </div>
+                                <div class="evento" data-ng-repeat="evento in semana.sabado.eventos | limitTo: 3">
+                                    <div class="truncate col s10" data-ng-click="carregarDia(semana.sabado); abrirModalEvento(); abrirFormEvento(evento)">{{ evento.evento.nome }}</div>
+                                    <i data-ng-show="escrita" class="material-icons col s2" style="font-size: 1rem" data-ng-click="prepararRemoverEvento(evento, semana.sabado)">delete</i>
+                                </div>
+                                <span class="right clickable celula-link" style="font-size: 0.8rem; padding-right: 0.5rem;" data-ng-show="semana.sabado.eventos.length > 3" data-ng-click="carregarDia(semana.sabado); abrirModalEvento() ">Ver mais..</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a class='dropdown-button btn drop-opcoes' style="display:none;" href='#' data-activates='drop'>Protect the Dropdown!</a>
+        </div>
+    </div>
+</div>

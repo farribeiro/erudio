@@ -1,0 +1,99 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+.collection .collection-item {
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+}
+
+.progress {
+    top: -8px !important;
+}
+
+.quadroHorario-banner {
+    height: 300px;
+    background: url('../images/quadroHorario.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.dia {
+    text-align: center;
+    background: #fff;
+    border: 1px solid;
+    margin: 2px;
+}
+
+.horario {
+    text-align: center;
+    background: #fff;
+    border: 1px solid;
+    margin: 2px;
+    min-height: 56px;
+}
+
+.intervalo {
+    text-align: center;
+    background: #babaca;
+    border: 1px solid;
+    margin: 2px;
+}
+
+
+@media only screen and (max-width : 993px) {  
+    
+    .swipeable {
+        top:10px !important;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: landscape) {  
+    
+    .progress {
+        top: 58px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 14.9% !important;
+    }
+    
+    .swipeable {
+        top: 20px !important;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: portrait) {        
+    .progress {
+        top: 50px !important;
+    }
+    
+    .swipeable {
+        top: 20px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 7.5% !important;
+    }
+}

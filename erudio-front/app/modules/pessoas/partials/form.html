@@ -1,0 +1,155 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row ">
+    <div class="row">
+        <div class="col s12 pessoa-banner topo-pagina"></div>
+    </div>       
+    <div class="row form-box show-form">
+        <div class="col s12 m12 l12" style="margin-top: -64px">
+            <div class="card-panel">
+                <h3 style="padding: 20px 0px 0px 20px;">{{acao}} Pessoa</h3> 
+                <ul id="pessoaTabs" class="tabs">
+                    <li id="tab_dados" class="tab col s3"><a id="dadosCadastro" class="active" data-ng-click="mudaTelaCadastro(1, false)" href="#tab-dados" >Dados Iniciais</a></li>
+                    <li id="tab_contatos" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(2, false)" href="#tab-contatos" >Contatos</a></li>
+                    <li id="tab_documentos" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(3, false)" href="#tab-documentos" >Documentos</a></li>
+                    <li id="tab_particularidades" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(4, false)" href="#tab-particularidades" >Deficiencias</a></li>
+                    <li id="tab_necessidades" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(5, false)" href="#tab-necessidades" >Necessidades</a></li>
+                </ul>
+                <form id="cadastroForm">                           
+                    <div data-ng-show="dados" id="tab-dados" style="margin-top: 1rem;">               
+                        <div class="col s12 m12 l12">
+                            <h5 style="padding: 1rem; margin-top: 10px;" class="no-margin ajuste-titulo-card">Perfil</h5>
+                        </div>
+                        <div id="validate-pessoa">
+                            <div class="row ajuste-margin-bottom-0" style="margin-top: 15px;">                     
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">account_circle</i>                                
+                                    <input id="nomePessoaCadastro" type="text" class="validate" data-ng-model="pessoa.nome" data-ng-disabled="!escrita" autofocus required />
+                                    <label for="nomePessoaCadastro">Nome*</label>
+                                </div>
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">email</i>
+                                    <input id="email" type="email" class="validate" data-ng-model="pessoa.email" data-ng-disabled="!escrita"/>
+                                    <label for="email" data-error="DIGITE UM EMAIL VÁLIDO">Email</label>
+                                </div>                    
+                            </div>
+                            <div class="row ajuste-margin-bottom-0">
+                                <div class=" input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">cake</i>
+                                    <input  id="dataNascimentoAluno" type="text" class="data"  data-ng-model="pessoa.dataNascimento" data-ng-disabled="!escrita">
+                                    <label for="dataNascimentoAluno" id="nomeGrande">Data de Nascimento*</label>
+                                </div>                   
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">wc</i>
+                                    <select name="select" id="genero" style="display: none;"ng-model="pessoa.genero" data-ng-disabled="!escrita">                                
+                                        <option value="M" data-ng-selected="verificaGenero('M')">Masculino</option> 
+                                        <option value="F" data-ng-selected="verificaGenero('F')">Feminino</option>
+                                    </select>
+                                    <label for="genero">Gênero</label>
+                                </div>
+                            </div>
+                            <div class="row ajuste-margin-bottom-0">
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">perm_identity</i>
+                                    <select id="alunoRaca" style="display: none;" data-ng-model="pessoa.raca.id" data-ng-disabled="!escrita">                                
+                                        <option disabled></option>
+                                        <option value="{{raca.id}}" data-ng-selected="verificaRaca(raca.id)" data-ng-repeat="raca in racas">{{ raca.nome}}</option>
+                                    </select>
+                                    <label for="alunoRaca">Raça/Etnia</label>
+                                </div>                     
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">public</i>
+                                    <select style="display: none;" data-ng-model="pessoa.nacionalidade" id="nacionalidade" data-ng-disabled="!escrita">
+                                        <option disabled selected></option>
+                                        <option value="BRASILEIRO" data-ng-selected="tipoNacionalidade('BRASILEIRO')">BRASILEIRO</option>
+                                        <option value="ESTRANGEIRO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO')">ESTRANGEIRO</option>
+                                        <option value="ESTRANGEIRO_NATURALIZADO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO_NATURALIZADO')">ESTRANGEIRO NATURALIZADO</option>
+                                    </select>
+                                    <label for="nacionalidade">Nacionalidade</label>
+                                </div>                          
+                                <div class="input-field col s12 m12 l6" data-ng-show="pessoa.nacionalidade === 'BRASILEIRO'">
+                                    <i class="material-icons prefix">place</i>
+                                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                    <input id="naturalidade" class="dropdown" type="text" data-ng-model="pessoa.naturalidade.nome" data-ng-change="buscarNaturalidade()" data-ng-disabled="!escrita" data-activates='dropCidades'>
+                                    <label for="naturalidade">Naturalidade</label>
+                                </div>
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">wc</i>
+                                    <select id="estadoCivil" style="display: none;" data-ng-model="pessoa.estadoCivil.id" data-ng-disabled="!escrita">                                
+                                        <option value="{{ estadoCivil.id}}" data-ng-selected="verificaEstadoCivil(estadoCivil.id)" data-ng-repeat="estadoCivil in estadosCivis">{{ estadoCivil.nome}}</option>
+                                    </select>
+                                    <label for="estadoCivil">Estado Civil</label>                            
+                                </div>
+                                <div class="row ajuste-margin-bottom ">
+                                    <div class="input-field col s12 m12 l6">
+                                        <i class="material-icons prefix">perm_identity</i>
+                                        <input id="nomeMaeCadastro" type="text" class="validate" data-ng-model="pessoa.nomeMae" data-ng-disabled="!escrita"  />
+                                        <label for="nomeMaeCadastro" id="nomeGrande">Nome da Mãe</label>
+                                    </div>                                    
+                                    <div class="input-field col s12 m12 l6">
+                                        <i class="material-icons prefix">perm_identity</i>
+                                        <input id="nomePai" type="text" class="validate" data-ng-model="pessoa.nomePai" data-ng-disabled="!escrita" />
+                                        <label for="nomePai">Nome do Pai</label>
+                                    </div>
+                                    <div data-ng-hide="outroResponsavel">
+                                        <div class="input-field col s12 m12 l6">
+                                            <i class="material-icons prefix">wc</i>
+                                            <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita">
+                                                <option disabled></option>
+                                                <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae" selected>Mãe</option>
+                                                <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Pai</option>
+                                                <option data-ng-selected="pessoa.responsavelNome && pessoa.nomePai !== pessoa.responsavelNome && pessoa.nomeMae !== pessoa.responsavelNome" value="outro">Outro</option>
+                                            </select>
+                                            <label for="responsavel">Responsável</label>                            
+                                        </div>
+                                    </div>
+                                    <div data-ng-show="pessoaResponsavel === 'outro'">
+                                        <div class="input-field col s12 m12 l6">
+                                            <i class="material-icons prefix">person_add</i>
+                                            <input id="outroResponsavel" type="text" class="validate" data-ng-model="pessoa.responsavelNome" data-ng-disabled="!escrita" />
+                                            <label for="outroResponsavel">Nome Responsável</label>
+                                        </div>
+                                    </div>                                
+                                </div>                            
+                            </div>    
+                        </div>
+                        <end-pessoa id="validate-endereco"></end-pessoa>
+                    </div>
+                    <necess-pessoa id="tab-necessidades"></necess-pessoa>
+                    <docs-pessoa id="tab-documentos"></docs-pessoa>
+                    <parti-pessoa id="tab-particularidades"></parti-pessoa>                                        
+                    <contatos-pessoa id="tab-contatos"></contatos-pessoa>  
+                    <div class="row end-card" style="padding-top:15px;padding-bottom:15px;" data-ng-if="escrita">
+                        <div class="col s12 right-align" id="avancaEtapa">
+                            <a data-ng-click="verificaPessoa()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                        </div> 
+                    </div> 
+                </form>
+            </div>  
+        </div>
+    </div>            
+</div>

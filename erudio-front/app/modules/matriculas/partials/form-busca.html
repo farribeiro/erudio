@@ -1,0 +1,190 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="buscamatriculas">
+    <div class="row">
+        <div class="col s12 matricula-banner topo-pagina">           
+        </div>
+    </div>
+    <div class="row">    
+        <div class="col s12 l12 mobile-full">
+            <div class="row"style="margin-top: -64px;" >
+                <div class="col s12 l12 mobile-full"> 
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Matrícula e Enturmação</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Matrículas e enturmações consiste no local destinado para registro de um discente em uma unidade escolar e a definição de turma do mesmo.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise por nome de aluno ou matrícula para localizar o aluno que deseja matricular, clique no botão + para matricular um aluno;<br />
+                                        Clique sobre o código de um aluno para visualizar informações de uma matricula.<br />
+                                        Clique no balão correspondente na coluna 'opções' para realizar as operações de enturmações, movimentações e informações de um aluno.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>                         
+                        </div>
+                    </div>                                                            
+                    <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">perm_identity</i>
+                            <input id="nomeAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.aluno"/>
+                            <label for="nomeAlunoMatricula">Nome do Aluno</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6"> 
+                            <i class="material-icons prefix">toll</i>
+                            <input id="codigoBuscaMatricula" type="text" length="11" class="validate counter numeros"  data-ng-model="matriculaBusca.codigo"/>
+                            <label for="codigoBuscaMatricula">Código de Matrícula</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
+                            <i class="material-icons prefix">account_balance</i>
+                            <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
+                                <option value="{{unidade.id}}" data-ng-repeat="unidade in unidades" data-ng-selected="unidades.length === 1">{{unidade.nomeCompleto | uppercase}}</option>
+                            </select>
+                            <label for="unidadeBuscaMatricula">Unidade de Ensino</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                            <i class="material-icons prefix">account_balance</i>
+                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                            <input id="unidadeMatriculaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesMatriculaBusca">
+                            <label for="unidadeMatriculaAutoComplete">Unidade de Ensino</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">school</i>
+                            <select id="cursoBuscaMatricula" data-ng-model="matriculaBusca.curso">
+                                <option value="" disabled selected></option>
+                                <option value="{{ curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome| uppercase}}</option>
+                            </select>
+                            <label for="cursoBuscaMatricula">Curso</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" >
+                            <i class="material-icons prefix">description</i>
+                            <select id="statusBuscaMatricula" data-ng-model="matriculaBusca.status">
+                                <option disabled selected></option>
+                                <option value="CURSANDO">CURSANDO</option>
+                                <option value="APROVADO">APROVADO</option>
+                                <option value="REPROVADO">REPROVADO</option>
+                                <option value="TRANCADO">TRANCADO</option>
+                                <option value="ABANDONO">ABANDONO</option>
+                                <option value="FALECIDO">FALECIDO</option>
+                            </select>
+                            <label for="statusBuscaMatricula">Status</label>
+                        </div>
+                        <div class="end-card col s12" style="padding-top: 1rem">                        
+                            <a data-ng-click="buscarMatriculas(matriculaBusca, '', 'botao')" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                            <a data-ng-click="reiniciarMatriculaBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="listaMatriculas" data-ng-show="matriculas.length && matriculas" class="row" style="margin-top: 15px;">
+    <div class="col s12 m12 mobile-full" ><!--data-ng-hide="editando"-->
+        <div class="row">
+            <div class="col s12 m12 l12">               
+                <div class="card-panel">
+                    <ul class="pagination" data-ng-show="quantidadePaginas > 1">
+                        <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                        <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                        <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                        <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                        <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                        <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                        <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+                    </ul>
+                    <div class="card-content mobile-full">
+                        <table class='highlight striped table-pattern'>
+                            <thead>
+                                <tr>
+                                    <th class="hide-on-small-only left-align" data-field='codigo'>
+                                        <div class="pointer" data-ng-click="predicate = 'codigo'; reverse = !reverse">
+                                            Código
+                                            <span class="sortorder" data-ng-show="predicate === 'codigo'" data-ng-class="{reverse:reverse}"></span>
+                                        </div>
+                                    </th>
+                                    <th class="hide-on-small-only center-align" data-field='nome'>
+                                        <div class="pointer" data-ng-click="predicate = 'aluno.nome'; reverse = !reverse">
+                                            Aluno
+                                            <span class="sortorder" data-ng-show="predicate === 'aluno.nome'" data-ng-class="{reverse:reverse}"></span>
+                                        </div>
+                                    </th>
+                                    <th class="hide-on-small-only center-align" data-field='curso'>Curso</th>
+                                    <th class="hide-on-small-only center-align" data-field='status'>Status</th>
+                                    <th class='center-align hide-on-small-only center-align' data-field='opcoes'>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="matricula in matriculas | orderBy: 'aluno.nome':reverse | comecarEm: (paginaAtual-1)*50+1 | limitTo: 50">
+                                    <td class="celula-link relative mobile-full">
+                                        <div class="hide-on-small-only pointer" data-ng-click="mostraOpcoes(matricula, 'home', false);">{{ matricula.codigo}}</div>
+                                        <div class="hide-on-med-and-up pointer" data-ng-click="mostraOpcoes(matricula, 'home', false);">{{ matricula.codigo}}</div>
+                                    </td>
+                                    <td class="hide-on-small-only center-align">{{ matricula.aluno.nome | uppercase }}</td>
+                                    <td class="hide-on-small-only center-align">{{ matricula.curso.nome | uppercase }}</td>
+                                    <td class="hide-on-small-only center-align">{{ matricula.status }}</td>
+                                    <td class='center-align hide-on-small-only'>
+                                        <i data-ng-click="mostraOpcoes(matricula, 'enturmacoes', true)" data-position='top' data-delay='50' data-tooltip='Enturmações' class="material-icons info-icon tooltipped">people</i>
+                                        <i data-ng-click="mostraOpcoes(matricula, 'disciplinas', true)" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">local_library</i>
+                                        <i data-ng-click="mostraOpcoes(matricula, 'movimentacoes', true)" data-position='top' data-delay='50' data-tooltip='Movimentações' class="material-icons info-icon tooltipped">swap_horiz</i>
+                                        <i data-ng-click="mostraOpcoes(matricula, 'pdf', true)" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination" data-ng-show="quantidadePaginas > 1" style="padding-bottom: 1rem">
+                        <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                        <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                        <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                        <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                        <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                        <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                        <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

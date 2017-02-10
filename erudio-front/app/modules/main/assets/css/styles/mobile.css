@@ -1,0 +1,299 @@
+@media only screen and (max-width : 992px) {
+    .instituicao-banner { background-size: auto 100% !important; }
+    .topo-pagina { margin-top: 56px !important; }
+    .mobile-full { padding: 0 !important; }
+    
+    .mobile-toolbar-ajuste {
+        margin-top: 56px;
+    }
+    
+    .form-geral {
+        margin-top: 56px !important;
+    }
+    
+    .mobile-hide {
+        display: none !important;
+    }
+    
+    .pesquisa {
+        margin-top: -1rem !important;
+    }
+    
+    header, main, footer {
+      padding-left: 0;
+    }
+    
+    .ajuste-titulo-form {
+        bottom: -10px !important;
+        left: 5px !important;
+    }
+    
+    .tabEtapas a, .tabInfo a, .tabDisciplinas a {
+        line-height: 3.5em !important;
+    }
+    
+    .buscaTopo {
+        top: 12px !important;
+    }
+    
+    .tabs .tab a {        
+        padding-top: 4.5% !important;
+    }
+    
+    .modal-title-phones {
+        background: url('../../images/phones.jpg') right bottom;
+        height: 160px !important;
+        position: relative;
+        background-size: auto 100%;
+    }
+    
+    .modal-title-phones h4 {
+        position: absolute;
+        bottom: 5px !important;
+        left: 15px !important;
+        color: #fafafa;
+        font-size: 16px;
+    }
+    
+    .modal-title-banner {
+        background: url('../../images/removeBanner.jpg') right bottom;
+        height: 160px !important;
+        position: relative;
+        background-size: auto 100%;
+    }
+    
+    .modal-title-banner h4 {
+        position: absolute;
+        bottom: 5px !important;
+        left: 15px !important;
+        color: #fafafa;
+        font-size: 16px;
+    }
+    
+    .btn-telefone {
+        top: -46px !important;
+        right: 30px;
+    }
+    
+    .panel {
+        height: 105px !important;
+    }
+    
+    .ajuste-texto-panel-mobile {
+        margin-top: 12px;
+    }
+    
+    .btn-add, .btn-add-secundario {
+        position: fixed;
+        left: auto;
+        right: 8px !important;
+        bottom: 20px !important;
+        top: initial;
+        z-index: 3;
+    }
+    
+    .busca {
+        position: fixed;
+        top: 56px;
+        z-index: 2;
+    }
+    
+    .ajuste-nav-direita {
+        margin-left: 30px !important;
+    }
+    
+    .btn-voltar {
+        position: fixed !important;
+        top: 15px !important;
+        left: 89% !important;
+        color: #fafafa;
+        width: 5% !important;
+    }
+    
+    nav .input-field label {
+        /* top: 13px !important; */
+    }
+    
+    nav a.page-title {
+        font-size: 20px;
+        line-height: 58px;
+        margin-left: 15px;
+    }
+    
+    .collection {
+         margin-top: 8px !important; 
+    }
+    
+    .progress {
+        position: fixed !important;
+        top: 105px;
+        z-index: 2;
+    }
+    
+    nav .button-collapse i {
+        font-size: 2.2rem !important;
+    }
+    
+    .swipeable {
+        width: 100%;
+        background: #fff;
+        height: 64px;;
+        line-height: 27px;
+        position: absolute; 
+        top: 0px;
+        left: 0px;
+        transition-property: all;
+        transition-duration: 0.5s;
+        padding: 11px;
+        display: block;
+    
+        margin-top: 0;
+}
+    
+    .mobile-delete {
+        height: 63px;
+        background: #e74c3c;
+        width: 80%;
+        padding-left: 20px;
+        color: white;
+        display: block;
+        margin-top: 0px;
+        margin-left: -20px;
+    }
+
+    .padding-duas-linhas {
+        padding-top: 8px !important;
+    }
+    
+    .mobile-delete-icon {
+        margin-top: -3px;
+        margin-right: 10px;
+    }
+
+    .move-right {
+        left: 70%;
+    }
+    
+    .tab {
+        /* font-size: 12px; */
+        line-height: 23px !important;
+    }
+}
+
+
+@media only screen and (min-width : 601px) and (max-width : 993px) and (orientation: landscape) {  
+    .progress {
+        top: 113px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 14.9% !important;
+    }
+    //.calendar-left, calendar-right { margin: 0 !important; }
+    .mobile-star-calendar {
+        font-size: 2rem;
+        color: #ffc107;
+        margin-top: 1.2rem;
+        cursor: pointer
+    }
+    
+    nav { height: 64px !important; }
+    .face-icon-home{ font-size: 72px !important; }
+    .mobile-box-title { margin-left:25px !important; margin-top:-5px !important; }
+    .mobile-icon-title { font-size: 3.5rem; }
+    .mobile-font-title { font-size: 2rem; margin-left: 16px !important; margin-top: 5px; }
+    .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
+    .mobile-pad-left { padding-left: 10px !important; }
+    .mobile-padding { padding: 5px !important; }
+}
+
+@media only screen and (min-width : 601px) and (max-width : 993px) and (orientation: portrait) {        
+    .progress {
+        top: 105px !important;
+    }
+    .progress-sem-busca{
+        top: 7.5% !important;
+    }
+    .home-calendar { padding: 0 !important; }
+    .head-calendar th { text-align: center !important; }
+    //.calendar-left, calendar-right { margin: 0 !important; }
+    .mobile-top { margin-top: 1rem; }
+    .mobile-month { margin-top: -2px !important; }
+    .mobile-ball { width: 24px; height: 24px; }
+    .mobile-calendar-info { font-size: 0.8rem !important; }
+    .mobile-star-calendar {
+        font-size: 2rem;
+        color: #ffc107;
+        margin-top: 1.2rem;
+        cursor: pointer
+    }
+    
+    nav { height: 64px !important; }
+    .mobile-box-title { margin-left:25px !important; margin-top:-5px !important; }
+    .mobile-icon-title { font-size: 3.5rem; }
+    .mobile-font-title { font-size: 2rem; margin-left: 16px !important; margin-top: 5px; }
+    .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
+    .mobile-pad-left { padding-left: 10px !important; }
+    .mobile-padding { padding: 5px !important; }
+}
+
+@media only screen and (max-width : 600px) {
+    nav { height: 64px !important; }
+    .main-banner { height: 15rem !important; }
+    .row .col { padding: 0 0.25rem !important; }
+    .home-icons { font-size: 5rem; }
+    .home-boxes { margin: 0 !important; }
+    .home-calendar { padding: 0 !important; }
+    .calendar-left, calendar-right { margin: 0 !important; }
+    .mobile-top { margin-top: 1rem; }
+    .mobile-month { margin-top: -2px !important; }
+    .mobile-ball { width: 24px; height: 24px; }
+    .mobile-calendar-info { font-size: 0.8rem !important; }
+    .mobile-star-calendar {
+        font-size: 2rem;
+        color: #ffc107;
+        margin-top: 1.2rem;
+        cursor: pointer
+    }
+    .face-icon-home{ font-size: 60px !important; margin-top: 10px !important; }
+    .mobile-h2 { font-size: 2rem !important; }
+    .mobile-box-title { margin-left: 29px !important; margin-top: 6px !important; }
+    .mobile-caption { display: block; }
+    .mobile-icon-title { font-size: 3.5rem; }
+    .mobile-font-title { font-size: 2rem; margin-left: 16px !important; margin-top: 5px; }
+    .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
+    .mobile-pad-left { padding-left: 10px !important; }
+    .mobile-padding { padding: 5px !important; }
+}
+
+@media only screen and (max-width : 500px) {
+    nav { height: 64px !important; }
+    .mobile-toolbar-ajuste { margin-top: 46px; }
+    .main-banner { height: 15rem !important; }
+    .row .col { padding: 0 0rem !important; }
+    .home-icons { font-size: 4rem; }
+    .home-boxes { margin: 0 !important; }
+    .home-calendar { padding: 0 !important; }
+    .calendar-left, calendar-right { margin: 0 !important; }
+    .mobile-top { margin-top: 1rem; }
+    .mobile-month { margin-top: -2px !important; margin-left: 16px !important; }
+    .mobile-ball { width: 24px; height: 24px; }
+    .mobile-calendar-info { font-size: 0.8rem !important; }
+    .mobile-star-calendar {
+        font-size: 2rem;
+        color: #ffc107;
+        margin-top: 1.2rem;
+        cursor: pointer
+    }
+    .face-icon-home{ font-size: 60px !important; margin-top: 10px !important; }
+    .mobile-h2 { font-size: 2rem !important; }
+    .mobile-box-title { margin-left: 45px !important; margin-top: -4px !important; }
+    .head-calendar th { text-align: center !important; }
+    .mobile-caption { display: block; margin-bottom: 1rem; }
+    .mobile-box-title { margin-left:25px !important; margin-top:7px !important; }
+    .mobile-icon-title { font-size: 3.5rem; }
+    .mobile-font-title { font-size: 2rem; margin-left: 16px !important; margin-top: 5px; }
+    .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
+    .mobile-pad-left { padding-left: 10px !important; }
+    .mobile-padding { padding: 5px !important; }
+}

@@ -1,0 +1,109 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Instituições -->
+<div id="listaInstituicao">
+    <div class="row">
+        <div class="col s12 tiposAvalicao-banner">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Tipo de Avaliação</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Tipos de avaliações são os diversos meios de coleta de informações, utilizados para possibilitar a avaliação e a análise pedagógica do rendimento escolar evidenciado pelo discente.<br /><br />
+                                        Ex: Prova, Prova de recuperação. Etc. 
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no botão + para cadastrar um Tipo de Avaliação.<br>
+                                        Clique no nome do Tipo de Avaliação para editá-la.<br>
+                                        Clique no ícone da lixeira para remover um Tipo de Avaliação.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="tipos.length" class="row" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full" data-ng-hide="editando">
+                    <div class="card-panel">
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Tipo de Avaliação</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes' data-ng-show="escrita">Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="tipo in tipos | orderBy: 'nome'">
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(tipo)">{{ tipo.nome }}</div>
+                                            <div class="hide-on-med-and-up" data-ng-click="carregar(tipo)">{{ tipo.nome }}</div>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesInstituicao{{ tipo.id }}">
+                                                <div style="height: 100%" data-ng-click="$scope.editandoMobile = true; carregar(tipo)" class="col s4 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                                <div style="height: 100%" data-ng-click="carregarInfo(tipo)" data-target="info-modal-tipo" class="col s4 blue lighten-1 white-text modal-trigger center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">speaker_notes</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">ver</div></div>
+                                                <div style="height: 100%" data-ng-click="prepararRemover(tipo)" data-target="remove-modal-tipo" class="col s4 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                            </div>
+                                        </td>
+                                        <td class='center-align hide-on-small-only' data-ng-show="escrita">                                            
+                                            <i data-ng-click="prepararRemover(tipo)" data-target="remove-modal-tipo" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <tipos-form-avaliacoes data-ng-show="editando"></tipos-form-avaliacoes>
+        </div>
+        <div class="col s1 l1"></div>
+    </div>
+    <div data-ng-hide="editando"><erro-busca-tipo data-ng-hide="tipos.length"></erro-busca-tipo></div>
+</div>

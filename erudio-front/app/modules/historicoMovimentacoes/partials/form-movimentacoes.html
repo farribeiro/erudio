@@ -1,0 +1,83 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row col s12 m12 l12">
+        <div class=" row">
+        <div class="col s12 m12 l12" style="margin-left: 2px">
+            <div class="row form-box">
+                <div class="card-panel">
+                    <div class="row" style="margin-top: -4rem">                        
+                        <div class="col s12 m12 l12"  style="margin-bottom: 15px">
+                            <div class="col s2 m2 l1 center-mobile" style="margin-top: 1.56rem; margin-right: 3.1rem;">
+                                <i class="large material-icons prefix para-direita" style="font-size: 120px!important;">face</i>
+                            </div>
+                            <div id="posicaoInfos" class="col s10 m10 l10 ajusta-mobile" style="padding-top: 40px!important; padding-left: 0px;">
+                                <div class="col s12 m12 l5 center-mobile truncate ajusta-mobile">                  
+                                    <span class="sub-titulo"><b>NOME:</b></span> {{ matricula.aluno.nome | uppercase }}         
+                                </div>
+                                <div class="col s12 m12 l5 center-mobile truncate">      
+                                    <span class="sub-titulo"><b>DATA DE NASCIMENTO:</b> </span>{{ matricula.aluno.dataNascimento | date: 'dd/MM/yyyy' }}                                                        
+                                </div>   
+                                <div class="col s12 m12 l5 center-mobile truncate">               
+                                    <span class="sub-titulo"><b>CPF:</b> </span> {{ matricula.aluno.cpfCnpj | uppercase }}              
+                                </div>
+                                <div class="col s12 m12 l5 center-mobile truncate">   
+                                    <span class="sub-titulo"><b>EMAIL:</b> </span> {{ matricula.aluno.email | uppercase }}             
+                                </div>
+                                <div class="col s12 m12 l5 center-mobile truncate">   
+                                    <span class="sub-titulo"><b>UNIDADE:</b> </span> {{ matricula.unidadeEnsino.nome | uppercase }}             
+                                </div>
+                                <div class="col s12 m12 l5 center-mobile truncate">   
+                                    <span class="sub-titulo"><b>CÓDIGO:</b> </span> {{ matricula.codigo}}             
+                                </div>
+                                <div class="col s12 m12 l5 center-mobile truncate" style="margin-bottom: 20px;">   
+                                    <span class="sub-titulo"><b>CURSO:</b> </span> {{ matricula.curso.nome | uppercase }}             
+                                </div>                                
+                                <div class="col s12 m12 l5 center-mobile truncate" style="margin-bottom: 20px;">   
+                                    <span class="sub-titulo"><b>STATUS:</b> </span> {{ matricula.status | uppercase }}             
+                                </div>
+                            </div>
+                        </div>                                                                                                
+                    </div>
+                </div>                                
+            </div>                                                
+        </div>
+        
+        <!-- FORMULARIOS -->
+        <div class="row">
+            <div class="col s12 m12 l12" style="margin-top: 0.9rem">
+                <div class="card-panel">
+                    <!-- DESLIGAMENTO DE UM ALUNO -->
+                    <historico-formulario-movimentacoes-desligar data-ng-if="opcaoEnvio === 'Desligamento'"></historico-formulario-movimentacoes-desligar>
+                    <!-- TRANSFERIR ALUNO DE UNIDADE -->
+                    <historico-formulario-movimentacoes-transferir data-ng-if="opcaoEnvio === 'Transferência'"></historico-formulario-movimentacoes-transferir>
+                    <!-- MOVIMENTAR ALUNO DE TURMA -->
+                    <historico-formulario-movimentacoes-movimentar data-ng-if="opcaoEnvio === 'Movimentação'"></historico-formulario-movimentacoes-movimentar> 
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>

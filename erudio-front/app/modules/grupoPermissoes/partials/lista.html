@@ -1,0 +1,114 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Instituições -->
+<div id="listaUsuario">
+    <div class="row">
+        <div class="col s12 grupo-banner">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Grupos de Permissões</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Permissões são os níveis de acesso que cada usuário pode ter, de acordo com a função que exerce, podendo ver e/ou alterar informações dos módulos do sistema.<br /><br />
+                                        ex: Permissão para alunos os habilitam a ver as notas, mas professores têm a permissão de também incluí-las. 
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise por um usuário cadastrado que deseja cadastrar/alterar permissões.<br />
+                                        Clique sobre o nome de um Usuário para gerenciar suas permissões.<br />
+                                        Clique na lixeira para remover todas as Permissões de um Usuário. 
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-busca" data-ng-hide="editando">
+                        <div class="row">
+                            <div class='input-field col s12'>
+                                <i class='material-icons prefix' data-ng-hide="strGrupo.length">search</i>
+                                <i class='material-icons prefix pointer' data-ng-show="strGrupo.length" data-ng-click="strGrupo = ''">clear</i>
+                                <input type="text" data-ng-model="strGrupo" id="search" data-ng-disabled="verificarEscrita()">
+                                <label for="search">Busque aqui</label>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="grupos.length" class="row" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full list-items" data-ng-hide="editando">
+                    <div class="card">
+                        <div class="card-content mobile-full main-list">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome do Grupo</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="grupo in grupos" data-ng-show="grupo.peso > pesoMinimo">
+                                        <td class="celula-link relative mobile-full" style="padding: 0;">
+                                            <div class="waves waves-effect" data-ng-click="carregar(grupo, false)" style="padding: 15px">{{ grupo.nome }}</div>
+                                        </td>
+                                        <td class='center-align hide-on-small-only'>
+                                            <i data-ng-click="prepararRemover(grupo)" data-ng-show="escrita" data-target="remove-modal-grupo" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form-grupo data-ng-show="editando"></form-grupo>
+        </div>
+        <div class="col s1 l1"></div>
+    </div>
+    <div data-ng-hide="editando"><erro-busca-grupo data-ng-hide="grupos.length"></erro-busca-grupo></div>
+</div>

@@ -1,0 +1,67 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row form-geral"> 
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div id="notasMatriculaID" class="card-panel" style="margin-top: -20px">
+                <div class="row">                         
+                    <h3 class='card-title-h3' style="padding: 20px; padding-top: 30px">Médias de {{matricula.aluno.nome}}</h3>                        
+                </div>
+                <div class="row">                    
+                    <ul class="collection" data-ng-show="mostraMedias">
+                        <li style="padding-bottom: 2rem !important; line-height: 2rem !important; padding-right: 1.3rem!important;" class="collection-item avatar" data-ng-repeat="disciplina in disciplinasCursadas | orderBy: 'disciplina.nome'" style="padding-top: 8px!important;">
+                            <i class="material-icons prefix select-prefix">import_contacts</i>
+                            <span class="title" style="margin-left: 1rem!important;font-size: 1.5rem !important;">{{disciplina.nome}}</span>
+                            <table class='highlight striped' >
+                                <thead>
+                                    <tr>
+                                        <th class="center" data-ng-repeat="media in disciplina.medias">{{media.nome}}</th>
+                                        <th class="center">MF</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background-color: #cfd8dc !important;">
+                                        <td data-ng-repeat="media in disciplina.medias" data-ng-show='media.valor' class="center celula-link relative mobile-full" data-ng-click="carregaMedia(media)">{{media.valor}}</td>
+                                        <td data-ng-repeat="media in disciplina.medias" data-ng-hide='media.valor' class="center celula-link relative mobile-full" data-ng-click="carregaMedia(media)">ND</td>
+                                        <td class="center relative mobile-full">ND</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                    <div data-ng-hide="disciplinasCursadas.length">
+                        <div class="col s12 error-page" style="margin-top: 5%;">
+                            <i class="material-icons error-icon">mood_bad</i>
+                            <br />
+                            Nenhuma disciplina cadastrada.
+                        </div>                                
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>

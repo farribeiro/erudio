@@ -1,0 +1,125 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+body, html { height: 100%; width: 100%; overflow: hidden; }
+body { 
+    font-family: Roboto !important;
+    transition: all 0.5s ease-in !important;
+    //background: #4fc3f7;
+    background: url('../images/bgLogin.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+*:focus { outline: 0 !important; }
+.no-padding { padding: 0 !important; }
+nav {
+    position: fixed;
+    z-index: 5;
+    background: transparent !important;
+}
+.login-form {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.5s ease-in !important;
+}            
+.card .card-content span, .card .card-content p { color: #000; }
+.card {
+    transition: all 0.5s ease-in-out !important;
+    width: 100%;
+    height: auto;
+}
+.card-form {
+    transition: all 0.5s ease-in-out !important;
+    margin-left: 0px;
+    opacity: 1;
+}
+.card-content, .card-action {
+    opacity: 1;
+    transition: all 0.5s ease-in-out !important;
+}
+.divider-line {
+    border-left: 1px solid #ccc;
+    width: 100%;
+}
+input { color: #000; }
+input[type=text]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=text].valid, input[type=password].valid {
+    border-bottom: 1px solid #03a9f4 !important;
+    box-shadow: 0 1px 0 0 #03a9f4 !important;
+}
+input[type=text]:focus:not([readonly])+label, input[type=password]:focus:not([readonly])+label { color: #03a9f4; }
+.slide-out {
+    margin-left: -50px;
+    opacity: 0;
+}
+.fade-out {
+    opacity: 0;
+}
+.loader {
+    transition: all 0.5s ease-in-out !important;
+    opacity: 0;
+    position: absolute;
+    left: 50%;
+    margin-left: -32px;
+    top: 50%;
+    margin-top: -32px;
+}
+.ajeita-loader{
+    z-index: 999999!important; 
+    right: 2rem!important
+}
+
+#toast-container {
+    bottom: 2rem !important;
+    height: 10%  !important;
+    top: inherit  !important;
+    right: 3% !important;
+}
+
+.erudio-title { position: absolute; left: 27.3%; top: 18%; }
+
+@media only screen and (min-width: 993px) and (max-width: 1280px) {  
+    body { background-size: 100% 100% !important; }
+    .erudio-title { position: absolute; left: 27.3%; top: 14%; }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 992px) and (orientation: landscape) {  
+    body { background-size: 100% 100% !important; }
+    .erudio-title { position: absolute; left: 12.3%; top: 22%; }
+}
+@media only screen and (min-width: 601px) and (max-width: 992px) and (orientation: portrait) {  
+    body { background-size: 100% 100% !important; }
+    .erudio-title { position: absolute; left: 12.3%; top: 22%; }
+}
+
+@media only screen and (max-width: 600px) and (orientation: landscape) {  
+    body { background-size: 100% 100% !important; }
+    .erudio-title { position: absolute; left: 12.3%; top: 22%; }
+}
+@media only screen and (max-width: 600px) and (orientation: portrait) {  
+    body { background-size: 100% 100% !important; }
+    .erudio-title { position: absolute; left: 12.3%; top: 22%; }
+}

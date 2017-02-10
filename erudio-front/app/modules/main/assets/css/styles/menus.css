@@ -1,0 +1,14 @@
+/* Menus */
+
+.ajusteDropdown {
+    left: 123.25px !important;
+}
+
+.nav-menu-show {
+    position: fixed;
+    display: none;
+    color: #fafafa;
+    top: 10px;
+    left: 25px;
+    z-index: 1000!important;
+}

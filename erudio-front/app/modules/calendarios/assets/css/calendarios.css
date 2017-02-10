@@ -1,0 +1,326 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+.collection {
+    margin-top: 0px !important;
+}
+
+.horario {
+    padding-left: 4px;
+}
+
+#dropEvent {
+    margin-top: 2px !important;
+}
+
+.lolliclock-popover {
+    z-index: 1003 !important;
+}
+
+.calendarios-banner {
+    margin-top:2px;
+    height: 20rem;
+    background: url('../images/calendairo2.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.cor-preto {
+    color: #202020 !important;
+}
+
+.btn-evento {
+    font-size: 1.2rem;
+}
+
+.btn-floating:hover {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);    
+}
+
+#btn-adicionar-evento {
+    display:none;
+}
+
+.new {
+    background-color: #e74c3c !important;
+    float: right;
+    position: relative;
+    right: 1.2% !important;
+    top: 42%;
+    border-radius: 1px;
+    z-index: 1 !important;
+}
+
+.cortinaProgresso {
+    margin-top: 0px !important;
+}
+
+.botao-voltar {
+    position: fixed;
+    float: left;
+    left: 20%;
+    z-index: 999;
+}
+
+i.right {
+    margin-left: 5px;
+}
+
+.legenda {
+    width:50px;
+    height: 20px;
+}
+
+.flex {
+    display: flex;
+}
+
+.btn-salvar {
+    position: absolute;
+    right: 40px;
+    top: 125px;
+    color: #000;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.circulo {
+    border-style: solid;
+    border-color: gray;
+    border-radius: 2px;
+} 
+
+.pointer {
+    cursor: pointer;
+}
+
+.td-data {    
+    padding: 0px;    
+    height: 110px;
+    width: 150px !important;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.td-data.ultimo {
+    border-right: none !important;
+    border-left: 1px solid #ccc;
+}
+
+#semanas thead {
+    border-bottom: 1px solid #ccc;
+}
+
+.dia-da-semana {
+    height: 100%;
+    width: 100%;
+    border: none;
+    top: 0;
+    -webkit-transition: .2s ease-out;
+    transition: .2s ease-out;
+}
+
+.ajuste-titulo-form {
+    /* margin-left: -5em !important; */
+}
+
+.destacavel:hover {
+    /*box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    height: 130% !important;
+    margin: 0px !important;*/
+}
+
+.semana {
+    /*border-bottom: 1px solid #ccc;*/
+    margin-top: 5px;
+    z-index: 999;
+}
+
+.cor-branco {
+    color: #FAFAFA !important;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+    color: #3498db !important;
+    /*position: absolute;*/
+}
+
+[type="checkbox"]:checked + label::before {
+    border-color: transparent #3498db #3498db transparent;
+}
+
+.collection .ajusta-conteudo{
+    border-bottom: 1px solid #e0e0e0;
+    height: 35px !important;
+    padding-top: 7px !important;
+}
+
+.date {
+    color: #7f8c8d;
+    margin-right: 0;
+    margin-top: 0px !important;
+    padding-left: 5px;
+    width: 100%;
+    /*background-color: white;*/
+}
+
+.fim-de-semana {    
+    height: 120%;
+    width: 100%;
+    border: none;
+    margin-bottom: -10px;
+}
+
+thead {
+    border-bottom: 0px ;
+}
+
+.efetivo {
+    /*border-color: #2ecc71 !important;
+    background-color: #2ecc71 !important;*/
+}
+
+.feriado {
+    /*border-color: #e74c3c !important;
+    background-color: #e74c3c !important;*/
+}
+
+.drop-opcoes {
+    height: 25px;
+    margin-top: 0.2rem;
+    padding-right: 27.5px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.para-cima {
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+.dropdown-checkbox {
+    padding: 12px !important;
+}
+
+.picker__day--selected, .picker__day--selected:hover, .picker--focused .picker__day--selected {
+    background-color: #03a9f4;
+}
+
+.picker__date-display {
+    background-color: #03a9f4;
+}
+
+.picker__weekday-display {
+    background-color: #0273a6;
+}
+
+.picker__day.picker__day--today {
+    color: #03a9f4;
+}
+
+.picker__close, .picker__today {
+    color: #03a9f4;
+}
+
+.picker__clear {
+    color: #E74C3C;
+}
+
+.picker__nav--prev:hover {
+    background-color: #90CAF9 !important;
+}
+
+.picker__nav--next:hover {
+    background-color: #90CAED !important;
+}
+
+.progress {
+    top: -8px !important;
+}
+
+.dia-de-semana {
+    border: medium none;
+    height: 100%;
+    top: 0;
+    transition: all 0.2s ease-out 0s;
+    width: 100%;
+}
+
+.fim-de-semana {
+    margin-top: 0 !important;
+    padding-right: 1.1rem !important;
+}
+
+.dia {
+    color: #7f8c8d;
+    margin-right: 0;
+    margin-top: 0 !important;
+    padding-left: 5px;
+    width: 100%;
+}
+
+.td-dia {
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    height: 110px;
+    padding: 0;
+    max-width: 10.5rem;
+}
+
+.evento {
+    height: 1.45rem !important;
+}
+
+.evento:hover {
+    background-color: #34495e !important;
+    color: #ecf0f1 !important;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+    cursor: pointer !important;
+}
+
+@media only screen and (max-width : 993px) and (orientation: landscape) {  
+    .progress {
+        top: 58px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 14.9% !important;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: portrait) {        
+    .progress {
+        top: 50px !important;
+    }
+    .progress-sem-busca{
+        top: 7.5% !important;
+    }
+}
+
+@-moz-document url-prefix() {
+    .dia-da-semana {
+        height: 122% !important;
+    }
+}

@@ -1,0 +1,96 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row form-geral"> 
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div id="paginaAlunos" class="card-panel" style="margin-top: -20px">
+                <div class="row">                         
+                    <h3 class='card-title-h3' style="padding: 20px; padding-top: 30px">Pesquisar Matriculas</h3>                        
+                </div>
+                <div class="row">                    
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">account_balance</i>
+                            <input id="unidadeEnsino" type="text" class="validate labelDisabled" value="{{turma.unidadeEnsino.nome| uppercase}}" disabled />
+                            <label for="unidadeEnsino" class="labelDisabled">Unidade de Ensino</label>
+                        </div> 
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">school</i>
+                            <input id="cursoMatricula" type="text" class="validate labelDisabled"  value="{{turma.etapa.curso.nome| uppercase}}" disabled />
+                            <label for="cursoMatricula" class="labelDisabled">Curso</label>
+                        </div>                        
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="alunoNomeBusca" type="text" class="validate" data-ng-model="matriculaBusca.aluno"/>
+                            <label for="alunoNomeBusca">NOME DO ALUNO</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6"> 
+                            <i class="material-icons prefix">toll</i>
+                            <input id="codigoMatricula" type="text" length="11" class="validate counter"  data-ng-model="matriculaBusca.codigo"/>
+                            <label for="codigoMatricula">CÓDIGO</label>
+                        </div>
+                    </div>
+                    <div class="row end-card">
+                        <div class="col s12 right-align">
+                            <a data-ng-click="reiniciarBuscaMatriculas()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                            <a data-ng-click="buscarMatriculas(matriculaBusca, true)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                        </div>
+                    </div>                                                                   
+                </div>
+                <div id="matriculasLista" data-ng-show="matriculas.length" >            
+                    <table class="bordered">
+                        <thead>
+                            <tr>
+                                <th>CÓDIGO</th>
+                                <th>ALUNO</th>
+                                <th class="center">ENTURMAR</th>  
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="matricula in matriculas| orderBy:'aluno.nome'"><!--enturmar()  matricularNasDisciplinas-->
+                                <td class="list-item">{{ matricula.codigo | uppercase}}</td>
+                                <td class="list-item">{{ matricula.aluno.nome | uppercase}}</td>
+                                <td class="center"><input type="checkbox" id="{{matricula.codigo}}alunos"/>
+                                    <label for="{{matricula.codigo}}alunos"></label>
+                                </td>                            
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-ng-show="matriculas.length" class="fixed-action-btn">
+                    <a class="btn-floating btn-large red">
+                        <i class="medium material-icons">apps</i>
+                    </a>
+                    <ul style="bottom: 70px !important;">
+                        <li><a class="tooltipped btn-floating yellow darken-1" data-position="left" data-delay="50" data-tooltip="Desmarcar Todas" data-ng-click="removerTodasMatriculas()"><i class="material-icons">check_box_outline_blank</i></a></li>                                                        
+                        <li><a data-ng-show="(turma.limiteAlunos - turma.quantidadeAlunos) > 0" class="tooltipped btn-floating green" data-position="left" data-delay="50" data-tooltip="Salvar Enturmação" data-ng-click="finalizarEnturmacao()"><i class="material-icons">save</i></a></li>
+                    </ul>
+                </div>                  
+            </div>
+        </div>
+    </div>
+</div>

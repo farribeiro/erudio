@@ -1,0 +1,116 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Instituições -->
+<div id="listaUsuario">
+    <div class="row">
+        <div class="col s12 usuario-banner">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Permissão</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Permissões são os níveis de acesso que cada usuário pode ter, de acordo com a função que exerce, podendo ver e/ou alterar informações dos módulos do sistema.<br /><br />
+                                        ex: Permissão para alunos os habilitam a ver as notas, mas professores têm a permissão de também incluí-las. 
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise por um usuário cadastrado que deseja cadastrar/alterar permissões.<br />
+                                        Clique sobre o nome de um Usuário para gerenciar suas permissões.<br />
+                                        Clique na lixeira para remover todas as Permissões de um Usuário. 
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-busca" data-ng-hide="editando">
+                        <div class="row">
+                            <div class='input-field col s12'>
+                                <i class='material-icons prefix' data-ng-hide="strUsuario.length">search</i>
+                                <i class='material-icons prefix pointer' data-ng-show="strUsuario.length" data-ng-click="strUsuario = ''">clear</i>
+                                <input type="text" data-ng-model="strUsuario" id="search" data-ng-disabled="verificarEscrita()">
+                                <label for="search">Busque aqui</label>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="usuarios.length" class="row" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full" data-ng-hide="editando">
+                    <div class="card-panel">
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome de Exibição</th>
+                                        <th class="hide-on-small-only" data-field='usuario'>Usuário</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="usuario in usuarios | orderBy: 'nome'">
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(usuario, false, false, true)" style="padding: 15px">{{ usuario.nomeExibicao }}</div>
+                                            <div class="hide-on-med-and-up" data-ng-click="carregar(usuario, false, true, true)" style="padding: 15px">{{ usuario.nomeExibicao }}</div>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesUsuario{{ usuario.id }}">
+                                                <div style="height: 100%" data-ng-click="$scope.editandoMobile = true; carregar(usuario, false, false, true)" class="col s4 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                            </div>
+                                        </td>
+                                        <td class="hide-on-small-only">{{ usuario.username }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form-permissao data-ng-show="editando"></form-permissao>
+        </div>
+        <div class="col s1 l1"></div>
+    </div>
+    <div data-ng-hide="editando"><erro-busca-permissao data-ng-hide="usuarios.length"></erro-busca-permissao></div>
+</div>

@@ -1,0 +1,95 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validateEtapa" class="row form-geral">
+    <div class="col s12 mobile-full form-card-wrapper">
+        <div class="row form-box show-form">
+            <div class="card-panel fix-no-margin-card">
+                <form id="etapaForm" class="form-opacity-out">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 20px">{{ acao }} Etapa</h3>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="nomeEtapa" type="text" class="validate" data-ng-model="etapa.nome"data-ng-disabled="!escrita" required />
+                            <label for="nomeEtapa">Nome da Etapa*</label>
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">assignment_ind</i>
+                            <input id="nomeExibicaoEtapa" type="text" class="validate" data-ng-model="etapa.nomeExibicao" data-ng-disabled="!escrita" required />
+                            <label for="nomeExibicaoEtapa">Nome de Exibição*</label>
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">list</i>
+                            <input id="ordem" type="text" length="3" maxlength="3" class="validate numeros counter" data-ng-model="etapa.ordem" data-ng-disabled="!escrita" required />
+                            <label for="ordem">Ordem*</label>
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">crop_free</i>
+                            <input id="limiteEtapa" type="text" length="2" maxlength="2" class="validate numeros counter" data-ng-model="etapa.limiteAlunos" data-ng-disabled="!escrita" required />
+                            <label for="limiteEtapa">Limite de Alunos*</label>
+                        </div>
+                        <div class="input-field col" data-ng-class="{'s8': !modulos.length, 'm5': !modulos.length, 'l5': !modulos.length, 's12': modulos.length, 'm6': modulos.length, 'l6': modulos.length}">
+                            <i class="material-icons prefix ajuste-icone-select">assignment</i>
+                                <select id="modulo" data-ng-model="etapa.modulo.id" data-ng-disabled="!escrita || !modulos.length" required>
+                                    <option value="{{ modulo.id }}" data-ng-selected="modulo.id === etapa.modulo.id" data-ng-repeat="modulo in modulos">{{ modulo.nome }}</option>
+                                </select>
+                            <label for="modulo">Módulo</label>
+                        </div>
+                        <div class="col s4 m1 l1" data-ng-hide="modulos.length" style="margin-top: 1.3rem; padding-right: 3rem">
+                            <a class="tooltipped btn-floating btn-small waves-effect waves-light green right " data-position="top" data-delay="50" data-tooltip="Cadastrar Módulo" data-ng-click="carregarModulo()"><i class="material-icons">add</i></a>
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix ajuste-icone-select">playlist_add_check</i>
+                            <select id="sistemaAvaliacao" data-ng-model="etapa.sistemaAvaliacao.id" data-ng-disabled="!escrita" required>
+                                <option value="{{ sistemaAvaliacao.id }}" data-ng-selected="verificaSelectSistemaAvaliacao(sistemaAvaliacao.id)" data-ng-repeat="sistemaAvaliacao in sistemaAvaliacoes">{{ sistemaAvaliacao.nome }}</option>
+                            </select>
+                            <label for="sistemaAvaliacao">Sistema de Avaliação*</label>
+                        </div>
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix ajuste-icone-select">alarm</i>
+                            <select id="modeloQuadroHorario" data-ng-model="etapa.modeloQuadroHorario.id" data-ng-disabled="!escrita" required>
+                                <option value="{{ modeloQuadroHorario.id }}" data-ng-selected="verificaSelectModeloQuadroHorario(modeloQuadroHorario.id)" data-ng-repeat="modeloQuadroHorario in modeloQuadroHorarios">{{ modeloQuadroHorario.nome }}</option>
+                            </select>
+                            <label for="modeloQuadroHorario">Modelo de Quadro de Horário*</label>
+                        </div>
+                        <div style="padding-left: 0.8rem; margin-top: 2rem;" class="input-field col s12 m6 l6">
+                            <input type="checkbox" class="filled-in" id="integralEtapa" ng-model="etapa.integral" data-ng-disabled="!escrita" />
+                            <label for="integralEtapa" class="checkbox">Curso Integral?</label>
+                        </div>
+                    </div>
+                    <div class="row end-card" data-ng-show="escrita">
+                        <div class="col s12 right-align">
+                            <a id="salvarEtapa" data-ng-show="etapa.id" data-ng-click="finalizar(1)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                            <a id="salvarEtapa" data-ng-hide="etapa.id" data-ng-click="finalizar();" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

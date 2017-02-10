@@ -1,0 +1,613 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+@font-face {
+    font-family: Roboto;
+    src: url(../../../../../lib/fonts/roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: RobotoThin;
+    src: url(../../../../../lib/fonts/roboto/Roboto-Thin.ttf);
+}
+
+@font-face {
+    font-family: RobotoLight;
+    src: url(../../../../../lib/fonts/roboto/Roboto-Light.ttf);
+}
+
+@font-face {
+    font-family: RobotoBlack;
+    src: url(../../../../../lib/fonts/roboto/Roboto-Black.ttf);
+}
+
+html,body {
+    height: 100%;
+    margin: 0;
+    background-color: #E5E5E5;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+input, .line-data {
+    text-transform: uppercase;
+}
+
+paper-checkbox::shadow #checkbox.checked {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+paper-checkbox::shadow #ink[checked] {
+  color: #2980b9;
+}
+
+core-header-panel {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; 
+}
+
+html /deep/ core-drawer-panel {
+    margin-top: 30px;
+    /*height: 96.2%;*/
+    height: 100%;
+}
+
+paper-input-decorator {
+  font-weight: normal;
+  color: #000;
+}
+
+html /deep/ paper-input-decorator {
+    font-weight: normal;
+    color: #000;
+}
+
+core-drawer-panel {
+    margin-top: 30px;
+    /*height: 96.2%;*/
+    height: 100%;
+}
+
+html /deep/ core-submenu {
+    font-size: 1.2em;
+}
+
+core-submenu {
+    font-size: 1.2em;
+}
+
+.clock {
+    color: #ecf0f1;
+    margin-right: 10px;
+}
+
+html /deep/ paper-dialog {
+    position: fixed;
+    min-width: 70%;
+    min-height: 70%;
+}
+
+select, html /deep/ select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #757575;
+    font-weight: normal;
+    color: #000;
+}
+
+.notification-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #263238;
+    z-index: 100;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+.div-content-adjust {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.error-text {
+    font-size: 1em;
+}
+
+paper-button.custom {
+    margin-top: 35px;
+    color: #4285f4;
+    margin-bottom: 30px;
+}
+
+.btn-float {
+    position: fixed;
+    right: 30px;
+    bottom: 20px;
+    z-index: 100;
+}
+
+.btn-expand {
+    position: fixed;
+    margin-left: 40%;
+    top: 60px;
+    opacity: 0.01;
+    display: none;
+    background: #f50057;
+}
+
+.list-item {
+    padding: 10px;
+    font-size: 1.2em;
+    width: 100%;
+    /*padding-left: 30px;*/
+    border-bottom: 1px solid #ccc;
+    float: left;
+    overflow: hidden;
+}
+
+.back-icon {
+    position: fixed;
+    top: 42px;
+    right: 2%;
+    color: white;
+}
+
+select {
+    position: absolute;
+    bottom: 8px;
+    appearance: none;
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+    -webkit-appearance: none;
+}
+
+.select {
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+    position: relative;
+    background: url(../images/arrowdown.png) no-repeat center right;
+}
+
+.ajeita-loader {
+    z-index: 999999!important; 
+    right: 2rem!important
+}
+
+.form-control-select {
+    width: 105%;
+    float: left;
+    margin-top: 19px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid #757575;
+    background: transparent;
+    position: absolute;
+    z-index: 2;
+}
+
+html /deep/ .form-control-select {
+    width: 105%;
+    float: left;
+    margin-top: 38px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid #757575;
+    background: transparent;
+    position: absolute;
+    z-index: 2;
+}
+
+.alert-growl {
+    background-color: #323232;
+    border-radius: 2px;
+    color: #f1f1f1;
+    font-size: 14px;
+    min-height: 48px;
+    min-width: 288px;
+}
+
+.list-data{
+    float: left;
+    width: 80%;
+    /*line-height: 3;*/
+    cursor: pointer;
+}
+
+.line-data {
+    margin-top: 12px;
+    display: block;
+}
+
+.mobile-title {
+    display: none;
+}
+
+.card {
+    display: inline-block;
+    /*background: white;*/
+    background: #fafafa;
+    box-sizing: border-box;
+    width: 100%;
+    /*min-height: 100px;*/
+    /*padding: 16px;*/
+    border-radius: 2px;
+    transition: all 0.5s ease;
+    /*position: absolute;*/
+    /*margin-bottom: 30px;*/
+    margin-top: 30px;
+}
+
+.wait-panel {
+    position: fixed;
+    width: 200%;
+    height: 100%;
+    background: #bdc3c7;
+    opacity: 0.3;
+    top: 0;
+    left: -256px;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.select-label { 
+    position: absolute; 
+    bottom: 15px; 
+    z-index: 1; 
+    color: #A9A9A9; 
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.labelIn {
+    bottom: 45px;
+    font-size: 1em;
+    color: #4059A9;
+}
+
+.labelFilled {
+    bottom: 45px;
+    font-size: 1em;
+}
+
+core-animated-pages { 
+    height: 100%; 
+}
+
+core-scaffold core-toolbar { 
+    background: #2980b9; 
+    color: white; 
+}
+
+core-toolbar, core-scaffold::shadow core-toolbar { 
+    background: #2980b9; 
+    color: white; 
+}
+
+core-pages-animated transitions { 
+    width: 100%; 
+    height: 100%; 
+}
+
+html /deep/ paper-input { 
+    width: 90%;
+}
+
+#navheader { 
+    background: #2980b9; 
+    background-size: 100% 100%; 
+}
+
+.subtitle { 
+    margin-bottom: 30px; 
+}
+
+.title-main { 
+    font-size: 1.3em;
+}
+
+.item { 
+    position: relative; 
+}
+
+.item-options { 
+    position: absolute; 
+    width: 100%; 
+}
+
+.form { 
+    /*margin-top: 30px; */
+}
+
+.input { 
+    width: 90%;
+}
+
+.alert { 
+    bottom: 2%; 
+    right: 2%; 
+    box-shadow: none !important; 
+    text-shadow: none !important; 
+}
+
+.close { 
+    top: 0 !important; 
+    right: 5px !important; 
+}
+
+.list-options {
+    float: left; 
+    /*width: 20%; */
+}
+
+.card-slide { 
+    margin-left: 10000px;
+}
+
+.btn-bottom { 
+    width: 100%;
+}
+
+.z1 { 
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); 
+}
+
+.z2 { 
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+}
+
+.z3 { 
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+}
+
+.z4 { 
+    box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22);
+}
+
+.z5 {
+    box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2);
+}
+
+.lastItem { 
+    border: none; 
+}
+
+.input-line { 
+    margin-bottom: 30px; 
+    /*color: #7f8c8d; */
+    color: #000;
+    font-weight: bold;
+}
+
+.input-line paper-input-decorator, .input-line select { 
+    color: #2c3e50;
+}
+
+.none {
+    display: none;
+}
+
+.lista-naturalidades { 
+    position: absolute; 
+    width: 100%; 
+    z-index: 10; 
+    background: #fff; 
+    border: 1px solid #bdc3c7;
+}
+
+.fake-select:hover {
+    background: #3498db; 
+    color: #ecf0f1; 
+}
+
+.fake-select {
+    padding: 10px;
+}
+
+.progress-load { 
+    position: fixed; 
+    top: 94px;
+    width: 100%;
+    /*background-color: #f50057;*/
+}
+
+paper-progress #activeProgress {
+    background-color: #f50057;
+}
+
+paper-progress::shadow #activeProgress { 
+    background-color: #f50057;
+}
+
+#activeProgress { 
+    background-color: #f50057;
+}
+
+.error-item { 
+    padding-top: 10px; 
+    padding-bottom: 10px;
+}
+
+.modal-body {
+    font-size: 1.2em !important;
+    text-align: center;
+}
+
+.modal-content { 
+    border-radius: 2px !important; 
+}
+
+.modal-header { 
+    border-bottom: none !important;
+}
+
+.modal-footer { 
+    border-top: none !important;
+}
+
+.bgHome {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 120%;
+    height: 120%; 
+    background: url('../images/homebg.jpeg') center bottom;
+    background-size: 100% 100%;
+    overflow: hidden;
+}
+
+.bgOpacityHome {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2980B9;
+    opacity: 0.6;
+}
+
+.absoluteHome {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; 
+    left: 0;
+}
+
+.relativeHome {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.required {
+    color: #2c3e50;
+}
+
+.list-title {
+    font-size: 1.2em;
+    padding: 20px;
+}
+
+.list-titles {
+    border-bottom: 2px solid #ccc;
+}
+
+.table-title {
+    padding: 20px;
+    text-align: center;
+    /*background: #546E7A;*/
+    /*color: #EEEEEE;*/
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
+.correct-margin-top {
+    margin-top: 0px !important;
+}
+
+.label-title {
+    margin-left: 15px;
+    font-weight: bold;
+    color: #2980B9;
+    margin-bottom: 10px;
+}
+
+.form-card {
+    top: 90px;
+}
+
+.adjust-height{
+    min-height: 0;
+    margin-top: 0;
+}
+
+.cell40 {
+    width: 38% !important;
+    padding-left: 5px !important;
+    text-align: left !important;
+}
+
+.cell25 {
+    width: 25% !important;
+    padding-left: 5px !important;
+    text-align: left !important;
+}
+
+.cell20 {
+    width: 20% !important;
+    padding-left: 5px !important;
+    text-align: left !important;
+}
+
+.finalPagina {
+    margin-bottom: 100px;
+}
+
+.btn-hint-adjust {
+    position: fixed; 
+    right: 58px; 
+    bottom: 80px;
+}
+
+.last-card {
+    margin-bottom: 50px;
+}
+
+.no-side-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.color-red { color: red !important; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.text-center { text-align: center; }
+
+/* calendar */
+
+.day {
+    color: #2980b9; border-radius: 50%; min-width: 3em !important; margin-left: -3px;
+}
+
+.day-selected {
+    margin-left: -3px;
+    background: #2980b9;
+    color: white;
+}
+
+.big-label {
+    margin-top: 10px;
+    font-size: 1.5em;
+}

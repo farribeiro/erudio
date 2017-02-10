@@ -1,0 +1,179 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate-turma" class="row form-geral"> 
+    <div class="col s12">
+        <div class="col s12" style="padding: 0px;">
+            <div class="card" style="padding-top: 0px!important; padding: 20px" data-ng-show="turma.id" >
+                <h3>Turma: {{turma.nomeCompleto}}</h3>
+                <div class="col s3">
+                    <b>Unidade:</b> {{turma.unidadeEnsino.nomeCompleto}}<br>
+                    <b>Curso:</b> {{turma.etapa.curso.nome}}
+                </div>
+                <div class="col s3">
+                    <b>Turno:</b> {{turma.turno.nome}}<br>
+                    <b>Etapa:</b> {{turma.etapa.nome}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fixed-action-btn vertical click-to-toggle fab-button" data-ng-show="verificarEscrita() && mostraForm && turma.id">
+        <a class="btn-floating waves-effect waves-circle waves-light btn-large red" data-ng-click="mostrarLabels()">
+            <i class="material-icons">menu</i>
+        </a>
+        <ul>            
+            <li>
+                <div class="chip z-depth-2 toolchip">Alunos</div>
+                <a class="btn-floating orange lighten-1" data-ng-click="trocarTab('alunos')">
+                    <i class="material-icons">group</i>
+                </a>
+            </li>
+            <li>
+                <div class="chip z-depth-2 toolchip">Professores</div>
+                <a class="btn-floating yellow lighten-1" data-ng-click="trocarTab('professores')">
+                    <i class="material-icons">record_voice_over</i>
+                </a>
+            </li>
+            <li>
+                <div class="chip z-depth-2 toolchip">Lista de Presença</div>
+                <a class="btn-floating green" data-ng-click="trocarTab('chamada')">
+                    <i class="material-icons">format_list_numbered</i>
+                </a>
+            </li>
+            <li>
+                <div class="chip z-depth-2 toolchip">Grade de Horário</div>
+                <a class="btn-floating blue" data-ng-click="trocarTab('quadro')">
+                    <i class="material-icons">alarm</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="col s12 mobile-full">    
+        <div class="row form-box show-form">
+            <div class="card-panel">                             
+                <form id="turmaForm" data-ng-show="mostraForm">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 1rem">{{acao}} Turma<br/>
+                        <small class="col s12 m12 l12" style="font-size: 12px"><em>Os campos marcados com * são obrigatórios</em></small>
+                        <small style="color: #c0392b; font-size: 1rem;" data-ng-if="turma.limiteAlunos > turma.etapa.limiteAlunos">Limite de alunos excedido.</small></h3>
+                    </div>
+                    <div class="row ajuste-margin-bottom-0">    
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input data-ng-disabled="verificarEscritaInput()" id="nomeTurma" type="text" class="validate" data-ng-model="turma.nome" required />
+                            <label for="nomeTurma">Nome*</label>
+                        </div>                    
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">filter_1</i>
+                            <input data-ng-disabled="verificarEscritaInput()" id="limiteAlunos" type="number" class="validate" data-ng-model="turma.limiteAlunos" required />
+                            <label for="limiteAlunos" data-error="Informe um numero inteiro">Limite de Alunos*</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">face</i>
+                            <input data-ng-disabled="verificarEscritaInput()" id="apelidoTurma" type="text" data-ng-model="turma.apelido" />
+                            <label for="apelidoTurma">Apelido</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin && !turma.id">
+                            <i class="material-icons prefix">account_balance</i>
+                            <select id="unidade"  data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
+                                <option disabled selected></option>
+                                <option value="{{ unidade.id}}" data-ng-selected="verificaUnidade(unidade.id)" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
+                            </select>
+                            <label for="unidade">Unidade de Ensino*</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-show="isAdmin && !turma.id">
+                            <i class="material-icons prefix">account_balance</i>
+                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                            <input id="unidadeTurmaAutoCompleteForm" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaForm">
+                            <label for="unidadeTurmaAutoCompleteForm">Unidade de Ensino*</label>
+                        </div>
+                    </div>
+                    <div class="row">                    
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">school</i>
+                            <select id="curso" data-ng-model="turma.etapa.curso.id" data-ng-change="buscarEtapas(turma.etapa.curso.id)" data-ng-disabled="turma.id" required>
+                                <option disabled selected></option>
+                                <option value="{{ curso.id}}" data-ng-selected="verificaCurso(curso.id)" data-ng-repeat="curso in cursos">{{ curso.nome | uppercase }}</option>
+                            </select>
+                            <label for="curso">Curso*</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">view_week</i>
+                            <select id="etapaForm" data-ng-model="turma.etapa.id" data-ng-disabled="turma.id"  required>
+                                <option value="" disabled selected></option>
+                                <option value="{{ etapa.id }}" data-ng-selected="verificaEtapa(etapa.id)" data-ng-repeat="etapa in etapas">{{ etapa.nomeExibicao | uppercase }}</option>
+                            </select>
+                            <label for="etapaForm">Etapa*</label>
+                        </div>                    
+                    </div>
+                    <div class="row">                    
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">settings_brightness</i>
+                            <select id="turnoTurmaForm" data-ng-model="turma.turno.id" data-ng-disabled="!isAdmin && turma.id" data-ng-change="carregarQuadroHorariosCompativeis(turma.turno.id)" required>
+                                <option disabled selected></option>
+                                <option value="{{ turno.id }}" data-ng-selected="verificaTurno(turno.id)" data-ng-repeat="turno in turnos">{{ turno.nome | uppercase }}</option>
+                            </select>
+                            <label for="turnoTurmaForm">Turno*</label>
+                        </div>                                
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">event</i>
+                            <select id="calendarioTurmaForm" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
+                                <option value disabled selected></option>
+                                <option value="{{ calendario.id }}" data-ng-selected="verificaCalendario(calendario.id) || calendario.instituicao.id === instituicao" data-ng-repeat="calendario in calendarios">{{ calendario.nome | uppercase }}</option>
+                            </select>
+                            <label for="calendarioTurmaForm">Calendário Escolar*</label>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">view_module</i>
+                            <select id="quadroHorarioTurmaFormulario" data-ng-model="turma.quadroHorario.id"  data-ng-disabled="!isAdmin && turma.quadroHorario.id" required>
+                                <option></option>
+                                <option value="{{ quadroHorario.id }}" data-ng-selected="quadroHorario.id === turma.quadroHorario.id" data-ng-repeat="quadroHorario in quadroHorariosCompativeis">{{ quadroHorario.nome | uppercase }}</option>
+                            </select>
+                            <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
+                        </div>
+                    </div>
+                    <div data-ng-show="verificarEscrita()" class="row end-card">
+                        <div class="col s12 right-align">
+                            <a data-ng-click="finalizar(etapa.id)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                        </div>
+                    </div>  
+                </form>
+                <quadro-horario id="grade" data-ng-show="mostraQuadroHorario"></quadro-horario>
+                <alunos-enturmados data-ng-show="mostraEnturmacoes"></alunos-enturmados>                
+                <frequencias-aluno data-ng-show="alunoPresenca"></frequencias-aluno>
+                <turma-frequencia data-ng-show="fazerChamada"></turma-frequencia>
+                <professores-turma data-ng-show="mostraProfessores"></professores-turma> 
+                <notas-turma data-ng-show="alunoNotas" ></notas-turma>
+            </div>
+            <enturmar-alunos data-ng-show="enturmandoAlunos"></enturmar-alunos>
+            <oferecer-disciplinas data-ng-show="oferecendoDisciplina"></oferecer-disciplinas>
+        </div>
+    </div>
+</div>

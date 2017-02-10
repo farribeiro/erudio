@@ -1,0 +1,91 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Modal de Exclusão -->
+<div id="modal-confirmar-solicitacao" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-solicitacoes">
+                    <h4 class="modal-alinha-texto">Matricular e Enturmar</h4>
+                </div>
+                <div class="row">
+                    <div class="col s12 m6" data-ng-class="{'l6': temOpciopnal, 'l12': !temOpcional}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Confirmar solicitaçao de vaga {{solicitacao.codigo}}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <div class="item-modal">
+                            <strong>Pessoa: </strong>{{solicitacao.pessoa.nome}}
+                        </div>
+                        <div class="item-modal">
+                            <strong>Unidade de Ensino: </strong>{{solicitacao.turma.unidadeEnsino.nome}}
+                        </div>
+                        <div class="item-modal">
+                            <strong>Curso: </strong>{{solicitacao.turma.etapa.curso.nome}}
+                        </div>
+                        <div class="item-modal">
+                            <strong>Etapa: </strong>{{solicitacao.turma.etapa.nomeExibicao}}
+                        </div>
+                        <div class="item-modal">
+                            <strong>Turma: </strong>{{solicitacao.turma.apelido}}
+                        </div>
+                    </div>
+                    <table class="col s12 m6 l6" data-ng-if="temOpcional">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span data-ng-show="solicitacao.turma.etapa.integral">
+                                        Desmarque as disciplinas opcionais que não serão cursadas.
+                                    </span>
+                                    <span data-ng-hide="solicitacao.turma.etapa.integral">
+                                        Etapa integral, selecione as disciplinas opcionais.
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="disciplina in disciplinas" data-ng-if="disciplina.opcional">
+                                <td>
+                                    <input id="dis{{disciplina.id}}" type="checkbox" class="filled-in" data-ng-checked="!solicitacao.turma.etapa.integral"/>
+                                    <label for="dis{{disciplina.id}}">{{disciplina.nomeExibicao}}</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="end-card" style="margin-bottom: 0">
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-green btn-flat" data-ng-click="aceitarSolicitacao()">SALVAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

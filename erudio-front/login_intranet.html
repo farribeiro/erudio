@@ -1,0 +1,68 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Meta Tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+        <title>Erudio</title>
+        
+        <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Product+Sans' rel='stylesheet' type='text/css'>-->
+        
+        <!-- Jquery e Jquery Mobile(para eventos de Swipe) -->
+        <script type="text/javascript" src="lib/js/jquery/jquery.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment-timezone.js"></script>
+        
+        <!-- Angular -->
+        <script type="text/javascript" src="lib/js/angular/newangular.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/underscore-min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/angular-route.js"></script>
+        <script type="text/javascript" src="lib/js/angular/restangular.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/angular-md5.js"></script>
+        <script type="text/javascript" src="lib/js/angular/sha1.js"></script>
+        
+        <!-- Materialize -->
+        <link type="text/css" rel="stylesheet" href="lib/css/materialize/css/materialize.min.css" media="screen,projection"/>
+        <script type="text/javascript" src="lib/css/materialize/js/materialize.min.js"></script>
+        
+        <!-- <link rel="stylesheet" type="text/css" href="app/modules/login/assets/css/style.css" media="screen,projection"/>
+        <link rel="stylesheet" type="text/css" href="app/modules/main/assets/css/styles/fonts.css" media="screen,projection"/> -->
+    </head>
+    <body ng-app='loginNovoEducar' data-ng-controller="MainController">
+        <span ng-init="intranetLogin()"></span> 
+        
+        <!-- Angular App -->
+        <script type="text/javascript" src="app/modules/login/app/loginApp.js"></script>
+
+        <!-- Angular Controllers -->
+        <script type="text/javascript" src="app/modules/login/controllers/loginController.js"></script>
+        <script type="text/javascript" src="app/modules/login/directives/loginDirectives.js"></script>
+    </body>
+</html>

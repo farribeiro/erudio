@@ -1,0 +1,105 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row" >
+    <div class="col s12 m12 l12">
+        <div class="card-panel">
+            <div class="col s12 card-panel" style="padding: 25px">
+                <div class="row col s12" style="padding-top: 15px">
+                    <div class="col s12"><h5 style="padding: 1rem;" class="no-margin">Frequencias e Notas</h5></div>
+                </div>
+                <div class="col s12">
+                    <div class="input-field col s12">
+                        <select data-ng-model="disciplinaHistorico" data-ng-change="buscarHistorico">
+                            <option disabled selected></option>
+                            <option id="frequencias" value="frequencias">Frequencias</option>
+                            <option id="notas" value="notas">Notas </option>
+                        </select>
+                        <label for="disciplinaFrequencia">Pesquisa notas/frequencias</label>
+                    </div> 
+                </div>
+                <div class="col s12" >
+                    <div class="input-field col s6">
+                        <select id="etapaCurso" data-ng-model="etapaDisciplinas" data-ng-change="buscarDisciplinasCursadas(etapaDisciplinas)">
+                            <option disabled selected></option>
+                            <option data-ng-repeat="etapa in etapas" value="{{etapa.id}}">{{etapa.nome}}</option>
+                        </select>
+                        <label for="etapaCurso">Etapa</label>
+                    </div>
+                    <div class="input-field col s6" >
+                        <select id="disciplinaFrequencia" data-ng-model="disciplinaId" data-ng-change="buscarHistorico()" >
+                            <option disabled selected></option>
+                            <option data-ng-repeat="disciplina in disciplinasCursadas" value="{{disciplina.id}}">{{disciplina.disciplina.nome}}</option>
+                        </select>
+                        <label for="disciplinaFrequencia">Disciplinas</label>
+                    </div> 
+                    <div class="card-content">
+                        <table  class='col s12 striped centered' data-ng-show="frequencias.length" > 
+                            <thead>
+                                <tr>
+                                    <th style="padding-left:23px;">Status</th>
+                                    <th style="padding-left:23px;">Justificativa</th>
+                                    <th style="padding-left:23px;">Data</th>                                   
+                                    <th style="padding-left:23px;">Horário</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="frequencia in frequencias">
+                                    <td style="padding-left:23px;">{{frequencia.status}}</td>
+                                    <td style="padding-left:23px;"data-ng-hide="frequencia.justificativa">Não</td>
+                                    <td style="padding-left:23px;"data-ng-show="frequencia.justificativa" data-ng-click="abrirModalJustificativa(frequencia.justificativa);">Sim</td>
+                                    <td style="padding-left:23px;">{{frequencia.aula.dia.data|date :'dd/MM/yyyy'}}</td>
+                                    <td style="padding-left:23px;">{{frequencia.aula.horario.inicio|horario}} - {{frequencia.aula.horario.termino|horario}}
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table  class='col s12 striped centered' data-ng-hide="frequencias.length"  > 
+                            <thead>
+                                <tr>
+                                    <th style="padding-left:23px;">Notas</th>
+                                    <th style="padding-left:23px;">data</th>
+                                    <th style="padding-left:23px;">Horário</th>
+                                    <th style="padding-left:23px;">Tipo de avaliação</th>                                   
+                                    <th style="padding-left:23px;">aula</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding-left:23px;">7</td>
+                                    <td style="padding-left:23px;">22/12/1995</td>
+                                    <td style="padding-left:23px;">07:00-09:00</td>
+                                    <td style="padding-left:23px;">quantitativa</td>
+                                    <td style="padding-left:23px;">2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

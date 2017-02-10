@@ -1,0 +1,152 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="formSolicitacao">
+    <div class="row">
+        <div class="col s12 vagas-banner topo-pagina">           
+        </div>
+    </div>
+    <div class="row">    
+        <div class="col s12 l12 mobile-full">
+            <div class="row"style="margin-top: -64px;" >
+                <div class="col s12 l12 mobile-full"> 
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Solicitar Vaga</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Solicitação de vaga deve ser utilizada para requerer vaga em uma turma para alunos provenientes de outras redes de ensino.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Informe o nome completo do aluno.<br>
+                                        Caso o cadastro de pessoa não exista, clique no botão + para cadastrar a pessoa.<br>
+                                        Informe a unidade de ensino, curso, etapa e turma pretendida.<br>
+                                        Clique em solicitar vaga para criar a solicitação.<br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>                            
+                        </div>
+                        <ul class="tabs">
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#solicitarVaga">Solicitar</a></li>
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#historicoSolicitacoes" data-ng-click="buscarSolicitacoes()">Histórico</a></li>
+                        </ul>
+                    </div>
+                    <div id="solicitarVaga">
+                        <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem; margin-bottom: 1rem!important">
+                            <div class="col s12 m12 l12 input-field aluno-nome" style="margin-top: 2rem">
+                                <div class="col s11 m11" data-ng-class="{'l12':criaPessoa, 'l11':criaPessoa}" style="padding: 0rem">
+                                    <i class="material-icons prefix">account_circle</i>
+                                    <input id="nomeAluno" type="text" data-ng-change="verificaTexto()" class="validate dropdown" data-ng-model="nomeAluno" data-activates='nomeAlunoDrop' required />
+                                    <label for="nomeAluno">Nome do Aluno</label>
+                                </div>
+                                <div class="col s1 m1 l1" style="padding-right: 2rem" data-ng-show="!criaPessoa">
+                                    <div>
+                                        <a class="tooltipped btn-floating btn waves-effect waves-light green right" data-position="top" data-delay="50" data-tooltip="Cadastrar Pessoa" data-ng-click="intraForms();main.selecionar('pessoas')"><i class="material-icons">person_add</i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul id='nomeAlunoDrop' class='dropdown-content'>
+                                <li class="divider"></li>
+                                <li data-ng-repeat="pessoa in pessoas">
+                                    <a data-ng-click="selecionaPessoa(pessoa)">{{ pessoa.nome | uppercase }}</a>
+                                </li>
+                            </ul>
+                            <div class="unidade-select">
+                                <div class="input-field col s12 m6 l6" data-ng-hide="isAdmin">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <select data-ng-change="selecionaUnidade()" class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                                        <option disabled selected></option>
+                                        <option data-ng-selected="unidades.length === 1" class="truncate ng-binding " value="{{unidade.id}}" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
+                                    </select>
+                                    <label for="unidade">Unidade de Ensino</label>                            
+                                </div>
+                                <div class="input-field col s12 m6 l6" data-ng-show="isAdmin">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                    <input id="unidadeVagasAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades()" data-activates="dropUnidadesVagasBusca">
+                                    <label for="unidadeVagasAutoComplete">Unidade de Ensino</label>
+                                </div>
+                                <ul id='dropUnidadesVagasBusca' class='dropdown-content' data-ng-show="isAdmin && unidades.length && nomeUnidade.length">
+                                    <li class="divider"></li>
+                                    <li data-ng-repeat="unidade in unidades">
+                                        <a data-ng-click="selecionaUnidade(unidade)">
+                                            {{unidade.nomeCompleto | uppercase}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="input-field col s12 m6 l6 curso-select">
+                                <i class="material-icons prefix" >school</i>
+                                <select data-ng-change="selecionaCurso()" class="ng-valid initialized" id="curso" data-ng-model="curso.id" data-ng-disabled="!cursos.length" required>
+                                    <option disabled selected></option>
+                                    <option class="truncate ng-binding " value="{{curso.id}}" data-ng-repeat="curso in cursos">{{ curso.nome }}</option>
+                                </select>
+                                <label for="curso">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m6 l6 etapa-select">
+                                <i class="material-icons prefix">layers</i>
+                                <select data-ng-change="selecionaEtapa()" class="ng-valid initialized" id="etapa" data-ng-model="etapa.id" data-ng-disabled="!etapas.length" required>
+                                    <option disabled selected></option>
+                                    <option class="truncate ng-binding " value="{{etapa.id}}" data-ng-repeat="etapa in etapas">{{ etapa.nome }}</option>
+                                </select>
+                                <label for="etapa">Etapa</label>
+                            </div>
+                            <div class="input-field col s12 m6 l6 turma-select">
+                                <i class="material-icons prefix">chrome_reader_mode</i>
+                                <select data-ng-change="selecionaTurma()" class="ng-valid initialized" id="turma" data-ng-model="turma.id" data-ng-disabled="!turmas.length" required>
+                                    <option disabled selected></option>
+                                    <option class="truncate ng-binding " value="{{turma.id}}" data-ng-repeat="turma in turmas">{{ turma.nomeCompleto }}</option>
+                                </select>
+                                <label for="turma">Turma</label>
+                            </div>
+                            <div class="col s12 right-align end-card finaliza-vaga" style="margin-bottom:0px;">
+                                <a data-ng-click="finalizar()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SOLICITAR VAGA</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="historicoSolicitacoes">
+                        <historico-solicitacao></historico-solicitacao>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

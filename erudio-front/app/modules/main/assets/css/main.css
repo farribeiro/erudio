@@ -1,0 +1,103 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+@import url('styles/fonts.css');
+@import url('styles/geral.css');
+@import url('styles/toolbar.css');
+@import url('styles/menus.css');
+@import url('styles/card.css');
+@import url('styles/list.css');
+@import url('styles/modal.css');
+@import url('styles/form.css');
+@import url('styles/buttons.css');
+@import url('styles/mobile.css');
+@import url('styles/shared.css');
+
+.select-busca {
+    padding-left: 0px !important;
+}
+
+.main-banner {
+    height: 20rem;
+    background: url('../images/head.png') no-repeat center bottom;
+    background-size: 100% auto;
+}
+
+.bg-sobre {
+    background: url('../images/modalSobre.png') no-repeat top center;
+    background-size: 100% auto;
+}
+
+.eventoCalendario {
+    height: 20rem;
+    background: url('../images/eventoData.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.opacityInit {
+    opacity: 0;
+    transition: all 0.5s ease !important;
+}
+
+.avatar-img {
+    min-height: 3.5rem;
+    min-width: 3.5rem;
+}
+
+.toolchip {
+    position: absolute;
+    left: -10rem;
+    display: none;
+    background: #757575 !important;
+    color: #fafafa;
+    width: 9.8rem;
+    text-align: right;
+}
+
+.upload-click {
+    cursor: pointer;
+}
+
+.upload-text {
+/*    font-size: 1.5rem;*/
+}
+
+.upload-send {
+    display:none;
+}
+
+.form-avatar {
+    /*display:none;*/
+    opacity: 0;
+}
+
+.btn-upload {
+    margin-bottom: 1rem;
+}
+
+.waves-effect.waves-blue .waves-ripple {
+    background-color: rgba(2, 136, 209, 0.65);
+}

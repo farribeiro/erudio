@@ -1,0 +1,182 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="listaFuncionarios">
+    <div class="row">
+        <div class="col s12 funcionarios-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Funcionário</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Funcionário é toda pessoa que possui um vínculo empregatício com uma unidade de ensino ou instituição que gerencie o mesmo.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Utilize os filtros de busca para localizar um funcionário. <br>
+                                        Caso o funcionário não existir, clique no botão + para cadastrar um novo funcionário.<br>
+                                        Clique no botão + para cadastrar um funcionário.<br>
+                                        Clique no nome de um funcionário para editá-lo. Clique no ícone da lixeira para remover um funcionário. 
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: <br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="editando" style="background: #fafafa; padding-top: 0.8rem !important; margin-top: -1rem;" class="z-depth-1 row s12 m12 l12">                        
+                        <div class="row">
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">person</i>
+                                <input id="nomeEvento" type="text" class="validate" data-ng-model="vinculoBusca.funcionario.nome" />
+                                <label for="nomeEvento">Nome</label>
+                            </div>   
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">view_week</i>
+                                <select id="statusBusca" data-ng-model="vinculoBusca.status">
+                                    <option value="" disabled></option>
+                                    <option value="ATIVO">ATIVO</option>
+                                    <option value="AFASTADO">AFASTADO</option>
+                                    <option value="DESLIGADO">DESLIGADO</option>
+                                </select>
+                                <label for="statusBusca">Status</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!--
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">event_seat</i>
+                                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                <input id="cargosEvento" class="dropdown" type="text" data-ng-model="vinculoBusca.cargo.nome" data-ng-change="buscarCargos(vinculo.cargo.nome)" data-activates='dropCargos2'/>
+                                <label for="cargosEvento">Cargo</label>
+                            </div>-->
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">event_seat</i>
+                                <select id="cargoVinculoForm" data-ng-model="vinculoBusca.cargo.id">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="cargo in cargos" value="{{cargo.id}}">{{cargo.nome | uppercase}}</option>
+                                </select>
+                                <label for="cargoVinculoForm">Cargo*</label>
+                            </div>
+                            <div class="col s12 m12 l6 input-field">
+                                <i class="material-icons prefix">description</i>
+                                <input id="cpfEvento" class="counter numeros cpfMask" length="14" type="text"  data-ng-model="vinculoBusca.funcionario.cpfCnpj"data-ng-change="verificaCpf(vinculo.funcionario.cpfCnpj)"required />
+                                <label for="cpfEvento">CPF</label>            
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 m12 l6" style="padding-bottom: 1.3rem;">
+                                <i class="material-icons prefix">toll</i>
+                                <input id="codigoEvento" type="text" class="counter" length="14" data-ng-model="vinculoBusca.codigo" />
+                                <label for="codigoEvento">Código</label>
+                            </div>
+                        </div>                                                                                    
+                        <div class="row end-card" style="padding: 0.8rem !important">
+                            <a data-ng-click="buscarVinculos(vinculoBusca,'','botao')" class="waves-effect right waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                            <a data-ng-click="limparBusca()" class="waves-effect waves-blue right btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                                                     
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m12 mobile-full" data-ng-hide="editando || !vinculos.length" style="margin-top:1rem">
+                    <div class="card-panel">
+                        <ul class="pagination right" data-ng-show="qtdPaginas > 1">
+                            <li  class="waves-effect anterior" data-ng-click="alterarPagina(paginaAtual-1); buscarVinculos(vinculos, paginaAtual-1);"><a href="#!"><i data-ng-show="paginaAtual > 0" class="material-icons">chevron_left</i></a></li>
+                            <li  class="active waves-effect paginasLista0" data-ng-click="buscarVinculos(vinculos ,0); alterarPagina(0);"><a href="#!">1</a></li>
+                            <li  class="waves-effect proximo" data-ng-click="alterarPagina(paginaAtual+1); buscarVinculos(vinculo, paginaAtual+1);"><a href="#!"><i data-ng-show="paginaAtual < qtdPaginas-1" class="material-icons">chevron_right</i></a></li>
+                        </ul>
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>
+                                            <div class="pointer" data-ng-click="predicate = 'codigo'; reverse = !reverse">
+                                                Código
+                                                <span class="sortorder" data-ng-show="predicate === 'codigo'" data-ng-class="{reverse:reverse}"></span>
+                                            </div>
+                                        </th>
+                                        <th data-field='codigo'>
+                                            <div class="pointer" data-ng-click="predicate = 'nome'; reverse = !reverse">
+                                                Funcionário
+                                                <span class="sortorder" data-ng-show="predicate === 'nome'" data-ng-class="{reverse:reverse}"></span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            Cargo
+                                        </th>                              
+                                        <th>
+                                            Status
+                                        </th>
+                                        <th class='center-align hide-on-small-only' data-ng-show="escrita" data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="vinculo in vinculos | orderBy: predicate:reverse">
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(vinculo)" style="padding: 1rem 0 1rem 0">{{ vinculo.codigo }}</div>                                            
+                                        </td>  
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(vinculo)">{{ vinculo.funcionario.nome }}</div>                                            
+                                        </td>                                        
+                                        <td class="relative mobile-full">
+                                            <div class="hide-on-small-only">{{ vinculo.cargo.nome | uppercase }}</div>                                            
+                                        </td>
+                                        <td class="relative mobile-full">
+                                            <div class="hide-on-small-only">{{ vinculo.status | uppercase }}</div>                                            
+                                        </td>
+                                        <td class='center-align hide-on-small-only'>                                                                                     
+                                            <i data-ng-show="vinculo.status !== 'DESLIGADO'" data-ng-click="prepararRemover(vinculo)" data-ng-show="escrita" data-target="remove-modal-disciplina" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                            <i data-ng-show="vinculo.status !== 'ATIVO'" data-ng-click="ativarVinculo(vinculo)" data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Ativar' class="material-icons modal-trigger grey-icon aceito tooltipped">done</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <form-funcionario data-ng-show="editando"></form-funcionario>
+            </div>
+        </div>
+    </div
+</div>

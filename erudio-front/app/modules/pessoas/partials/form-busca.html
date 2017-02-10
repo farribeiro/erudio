@@ -1,0 +1,183 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de pessoas -->
+<div class="validate">
+    <div class="row">
+        <div class="col s12 pessoa-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top:-5rem;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-show="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Pessoa</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Pessoa é o ser humano considerado como sujeito de direitos e obrigações e que interage com o sistema de gestão escolar, seja ele aluno, funcionário, etc.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise pelo nome da Pessoa que deseja cadastrar. Clique no botão + para cadastrar uma nova pessoa.<br />
+                                        Clique sobre o nome de uma Pessoa para editá-la.<br />
+                                        Clique no balão correspondente na coluna 'opções' para ver todas as informações de uma pessoa sem precisar editá-la.<br />
+                                        Clique na lixeira para remover uma pessoa.<br />
+                                    </p>
+                                </div>
+                            </div>                                                        
+                        </div>
+                    </div>
+                </div> 
+                <div class="col s12">
+                    <div class="card-panel card-search" style="margin-top: -1.5rem !important; background: #FAFAFA"> 
+                        <div class="row" style="padding-top: 1rem;">
+                            <div class="input-field col s12 m12 l6"> 
+                                <i class="material-icons prefix">perm_identity</i>
+                                <input id="nomeBusca" type="text" class="validate" data-ng-model="pessoaBusca.nome" />
+                                <label for="nomeBusca">Nome</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6" style="padding-right:25px;"> 
+                                <i class="material-icons prefix">perm_identity</i>
+                                <input id="sobrenome" type="text"  data-ng-model="pessoaBusca.sobrenome" />
+                                <label for="sobrenome">Sobrenome</label>
+                            </div>
+                            <div class="col s12 m12 l6 input-field">
+                                <i class="material-icons prefix">event</i>
+                                <input  id="dataNascimento" type="text" class="data" data-ng-model="pessoaBusca.dataNascimento">
+                                <label for="dataNascimento">Data de Nascimento</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6" style="padding-right:25px;">    
+                                <i class="material-icons prefix">perm_identity</i>
+                                <input id="maeNome" type="text"  data-ng-model="pessoaBusca.nomeMae" />
+                                <label for="maeNome">Nome da Mãe</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">description</i>
+                                <select ng-change="verificaDocumento()" style="display: none;" data-ng-model="documento" id="documentoBuscar">
+                                    <option disabled selected></option>
+                                    <!--<option value=""></option>-->
+                                    <option value="cpf">CPF</option>
+                                    <option value="certidao" class="truncate">Certidão de Nascimento(Nova - 32 Digitos)</option>
+                                    <option value="certidao-antiga" class="truncate">Certidão de Nascimento(Antiga - Termo/Livro/Folha)</option>
+                                </select>
+                                <label for="documentoBuscar">Documento</label>
+                            </div>
+                            <div data-ng-class="cpfBusca" class="col s12 m12 l6 input-field">
+                                <i class="material-icons prefix">description</i>
+                                <input id="cpfBusca" type="text" class="counter cpfBuscaMask" length="14" data-ng-change="verificaCpf(pessoaBusca.cpf)" data-ng-model="pessoaBusca.cpf"  />
+                                <label for="cpfBusca">CPF</label>            
+                            </div>
+                            <div data-ng-class="certidaoBusca" class="input-field col s12 m12 l6"> 
+                                <i class="material-icons prefix">description</i>
+                                <input id="buscaCertidao" type="text" class="counter" length="32" data-ng-model="pessoaBusca.certidao"  />
+                                <label for="buscaCertidao">Certidão de Nascimento</label>            
+                            </div>
+                            <div data-ng-class="certidaoAntigaBusca" class="input-field col s12 m12 l6"> 
+                                <i class="material-icons prefix">description</i>
+                                <input id="buscaTermo" type="text" class="counter" length="7" data-ng-model="pessoaBusca.termo"  />
+                                <label for="buscaTermo">Termo</label>            
+                            </div>        
+                            <div data-ng-class="certidaoAntigaBusca" class="input-field col s12 m12 l6">  
+                                <i class="material-icons prefix">description</i>
+                                <input id="buscaLivro" type="text" class="counter numeros" length="5" data-ng-model="pessoaBusca.livro"  />
+                                <label for="buscaLivro">Livro</label>            
+                            </div>
+                            <div data-ng-class="certidaoAntigaBusca" class="input-field col s12 m12 l6">  
+                                <i class="material-icons prefix">description</i>
+                                <input id="buscaFolha" type="text" class="counter" length="3" data-ng-model="pessoaBusca.folha"  />
+                                <label for="buscaFolha">Folha</label>            
+                            </div>
+                            <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px;">
+                                <a data-ng-click="reiniciarPessoaBusca()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                                <a data-ng-click="buscarPessoas()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                            </div>
+                        </div>
+                    </div>            
+                </div>
+            </div>
+            <div class="row card-dados" data-ng-show="pessoas.length">
+                <div class="col s12">
+                    <div class="card-panel">
+                        <ul class="pagination" data-ng-show="quantidadePaginas > 1">
+                            <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                            <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                            <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                            <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                            <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                            <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                            <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+                        </ul>
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-list table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>
+                                            <div class="pointer" data-ng-click="predicate = 'nome'; reverse = !reverse">
+                                                Nome
+                                                <span class="sortorder" data-ng-show="predicate === 'nome'" data-ng-class="{reverse:reverse}"></span>
+                                            </div>
+                                        </th>                                    
+                                        <th class="hide-on-small-only center">Data Nascimento</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="pessoa in pessoas | comecarEm: (paginaAtual-1)*50+1 | limitTo: 50 | orderBy: 'nome':reverse">
+                                        <td class="celula-link relative mobile-full" data-ng-click="carregarFormulario(pessoa, false, false)">
+                                            <div class="hide-on-small-only pointer" id="pessoa{{ pessoa.id}}" class="swipeable padding-tipo-item">
+                                                {{pessoa.nome}}
+                                            </div>
+                                        </td>   
+                                        <td class="hide-on-small-only center">{{ pessoa.dataNascimento | date: 'dd/MM/yyyy' }}</td>
+                                        <td class='center-align hide-on-small-only'>                                          
+                                            <i data-ng-click="infoPessoa(pessoa)" data-target="remove-modal" data-position='top' data-delay='50' data-tooltip='Informações' class="material-icons modal-trigger info-icon tooltipped">speaker_notes</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                            
+                        </div>
+                        <ul class="pagination" data-ng-show="quantidadePaginas > 1">
+                            <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                            <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                            <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                            <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                            <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                            <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                            <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>

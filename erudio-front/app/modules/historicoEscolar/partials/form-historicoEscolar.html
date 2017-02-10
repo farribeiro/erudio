@@ -1,0 +1,146 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<div id="form-historicoEscolar">
+    <div class="row">
+        <div class="col s12 historico-escolar-banner" data-ng-hide="editando">
+        </div>
+    </div>
+    <div class="row" data-ng-hide="editando">
+        <div class="col s12 l12 mobile-full">
+            <div class="row"style="margin-top: -60px;" >
+                <div class="col s12 l12 mobile-full"> 
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Historico Escolar</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Histórico Escolar é o documento demonstrativo que indica a trajetória escolar do estudante.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise pelo nome do aluno ou matrícula para localizar o histórico escolar.<br>
+                                        Clique sobre o código do aluno para visualizar informações da matricula.<br>
+                                        Clique no ícone da impressora para imprimir o histórico escolar.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>                         
+                        </div>
+                    </div>
+                    <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">perm_identity</i>
+                            <input id="nomeAlunoHabilidades" type="text" class="validate" data-ng-model="matriculaBusca.aluno"/>
+                            <label for="nomeAlunoHabilidades">Nome do Aluno</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6"> 
+                            <i class="material-icons prefix">toll</i>
+                            <input id="codigoBuscaHabilidades" type="text" length="11" class="validate counter"  data-ng-model="matriculaBusca.codigo"/>
+                            <label for="codigoBuscaHabilidades">Código de Matrícula</label>
+                        </div>
+                        <div class="end-card col s12" style="padding-top: 1rem">                        
+                            <a data-ng-click="buscarMatriculas(matriculaBusca, '', 'botao')" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                            <a data-ng-click="limparBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <tela-historico-escolar data-ng-show="editando"></tela-historico-escolar>
+</div>
+<div id="listaMatriculas" data-ng-show="matriculas.length && !editando" class="row" style="margin-top: 15px;">
+    <div class="col s12 m12 mobile-full" ><!--data-ng-hide="editando"-->
+        <div class="row">
+            <div class="col s12 m12 l12">               
+                <div class="card-panel">
+                   <!-- Paginador -->
+                    <div class="row paginate" style="margin-left: 0.9rem;">
+                        <div class="col s12 no-padding" >
+                            <i data-ng-show="pagina > 0"data-ng-click="buscarPessoas(pagina-1)" data-position='top' data-delay='50' data-tooltip='Página Anterior' class="waves-effect material-icons tooltipped paginator">keyboard_arrow_left</i>
+                            <i data-ng-show="pessoas.length === 20" data-ng-click="buscarPessoas(pagina+1)" data-position='top' data-delay='50' data-tooltip='Próxima Página' class="waves-effect material-icons tooltipped paginator">keyboard_arrow_right</i>
+                        </div>
+                    </div>                     
+                    <div class="card-content mobile-full">
+                        <table class='highlight striped table-pattern'>
+                            <thead>
+                                <tr>
+                                    <th class="hide-on-small-only" data-field='codigo'>
+                                        <div class="pointer" data-ng-click="predicate = 'codigo'; reverse = !reverse">
+                                            Código
+                                            <span class="sortorder" data-ng-show="predicate === 'codigo'" data-ng-class="{reverse:reverse}"></span>
+                                        </div>
+                                    </th>
+                                    <th class="hide-on-small-only" data-field='nome'>
+                                        <div class="pointer" data-ng-click="predicate = 'aluno.nome'; reverse = !reverse">
+                                            Aluno
+                                            <span class="sortorder" data-ng-show="predicate === 'aluno.nome'" data-ng-class="{reverse:reverse}"></span>
+                                        </div>
+                                    </th>
+                                    <th class="hide-on-small-only" data-field='curso'>Curso</th>
+                                    <th class="hide-on-small-only" data-field='status'>Status</th>
+                                    <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="matricula in matriculas | orderBy: 'aluno.nome':reverse">
+                                    <td class="relative mobile-full">
+                                        <div class="hide-on-small-only" data-ng-click="mostraOpcoes(matricula, 'home', false);">{{ matricula.codigo}}</div>
+                                        <div class="hide-on-med-and-up" data-ng-click="mostraOpcoes(matricula, 'home', false);">{{ matricula.codigo}}</div>
+                                    </td>
+                                    <td class="hide-on-small-only">{{ matricula.aluno.nome | uppercase }}</td>
+                                    <td class="hide-on-small-only">{{ matricula.curso.nome | uppercase }}</td>
+                                    <td class="hide-on-small-only">{{ matricula.status }}</td>
+                                    <td class='center-align hide-on-small-only'>
+                                        <i data-ng-click="carregar(matricula)" data-position='top' data-delay='50' data-tooltip='Histórico Escolar' class="material-icons delete-icon tooltipped">local_printshop</i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination right" data-ng-show="qtdPaginas > 1">
+                        <li  class="waves-effect anterior" data-ng-click="alterarPagina(paginaAtual-1); buscarMatriculas(matriculaBusca, paginaAtual-1);"><a href="#!"><i data-ng-show="paginaAtual > 0" class="material-icons">chevron_left</i></a></li>
+                        <li class="active waves-effect paginasLista0" data-ng-click="buscarMatriculas(matriculaBusca, 0); alterarPagina(0);"><a href="#!">1</a></li>
+                        <li  class="waves-effect proximo" data-ng-click="alterarPagina(paginaAtual+1); buscarMatriculas(matriculaBusca, paginaAtual+1);"><a href="#!"><i data-ng-show="paginaAtual < qtdPaginas-1" class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,155 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="listaAvaliacoes">
+    <div class="row">
+        <div class="col s12 avaliacoes-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando || avaliando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Avaliação</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Avaliação tem por objetivo determinar o nível em que um discente domina os objetivos previstos em uma disciplina ou assunto.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Utilize os filtros de busca para localizar uma Avaliação. <br />
+                                        Clique no nome de uma Avaliação para editá-la. <br />
+                                        Clique no ícone de informações para ver os registros da Avaliação sem editá-la. <br />
+                                        Clique no ícone da lixeira para remover uma Avaliação. 
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: <br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="editando || avaliando" style="background: #fafafa; margin-top: -1rem;" class="z-depth-1 row s12 m12 l12">
+                        <div class="row">               
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input type="text" id="nomeAvaliacao" data-ng-model="busca.nome">
+                                <label for="nomeAvaliacao">Nome</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">school</i>
+                                <select id="cursoAvaliacao" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id); resetaSelects(false, true, true, true)">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="curso in cursos" value="{{curso.id}}" data-ng-selected="verificaSelectCurso(curso.id)">{{curso.nome}}</option>
+                                </select>
+                                <label for="cursoAvaliacao">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">layers</i>
+                                <select id="etapaAvaliacao" data-ng-model="etapa.id" data-ng-change="buscarTurmas(etapa.id); resetaSelects(false, false, true, true); carregarEtapa(etapa.id);" data-ng-disabled="!etapas.length">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="etapa in etapas | orderBy: 'nome'" value="{{etapa.id}}" data-ng-selected="verificaSelectEtapa(etapa.id)">{{etapa.nome | uppercase}}</option>
+                                </select>
+                                <label for="etapaAvaliacao">Etapa</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">chrome_reader_mode</i>
+                                <select id="turmaAvaliacao" data-ng-model="turma.id" data-ng-change="buscarDisciplinas(turma.id); resetaSelects(false, false, false, true)" data-ng-disabled="!turmas.length">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="turma in turmas | orderBy: 'nome'" value="{{turma.id}}" data-ng-selected="verificaSelectTurma(turma.id)">{{ turma.nomeCompleto | uppercase }}</option>
+                                </select>
+                                <label for="turmaAvaliacao">Turma</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">import_contacts</i>
+                                <select id="disciplinaAvaliacao" data-ng-model="avaliacao.disciplina.id" data-ng-disabled="!ofertadas.length">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="disciplina in ofertadas" value="{{disciplina.id}}" data-ng-selected="disciplina.id === avaliacao.disciplina.id">{{disciplina.nomeExibicao}}</option>
+                                </select>
+                                <label for="disciplinaAvaliacao">Disciplina</label>
+                            </div>   
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">iso</i>
+                                <input id="mediaAvaliacao" type="number" class="validate numeros" max="{{ sistema.quantidadeMedias }}" min="1" data-ng-model="busca.media" required />
+                                <label for="mediaAvaliacao">Média</label>
+                            </div>                            
+                        </div>
+                        <div class="row right-align end-card" >
+                            <a data-ng-click="limparBusca()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                            <a data-ng-click="buscarAvaliacoes()"  class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m12 mobile-full" data-ng-hide="editando || !avaliacoes.length || avaliando" style="margin-top:20px;">
+                    <div class="card-panel">
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome da Avaliacao</th>
+                                        <th data-field="entrega">Data de Entrega</th>                                        
+                                        <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="avaliacao in avaliacoes">
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(avaliacao)">{{ avaliacao.nome | uppercase }}</div>                                            
+                                        </td>                                                                                    
+                                        <td class="relative mobile-full" style="padding-left: 1.4rem;">
+                                            <div class="hide-on-small-only">{{ avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy' }}</div>                                            
+                                        </td>
+                                        <td class='center-align hide-on-small-only'>                                             
+                                            <i data-ng-click="carregar(avaliacao, true)" data-target="remove-modal-disciplina" data-position='top' data-delay='50' data-tooltip='Informações' class="material-icons modal-trigger info-icon tooltipped">speaker_notes</i>
+                                            <i data-ng-click="carregarFormAvaliar(avaliacao)" data-target="" data-position='top' data-delay='50' data-tooltip='Notas' class="material-icons modal-trigger info-icon tooltipped" data-ng-show="escrita">done_all</i>
+                                            <i data-ng-click="prepararRemover(avaliacao)" data-target="remove-modal-disciplina" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped" data-ng-show="escrita">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <form-avaliacoes data-ng-show="editando && !avaliando"></form-avaliacoes>
+                <notas-avaliacoes data-ng-show="avaliando"></notas-avaliacoes>
+            </div>
+        </div>
+    </div
+</div>

@@ -1,0 +1,305 @@
+/* Geral */
+
+html, body {
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+body {
+      background: #eee;
+      font-family: Roboto !important;
+      overflow-x: hidden;
+      margin: 0 !important;
+      opacity: 0;
+      transition: all 0.5s ease-in !important;
+}
+
+p {
+    line-height: 150%;
+}
+
+.pagination {
+    margin-right: 2rem !important;
+}
+
+.home-icons {
+    font-size: 6rem;
+}
+
+.inicio-modulo {
+    opacity: 0;
+    transition: all 0.5s ease-in !important;
+}
+
+.ripple-head, .ripple-list {
+    //transition: all 0.3s ease-in !important;
+    opacity: 1;
+    margin-top: 0 !important;
+}
+
+.ripple {
+    opacity: 0 !important;
+    margin-top: 5rem !important;
+}
+
+.negrito {
+    font-weight: bold;
+}
+
+.material-tooltip {
+    min-height: initial !important;
+}
+
+.home-calendar {
+    padding: 25px;
+}
+
+.face-icon-home{
+    font-size: 72px !important;
+}
+
+.mobile-box-title { margin-left:10px !important; margin-top:-5px !important; }
+
+.pagination li.active {
+    background-color: #2E96F3 !important;
+} 
+
+*:focus {
+    outline: 0 !important;
+}
+
+strong {
+    font-weight: bold !important;
+}
+
+.cortinaProgresso {
+    z-index: 2001 !important;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.content {
+    margin: 2rem;
+    font-size: 1.5rem;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.correct-margin-top {
+    margin-top: 0px !important;
+}
+
+#slide-out, main {
+    transition: all 0.5s ease !important;
+}
+
+.row {
+    margin-bottom: 0 !important;
+}
+
+header {
+    overflow-x: hidden;
+}
+
+header, main, footer {
+    padding-left: 240px;
+}
+
+.esconder-menu {
+    padding-left: 0 !important;
+}
+
+.container {
+    width: 85% !important;
+}
+
+.collapsible-body p {
+  font-size: 14px !important;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.error-page {
+    width: 100%;
+    margin-top: 5%;
+    text-align: center;
+    color: #9e9e9e;
+    margin-bottom: 2%;
+}
+
+.error-icon {
+    font-size: 5rem !important;
+}
+
+.progress {
+    position: fixed !important;
+    top: 56px;
+    z-index: 2;
+}
+
+.transparent{
+    opacity: 0;
+}
+
+.cortinaGeral{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
+.loader {
+    position: fixed !important;
+    top: 12px  !important;
+    z-index: 998  !important;
+    right: 15px  !important;
+}
+
+.ajeita-loader{
+    z-index: 999999!important; 
+    right: 2rem!important
+}
+
+.cortinaProgresso {
+    position: fixed;
+    z-index: 150;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #b0bec5;
+    opacity: 0.5;
+}
+
+.ajuste-margin-bottom-0 {
+     margin-bottom: 0 !important;
+}
+
+.ui-loader {
+    display: none;
+}
+
+.toast {
+    left: 5.7rem !important;
+    font-size: 14px !important;
+}
+
+.topo-pagina {
+    margin-top: 64px;
+    transition-property: all;
+    transition-duration: 0.5s;
+}
+
+.float-left {
+    float: left;
+}
+
+.ajuste-titulo-pesquisa {
+    width: 100%;
+    padding: 20px;
+    font-size: 23px;
+    bottom: 0;
+    left: 80px;
+}
+
+/* COLOR */
+
+.ciano {
+    background: #17FFFF !important;
+}
+
+.blue {
+    background: #0288d1 !important;
+}
+
+.color-amber {
+    color: #ffc400 !important;
+}
+
+.color-red {
+    color: #e53935 !important;
+}
+
+.rosa {
+    background: #FF4081 !important;
+}
+
+.preto {
+    color : #444444 !important;
+}
+
+.gray {
+    background-color: #7f8c8d;
+}
+
+.color-black {
+    color: #000 !important;
+}
+
+.color-grey {
+    color: #9e9e9e !important;
+}
+
+/*.material-tooltip {
+    font-size: 0.7rem !important;
+}*/
+
+.waves-effect.waves-ciano .waves-ripple {
+    background-color: #17FFFF !important;
+}
+
+.waves-effect.waves-rosa .waves-ripple {
+    background-color: #FF4081 !important;
+}
+
+.waves-effect.waves-azul .waves-ripple {
+    background-color: #bbdefb !important;
+}
+
+.waves-effect.waves-azul:focus {
+    color: #fafafa !important;
+}
+
+.sortorder:after {
+   content: '\25bc';
+}
+.sortorder.reverse:after {
+   content: '\25b2';
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    background: #f2f2f2;
+    opacity: 0;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #6f6f72;
+}
+
+.mobile-icon-title { font-size: 4.5rem; }
+.mobile-font-title { font-size: 3rem; margin-left: -10px !important; }

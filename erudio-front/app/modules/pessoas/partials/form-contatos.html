@@ -1,0 +1,76 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id='contatosPessoa'>
+    <div class="row" >
+        <div class="col s12 m12 l12">
+            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Contatos <small data-ng-show="escrita" class="hide-on-small-only" style="font-size: 1rem;">(clique no botão + para adicionar contatos)</small></h5>
+        </div>                        
+    </div>
+    <div class="row" style="margin-top: 1rem !important;" data-ng-show="escrita">
+        <div class="input-field col s12 m12 l3" style="width: 30%">
+            <i class="material-icons prefix">phone</i>
+            <input id="telefone" type="text" length="15" class="validate counter" data-ng-model="telefone.numero">
+            <label for="telefone">Número*</label>
+        </div>
+        <div class="input-field col s12 m12 l3" style="width: 30%">
+            <i class="material-icons prefix">settings_phone</i>
+            <select id="descricao" data-ng-model="telefone.descricao">
+                <option disabled="" selected="" value=""></option>
+                <option data-ng-selected="telefone.descricao === 'CELULAR'" value="CELULAR">CELULAR</option>
+                <option data-ng-selected="telefone.descricao === 'COMERCIAL'" value="COMERCIAL">TRABALHO</option>
+                <option data-ng-selected="telefone.descricao === 'RESIDENCIAL'" value="RESIDENCIAL">RESIDENCIAL</option>
+            </select>
+            <label for="descricao">Descrição*</label>
+        </div>
+        <div class="input-field col s12 m12 l3">
+            <i class="material-icons prefix">contact_phone</i>
+            <input id="falarCom" type="text" class="validate" data-ng-model="telefone.falarCom">
+            <label for="falarCom">Falar Com</label>
+        </div>        
+        <div class="col s12 m12 l3 right" style="padding-right: 2.3rem">
+            <a class="tooltipped btn-floating btn btn-telefone green waves-effect waves-light right"
+               data-position="top" data-delay="30"  
+               data-tooltip="Adicionar Telefone" data-ng-click="salvarTelefone(telefone)"><i class="material-icons">add</i></a>
+        </div> 
+    </div>
+    <div class="row">
+        <div class="col s12" data-ng-show="telefones.length" style="padding: 0rem">
+            <table class='highlight striped'>
+                <tbody>
+                    <tr data-ng-repeat="telefone in telefones" class="pointer">
+                        <td style="padding-left: 15px" data-ng-click="carregaTelefone(telefone)">{{ telefone.numero | telefone}}</td>
+                        <td style="padding-left: 15px">{{ telefone.descricao}}</td>
+                        <td style="padding-left: 15px">{{ telefone.falarCom | uppercase }} </td>
+                        <td class='center-align' data-ng-show="escrita">                                            
+                            <i data-ng-click="removerTelefone(telefone)" data-position='top' data-delay='50' data-tooltip='Remover Contato' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

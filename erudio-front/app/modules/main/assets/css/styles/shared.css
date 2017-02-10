@@ -1,0 +1,19 @@
+.main-list { padding: 0 !important; opacity: 1; transition: all 0.3s ease-in-out !important; }
+.list-items, .title-card, .init-card { transition: all 0.3s ease-in-out !important; }
+.animate-card-in-list { transform: translate(0rem,-20em) scale(1.04); }
+.animate-card-out-list { transform: scale(0.5); opacity: 0; }
+.animate-list-out { opacity: 0; }
+.fix-margin-card { margin-top: 57px !important; }
+.fix-no-margin-card { margin: 0px !important; }
+.fix-padding-card { padding: 0 !important; }
+.hide { display: none;  }
+.no-height { height: 0 !important; overflow: hidden; }
+.form-opacity-out { opacity:0; }
+.form-opacity-in { opacity:1 !important; }
+.animate-button-out { transform: scale(0.1); opacity: 0; }
+.animate-button-in { transform: scale(1.0) !important; opacity: 1 !important; }
+/*.btn-voltar { transform: scale(0.1); opacity: 0; transition: all 0.3s ease-in-out !important; }*/
+.btn-voltar { transform: scale(1); opacity: 1; transition: all 0.3s ease-in-out !important; }
+#instituicaoForm, #tipoUnidadeForm, #unidadeForm {
+    transition: all 0.3s ease-in-out !important;
+}

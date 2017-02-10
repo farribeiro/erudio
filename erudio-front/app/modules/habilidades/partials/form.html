@@ -1,0 +1,169 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate" class="row">    
+    <div class="col s12">
+        <div class="row form-box show-form">
+            <div class="card-panel">
+                <form id="habilidadeForm">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 1rem; margin-bottom: 0rem;">{{ acao }} Habilidade</h3>
+                    </div>
+                    <div class="row" style="padding-bottom: 1rem;">
+                        <small class="obriga-campos"><em>Os campos marcados com * são obrigatórios</em></small>
+                    </div>
+                    <!-- EDITANDO HABILIDADES JÁ EXISTENTES -->
+                    <div data-ng-show="habilidade.id">
+                        <div class="row">
+                            <div id="adiciona-habilidade" class="input-field col s12 m12 l12">    
+                                <i class="material-icons prefix">border_color</i>
+                                <input id="nomeHabilidade" type="text" class="validate" data-ng-model="habilidade.nome" data-ng-disabled="!escrita" required />
+                                <label for="nomeHabilidade">Nome*</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">school</i>
+                                <input id="cursoEdicaoHabilidade" type="text" class="validate disabled" data-ng-model="habilidade.disciplina.curso.nome" data-ng-disabled="habilidade.id"/>
+                                <label for="cursoEdicaoHabilidade">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">import_contacts</i>
+                                <input id="disciplinaEdicaoHabilidade" type="text" class="validate disabled" data-ng-model="habilidade.disciplina.nome" data-ng-disabled="habilidade.id"/>
+                                <label for="disciplinaEdicaoHabilidade">Disciplina</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">layers</i>
+                                <input id="etapaEdicaoHabilidade" type="text" class="validate disabled" data-ng-model="habilidade.disciplina.etapa.nome" data-ng-disabled="habilidade.id"/>
+                                <label for="etapaEdicaoHabilidade">Etapa</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">iso</i>
+                                <input id="mediaEdicaoHabilidade" type="text" class="validate disabled" data-ng-model="habilidade.media" data-ng-disabled="habilidade.id"/>
+                                <label for="mediaEdicaoHabilidade">Média</label>
+                            </div>                                                    
+                        </div>    
+                        <div class="row end-card" data-ng-show="escrita">
+                            <div class="col s12 right-align">
+                                <a data-ng-click="finalizar(habilidade)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="habilidade.id">
+                        <div class="row">
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">school</i>
+                                <select id="curso" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id)" required>
+                                    <option disabled="" selected=""></option>
+                                    <option data-ng-repeat="curso in cursos" value="{{curso.id}}">{{curso.nome | uppercase}}</option>
+                                </select>
+                                <label for="curso">Curso*</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">layers</i>
+                                <select id="etapa" data-ng-model="etapa.id" data-ng-change="buscarDisciplinas(etapa.id)" data-ng-disabled="!etapas.length" required>
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="etapa in etapas | orderBy: 'nomeExibicao'" value="{{etapa.id}}">{{etapa.nome | uppercase}}</option>
+                                </select>
+                                <label for="etapa">Etapa*</label>
+                            </div>
+                        </div>
+                        <div class="row">                      
+                            <div class="input-field col s12 m12 l6"> 
+                                <i class="material-icons prefix">import_contacts</i>
+                                <select id="disciplina" data-ng-model="habilidade.disciplina.id" data-ng-disabled="!disciplinas.length" required>
+                                    <option disabled selected></option>
+                                    <option value="{{ disciplina.id }}" data-ng-repeat="disciplina in disciplinas">{{ disciplina.nome | uppercase }}</option>
+                                </select>
+                                <label for="disciplina">Disciplina*</label>
+                            </div>                            
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">iso</i>
+                                <input id="media" type="number" class="validate" max="{{sistema.quantidadeMedias}}" min="1" data-ng-model="habilidade.media" data-ng-change="selecionaMedia(habilidade.media)" />
+                                <label for="media">Média*</label>
+                            </div>
+                        </div>
+                        <div class="row">                                                    
+                            <div class="input-field col s12 m12 l12">
+                                <i class="material-icons prefix">assignment_turned_in</i>
+                                <select id="sistemaAvaliacao" data-ng-model="habilidade.sistema_avaliacao" data-ng-change="buscarUmSistema(habilidade.sistema_avaliacao)">
+                                    <option disabled="" selected=""></option>
+                                    <option data-ng-repeat="sistema in sistemas" value="{{sistema.id}}">{{ sistema.nome }}</option>
+                                </select>
+                                <label for="sistemaAvaliacao">Sistema de Avaliação*</label>
+                            </div>
+                        </div>                                            
+                        <!-- INSERINDO NOVAS HABILIDADES -->
+                        <div class="row">
+                            <div class="row">
+                                <div id="adiciona-habilidade" class="input-field col s12 m12 l11" style="margin-bottom: 1rem;">    
+                                    <i class="material-icons prefix">label</i>
+                                    <input id="nomeHabilidadeHabilidade" type="text" class="validate" data-ng-model="habilidade.nome" required />
+                                    <label for="nomeHabilidadeHabilidade">Nome*</label>
+                                </div>                        
+                                <div class="col s12 m12 l1" style="padding: 1rem 0rem 0rem 2rem;">
+                                    <a data-ng-click="adicionarHabilidade()" class="tooltipped btn-floating btn waves-effect waves-light green" data-position="left" data-delay="50" data-tooltip="Adicionar Habilidade">
+                                        <i class="material-icons">add</i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row" data-ng-show="habilidades.length" style="padding: 0 10px 0 10px;">
+                                <ul class="pagination right" data-ng-show="qtdPaginas > 1">
+                                    <li  class="waves-effect anterior" data-ng-click="alterarPagina(paginaAtual-1); buscarHabilidades(habilidadeDisciplinas, paginaAtual-1);"><a href="#!"><i data-ng-show="paginaAtual > 0" class="material-icons">chevron_left</i></a></li>
+                                    <li  class="active waves-effect paginasLista0" data-ng-click="buscarHabilidades(habilidadeDisciplinas ,0); alterarPagina(0);"><a href="#!">1</a></li>
+                                    <li  class="waves-effect proximo" data-ng-click="alterarPagina(paginaAtual+1); buscarHabilidades(habilidadeDisciplinas, paginaAtual+1);"><a href="#!"><i data-ng-show="paginaAtual < qtdPaginas-1" class="material-icons">chevron_right</i></a></li>
+                                </ul>                                
+                                <table class="striped" style="margin-bottom: 15px">
+                                    <thead>
+                                        <tr>
+                                            <th>Disciplina</th>
+                                            <th>Média</th>
+                                            <th>Habilidade</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="habilidade in habilidades | orderBy: 'nome'">
+                                            <td>{{ habilidade.disciplina.nomeExibicao | uppercase }}</td>
+                                            <td style="padding-left: 1.3rem;">{{ habilidade.media }}</td>
+                                            <td>{{ habilidade.nome | uppercase }}</td>                                    
+                                            <td class='center-align hide-on-small-only' style="padding-right:16px;">
+                                                <i data-ng-click="removerHabilidade(habilidade)" class="material-icons delete-icon tooltipped" data-position='left' data-delay='50' data-tooltip='Remover'>delete</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <ul class="pagination right" data-ng-show="qtdPaginas > 1">
+                                    <li  class="waves-effect anterior" data-ng-click="alterarPagina(paginaAtual-1); buscarHabilidades(habilidadeDisciplinas, paginaAtual-1);"><a href="#!"><i data-ng-show="paginaAtual > 0" class="material-icons">chevron_left</i></a></li>
+                                    <li  class="active waves-effect paginasLista0" data-ng-click="buscarHabilidades(habilidadeDisciplinas ,0); alterarPagina(0);"><a href="#!">1</a></li>
+                                    <li  class="waves-effect proximo" data-ng-click="alterarPagina(paginaAtual+1); buscarHabilidades(habilidadeDisciplinas, paginaAtual+1);"><a href="#!"><i data-ng-show="paginaAtual < qtdPaginas-1" class="material-icons">chevron_right</i></a></li>
+                                </ul>                                
+                            </div>
+                        </div>
+                    </div>                        
+                </form>
+            </div>
+        </div>        
+    </div>            
+</div>

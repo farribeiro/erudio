@@ -1,0 +1,173 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 m12 l12">
+        <div class="card-panel" style="margin-top: -90px;">
+            <div class="row" data-ng-hide="alunos.length">
+                <div class="row title-calendar" style="padding-top: 15px;">
+                    <div class="col s1"><i class="material-icons mobile-icon-title">import_contacts</i></div>
+                    <div class="col s10 mobile-font-title">Avaliações</div>
+                    <div class="col s12 end-card" style="height: 5px;">&nbsp;</div>
+                </div>
+                <!-- LISTA DE AVALIAÇÕES -->                
+                <div class="row" data-ng-repeat="media in medias">
+                    <h5 style="border-bottom: 1px solid #e0e0e0; background-color: #FFFFFF; padding-bottom: 0.7rem; padding-left: 1rem; margin-bottom:0px;">{{media.nome}}</h5>
+                    <!-- QUANTITATIVO -->
+                    <ul class="collapsible quantitativa" data-collapsible="expandable" data-ng-show="quantitativo" style="box-shadow: none; border: none; background-color: #F2F2F2;margin-top:0px;">
+                        <li data-ng-repeat="avaliacao in media.avaliacoes">
+                            <div class="collapsible-header" style="background-color: #F2F2F2">
+                                <span class="col s10">{{avaliacao.nome}}</span>
+                                <span class="col s2"><i class="material-icons right" style="margin-right: -26px">keyboard_arrow_down</i></span>
+                            </div>
+                            <div class="collapsible-body" style="background-color:#FAFAFA;">
+                                <p class="row">
+                                    <span class="col s12 m12 l6">
+                                        <strong>Disciplina: </strong> {{ avaliacao.disciplina.disciplina.nomeExibicao }} <br/>
+                                        <strong>Turma: </strong> {{ avaliacao.disciplina.turma.nome }} <br/>                                        
+                                        <strong>Media: </strong> {{ avaliacao.media }} <br/>   
+                                        <strong>Peso: </strong> {{ avaliacao.peso }} <br/>
+                                    </span>
+                                    <span class="col s12 m12 l6">
+                                        <strong>Data de Entrega: </strong>
+                                        <span data-ng-show="avaliacao.aulaEntrega.id">{{ avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy' }}</span>
+                                        <span data-ng-hide="avaliacao.aulaEntrega.id" style="color: #e74c3c">Mudança na grade de horário.</span>
+                                        <br/>
+                                        <strong>Horario: </strong> {{ avaliacao.aulaEntrega.horario.inicio|horario}} às {{ avaliacao.aulaEntrega.horario.termino|horario}} <br/>
+                                        <strong>Tipo: </strong> {{ avaliacao.tipo.nome }} <br/>
+                                    </span>
+                                </p>
+                                <div class="row">
+                                    <div class="end-card">
+                                        <a class="waves-effect waves-green btn-flat right" data-ng-if="avaliacao.aulaEntrega.id" data-ng-click="buscarAlunos(avaliacao)" style="margin-bottom:9px;margin-top:10px;padding-right:10px">Dar notas</a>
+                                        <a class="waves-effect waves-red btn-flat right" data-ng-if="!avaliacao.aulaEntrega.id" data-ng-click="abrirModalRemarcar(avaliacao)" style="margin-bottom:9px;margin-top:10px;padding-right:10px;color:#e74c3c">Remarcar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- QUALITATIVO -->
+                    <ul class="collapsible qualitativa" data-collapsible="expandable" data-ng-hide="quantitativo" style="box-shadow: none; border: none; background-color: #F2F2F2;margin-top:0px;">
+                        <li data-ng-repeat="avaliacao in media.avaliacoes">
+                            <div class="collapsible-header" style="background-color: #F2F2F2" data-ng-click="buscarHabilidades(avaliacao)">
+                                <span class="col s10">{{avaliacao.nome}}</span>
+                                <span class="col s2"><i class="material-icons right" style="margin-right: -26px">keyboard_arrow_down</i></span>
+                            </div>
+                            <div class="collapsible-body" style="background-color:#FAFAFA;">
+                                <p class="row">
+                                    <span class="col s12 m12 l6">
+                                        <strong>Disciplina: </strong> {{ avaliacao.disciplina.disciplina.nomeExibicao }} <br/>
+                                        <strong>Turma: </strong> {{ avaliacao.disciplina.turma.nome }} <br/>                                        
+                                        <strong>Media: </strong> {{ avaliacao.media }} <br/> <br/>
+                                        <strong data-ng-show="avaliacao.habilidades.length">Habilidades: </strong> <br/>
+                                    </span>
+                                    <span class="col s12 m12 l6">
+                                        <strong>Data de Entrega: </strong>
+                                        <span data-ng-show="avaliacao.aulaEntrega.id">{{ avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy' }}</span>
+                                        <span data-ng-hide="avaliacao.aulaEntrega.id" style="color: #e74c3c">Mudança na grade de horário.</span>
+                                        <br>
+                                        <strong>Horario: </strong> {{ avaliacao.aulaEntrega.horario.inicio|horario}} às {{ avaliacao.aulaEntrega.horario.termino|horario}} <br/>
+                                        <strong>Tipo: </strong> {{ avaliacao.tipo.nome }} <br/>
+                                    </span>
+                                    <span class="col s12 m12 l12" style="padding-left: 15px">
+                                        <span class="col s12 m12 l12" data-ng-repeat="habilidade in avaliacao.habilidades"> {{ habilidade.nome }} </span>
+                                    </span>                                        
+                                </p>
+                                <div class="row">
+                                    <div class="end-card">
+                                        <a class="waves-effect waves-green btn-flat right" data-ng-if="avaliacao.aulaEntrega.id" data-ng-click="buscarAlunos(avaliacao)" style="margin-bottom:9px;margin-top:10px;padding-right:10px">Dar notas</a>
+                                        <a class="waves-effect waves-red btn-flat right" data-ng-if="!avaliacao.aulaEntrega.id" data-ng-click="abrirModalRemarcar(avaliacao)" style="margin-bottom:9px;margin-top:10px;padding-right:10px;color:#e74c3c">Remarcar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div style="font-size: 18px; background-color: #F2F2F2; padding: 0 1rem 0.5rem 1rem; margin-top: -1rem;" data-ng-hide="media.avaliacoes.length">
+                        <i class="material-icons" style="font-size: 2rem">warning</i>
+                        &nbsp&nbsp <span>Esta média não possui nenhuma avaliação.</span>
+                    </div>
+                </div>
+            </div>
+            <!-- LISTA DE ALUNOS -->
+            <div class="card-content row" data-ng-show="alunos.length">
+                <div class="row title-calendar" style="padding-top: 15px;">
+                    <div class="col s1"><i style="font-size: 4.5rem;" class="material-icons">import_contacts</i></div>
+                    <div class="col s11" style="font-size: 3rem; margin-left: -40px;">{{avaliacao.nome}}</div>
+                    <div class="col s12 end-card" style="height: 5px;">&nbsp;</div>
+                </div>
+                <div data-ng-click="voltarAvaliacoes()" class="hide-on-med-and-down col s2 m2 l2 right-align" style="position: fixed; right: 19px; top: 12px; z-index: 1001;">
+                    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar a lista de avaliaçoes"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+                </div>
+                <div class="col s12 m12 l12" style="margin-bottom: 2rem">
+                    <strong>Média:</strong> {{avaliacao.media}} - <strong>Tipo:</strong> {{avaliacao.tipo.nome}} - <strong data-ng-show="quantitativa">Peso:</strong> {{avaliacao.peso}}
+                </div>
+                <table class="striped highlight responsive-table" data-ng-show="quantitativa">
+                    <thead>
+                        <tr>
+                            <th style="padding: 9px 5px 1px 13px;" >Codigo</th>
+                            <th style="padding: 9px 5px 1px 13px;">Aluno</th>
+                            <th class="right" style="margin-right: 3.5rem">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="aluno in alunos" id="aluno{{aluno.id}}">                                
+                            <td style="padding: 9px 5px 1px 13px;">{{aluno.matricula.codigo}}</td>
+                            <td style="padding: 9px 5px 1px 13px;">{{aluno.matricula.aluno.nome}}</td>
+                            <td class="right"><input type="text" data-ng-model="aluno.nota" class="col s3 m3 l3 right nota" style="margin-right: 20px; font-size: 1.3rem"></td>
+                        </tr>                       
+                    </tbody>
+                </table>
+                <ul class="collapsible col s12" data-collapsible="expandable" data-ng-hide="quantitativa" style="border: none; box-shadow: none">
+                    <li data-ng-repeat="aluno in alunos" class="row" id="aluno{{aluno.id}}">
+                        <div class="collapsible-header">
+                            <span class="col s2">{{aluno.matricula.codigo}}</span>
+                            <span class="col s8">{{aluno.matricula.aluno.nome}}</span>
+                            <span class="col s2"><i class="material-icons right" style="margin-right: -26px">keyboard_arrow_down</i></span>
+                        </div>
+                        <div class="collapsible-body">
+                            <table class="striped">
+                                <tbody>
+                                    <tr data-ng-repeat="habilidade in aluno.habilidadesAvaliadas">
+                                        <td class="col s10 m10 l10" style="padding-top: 20px">{{habilidade.habilidade.nome | uppercase}}</td>
+                                        <td class="right col s2 m2 l2">
+                                            <select id="hab{{habilidade.id}}{{aluno.id}}" class="conceito aluno{{aluno.id}}" data-ng-model="habilidade.conceito.id" data-ng-change="darNotaQualitativaPorAluno(aluno)">
+                                                <option disabled selected></option>
+                                                <option data-ng-repeat="conceito in conceitos" data-ng-selected="habilidade.conceito.id === conceito.id" value="{{conceito.id}}">{{conceito.sigla}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                             
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="row fim-form end-card" style="padding: 10px" data-ng-show="quantitativa && alunos.length">
+                <a id="btn-avaliar" data-ng-click="avaliar()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>Salvar</a>
+            </div>
+        </div>
+    </div>
+</div>

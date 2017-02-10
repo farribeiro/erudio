@@ -1,0 +1,151 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="endPessoa" >
+    <div class="row" style="margin-top: 35px">
+        <div class="col s12 m12 l12">
+            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">
+                Endereço
+                <a data-ng-show="pessoa.endereco.id" class="btn-floating red right tooltipped" data-tooltip="Excluir Endereço" data-delay="50" data-position="left" data-ng-click="removerEndereco(pessoa.endereco)"><i class="material-icons">clear</i></a>
+            </h5>
+        </div>                        
+    </div>
+    <div class="row">
+        <div class="col s6">
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">my_location</i>
+                <input id="cep" type="text" length="8" class="validate counter cep" data-ng-model="pessoa.endereco.cep" data-ng-change="buscaCEP(pessoa.endereco.cep)" data-ng-disabled="!escrita"/>
+                <label for="cep">C.E.P</label>
+            </div>
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">directions</i>
+                <input id="logradouro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.logradouro" data-ng-disabled="!escrita" required />
+                <label for="logradouro">LOGRADOURO*</label>
+            </div>                
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">filter_1</i>
+                <input id="numero" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" length="10" class="validate counter" data-ng-model="pessoa.endereco.numero" data-ng-disabled="!escrita"/>
+                <label for="numero">NÚMERO</label>
+            </div>                  
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">receipt</i>
+                <input id="complemento" type="text" class="validate" data-ng-model="pessoa.endereco.complemento" />
+                <label for="complemento">COMPLEMENTO</label>
+            </div>      
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">location_on</i>
+                <input id="bairro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.bairro" data-ng-disabled="!escrita" />
+                <label for="bairro">BAIRRO</label>
+            </div>                            
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">location_on</i> 
+                <select id="estado" data-ng-model="estadoId" data-ng-change="selecionaEstado()" data-ng-disabled="!escrita" required>
+                   <option value="{{ estado.id }}" data-ng-selected="verificaSelectEstado(estado.id)" data-ng-repeat="estado in estados">{{ estado.nome | uppercase }}</option>
+                </select>
+                <label for="estado">ESTADO*</label>
+            </div>
+            <div data-ng-show="endereco.cidade.estado.id || estadoId" class="input-field estadoId col s12">
+                <i class="material-icons prefix">location_on</i>
+                <select id="cidade" data-ng-model="cidadeId" data-ng-change="selecionaCidade()" data-ng-disabled="!escrita" required>
+                    <option value="" disabled selected></option>
+                    <option value="{{ cidade.id }}" data-ng-selected="verificaSelectCidade(cidade.id)" data-ng-repeat="cidade in cidades">{{ cidade.nome | uppercase }}</option>
+                </select>
+                <label for="cidade">CIDADE*</label>
+            </div>   
+        </div>    
+        <div class="col s6 m6 l6">
+            <div id="mapa" class="col s12" style="margin:14px 0px 14px 0px;height:504px;"></div>
+        </div>                  
+    </div>    
+<!--    <div class="row">
+        <div class="col s12 m12 l6" style="padding-left:0px;">
+            <div class="row ajuste-margin-bottom-0 ajuste-topo">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">my_location</i>
+                    <input id="cep" type="text" length="8" class="validate counter" data-ng-model="pessoa.endereco.cep" />
+                    <label for="cep">C.E.P</label>
+                </div>
+            </div>
+            <div class="row ajuste-margin-bottom-0">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">location_on</i>
+                    <select id="estado" data-ng-change="selecionaEstado()" data-ng-model="estadoId">
+                        <option value="" disabled selected></option>
+                        <option value="{{ estado.id}}" data-ng-disabled="!loader" data-ng-selected="verificaSelectEstado(estado.id)" data-ng-repeat="estado in estados">{{ estado.nome | uppercase }}</option>
+                    </select>
+                    <label for="estado" class="ajuste-select-top-label">ESTADO*</label>
+                </div>
+            </div>
+            <div data-ng-show="endereco.cidade.estado.id" class="row ajuste-margin-bottom-0">
+                <div class="input-field estadoId col s12 ">
+                    <i class="material-icons prefix">location_on</i>
+                    <select id="cidade" data-ng-change="selecionaCidade()" data-ng-model="cidadeId">
+                        <option value="{{ cidade.id}}"  data-ng-selected="verificaSelectCidade(cidade.id)" data-ng-repeat="cidade in cidades">{{ cidade.nome | uppercase }}</option>
+                    </select>
+                    <label for="cidade">CIDADE*</label>
+                </div>
+            </div>
+            <div class="row ajuste-margin-bottom-0">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">location_on</i>
+                    <input id="bairro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.bairro"  />
+                    <label for="bairro">BAIRRO*</label>
+                </div>
+            </div>
+            <div class="row ajuste-margin-bottom-0">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">directions</i>
+                    <input id="logradouro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.logradouro"  />
+                    <label for="logradouro">LOGRADOURO*</label>
+                </div>
+            </div>
+            <div class="row ajuste-margin-bottom-0">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">filter_1</i>
+                    <input id="numero" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" length="10" class="validate counter" data-ng-model="pessoa.endereco.numero"  />
+                    <label for="numero">NÚMERO</label>
+                </div>
+            </div>
+            <div class="row hide-on-large-only ajuste-margin-bottom-0">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">receipt</i>
+                    <input id="complemento" type="text" class="validate" data-ng-model="pessoa.endereco.complemento" />
+                    <label for="complemento">COMPLEMENTO*</label>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m12 l6">
+            <div id="mapa" class="col s12 m12 l12" style="height: 420px;"></div>
+        </div>
+        <div class="row hide-on-med-and-down ajuste-margin-bottom-0">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">receipt</i>
+                <input id="complemento" type="text" class="validate" data-ng-model="pessoa.endereco.complemento" />
+                <label for="complemento">COMPLEMENTO*</label>
+            </div>
+        </div>                    
+    </div>-->
+</div>

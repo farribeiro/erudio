@@ -1,0 +1,74 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 l12 mobile-full">
+        <div class="card-panel">
+            <form id="cargoForm">
+                <div class="row center espacamento">
+                    <img src="app/modules/matriculas/assets/images/logo-municipio.jpg">
+                </div>
+                <div class="row center espacamento">
+                    <h5><b>ATESTADO DE MATRÍCULA E FREQUÊNCIA</b></h5>
+                </div>
+                <div class="row center espacamento">
+                    <p class="content" style="text-align: justify; margin: 0rem">Atesto para os devidos fins, a pedido da parte interessada, que {{genero}}
+                        <b>{{matricula.aluno.nome}}</b>, está regularmente matriculado, sob o número <b>{{matricula.codigo}}</b>, na Unidade de Ensino 
+                        <b>{{matricula.unidadeEnsino.nome}}</b> e {{frequentaStatus}} o curso <b>{{matricula.curso.nome}}</b> - <b>{{matricula.etapaAtual.nomeExibicao}}</b>.
+                    </p>
+                </div>
+                <div class="row espacamento">
+                    <p class="content right-align" style="margin-right: 0">Situação: <b>{{matricula.status}}</b></p>
+                </div>
+                <div class="row espacamento">
+                    <p class="content right-align" style="margin-right: 0">{{dataEstrutura.completa}}</p>
+                </div>
+                <div class="row espacamento">
+                    <hr style="width: 33rem">
+                    <p class="content center-align" style="margin-top: 0rem">                                
+                        <b>{{matricula.vinculo.funcionario.nome}}</b><br>
+                        {{matricula.vinculo.cargo.nome}}
+                    </p>
+                </div>
+                <div class="row espacamento" style="padding-bottom: 1rem!important">
+                    <hr>
+                    <p class="content center-align" style="margin-top: 0rem">                                
+                        <b>{{matricula.unidadeEnsino.tipo.nome}} {{matricula.unidadeEnsino.nome}}</b><br>
+                        {{matricula.unidadeEnsino.endereco.logradouro}}, N°{{matricula.unidadeEnsino.endereco.numero}}, {{matricula.unidadeEnsino.endereco.bairro}}
+                        , CEP: {{matricula.unidadeEnsino.endereco.cep}}, {{matricula.unidadeEnsino.endereco.cidade.nome}}/{{matricula.unidadeEnsino.endereco.cidade.estado.sigla}}<br>
+                        E-mail: {{matricula.unidadeEnsino.email}} -
+                        Fone: {{matricula.unidadeEnsino.telefones[0].numero | telefone}}, 
+                    </p>
+                </div>
+                <div class="row end-card" style="padding-top: 15px; padding-bottom: 15px;" data-ng-show="escrita">
+                    <div class="col s12 right-align">
+                        <a data-ng-click="gerarPdf()" class="waves-effect waves-azul btn-flat"><i class="material-icons left">local_printshop</i>Imprimir</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

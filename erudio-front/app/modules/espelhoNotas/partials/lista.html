@@ -1,0 +1,212 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                          *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="listaEspelhoNotas">
+    <div class="row">
+        <div class="col s12 espelho-notas-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px!important;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Espelho de Nota</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Integer tempus purus eu velit lobortis, a volutpat ligula mollis. <br>
+                                        Donec placerat tortor vel aliquet lacinia. <br>
+                                        Cras eget urna quis velit bibendum vulputate interdum a arcu. <br>
+                                        Vestibulum malesuada quis nunc non venenatis. In hac habitasse platea dictumst. <br>
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br>
+                                        Donec imperdiet quis nisi non rutrum. Suspendisse dignissim augue vel egestas feugiat. <br>
+                                        Fusce sollicitudin est non purus tempus, ac vehicula orci tincidunt. Integer <br>
+                                        lorem arcu, mattis nec congue consequat, ultricies ut velit. <br>
+                                    </p>
+                                </div>
+                            </div>                                                        
+                        </div>
+                        <ul class="tabs">
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#notasPeriodo" data-ng-click="trocarTab('notasPeriodo')">Período</a></li>
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#notasAnual" data-ng-click="trocarTab('notasAnual')">Anual</a></li>
+                        </ul>
+                    </div>
+                    <div id="notasPeriodo">
+                        <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem; margin-bottom: 1rem!important">
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">school</i>
+                                <select id="cursoEspelhoNota" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id)" required>
+                                    <option disabled selected></option>
+                                    <option value="{{curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome}}</option>
+                                </select>
+                                <label for="cursoEspelhoNota">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix" data-ng-class="{'input-disabled':!etapas.length}">layers</i>
+                                <select id="etapaEspelhoNota" data-ng-model="etapa.id" data-ng-disabled="!etapas.length" data-ng-change="buscarDisciplinas(etapa.id)">
+                                    <option disabled selected></option>
+                                    <option value="{{etapa.id}}" data-ng-repeat="etapa in etapas">{{etapa.nome}}</option>
+                                </select>
+                                <label for="etapaEspelhoNota" >Etapa:</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix" data-ng-class="{'input-disabled':!etapa.id}">iso</i>
+                                <input id="mediaEspelhoNota" type="number" class="validate numeros" min="1" data-ng-model="media" data-ng-disabled="!etapa.id" required/>
+                                <label for="mediaEspelhoNota">Média</label>
+                            </div>
+                            <div class="col s12 right-align end-card" style="margin-bottom: 0px;">
+                                <a data-ng-click="limparTurmas()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                                <a data-ng-click="buscarTurmas(etapa.id, true)" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 mobile-full" style="padding: 0rem;" data-ng-show="editandoPeriodo">
+                        <div class="card-panel">
+                            <div class="card-content mobile-full">
+                                <table class='highlight striped'>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 1rem">
+                                                <div class="hide-on-small-only ng-binding" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in" id="turma" data-ng-model="checkAll" data-ng-click="selecionarTudo()" required/>
+                                                    <label for="turma"></label>
+                                                </div>
+                                            </th>
+                                            <th>Turmas</th>
+                                            <th><span class="right" style="padding-right: 4rem">Opções</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="turma in turmas | orderBy: 'apelido'">
+                                            <td class="celula-link relative mobile-full">
+                                                <div class="hide-on-small-only" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in checkbox-turma" id="turma{{turma.id}}" data-ng-click="selecionarTurma(turma)"/>
+                                                    <label for="turma{{turma.id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td class="relative mobile-full" style="width: 55.3rem;">
+                                                <div class="hide-on-small-only">{{turma.nomeCompleto}}</div>
+                                            </td>
+                                            <td class="center-align hide-on-small-only">
+                                                <i data-ng-click="carregarPeriodo(turma)" data-position="top" data-delay="50" data-tooltip="Visualizar Espelho de Notas" class="material-icons tooltipped info-icon" style="position: relative; left: 6.2rem;">print</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row end-card" data-ng-if="turmasSelecionadas.length">
+                                <a data-ng-click="buscarInfoPeriodo()" class="waves-effect waves-blue btn-flat right tooltipped" data-position="top" data-delay="50" data-tooltip="Imprimir">                                    
+                                    IMPRIMIR
+                                </a>
+                            </div>       
+                        </div>
+                    </div>
+                    <!-- ESPELHO ANUAL -->
+                    <div id="notasAnual">
+                        <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem; margin-bottom: 1rem!important">
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">school</i>
+                                <select id="cursoDisciplina" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id)" required>
+                                    <option disabled selected></option>
+                                    <option value="{{curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome}}</option>
+                                </select>
+                                <label for="cursoDisciplina">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix" data-ng-class="{'input-disabled':!etapas.length}">layers</i>
+                                <select id="etapaDisciplina" data-ng-model="etapa.id" data-ng-change="buscarTurmas(etapa.id, false)" data-ng-disabled="!etapas.length">
+                                    <option disabled selected></option>
+                                    <option value="{{etapa.id}}" data-ng-repeat="etapa in etapas">{{etapa.nome}}</option>
+                                </select>
+                                <label for="etapaDisciplina" >Etapa</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix" data-ng-class="{'input-disabled':!turmas.length}">import_contacts</i>
+                                <select id="turmaDisciplina" data-ng-model="turma.id" data-ng-disabled="!turmas.length">
+                                    <option disabled selected></option>
+                                    <option value="{{turma.id}}" data-ng-repeat="turma in turmas">{{turma.nomeCompleto}}</option>
+                                </select>
+                                <label for="turmaDisciplina">Turma</label>
+                            </div>
+                            <div class="col s12 right-align end-card finaliza-vaga">
+                                <a data-ng-click="limparDisciplinas()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                                <a data-ng-click="buscarDisciplinasOfertadas(turma.id)" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12 m12 mobile-full" style="padding: 0rem;" data-ng-show="editandoAnual">
+                        <div class="card-panel">
+                            <div class="card-content mobile-full">
+                                <table class='highlight striped'>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 1rem">
+                                                <div class="hide-on-small-only ng-binding" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in" id="disciplina" data-ng-model="checkAll" data-ng-click="selecionarTudoDisciplina()"/>
+                                                    <label for="disciplina"></label>
+                                                </div>
+                                            </th>
+                                            <th>Turmas</th>
+                                            <th><span class="right" style="padding-right: 4rem">Opções</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="disciplina in disciplinasOfertadas">
+                                            <td class="celula-link relative mobile-full">
+                                                <div class="hide-on-small-only" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in checkbox-turma" id="disciplina{{disciplina.id}}" data-ng-click="selecionarDisciplina(disciplina)"/>
+                                                    <label for="disciplina{{disciplina.id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td class="relative mobile-full">
+                                                <div class="hide-on-small-only">{{disciplina.nomeExibicao}}</div>
+                                            </td>
+                                            <td class="center-align hide-on-small-only">
+                                                <i data-ng-click="carregarAnual(turma.id, disciplina.nomeExibicao, disciplina.disciplina.id)" data-position="top" data-delay="50" data-tooltip="Visualizar Espelho de Notas" class="material-icons tooltipped info-icon" style="position: relative; left: 12.1rem;">print</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row end-card" data-ng-if="disciplinasSelecionadas.length > 1">
+                                <a data-ng-click="buscarFrequenciasTurma()" class="right waves-effect waves-blue btn-flat right tooltipped" data-position="top" data-delay="50" data-tooltip="Imprimir"> IMPRIMIR </a>
+                            </div>       
+                        </div>
+                    </div>
+                </div>
+            </div>                    
+        </div>
+    </div>
+</div>

@@ -1,0 +1,153 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* Modal Title */
+
+.modal-content {
+    padding: 0 !important;
+}
+
+
+.modal {
+    overflow-x: hidden;
+    z-index:1999 !important;
+}
+
+.fecharModal {
+    position: relative;
+    cursor: pointer;
+    z-index: 1999;
+    top: -2px;
+}
+
+.modal-content p {
+    font-size: 16px;
+    padding: 20px !important;
+}
+
+.modal-title-banner {
+    background: url('../../images/removeBanner.jpg') right bottom no-repeat;
+    height: 20rem !important;
+    position: relative
+}
+
+.modal-title-banner-notas{
+    background: url('../../images/info-alunos.jpg') right bottom;
+    width: 100%!important;
+    height: 180px;
+    position: relative;
+}
+
+.modal-title-banner-info-aluno {
+    background: url('../../images/alunos.jpg') right bottom;
+    width: 100%!important;
+    height: 300px;
+    position: relative;
+}
+.modal-title-banner-info-matricula {
+    background: url('../../images/disciplinaMatricula.jpg') center no-repeat;
+    width: 100%!important;
+    height: 12rem;
+    position: relative;
+}
+
+
+.modal-title-enturmacao {
+    background: url('../../images/alunos.jpg') right bottom;
+    height: 180px;
+    position: relative;
+}
+
+.modal-title-event {
+    background: rgba(0, 0, 0, 0) url("../../images/evento-modal.jpg") no-repeat scroll right bottom;
+    //background-size: 100%;
+    height: 12rem !important;
+    position: relative;    
+}
+
+.modal-title-certeza {
+    background: url('../../images/lexo.jpg') right bottom;
+    height: 300px;
+    position: relative;
+    margin-top:0px;
+}
+
+.modal-titulo h4 {
+    position: absolute;
+    bottom: 10px;
+    left: 30px;
+    color: #fafafa;
+}
+
+.modal-title-banner h4 {
+    position: absolute;
+    bottom: 10px;
+    left: 30px;
+    color: #fafafa;
+}
+
+.modal-title-phones {
+    background: url('../../images/phones.jpg') right bottom;
+    height: 300px;
+    position: relative;
+    z-index:2000!important;
+}
+
+.lean-overlay {
+    z-index: 1500 !important;
+}
+
+.modal-title-phones h4 {
+    position: absolute;
+    bottom: 10px;
+    left: 30px;
+    color: #fafafa;
+}
+
+/* Image Designed by Freepik */
+.modal-title-info h4 {
+    position: absolute;
+    bottom: 10px;
+    left: 30px;
+    color: #212121;
+}
+
+.modal-title-info {
+    background: url('../../../../main/assets/images/bgInfoModal.jpg') center bottom;
+    background-size: 100% auto;
+    height: 140px;
+    position: relative;
+}
+
+.modal-title-professor{
+    background: url('../../images/alunos.jpg') right bottom;
+    height: 180px;
+    position: relative;
+}
+
+.modal-alinha-texto {
+    left: 1rem !important;
+}

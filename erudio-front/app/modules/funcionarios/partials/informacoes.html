@@ -1,0 +1,98 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- FUNCIONARIO -->
+<div class="input-field col s12 m12 l6" data-ng-hide="vinculo.funcionario.id">
+    <div class="col s11 m11 l11" style="padding: 0px !important;">
+        <i class="material-icons prefix">people</i>
+        <span class="digitable-icon" style="right: 4.2rem"><i class="material-icons">border_color</i></span>        
+        <input id="funcionario" class="dropdown" type="text" data-ng-model="nomePessoa"data-ng-change="buscarPessoas()" data-activates='dropPessoas' data-ng-disabled="!escrita">
+        <label for="funcionario">Busque aqui uma Pessoa por nome ou cpf*</label>
+    </div>
+    <div class="col s1 m1 l1" style="padding: 0px !important;">
+        <a class="tooltipped btn-floating btn waves-effect waves-light green right" data-position="top" data-delay="50" data-tooltip="Cadastrar Pessoa" data-ng-click="intraForms();main.selecionar('pessoas')"><i class="material-icons">person_add</i></a>
+    </div>
+</div>
+
+<!-- CARGO 
+<div class="input-field col s12 m12 l6" id="divCargo">                            
+    <i class="material-icons prefix">event_seat</i>
+    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+    <input id="cargosForm" class="dropdown" type="text" data-ng-model="vinculo.cargo.nome" data-ng-change="buscarCargos()" data-activates='dropCargos' data-ng-disabled="vinculo.id || !escrita" />
+    <label for="cargosForm">Busque aqui um Cargo*</label>
+ </div> -->
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">event_seat</i>
+    <select id="cargoVinculoForm" data-ng-model="vinculo.cargo.id" data-ng-disabled="vinculo.id">
+        <option disabled selected></option>
+        <option data-ng-repeat="cargo in cargos" value="{{cargo.id}}" data-ng-selected="cargo.id === vinculo.cargo.id">{{cargo.nome | uppercase}}</option>
+    </select>
+    <label for="cargoVinculoForm">Cargo*</label>
+</div>
+<!-- TIPO CONTRATO -->
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">assignment</i>
+    <select name="select" id="tipoContrato" style="display: none;" data-ng-model="vinculo.tipoContrato" data-ng-disabled="!escrita">
+        <option value="" disabled=""></option> 
+        <option value="EFETIVO" data-ng-selected="vinculo.tipoContrato==='EFETIVO'">EFETIVO</option> 
+        <option value="TEMPORARIO" data-ng-selected="vinculo.tipoContrato==='TEMPORARIO'">TEMPORARIO</option>
+        <option value="COMISSIONADO" data-ng-selected="vinculo.tipoContrato==='COMISSIONADO'">COMISSIONADO</option>
+    </select>         
+    <label for="status">Tipo Contrato*</label>
+</div>
+
+<!-- CARGA HORARIO-->
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">query_builder</i>
+    <input id="cargaHoraria" class="numeros" type="number" min="4" max="40" data-ng-model="vinculo.cargaHoraria" data-ng-disabled="vinculo.id || !escrita">     
+    <label for="cargaHoraria">Carga Horária*</label>
+</div>
+
+<!-- STATUS -->
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">view_week</i>
+    <select name="select" id="status" data-ng-model="vinculo.status" data-ng-disabled="!vinculo.id || !escrita">
+        <option disabled></option> 
+        <option value="ATIVO" data-ng-selected="vinculo.status==='ATIVO'">ATIVO</option> 
+        <option value="AFASTADO" data-ng-selected="vinculo.status==='AFASTADO'">AFASTADO</option>
+        <option value="DESLIGADO" data-ng-selected="vinculo.status==='DESLIGADO'">DESLIGADO</option>
+    </select>         
+    <label for="status">Status*</label>
+</div>
+
+<!-- INSTITUICAO -->
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">school</i>
+    <select id="instituicao" data-ng-model="vinculo.instituicao.id" data-ng-change="carregarInstituicao()" data-ng-disabled="vinculo.id || !escrita">
+        <option data-ng-repeat="instituicao in instituicoes" value="{{ instituicao.id }}" data-ng-selected="vinculo.instituicao.id === instituicao.id">{{ instituicao.nome | uppercase }}</option>
+    </select>
+    <label for="instituicao">Instituição*</label>
+</div>
+<div class="row" style="margin-bottom: 0px" data-ng-show="escrita">
+    <div class="col s12 m12 l12 end-card">
+        <a data-ng-click="vincular()" style="margin-top: 10px; float: right; left: 0px; margin-bottom: 10px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+    </div>
+</div>

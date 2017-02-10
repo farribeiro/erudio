@@ -1,0 +1,98 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div>
+    <div class="col s1 l1"></div>
+    <div class="col s12 l12">
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card-panel" style="margin-top: -90px;">
+                    <div class="card-content">
+                        <div class="row title-calendar" style="padding-top: 15px;">
+                            <div class="col s1"><i class="material-icons mobile-icon-title">import_contacts</i></div>
+                            <div class="col s10 mobile-font-title">Lista de Chamada</div>
+                            <div class="col s12 end-card" style="height: 5px;">&nbsp;</div>
+                        </div>
+                        <!-- <h3 class='card-title-h3' style="padding: 1.5rem 0 0 1.5rem">LISTA DE CHAMADA</h3> -->
+                        <div data-ng-click="realizarChamada('voltar')" class="btn-voltar hide-on-med-and-down">
+                            <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar aos alunos da turma"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+                        </div>
+                        <div id="validate" class="row">
+                            <div class="row" style="margin-top:20px;margin-bottom:32px;padding-left:0px;">
+                                <div class="col s12">
+                                    <div class="input-field col s12 m12 l4" style="padding-left:0px;">
+                                        <i class="material-icons prefix">group</i>
+                                        <input id="turmaChamada" type="text" class="validate" value="{{disciplina.turma.nome| uppercase}}" disabled />
+                                        <label for="turmaChamada">TURMA</label>
+                                    </div>  
+                                    <div class="input-field col s12 m12 l4" style="padding-left:0px;">
+                                        <i class="material-icons prefix">import_contacts</i>
+                                        <input id="disciplinaChamada" type="text" class="validate" value="{{disciplina.nome | uppercase}}" disabled />
+                                        <label for="disciplinaChamada">DISCIPLINA</label>
+                                    </div>                 
+                                    <div class="input-field col s12 m12 l4" style="padding-left:0px;">
+                                        <i class="material-icons prefix">today</i>
+                                        <input id="diaHoje" type="text" class="data" data-ng-model="chamada.dia"  data-ng-change="escolheDiaChamada()"/>
+                                        <label for="diaHoje">DATA CHAMADA* (dd/mm/aaaa)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <table class="striped" data-ng-show="enturmacoesDisciplinas">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding-left: 10px;">Nº</th>
+                                            <th data-field="name">NOME</th>
+                                            <th class="center" data-field="dln" data-ng-repeat="aula in aulas" style="width: 29rem;">{{ $index+1 }}ª aula - {{ aula.horario.inicio | horario }} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="enturmacao in enturmacoesDisciplinas">
+                                            <td>
+                                                <div style="padding-left: 5px;">{{ $index+1 }}</div>
+                                            </td>
+                                            <td>
+                                                <div>{{ enturmacao.matricula.aluno.nome | uppercase }}</div>
+                                            </td>
+                                            <td class="center" data-ng-repeat="aula in aulas">
+                                                <input id="PRESENCA{{enturmacao.matricula.id}}{{aula.id}}" type="checkbox" class="filled-in" name="{{enturmacao.matricula.codigo}}" data-ng-click="setaFrequencia(enturmacao.matricula.id, aula.id)">
+                                                <label for="PRESENCA{{enturmacao.matricula.id}}{{aula.id}}" style="height:15px;"></label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row right-align end-card" data-ng-if="presencas && desabilitarBotao">                                
+                                <a data-ng-click="finalizarChamada()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR CHAMADA</a>                                
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s1 l1"></div>
+</div>

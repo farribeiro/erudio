@@ -1,0 +1,94 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="funcionarioModel" class="modal" style="min-height: 500px;">
+    <div class="modal-content">       
+        <div class="modal-body">
+            <i class="large material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>
+            <div class="modal-title-phones">
+                <h4>{{ opcaoDeEnvio}} CADASTRAR CARGO</h4>
+            </div>
+            <div id="validate" class="row" style="margin-top: 20px;">
+                <div class="col s12 form">
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">event_seat</i>
+                            <input id="nomeFuncionario" type="text" data-ng-model="cargo.nome">     
+                            <label for="cargaHoraria">Nome</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix" >person</i>
+                            <div class="input-field col s12 m12 l6" id="professorPosicao">
+                                <input type="checkbox" class="filled-in" id="professor" data-ng-model="cargo.professor"/>
+                                <label for="professor">PROFESSOR</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">                                                       
+                    </div>
+                    <a class="waves-effect waves-light btn right modal-action modal-close" style="background-color:#03A9F4; top:25px" data-ng-click="criarCargo(cargo)"><i class="material-icons left">done</i>{{opcaoDeEnvio}}</a>
+                </div>
+            </div>       
+        </div>
+    </div>    
+</div>
+
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='position: relative; top: 16rem; padding-left: 1rem; color: white;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0px;">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Exclusão -->
+<div id="removerVinculo" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">{{opcaoDeEnvio}} Desligar Vínculo</h4>
+                </div>
+                <p class="remove-content"></p>
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="removerVinculo()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

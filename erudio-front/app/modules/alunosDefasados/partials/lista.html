@@ -1,0 +1,163 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 alunos-defasados-banner"></div>
+</div>
+<div class="row">
+    <div class="col s12 l12 mobile-full">
+        <div class="row"style="margin-top: -60px;" >
+            <div class="col s12 l12 mobile-full"> 
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class='card-title-h3'>Alunos Defasados</h3>
+                        <div class='row hide-on-small-only'>
+                            <div class='col s6 m6 l6'>
+                                <p style='font-family: Roboto'>
+                                    <strong>Definição:</strong><br />
+                                </p>
+                            </div>
+                            <div class='col s6 m6 l6'>
+                                <p style='font-family: Roboto'>
+                                    <strong>Instruções Rápidas:</strong><br/>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                        <div class='row hide-on-med-and-up'>
+                            <div class='col s12 m12 l12'>
+                                <p style='font-family: Roboto'>
+                                    <strong>Definição:</strong><br />
+                                    ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                    <strong>Dica:</strong><br />
+                                    Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                </p>
+                            </div>
+                        </div>                         
+                    </div>
+                </div>
+                <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
+                    <div class="row" style="padding-top: 1rem">
+                        <div class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">school</i>
+                            <select id="cursoAlunosDefasados" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
+                                <option value="" disabled selected></option>
+                                <option value="{{curso.id}}" data-ng-repeat="curso in cursos" data-ng-selected="curso.id === busca.curso.id">{{curso.nome | uppercase}}</option>
+                            </select>
+                            <label for="cursoAlunosDefasados">Curso</label>
+                        </div>
+                    </div>
+                </div>
+                <div data-ng-hide="!etapas.length || turmas.length || editando" class="row">
+                    <div class="col s12 m12 mobile-full" style="padding: 1rem 0rem 0rem 0rem">
+                        <div class="card-panel">
+                            <div class="card-content mobile-full">
+                                <table class='highlight striped'>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 1rem">
+                                                <div class="hide-on-small-only ng-binding" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in" id="checkboxEtapas" data-ng-click="selecionarTodasEtapas()"/>
+                                                    <label for="checkboxEtapas"></label>
+                                                </div>
+                                            </th>
+                                            <th>Etapa</th>
+                                            <th><span class="right" style="padding-right: 4rem">Opções</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="etapa in etapas | orderBy: 'apelido'">
+                                            <td class="celula-link relative mobile-full">
+                                                <div class="hide-on-small-only" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in checkbox-etapa" id="eta{{etapa.id}}" data-ng-click="selecionarEtapa(etapa)"/>
+                                                    <label for="eta{{etapa.id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td class="relative mobile-full">
+                                                <div class="hide-on-small-only clickable" style="padding: 15px" data-ng-click="buscarTurmas(etapa.id)">{{etapa.nomeExibicao}}</div>
+                                            </td>
+                                            <td class="center-align hide-on-small-only">
+                                                <i data-position="top" data-delay="50" data-tooltip="Visualizar Pdf" class="material-icons tooltipped info-icon" style="position: relative; left: 17.3rem;;" data-ng-click="prepararVisualizacao(etapa.id)">print</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row end-card" style="padding: 1rem; margin-top: 0" data-ng-if="etapasSelecionadas.length">
+                                <a data-ng-click="prepararDocumento()" class="waves-effect waves-blue btn-flat right"> 
+                                    <span>IMPRIMIR</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-ng-hide="!turmas.length || editando" class="row">
+                    <div class="col s12 m12 mobile-full" style="padding: 1rem 0rem 0rem 0rem">
+                        <div class="card-panel">
+                            <div class="card-content mobile-full">
+                                <table class='highlight striped'>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 1rem">
+                                                <div class="hide-on-small-only ng-binding" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in" id="checkboxTurmas" data-ng-click="selecionarTodasTurmas()"/>
+                                                    <label for="checkboxTurmas"></label>
+                                                </div>
+                                            </th>
+                                            <th>Turma</th>
+                                            <th><span class="right" style="padding-right: 4rem">Opções</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="turma in turmas | orderBy: 'apelido'">
+                                            <td class="celula-link relative mobile-full">
+                                                <div class="hide-on-small-only" style="padding: 1rem 0rem 0rem 1rem">
+                                                    <input type="checkbox" class="filled-in checkbox-turma" id="tur{{turma.id}}" data-ng-click="selecionarTurma(turma)"/>
+                                                    <label for="tur{{turma.id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td class="relative mobile-full">
+                                                <div class="hide-on-small-only" style="padding: 15px">{{turma.apelido}}</div>
+                                            </td>
+                                            <td class="center-align hide-on-small-only">
+                                                <i data-position="top" data-delay="50" data-tooltip="Visualizar Pdf" class="material-icons tooltipped info-icon" style="position: relative; left: 16.6rem;" data-ng-click="prepararVisualizacao(turma)">print</i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row end-card" style="padding: 1rem; margin-top: 0" data-ng-if="etapa.turmas.length">
+                                <a data-ng-click="prepararDocumento()" class="waves-effect waves-blue btn-flat right"> 
+                                    <span>IMPRIMIR</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

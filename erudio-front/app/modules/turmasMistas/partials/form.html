@@ -1,0 +1,107 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                          *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 l12 mobile-full">
+        <div class="row" style="margin-top: -64px;">
+            <div class="col s12 l12 mobile-full">
+                <div class="card-panel">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 1rem 0 0 1rem">{{tipoAcao}} Turma Mista</h3>
+                    </div>
+                    <small class="obriga-campos col s12 m12 l12" style="padding-left: 1.1rem"><em>Os campos marcados com * são obrigatórios</em></small>
+                    <!-- Nome do agrupamento -->
+                    <div class="row">
+                        <div class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="nomeAgrupamento" type="text" class="validate" data-ng-model="agrupamento.nome" data-ng-disabled="!escrita" required />
+                            <label for="nomeAgrupamento">Nome*</label>
+                        </div>
+                    </div>
+                    <!-- Lista de Turmas -->
+                    <div class="row" data-ng-show="agrupamento.turmas.length">
+                        <h5 class="sub-titulo" data-ng-show="turmas.length">Turmas Adicionadas</h5>
+                        <table class="bordered striped sub-titulo-table">
+                            <tbody>
+                                <tr id="turmaAdicionar{{turma.id}}" data-ng-repeat="turma in agrupamento.turmas | orderBy: 'nomeCompleto'">
+                                    <td>{{turma.nomeCompleto}}</td>
+                                    <td>{{turma.turno.nome}}</td>
+                                    <td>
+                                        <i data-ng-click="removerTurma(agrupamento, turma)" class="material-icons delete-icon right">delete</i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>                                            
+                    <!-- Botao para salvar -->
+                    <div class="row end-card" data-ng-show="escrita">
+                        <a data-ng-click="salvar(agrupamento)" class="waves-effect waves-azul btn-flat right"><i class="material-icons left">save</i>Salvar</a>
+                    </div>
+                </div>
+                <div class="card-panel">
+                    <div class="row">
+                        <h5 class="sub-titulo">Adicionar Turma</h5>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">account_balance</i>
+                            <select id="cursoAgrupamento" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso)">
+                                <option disabled selected></option>
+                                <option data-ng-repeat="curso in cursos" value="{{curso.id}}">{{curso.nome | uppercase}}</option>
+                            </select>
+                            <label for="cursoAgrupamento">Curso</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">layers</i>
+                            <select id="etapaAgrupamento" data-ng-model="etapa.id" data-ng-change="buscarTurmas(etapa)">
+                                <option disabled selected></option>
+                                <option data-ng-repeat="etapa in etapas" value="{{etapa.id}}">{{etapa.nomeExibicao | uppercase}}</option>
+                            </select>
+                            <label for="etapaAgrupamento">Etapa</label>
+                        </div>
+                        <table class="bordered striped sub-titulo-table" data-ng-show="turmas.length">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Etapa</th>
+                                    <th>Turno</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="turmaAdicionar{{turma.id}}" data-ng-repeat="turma in turmas">
+                                    <td>{{turma.nomeCompleto}}</td>
+                                    <td>{{turma.etapa.nomeExibicao}}</td>
+                                    <td>{{turma.turno.nome}}</td>
+                                    <td>
+                                        <a class="btn-floating btn-medium waves-effect waves-light green right" data-ng-click="adicionarTurma(turma)"><i class="material-icons">add</i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Turmas -->
+<div id="form-boletimEscolar">
+    <div class="row">
+        <div class="col s12 boletim-banner">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 l12 mobile-full">
+            <div class="row"style="margin-top: -60px;" >
+                <div class="col s12 l12 mobile-full"> 
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Boletim Escolar</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Boletim Escolar é o documento que demonstra o desempenho do aluno durante o ano letivo.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br/>
+                                        Utilize os filtros Curso e Etapa para listar todas as turmas.<br>
+                                        Clique sobre o icone da impressora para imprimir os boletins escolares da turma.<br>
+                                        Selecione as caixas de opções correspondentes e clique no botão imprimir para agupar turmas.<br>
+                                        Selecione a caixa de opção Turma para selecionar todas as turmas.<br>
+                                        Clique sobre a turma para buscar o boletim escolar de um estudante específico.<br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Histórico Escolar é o documento que demonstra o desempenho do aluno durante o ano letivo.<br /><br />
+                                    </p>
+                                </div>
+                            </div>                         
+                        </div>
+                    </div>
+                    <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem; margin-bottom: 1rem!important">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">school</i>
+                            <select id="cursoBoletim" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
+                                <option value="" disabled selected></option>
+                                <option value="{{curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome | uppercase}}</option>
+                            </select>
+                            <label for="cursoBoletim">Curso</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">chrome_reader_mode</i>
+                            <select id="etapaBoletim" data-ng-model="busca.etapa.id">
+                                <option value="" disabled selected></option>
+                                <option value="{{etapa.id}}" data-ng-repeat="etapa in etapas">{{etapa.nomeExibicao | uppercase}}</option>
+                            </select>
+                            <label for="etapaBoletim">Etapa</label>
+                        </div>
+                        <div class="end-card col s12" style="padding-top: 1rem">                        
+                            <a data-ng-click="buscarTurmas(busca.etapa.id)" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                            <a data-ng-click="limparBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
+                        </div>
+                    </div>
+                    <div data-ng-show="turmas.length && !editando" class="row">
+                        <div class="col s12 m12 mobile-full" style="padding: 0rem">
+                            <div class="card-panel">
+                                <div class="card-content mobile-full">
+                                    <table class='highlight striped'>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 1rem">
+                                                    <div class="hide-on-small-only ng-binding" style="padding: 1rem 0rem 0rem 1rem">
+                                                        <input type="checkbox" class="filled-in" id="turmas" data-ng-model="checkAllTurmas" data-ng-click="selecionarTodasTurmas()"/>
+                                                        <label for="turmas"></label>
+                                                    </div>
+                                                </th>
+                                                <th>Turmas</th>
+                                                <th><span class="right" style="padding-right: 4rem">Opções</span></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="turma in turmas">
+                                                 <td class="celula-link relative mobile-full">
+                                                    <div class="hide-on-small-only" style="padding: 1rem 0rem 0rem 1rem">
+                                                        <input type="checkbox" class="filled-in" id="tur{{turma.id}}" data-ng-click="selecionarTurma(turma)"/>
+                                                        <label for="tur{{turma.id}}"></label>
+                                                    </div>
+                                                </td>
+                                                <td class="celula-link relative mobile-full">
+                                                    <div class=" hide-on-small-only" data-ng-click="carregarAlunos(turma)"style="padding: 15px">{{turma.nome}} - {{turma.apelido}}</div>
+                                                </td>
+                                                <td class="center-align hide-on-small-only">
+                                                    <i data-position="top" data-delay="50" data-tooltip="Boletim Escolar" class="material-icons tooltipped info-icon right" style="position: relative; right: 4.8rem" data-ng-click="gerarPdf()">print</i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row col s12 fim-form end-card" style="padding: 10px; margin-top: 0rem" data-ng-if="turmasSelecionadas.length > 1">
+                                    <a data-ng-click="gerarPdf()" class="waves-effect waves-blue btn-flat right">
+                                        <i class="material-icons info-icon" style="font-size: 1.6rem; padding-right: 0.5rem">print</i>
+                                        <span style="position: relative; bottom: 0.4rem">IMPRIMIR</span>
+                                    </a>
+                                </div>       
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>       
+        </div>
+    </div>
+</div>

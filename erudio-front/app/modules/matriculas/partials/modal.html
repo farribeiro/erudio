@@ -1,0 +1,405 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="disciplina-modal-aluno" class="modal" style="min-height: 540px;">
+    <div class="modal-content">       
+        <div class="modal-body">
+<!--        <i class="large material-icons right fecharModal" style="font-size: 40px; color: #fafafa" data-ng-click="fecharModal()">close</i>-->
+            <div class="card-title-top" style="height: 150px !important;">
+                <h5 class="ajuste-titulo-form" style="left: 35px !important; top: 0px !important;">{{disciplina.disciplina.nome}}</br>
+                    {{disciplina.matricula.aluno.nome}}</br>
+                    MATRICULA {{disciplina.matricula.codigo}}
+                </h5>                
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">description</i>
+                    <select ng-change="verificaDocumento()" style="display: none;" data-ng-model="documento" id="documentoMatricula">
+                        <option value="" disabled selected></option>
+                        <!--<option value=""></option>-->
+                        <option value="cpf">CPF</option>
+                        <option value="certidao">Certidão de Nascimento(Nova - 32 Digitos)</option>
+                        <option value="certidao-antiga">Certidão de Nascimento(Antiga - Termo/Livro/Folha)</option>
+                    </select>
+                    <label for="documentoMatricula">Documento</label>
+                </div>
+                <div data-ng-class="cpfBusca" class="col s12 m12 l6 input-field">
+                    <i class="material-icons prefix">description</i>
+                    <input id="cpfMatricula" type="text" class="counter" length="11" data-ng-model="pessoaBusca.cpf"  />
+                    <label for="cpfMatricula">CPF</label>         
+                </div>
+            </div>       
+        </div>
+    </div>    
+</div>
+
+<!-- Modal de Enturmar -->
+<div id="confirma-modal-disciplinas" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno">
+                    <h4 style="color:white;position:relative;top:250px;padding-left:10px;">Enturmar</h4>
+                </div>
+                <p>Você deseja enturmar o aluno na turma {{ turmaASerEnturmado.nome | uppercase }} ?</p>
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">
+                    <a href="" data-ng-click="fecharFormulario()"class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="enturmar()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalMovimenta" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-info-etapa">
+                    <h4 style="padding: 11.5rem 0rem 0rem 1.3rem; color: white;">Detalhes da movimentação</h4>
+                </div>
+                <p>
+                   <strong>Turma de Origem</strong>: {{ movimentacao.enturmacaoOrigem.turma.nome | uppercase }}<br/>
+                    <strong>Turma de Destino</strong>: {{ movimentacao.enturmacaoDestino.turma.nome | uppercase }}<br/>
+                    <strong>Data Movimentação</strong>: {{ movimentacao.dataCadastro | date: 'dd/MM/yyyy' }}<br/>
+                    <strong>Justificativa</strong>: {{ movimentacao.justificativa}}<br />
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="modal-transferecia" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-info-aluno">
+                    <h4 style="color: white; position: relative; top: 87px; padding-left: 10px;">{{ aluno.nome | uppercase }}
+                        <!--<a style="top: -5px" data-ng-click="presencaMatricula(matricula)" class="tooltipped btn-floating grey lighten-4" data-position="top" data-delay="50" data-tooltip="Frequência"><i style="color: #212121;" class="material-icons">playlist_add_check</i></a>
+                        <a style="top: -5px" data-ng-click="notasMatricula(matricula)" class="tooltipped btn-floating grey lighten-4" data-position="top" data-delay="50" data-tooltip="Notas"><i style="color: #212121;" class="material-icons">import_contacts</i></i></a>                       -->
+                    </h4>
+                </div>
+                <div>
+                    <div class="row" style="padding-top: 1rem; padding-bottom: 1rem">
+                        <div class="col s12">
+                            <div class="col s6">
+                                <strong>Data Solicitação</strong>: {{ movimentacao.dataCadastro | date: 'dd/MM/yyyy' }}
+                            </div>
+                            <div class="col s6">    
+                                <strong>Data Agendamento</strong>: {{ movimentacao.dataAgendamento | date: 'dd/MM/yyyy' }}
+                            </div>
+                        </div>
+                        <div class="col s12">
+                            <div class="col s6">
+                                <strong>Data Resposta</strong>: {{ movimentacao.dataEncerramento | date: 'dd/MM/yyyy' }}
+                            </div>
+                            <div class="col s6">
+                                <strong>Unidade de destino</strong>: {{ movimentacao.unidadeEnsinoDestino.nome | uppercase }}
+                            </div>
+                        </div>
+                        <div class="col s12">
+                            <div class="col s6">
+                                <strong>Unidade de Origem</strong>: {{ movimentacao.unidadeEnsinoOrigem.nome | uppercase }}
+                            </div>
+                            <div class="col s6">
+                                <strong>Status</strong>: {{ movimentacao.status | uppercase }}
+                            </div>
+                        </div>
+                        <div class="col s12">
+                            <div class="col s6">
+                                <strong>Justificativa</strong>: {{ movimentacao.justificativa}}
+                            </div>
+                            <div class="col s6">
+                                <strong>Resposta</strong>: {{ movimentacao.resposta}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Movimentacao Transferencia-->
+<div id="" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+           
+        </div>
+    </div>
+</div>
+
+<div id="modal-frequenciaJustificativa" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+<!--                <i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-info">
+                    <h4>{{ tipo | uppercase }}  </h4>
+                </div>
+                <p style="font-family: Roboto">
+                    <label for="textarea1">Justificativa apresentada:</label>
+                    <textarea  data-ng-model="justificativa" class="materialize-textarea" disabled></textarea>                
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="matricula-info-aluno" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-info-aluno">
+                    <h4 style="color:white;position:relative;top:87px;padding-left:10px;">{{ aluno.nome | uppercase }}</h4>
+                </div>
+                <div class="row">
+                    <div class="col s6" style="padding-top:1rem;">
+                        <strong>Responsável</strong>: {{ aluno.nomeMae }}
+                    </div>
+                    <div class="col s6" style="padding-top:1rem;">
+                        <strong>Data Nascimento</strong>: {{ aluno.dataNascimento | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div class="col s6">
+                        <strong>E-mail:</strong> {{ aluno.email }}
+                    </div>
+                    <div class="col s6">
+                        <strong>Contatos</strong>:
+                        <span data-ng-repeat="telefone in telefones">
+                            {{ telefone.numero }} - Falar com: {{ telefone.falarCom |uppercase }}<br />
+                        </span><br />
+                    </div>
+                    <div class="col s12" style="padding-top: 2rem; padding-bottom: 1rem;    ">
+                        <strong>Endereço</strong>: 
+                        CEP: {{ aluno.endereco.cep }}
+                        {{ aluno.endereco.logradouro |uppercase }}, {{ aluno.endereco.numero }}, Bairro {{ aluno.endereco.bairro }}, 
+                        {{ aluno.endereco.cidade.nome }}, {{ aluno.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ aluno.endereco.complemento }}">{{ aluno.endereco.complemento }}<br /></span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Diario de notas -->
+<div id="notas-disciplina" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-notas">
+                    <div class='row col s12' style='color: #FAFAFA; padding-top: 9rem'>
+                        <h4 class='truncate'>{{media.nome}} - Notas de {{matricula.aluno.nome}}</h4>                        
+                    </div>
+                </div>
+                <!-- QUANTITATIVA -->
+                <table class="striped" data-ng-show="sistemaAvaliacao === 'quantitativas'">
+                    <thead>
+                        <tr>
+                            <th data-field="id" style="padding-left:23px!important;">Avaliação</th>
+                            <th data-field='tipo'>Tipo</th>                                                        
+                            <th data-field='entrega' class='center'>Entrega</th>
+                            <th data-field='peso' class='center'>Peso</th>
+                            <th data-field="nota">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="nota in media.notas">                            
+                            <td style="padding-left:23px!important;padding-top:20px;">{{nota.avaliacao.nome | uppercase}}</td>                            
+                            <td>{{nota.avaliacao.tipo.nome | uppercase}}</td>
+                            <td class='center'>{{nota.avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy'}}</td>
+                            <td class='center'>{{nota.avaliacao.peso}}</td>
+                            <td style="padding-bottom:0px;padding-top:0px;font-weight: bold">
+                                <div style="width: 40px">
+                                    <input disabled type="text" value="{{nota.valor}}" class="nota" style="margin-bottom:0px; text-align: center;background-color:white;border:solid 1px #d1d1d1;-webkit-border-radius: 20px;
+                                    -moz-border-radius: 5px;border-radius:5px;color: black;">
+                                </div>
+                            </td>                            
+                        </tr>
+                    </tbody>                    
+                </table>
+                <!-- QUALITATIVA -->
+                <ul class="collapsible" data-collapsible="accordion" style="border:none; box-shadow: none;" data-ng-show="sistemaAvaliacao === 'qualitativas'">
+                    <li data-ng-repeat="nota in media.notas" class="row">
+                        <div class="collapsible-header" style="background-color: #FAFAFA">
+                            <span class="col s11">{{nota.avaliacao.nome}}</span>
+                            <span class="col s1"><i class="material-icons right">keyboard_arrow_down</i></span>
+                        </div>
+                        <div class="collapsible-body" style="background-color: #FAFAFA">
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th style="padding-left: 3rem;">Habilidades Avaliadas</th>
+                                        <th class="center" style="padding-right: 1.3rem;">Conceito</th>
+                                    </tr>
+                                </thead>                                
+                                <tbody>
+                                    <tr data-ng-repeat="habilidade in nota.habilidadesAvaliadas">
+                                        <td style="padding-left: 3.5rem;">{{habilidade.habilidade.nome}}</td>
+                                        <td class="center" style="padding-right: 1.3rem;">
+                                            {{habilidade.conceito.nome}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+                <div data-ng-if="media.valor" class="row col s12" style="margin-top:0px">
+                    <div class="right" style="padding-bottom: 1rem; font-size: 1.2rem">
+                        Nota Final: {{media.valor}}
+                    </div>
+                </div>
+            </div>                       
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Enturmar -->
+<div id="modal-enturmar" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno">
+                    <h4 style="color: white; position: relative; top: 250px; padding-left: 10px;">Enturmar</h4>
+                </div>
+                <div class="row" style="padding-top: 1rem;">
+                    <div class="col s12" style="padding: 0rem 1rem 1rem">
+                        <span data-ng-show="matricula.status==='TRANCADO'">
+                            O status da matricula encontra-se <b>{{matricula.status}}</b>, ao enturrmar ela voltará a ser cursando.
+                        </span>
+                    </div>
+                    
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">account_balance</i>
+                        <input id="unidadeEnsino" type="text" class="validate labelDisabled" value="{{matricula.unidadeEnsino.nome| uppercase}}" disabled />
+                        <label for="unidadeEnsino" class="labelDisabled">Unidade de Ensino</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">school</i>
+                        <input id="cursoMatricula" type="text" class="validate labelDisabled" value="{{matricula.curso.nome| uppercase}}" disabled />
+                        <label for="cursoMatricula" class="labelDisabled">Curso</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6" data-ng-hide="enturmacao.dataCadastro">
+                        <i class="material-icons prefix">view_week</i>
+                        <select id="etapaCursoEnturmar" data-ng-model="etapa.id" data-ng-change="buscarDisciplinasCursadasEnturmacao(etapa.id)">
+                            <option value="" disabled selected></option>
+                            <option value="{{ etapa.id}}" data-ng-repeat="etapa in etapasCurso | orderBy: 'nome'">{{ etapa.nome | uppercase}}</option>
+                        </select>
+                        <label for="etapaCursoEnturmar" class="ajuste-select-top-label">Etapa*</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">group_add</i>
+                        <select id="turmaDisciplinas"  data-ng-model="turmaMatricula.id" data-ng-disabled="!turmas.length || enturmacao.dataCadastro"><!--data-ng-change="buscarDisciplinas()"-->
+                            <option value="" disabled selected></option>
+                            <option value="{{turma.id}}" data-ng-repeat="turma in turmas" data-ng-selected="enturmacao.turma.id === turma.id">{{ turma.nome | uppercase }}</option>
+                        </select>
+                        <label for="turmaDisciplinas" class="ajuste-select-top-label">Turma</label>
+                    </div>    
+                </div>                 
+            </div>
+            <div class="end-card" >
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-green btn-flat ">
+                        <i class="material-icons left">save</i>
+                        <span data-ng-hide="enturmacao.dataCadastro" data-ng-click="enturmar()">ENTURMAR</span>
+                        <span data-ng-show="enturmacao.dataCadastro" data-ng-click="reenturmar()">REENTURMAR</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Disciplinas -->
+<div id="modal-disciplinas" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-matricula white-text">
+                    <h4 style="padding: 9rem 0 0 1rem">Escolher Disciplinas Cursadas</h4>
+                </div>
+                <div class="row" style="padding-top: 1rem;">
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">account_balance</i>
+                        <input id="unidadeEnsino" type="text" class="validate labelDisabled" value="{{matricula.unidadeEnsino.nome| uppercase}}" disabled />
+                        <label for="unidadeEnsino" class="labelDisabled">Unidade de Ensino</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">school</i>
+                        <input id="cursoMatricula" type="text" class="validate labelDisabled" value="{{matricula.curso.nome| uppercase}}" disabled />
+                        <label for="cursoMatricula" class="labelDisabled">Curso</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">view_week</i>
+                        <select id="etapaCursoDisciplinaCursada" data-ng-model="etapa.id" data-ng-change="buscarTurmasDisciplinas(etapa.id)">
+                            <option value="" disabled selected></option>
+                            <option value="{{ etapa.id}}" data-ng-repeat="etapa in etapas | orderBy: 'nome'">{{ etapa.nome | uppercase}}</option>
+                        </select>
+                        <label for="etapaCursoDisciplinaCursada" class="ajuste-select-top-label">Etapa*</label>
+                    </div>
+                    <div data-ng-show="disciplinasCursadas.length"><!--disciplinasOfertadas-->
+                        <small data-ng-show="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Etapa Integral, selecione as disciplinas optativas.</em></small>
+                        <small data-ng-hide="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Desmarque as disciplinas opcionais que não serão cursadas.</em></small>
+                        <p data-ng-repeat="disciplina in disciplinasCursadas" style="margin: 5px">
+                            <input type="checkbox" class="filled-in" id="disciplina{{disciplina.disciplina.id}}" data-ng-click="selecionaDisciplina(disciplina)" checked="true"/><!--data-ng-checked="etapaCurso.integral"-->
+                            <label for="disciplina{{disciplina.disciplina.id}}">{{disciplina.disciplina.nomeExibicao | uppercase}}</label><br/>
+                        </p>
+                    </div>
+                </div>                 
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">
+                    <a data-ng-click="verificaDisciplinasCursadas()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect modal-close waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+Ajuda / Definição 
+<div id="modal-ajuda" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='position: relative; top: 16rem; padding-left: 1rem; color: white;'>Deseja descartar os dados preenchidos?</h3>
+        </div>
+        <div class="modal-content">
+            <p style='font-family: Roboto'>
+     
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+        </div>
+    </div>
+</div>
+-->

@@ -1,0 +1,95 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div>
+    <i class="material-icons pointer left" style="font-size: 2.3rem" data-ng-click="calendarioHorarios(mes.num-1, null)">navigate_before</i>
+    <span class="col s10 m10 l10 center-align" style="font-size:1.7rem;">{{mes.nome}}</span>
+    <i class="material-icons pointer right" style="font-size: 2.3rem" data-ng-click="calendarioHorarios(mes.num+1, null)">navigate_next</i>
+</div>
+
+<table style="margin-top:8px">
+    <thead>
+        <tr>
+            <th>D</th>
+            <th>S</th>
+            <th>T</th>
+            <th>Q</th>
+            <th>Q</th>
+            <th>S</th>
+            <th>S</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="semana in semanas" class="data">
+            <td class="domingo" style="border-left: 0.5px solid #ccc;">
+                <div class="data-header">{{ semana.domingo.dia.data | date: 'dd' }}</div>
+            </td>
+            <td>
+                <div id="{{semana.segunda.dia.data}}" class="date-content" data-ng-show="semana.segunda.dia.data" data-ng-click="carregarAula(semana.segunda)" data-ng-class="{'dia-de-aula': semana.segunda.horario.id, 'aula-escolhida': semana.segunda.id === avaliacao.aulaEntrega.id}">
+                    <div class="data-header">{{ semana.segunda.dia.data | date: 'dd' }}</div>
+                    <div class="horarios" data-ng-show="semana.segunda.horario.id">
+                        <div> {{ semana.segunda.horario.inicio | horario }} / {{ semana.segunda.horario.termino | horario }} </div>                    
+                    </div>
+                </div>                
+            </td>
+            <td>
+                <div id="{{semana.terca.dia.data}}" class="date-content" data-ng-show="semana.terca.dia.data" data-ng-click="carregarAula(semana.terca)" data-ng-class="{'dia-de-aula': semana.terca.horario.id, 'aula-escolhida': semana.terca.id === avaliacao.aulaEntrega.id}">
+                    <div class="data-header">{{ semana.terca.dia.data | date: 'dd' }}</div>
+                    <div class="horarios" data-ng-show="semana.terca.horario.id">
+                        <div> {{ semana.terca.horario.inicio | horario }} / {{ semana.terca.horario.termino | horario }} </div>                    
+                    </div>
+                </div>                    
+            </td>
+            <td>
+                <div id="{{semana.quarta.dia.data}}" class="date-content" data-ng-show="semana.quarta.dia.data" data-ng-click="carregarAula(semana.quarta)" data-ng-class="{'dia-de-aula': semana.quarta.horario.id, 'aula-escolhida': semana.quarta.id === avaliacao.aulaEntrega.id}">
+                    <div class="data-header">{{ semana.quarta.dia.data | date: 'dd' }}</div>
+                    <div class="horarios" data-ng-show="semana.quarta.horario.id">
+                        <div> {{ semana.quarta.horario.inicio | horario }} / {{ semana.quarta.horario.termino | horario }} </div>                    
+                    </div>
+                </div>                    
+            </td>
+            <td>
+                <div id="{{semana.quinta.dia.data}}" class="date-content" data-ng-show="semana.quinta.dia.data" data-ng-click="carregarAula(semana.quinta)" data-ng-class="{'dia-de-aula': semana.quinta.horario.id, 'aula-escolhida': semana.quinta.id === avaliacao.aulaEntrega.id}">
+                    <div class="data-header">{{ semana.quinta.dia.data | date: 'dd' }}</div>
+                    <div class="horarios" data-ng-show="semana.quinta.horario.id">
+                        <div> {{ semana.quinta.horario.inicio | horario }} / {{ semana.quinta.horario.termino | horario }} </div>                    
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div id="{{semana.sexta.dia.data}}" class="date-content" data-ng-show="semana.sexta.dia.data" data-ng-click="carregarAula(semana.sexta)" data-ng-class="{'dia-de-aula': semana.sexta.horario.id, 'aula-escolhida': semana.sexta.id === avaliacao.aulaEntrega.id}">
+                    <div class="data-header">{{ semana.sexta.dia.data | date: 'dd' }}</div>
+                    <div class="horarios" data-ng-show="semana.sexta.horario.id">
+                        <div> {{ semana.sexta.horario.inicio | horario }} / {{ semana.sexta.horario.termino | horario }} </div>                    
+                    </div>
+                </div>                    
+            </td>
+            <td class="sabado">
+                <div class="data-header">{{ semana.sabado.dia.data | date: 'dd' }}</div>
+            </td>
+        </tr>
+    </tbody>
+</table>

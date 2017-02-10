@@ -1,0 +1,115 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="modal-remover-avaliacao" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h4 class="modal-alinha-texto" style="position: relative; top: 17rem;">Remover avaliação</h4>
+        </div>
+    </div>
+    <div class="modal-content">
+        <p>Ao remover esta avaliação, as notas serão apagadas. Deseja realmente remover esta avaliação?</p>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0rem">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='excluirAvaliacao()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-modal-avaliacao" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-avaliacoes">
+                    <h4 class="white-text" style="padding: 9rem 0 0 1rem;">{{ avaliacao.nome }}</h4>
+                </div>
+                <span class="col s12 m6 l6 padd-top-1" data-ng-class="{'padd-bottom-1': !avaliacao.habilidades.length}"> 
+                    <strong> Curso: </strong> {{ avaliacao.disciplina.turma.etapa.curso.nome }} <br/>
+                    <strong> Etapa: </strong> {{ avaliacao.disciplina.turma.etapa.nomeExibicao }} <br/>
+                    <strong> Turma: </strong> {{ avaliacao.disciplina.turma.apelido }}<br/>
+                    <strong> Disciplina: </strong> {{ avaliacao.disciplina.disciplina.nomeExibicao }}<br/>                                    
+                    <strong> Tipo: </strong> {{ avaliacao.tipo.nome }} <br/>
+                </span>
+                <span class="col s12 m6 l6 padd-top-1" data-ng-class="{'padd-bottom-1': !avaliacao.habilidades.length}">                    
+                    <strong> Data de Entrega: </strong> {{ avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy' }} <br/>                                                              
+                    <strong> Horário: </strong> {{ avaliacao.aulaEntrega.horario.inicio }} às {{ avaliacao.aulaEntrega.horario.termino }}<br/>                    
+                    <strong> Média: </strong> {{ avaliacao.media }} <br/>
+                    <strong data-ng-hide="avaliacao.habilidades.length">Peso: </strong> {{ avaliacao.peso }}<br/>
+                </span>
+                <span class="col s12 m12 l12 padd-bottom-1" data-ng-show="avaliacao.habilidades.length">
+                    <strong> Habilidades: </strong> <br/>
+                    <span data-ng-show="avaliacao.habilidades.length" data-ng-repeat="habilidade in avaliacao.habilidades">
+                        {{ habilidade.nome }} <br/>
+                    </span>
+                </span>        
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='padding: 80px 0 0 10px; color: white; position: relative; top: 10rem;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>
+<!-- Modal Aviso Habilidades-->
+
+<div id="modal-fechamento-media" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-media">
+            <h4 class="modal-alinha-texto" style="position: relative; top: 9rem; color: white;">Fechamento de Média</h4>
+        </div>
+    </div>
+    <div class="modal-content">
+        <p>Para o fechamento automático da média selecione todas as habilidades.</p>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0rem">
+            <div data-ng-show="AvaliacaoService.abrirFormulario">
+                <a data-ng-click="selecionarTudo(true); finalizar(); AvaliacaoService.fechaForm(); main.selecionar('main', '')" class="modal-action modal-close waves-effect waves-green btn-flat right" style="padding-right: 1.1rem">Selecionar Todas as Habilidades</a>
+                <a data-ng-click="finalizar(); AvaliacaoService.fechaForm(); main.selecionar('main', '')" class=" modal-action modal-close waves-effect waves-red btn-flat right ">Continuar Mesmo Assim</a>
+            </div>
+            <div data-ng-hide="AvaliacaoService.abrirFormulario">
+                <a data-ng-click="selecionarTudo(true); finalizar()" class="modal-action modal-close waves-effect waves-green btn-flat right" style="padding-right: 1.1rem">Selecionar Todas as Habilidades</a>
+                <a data-ng-click="finalizar();" class=" modal-action modal-close waves-effect waves-red btn-flat right ">Continuar Mesmo Assim</a>
+            </div>                
+        </div>
+    </div>
+</div>

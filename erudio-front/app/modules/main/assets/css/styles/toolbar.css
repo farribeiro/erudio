@@ -1,0 +1,120 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+/* Toolbar */
+
+.navbar-fixed {
+    z-index: 997 !important;
+    position: fixed !important;
+}
+
+.bold > a {
+    font-weight: bold;
+}
+
+ul.side-nav.fixed {
+    line-height: 44px;
+}
+
+ul.side-nav.fixed li a {
+    font-size: 13px;
+    height: 44px;
+    line-height: 44px;
+    cursor: pointer;
+}
+
+.side-nav.fixed a {
+    color: #444;
+    display: block;
+    padding: 0 15px;
+}
+
+.side-nav .collapsible-body li a {
+    margin: 0 1rem 0 2rem;
+}
+
+.side-nav li:hover, .side-nav li.active {
+    background: transparent !important;
+}
+
+.side-nav .no-padding ul li:hover, .side-nav .no-padding li.active {
+    background: #f2f2f2 !important;
+}
+
+ul.side-nav.fixed li.logo {
+    border-bottom: 1px solid #ddd;
+    /*margin-bottom: 16px;*/
+    text-align: center;
+    background: rgba(0, 0, 0, 0) url("../../images/userSidebar.jpg") repeat scroll 0 0 / auto 100% !important;
+    background-size: auto 100%;
+}
+
+#logo-container {
+    height: 150px;
+    background: transparent;
+}
+
+nav {
+    box-shadow: none;
+    height: 122px;
+    background: #0288d1 !important;
+    color: #fafafa !important;
+    border-bottom: 1px solid #81D4FA;
+    box-shadow: none !important;
+}
+
+nav a.page-title {
+    font-size: 20px;
+    line-height: 65px;
+}
+
+.progress-sem-busca {
+    top: -8px !important;
+}
+
+.toolbar {
+    width: 100%;
+    float: left;
+    height: 64px;
+    background: #2196f3;
+    position: fixed;
+    top: 0;
+    transition: all 0.5s ease !important;
+    border-bottom: 1px solid #90caf9;
+    z-index: 997;
+    display:none;
+}
+
+.main-banner {
+    height: 20rem;
+    background: url('../../images/init.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.card-title-h3 {
+    margin-top: 0 !important;
+}

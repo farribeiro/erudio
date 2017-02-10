@@ -1,0 +1,62 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Cortina de progresso -->
+<div data-ng-show="cortina" class="cortinaProgresso"></div>
+
+<a data-ng-show="mostraAvaliacoes && !alunos.length" class="tooltipped btn-large btn-floating btn waver-effect waves-circle waves-light rosa btn-add" data-position="left" data-delay="50" data-tooltip="Adicionar Avaliação">
+    <i class="material-icons" data-ng-click="AvaliacaoService.abreForm(); main.selecionar('avaliacoes', '')">add</i>
+</a>
+
+<ul id='fecharMedia' class='dropdown-content'>
+    <li class="divider"></li>
+    <li><a style="color: #7f8c8d" data-ng-click="mostraFechamentoMedia(true)">Manual</a></li> 
+    <li class="divider"></li>
+    <li><a style="color: #7f8c8d" data-ng-click="fecharMedia(false)">Automático</a></li>        
+</ul>
+
+<ul id='fecharMediaGeral' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="media in medias">
+        <a style="color: #7f8c8d" data-ng-click="fecharMediaGeral(media.numero)">{{media.nome}}</a>
+    </li>
+</ul>
+
+<span data-ng-hide="verificarFAB()">
+    <div data-ng-click="verificaOpcoes()" class="btn-voltar hide-on-med-and-down" data-ng-hide="mostrarFAB()">
+        <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar ao Início"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+    </div>
+    <i data-ng-hide="mostrarFAB()" class="material-icons btn-voltar hide-on-large-only" data-ng-click="verificaOpcoes()">arrow_back</i>
+</span>
+
+<!-- Botão Voltar (Formulário)
+<div data-ng-show="mostraPerfil">
+    <div data-ng-click="voltar()" id="voltar"  class="btn-voltar hide-on-med-and-down">
+        <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+    </div>
+    <i class="material-icons btn-voltar hide-on-large-only" data-ng-click="voltar()">arrow_back</i>
+</div>
+-->

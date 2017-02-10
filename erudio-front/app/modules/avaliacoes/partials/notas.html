@@ -1,0 +1,83 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row" style="position:relative;">
+    <div class="col s12">
+        <div class="card-panel row">
+            <div class="row">
+                <h3 class='card-title-h3' style="padding: 20px 0 0 20px">{{avaliacao.disciplina.turma.nomeCompleto}} / {{avaliacao.nome}}</h3>
+            </div>
+            <div class="row">
+                <table class="bordered striped" data-ng-show="endereco === 'quantitativas'">
+                    <thead>
+                        <tr>
+                            <th class="col m1">Nº</th>
+                            <th class="col m10">Aluno</th>
+                            <th class="col m1 center-align">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="enturmacao in enturmacoes | orderBy: 'matricula.aluno.nome'">
+                            <td class="col m1" style="padding-top: 1.2rem">{{$index+1}}</td>
+                            <td class="col m10" style="padding-top: 1.2rem">{{enturmacao.matricula.aluno.nome | uppercase}}</td>
+                            <td class="col m1">
+                                <input type="number" class="center-align nota" min="0" max="10" data-ng-model="enturmacao.nota.valor" data-ng-disabled="enturmacao.nota.id">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row col s12 fim-form end-card" data-ng-hide="alunosAvaliados === enturmacoes.length || endereco === 'qualitativas'">
+                    <a data-ng-click="salvarNotasQuantitativas(enturmacoes)" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>SALVAR</a>
+                </div>
+                <ul class="collapsible col s12" data-collapsible="expandable" data-ng-show="endereco === 'qualitativas'" style="border: none; box-shadow: none">
+                    <li id="enturmacao{{enturmacao.id}}" data-ng-repeat="enturmacao in enturmacoes" class="row">
+                        <div class="collapsible-header">
+                            <span class="col s1">{{$index+1}}</span>
+                            <span class="col s2">{{enturmacao.matricula.codigo}}</span>
+                            <span class="col s7">{{enturmacao.matricula.aluno.nome}}</span>
+                            <span class="col s2"><i class="material-icons right" style="margin-right: -26px">keyboard_arrow_down</i></span>
+                        </div>
+                        <div class="collapsible-body">
+                            <table class="striped">
+                                <tbody>
+                                    <tr data-ng-repeat="habilidade in enturmacao.nota.habilidadesAvaliadas">
+                                        <td class="col s10 m10 l10" style="padding-top: 20px">{{habilidade.habilidade.nome | uppercase}}</td>
+                                        <td class="right col s2 m2 l2">
+                                            <select id="hab{{habilidade.id}}{{enturmacao.id}}" class="conceito enturmacao{{enturmacao.id}}" data-ng-model="habilidade.conceito.id" data-ng-change="salvarNotasQualitativas(enturmacao)" data-ng-disabled="habilidade.id">
+                                                <option disabled selected></option>
+                                                <option data-ng-repeat="conceito in conceitos" data-ng-selected="habilidade.conceito.id === conceito.id" value="{{conceito.id}}">{{conceito.sigla}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>                             
+                        </div>
+                    </li>
+                </ul>
+            </div>            
+        </div>
+    </div>
+</div>

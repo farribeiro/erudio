@@ -1,0 +1,111 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Tipos -->
+<div id="listaTipo">
+    <div class="row"><div class="col s12 tipoUnidade-banner"></div></div>
+    <div class="row">
+        <div data-ng-hide="editando"class="col s1 l1 hide-on-small-only"></div>
+        <div class="col s12 l12 mobile-full init-card">
+            <div data-ng-hide="editando" class="row ripple-head title-card">
+                <div class="col s12 l12 mobile-full title-fix-card" style="margin-top: -64px">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Tipo de Unidade</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Tipos de Unidades são formas de classificação de uma unidade de ensino conforme as características do alunos atendidos, 
+                                        idade, localização, etc.<br /><br />
+                                        ex: Centro de Educação Infantil, Grupo Escolar, Escola Básica, Escola Isolada, etc...
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no botão + para cadastrar um Tipo de Unidade.<br />
+                                        Clique sobre o nome de um Tipo de Unidade para editá-la.<br />
+                                        Clique na lixeira para remover Tipo de Unidade.<br />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='row hide-on-med-and-up'>
+                    <div class='col s12 m12 l12'>
+                        <p style='font-family: Roboto'>
+                            <strong>Definição:</strong><br />
+                            ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                            <strong>Dica:</strong><br />
+                            Clique sobre o item desejado para ver as opções disponíveis para ele.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row ripple-list list-card" data-ng-hide="editando" data-ng-show="tipos.length">
+                <div class="col s12 mobile-full list-items">
+                    <div class="card card-list">
+                        <div class="card-content mobile-full main-list">
+                            <table class='striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Tipos de Unidade</th>                                    
+                                        <th class='hide-on-small-only' data-field='opcoes' data-ng-show="escrita">Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>    
+                                    <tr data-ng-repeat="tipo in tipos | orderBy: 'nome'">
+                                        <td class="celula-link mobile-full" data-ng-click="carregar(tipo)">
+                                            {{tipo.nome}}
+                                        </td>                                                                              
+                                        <td class='hide-on-small-only' data-ng-show="escrita">                                          
+                                            <i data-ng-click="prepararRemover(tipo)" data-target="remove-modal" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form-tipo data-ng-show="editando"></form-tipo>
+        </div>
+        <div class="col s1 l1 hide-on-small-only"></div>
+    </div>
+    <erro-busca-tipo data-ng-hide="tipos.length"></erro-busca-tipo>
+</div> 

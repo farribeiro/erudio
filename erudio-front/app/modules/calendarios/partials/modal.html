@@ -1,0 +1,197 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Modal de Exclusão -->
+<div id="remove-modal-calendario" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover calendário</h4>
+                </div>
+                <p>Você realmente deseja remover este calendário?</p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="remover()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FORMULARIO DIAEVENTO -->
+<div id="dia-evento-modal" class="modal">
+    <div class="modal-content">       
+        <div class="modal-body">                        
+            <div class="modal-title-event">
+                <h4 class="white-text col s10" style="padding: 8.8rem 0 0 0.7rem">
+                    <!--{{ opcaoDeEnvio }} evento ao -->
+                    Eventos de {{ dia.data | date: 'dd/MM/yyyy' }}                     
+                </h4>
+                <div class="col s2" style="padding: 8.8rem 0 0 0.7rem">
+                    <a class="tooltipped btn-floating btn-medium waves-effect waves-light green right" style="margin: 0.2rem 0.6rem" data-tooltip="Adicionar Evento" data-position="left" data-delay="50" data-ng-click="abrirFormEvento(null)" data-ng-show="escrita && !editandoEvento"><i class="material-icons">add</i></a>
+                    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4 right" style="margin: 0.2rem 0.6rem;" data-position="left" data-delay="50" data-tooltip="Voltar" data-ng-show="editandoEvento && dia.eventos.length" data-ng-click="editandoEvento = false"><i class="material-icons" style="color: #212121">arrow_back</i></a>                    
+                </div>
+            </div>
+            <!-- LISTA DE EVENTOS -->
+            <div class="eventos-lista" data-ng-hide="editandoEvento">
+                <table class="striped table-list">
+                    <tbody>
+                        <tr class="row" data-ng-repeat="evento in dia.eventos | orderBy: 'inicio'">
+                            <td class="col s1">{{evento.inicio | horario }}</td>
+                            <td class="col s1">{{evento.termino | horario }}</td>
+                            <td class="col s8 celula-link clickable truncate" data-ng-click="abrirFormEvento(evento)"><span style="padding-left: 1rem">{{evento.evento.nome}}</span></td>                            
+                            <td data-ng-show="escrita" class="col s2"><i class="material-icons modal-trigger delete-icon tooltipped right" data-position="left" data-delay="50" data-tooltip="Remover Evento" style="padding-right: 1rem" data-ng-click="removerEvento(evento, dia)">delete</i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- FORMULÁRIO DE EVENTO -->
+            <div class="row form" style="margin-top: 0.5rem;" data-ng-show="editandoEvento">
+                <div class='card-border-title row' style='margin-top: -0.5rem'>
+                    <h5 class='col s12' data-ng-class="{'m6': calendario.calendarioBase.id, 'm9': !calendario.calendarioBase.id}">{{opcaoDeEnvio}}</h5>
+                    <div class="col s6 m3" style='padding-top: 1rem' data-ng-hide="evento.id || !calendario.calendarioBase.id">
+                        <input type="checkbox" class="filled-in right" data-ng-model="eventoReplicado" id="input-evento-replicado" checked="checked" />
+                        <label for="input-evento-replicado">Evento replicado</label>
+                    </div>
+                    <div class="col s6 m3" style='padding-top: 1rem' data-ng-hide="evento.id">
+                        <input type="checkbox" class="filled-in right" data-ng-model="eventoExtendido" id="input-evento-extendido" checked="checked" />
+                        <label for="input-evento-extendido">Evento extendido</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input id="titulo" type="text" class="validate counter" data-ng-model="evento.evento.nome" data-ng-disabled="!escrita" required>
+                        <label class="active" for="titulo">Título*</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">assignment</i>
+                        <select id="tipo" data-ng-model="evento.evento.tipo" data-ng-change="selecionarTipoEvento()" data-ng-disabled="!escrita" required>
+                            <option disabled selected></option>
+                            <option value="ATIVIDADE_ESCOLAR" data-ng-selected="evento.evento.tipo==='ATIVIDADE_ESCOLAR'">ATIVIDADE ESCOLAR</option>
+                            <option value="ATIVIDADE_ADMINISTRATIVA" data-ng-selected="evento.evento.tipo==='ATIVIDADE_ADMINISTRATIVA'">ATIVIDADE ADMINISTRATIVA</option>
+                            <option value="INTERESSE_PUBLICO" data-ng-selected="evento.evento.tipo==='INTERESSE_PUBLICO'">INTERESSE PUBLICO</option>
+                            <option value="FERIADO" data-ng-selected="evento.evento.tipo==='FERIADO'">FERIADO</option>
+                            <option value="RECESSO" data-ng-selected="evento.evento.tipo==='RECESSO'">RECESSO</option>
+                        </select>
+                        <label for="descricao">Tipo*</label>
+                    </div>
+                </div>                                          
+                <div class="row">
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">description</i>
+                        <input id="descricao" type="text" class="validate counter" data-ng-model="evento.evento.descricao" data-ng-disabled="!escrita">
+                        <label class="active" for="descricao">Descrição</label>
+                    </div> 
+                </div>
+                <div id="input-horas">
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">alarm_on</i>
+                        <input id="horaInicio" type="text" class="time hora" data-ng-model="evento.inicio" data-ng-disabled="!escrita || evento.evento.tipo === 'FERIADO'">
+                        <label for="horaInicio">Hora de Início*</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6">
+                        <i class="material-icons prefix">alarm_on</i>
+                        <input id="horaTermino" type="text" class=" time  hora" data-ng-model="evento.termino"data-ng-disabled="!escrita || evento.evento.tipo === 'FERIADO'">
+                        <label for="horaTermino">Hora de Término*</label>
+                    </div>
+                </div>
+                <div id="evento-extendido" data-ng-hide="evento.id">                    
+                    <div class="input-field col s12 m6 l6" data-ng-show="eventoExtendido">
+                        <i class="material-icons prefix">event</i>
+                        <input id="data-evento-extendido" class="data" data-ng-model="evento.dataTermino" type="text">
+                        <label for="data-evento-extendido">Data de término</label>
+                    </div>
+                </div>
+                <table class="striped" data-ng-if="eventoReplicado">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="checkbox-evento-calendario" class="filled-in" data-ng-click="selecionarCalendario()">
+                                <label for="checkbox-evento-calendario"></label>
+                            </th>
+                            <th>
+                                Instituição
+                            </th>
+                            <th>
+                                Nome
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="c in calendarios | orderBy: 'instituicao.nomeCompleto'" data-ng-show="verificarCalendarioReplicado(c)">
+                            <td>
+                                <input type="checkbox" id="cal{{c.id}}" class="filled-in calendario-checkbox" data-ng-click="selecionarCalendario(c)">
+                                <label for="cal{{c.id}}"></label>
+                            </td>
+                            <td>{{c.instituicao.nomeCompleto | uppercase}}</td>
+                            <td>{{c.nome | uppercase}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="col s12 m12 l12 modal-footer end-card" data-ng-show="escrita">
+                    <a data-ng-click="salvarEvento()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>SALVAR</a>
+                </div>                
+            </div>
+        </div>
+    </div>    
+</div>
+<!-- Modal de Exclusão -->
+<div id="remove-modal-evento-dia" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover evento</h4>
+                </div>
+                <p>Você realmente deseja remover <strong>{{evento.evento.nome}}</strong> em <strong>{{evento.dia.data | date: 'dd/MM/yyyy'}}</strong>?</p>
+            </div>
+            <div class="modal-footer end-card" style="margin-top: 0">
+                <a class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                <a data-ng-click="removerEvento(evento, evento.dia)" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='padding: 80px 0 0 10px; color: white; position: relative; top: 10rem;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>

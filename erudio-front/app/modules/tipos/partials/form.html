@@ -1,0 +1,58 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate" class="row form-geral">    
+    <div class="col s12 mobile-full form-card-wrapper">
+        <div class="row form-box show-form">
+            <div class="card-panel fix-no-margin-card">
+                <form id="tipoUnidadeForm" class="form-opacity-out">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 20px">{{ acao }} Tipo de Unidade</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col s12" style="padding-left: 0px">
+                            <div class="input-field col s12 m6 l6">
+                                <i class="material-icons prefix">school</i>
+                                <input id="nomeTipo" type="text" class="validate" data-ng-model="tipo.nome" data-ng-disabled="!escrita" required />
+                                <label for="nomeTipo">Nome*</label>
+                            </div>
+                            <div class="input-field col s12 m6 l6" style="padding-right:0px;">
+                                <i class="material-icons prefix">font_download</i>
+                                <input id="nomeDisciplinaTipo" type="text" class="validate" data-ng-model="tipo.sigla" data-ng-disabled="!escrita" required />
+                                <label for="nomeDisciplinaTipo">Sigla*</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row end-card" data-ng-show="escrita">
+                        <div class="col s12 right-align">
+                            <a data-ng-click="finalizar()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

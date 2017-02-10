@@ -1,0 +1,136 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validateDisciplina">
+    <div class="row">
+        <div class="col s12 disciplina-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card-panel">
+                        <form id="cursoForm">
+                            <div class="row">
+                                <h3 class='card-title-h3' style="padding: 20px">{{ acao}} Disciplina</h3>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">account_circle</i>
+                                    <input id="nomeDisciplina" type="text" class="validate" data-ng-model="disciplina.nome" data-ng-disabled="!escrita" required />
+                                    <label for="nomeDisciplina">Nome da Disciplina*</label>
+                                </div>
+                                <div class="input-field col s12 m6 l6">
+                                    <i class="material-icons prefix">assignment_ind</i>
+                                    <input id="nomeExibicaoDisciplina" type="text" class="validate" data-ng-model="disciplina.nomeExibicao" data-ng-disabled="!escrita" required />
+                                    <label for="nomeExibicaoDisciplina">Nome de Exibição*</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col l6">
+                                    <i class="material-icons prefix">schedule</i>
+                                    <input id="cargaHorariaDisciplina" type="text" class="validate numeros" length="5" maxlength="5" data-ng-model="disciplina.cargaHoraria" data-ng-disabled="!escrita" data-ng-change="somenteNumeros()" required/>
+                                    <label for="cargaHorariaDisciplina">Carga Horária*</label>
+                                </div>
+                                <div class="input-field col l6">
+                                    <input type="checkbox" class="filled-in" id="opcionalDisciplina" ng-model="disciplina.opcional" data-ng-disabled="!escrita" />
+                                    <label for="opcionalDisciplina" class="checkbox">Disciplina Opcional?</label>
+                                </div>
+                            </div>
+                            <div class="row end-card" style="padding-top:15px;padding-bottom:15px;" data-ng-show="escrita">
+                                <div class="col s12 right-align">
+                                    <a data-ng-click="salvarDisciplina(disciplina)" class="waves-effect waves-azul btn-flat"><i class="material-icons left">save</i>Salvar</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+<div id="validateDisciplina" class="form-box">    
+    <div class="card-panel" style="margin-top: 23px;">
+        <div class="card-title-top card-top-etapas">
+            <h5 class="ajuste-titulo-form">{{ acao }} DISCIPLINA</h5>
+        </div>
+        <form id="disciplinaForm" style="padding: 20px;">
+            <small style="margin-left: 10px;  margin-top: 15px; font-size: 12px;"><em>Os campos marcados com * são obrigatórios</em></small>
+            <div style="margin-top: 10px;" class="row ajuste-margin-bottom-0">    
+                <div class="input-field col s12 m6 l6">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="nomeDisciplina" type="text" class="validate" data-ng-model="disciplina.nome" required />
+                    <label for="nomeDisciplina">NOME DA DISCIPLINA*</label>
+                </div>
+                <div class="input-field col s12 m6 l6">
+                    <i class="material-icons prefix">assignment_ind</i>
+                    <input id="nomeExibicaoDisciplina" type="text" class="validate" data-ng-model="disciplina.nomeExibicao" required />
+                    <label for="nomeExibicaoDisciplina">NOME DE EXIBIÇÃO*</label>
+                </div>
+                <div class="input-field col s12 m12 l12">
+                    <i class="material-icons prefix">schedule</i>
+                    <input id="cargaHorariaDisciplina" type="text" class="validate counter" length="5" maxlength="5" data-ng-model="disciplina.cargaHoraria" required />
+                    <label for="cargaHorariaDisciplina">CARGA HORÁRIA*</label>
+                </div>                
+                <div class="input-field col s12">
+                    <input type="checkbox" class="filled-in" id="opcional" ng-model="disciplina.opcional"/>
+                    <label for="opcional" class="checkbox">DISCIPLINA OPCIONAL?</label>
+                </div>
+            </div>
+            <div class="row fim-form">
+                <div class="col s12 right-align">
+                    <a data-ng-click="finalizar()" class="waves-effect waves-azul btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+-->

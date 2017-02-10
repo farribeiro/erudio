@@ -1,0 +1,126 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<link rel="stylesheet" type="text/css" href="app/modules/main/assets/css/home.css"/>
+<!-- Imagem do Módulo -->
+<div class="row"><div class="col s12 main-banner"></div></div>
+<div>
+    <div class="col s12 l12">
+        <div class="row" data-ng-show="isHome" style="margin-top: -105px;">
+            <div class="col s12 m12">
+                <!-- Card de Informações -->
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class='card-title-h3' data-ng-cloak>Olá, <span class="username-label" data-ng-bind="usuario.nome"></span>!</h3>
+                        <p class="main-descricao">
+                            É bom te ver por aqui! <br />
+                            Que tal escolhermos logo abaixo o vínculo e a alocação que você possui?<br />
+                            Isso me ajuda a filtrar as informações da melhor maneira. :) <br /><br />
+                            Essa é a sua página inicial, toda vez que precisar ver suas informações mais relevantes em um único lugar, 
+                            fique à vontade para acessá-la.<br />
+                        </p>
+                    </div>
+                </div>
+                <div data-ng-if="vinculos.length" style="background: #fafafa; padding: 1rem; margin-top: -1rem;" class="z-depth-1">
+                    <div class="row">
+                        <!-- Selecionar Vínculo -->
+                        <div class="input-field col s12 m12" data-ng-class="{'l4': vinculo.cargo.professor, 'l6': !vinculo.cargo.professor}">
+                            <select id="vinculos" class="select-busca" data-ng-model="vinculo.id" data-ng-change="carregarVinculo(vinculo.id);buscarAlocacoes(vinculo.id)">                            
+                                <option disabled selected></option>
+                                <option value="{{vinculo.id}}" data-ng-repeat="vinculo in vinculos" data-ng-selected="verificaSelectVinculo(vinculo.id)">{{ vinculo.codigo }} - {{ vinculo.cargo.nome | uppercase }} - {{ vinculo.cargaHoraria }}hrs</option>
+                            </select>
+                            <label for="vinculos" class="ajuste-select-top-label">Seu vínculo:</label>
+                        </div>
+                        <!-- Selecionar Alocação -->
+                        <div class="input-field col s12 m12" data-ng-class="{'l4': vinculo.cargo.professor, 'l6': !vinculo.cargo.professor}">
+                            <select id="alocacoes" class="select-busca" data-ng-model="alocacao.id" data-ng-disabled="!alocacoes.length" data-ng-change="carregarAlocacao(alocacao.id)">                            
+                                <option disabled selected></option>
+                                <option value="{{alocacao.id}}" data-ng-repeat="alocacao in alocacoes" data-ng-selected="verificaSelectAlocacao(alocacao.id)">{{alocacao.instituicao.nomeCompleto | uppercase }}</option>
+                            </select>
+                            <label for="alocacoes" class="ajuste-select-top-label">Sua alocação:</label>
+                        </div>
+                        <!-- Selecionar Disciplina -->
+                        <div class="input-field col s12 m12 l4" data-ng-show="vinculo.cargo.professor">
+                            <select id="disciplinas" class="select-busca" data-ng-model="disciplina.id" data-ng-disabled="!disciplinas.length" data-ng-change="carregarDisciplina(disciplina.id)">
+                                <option disabled selected></option>
+                                <option value="{{disciplina.id}}" data-ng-repeat="disciplina in disciplinas" data-ng-selected="verificaSelectDisciplina(disciplina.id)">{{ disciplina.turma.nomeCompleto | uppercase }} {{ disciplina.disciplina.nomeExibicao | uppercase }}</option>
+                            </select>
+                            <label for="disciplinas" class="ajuste-select-top-label">Sua disciplina:</label>
+                        </div>
+                    </div>                        
+                </div>
+            </div>
+        </div>
+        
+        <div class="fixed-action-btn vertical click-to-toggle fab-button" data-ng-if="mostrarFAB()">
+            <a class="btn-floating waves-effect waves-circle waves-light btn-large red" data-ng-click="mostrarLabels()"><i class="material-icons">menu</i></a>
+            <ul>     
+                <li> <!-- OBSERVACOES DE AULA -->
+                    <div class="chip z-depth-2 toolchip">Observações</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu purple lighten-1" data-ng-click="verificaOpcoes('observacoes')" data-ng-class="{'btn-disabled': !mostraObservacoes}"><i class="material-icons">speaker_notes</i></a>
+                </li>
+                <li> <!-- AVALIACAO -->
+                    <div class="chip z-depth-2 toolchip">Avaliações</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu orange lighten-1" data-ng-click="verificaOpcoes('avaliacoes')" data-ng-class="{'btn-disabled': !mostraAvaliacoes}"><i class="material-icons">import_contacts</i></a>
+                </li>                    
+                <li> <!-- DIARIO DE NOTAS -->
+                    <div class="chip z-depth-2 toolchip">Diário de Notas</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu green" data-ng-click="verificaOpcoes('diario-nota')" data-ng-class="{'btn-disabled': !mostraDiarioNota}"><i class="material-icons">filter_9</i></a>
+                </li>
+                <li> <!-- DIARIO DE PRESENCA -->
+                    <div class="chip z-depth-2 toolchip">Diário de Presença</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu red darken-1" data-ng-click="verificaOpcoes('frequencia')" data-ng-class="{'btn-disabled': !mostraFrequencia && !fazerChamada}"><i class="material-icons">playlist_add_check</i></a>
+                </li>
+                <li> <!-- MEU PERFIL -->
+                    <div class="chip z-depth-2 toolchip">Meu Perfil</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu blue" data-ng-click="verificaOpcoes('perfil')" data-ng-class="{'btn-disabled': !mostraPerfil}"><i class="material-icons">face</i></a>
+                </li>
+                <li> <!-- CALENDÁRIO -->
+                    <div class="chip z-depth-2 toolchip">Calendário Escolar</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu yellow lighten-1" data-ng-click="verificaOpcoes('calendario')" data-ng-class="{'btn-disabled': !mostraCalendario}"><i class="material-icons" style="color: #424242">today</i></a>
+                </li>
+                <li> <!-- LOGOUT -->
+                    <div class="chip z-depth-2 toolchip">Sair</div>
+                    <a class="btn-floating waves-effect waves-circle waves-light tool-menu red lighten-1" data-ng-click="main.logout()"><i class="material-icons">power_settings_new</i></a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Telas do ambiente de professor -->
+        <div style="margin-top: 1.3rem">
+            <main-controle></main-controle>
+            <main-inicio data-ng-if="!mostraPerfil && !mostraCalendario && !mostraFrequencia && !mostraAvaliacoes && !mostraDiarioNota && !fazerChamada && !mostraObservacoes && disciplina.id"></main-inicio>
+            <main-calendario data-ng-show="mostraCalendario"></main-calendario>
+            <main-perfil data-ng-show="mostraPerfil"></main-perfil>
+            <main-diario-frequencia data-ng-show='mostraFrequencia'></main-diario-frequencia>
+            <main-chamada data-ng-show="fazerChamada"></main-chamada>
+            <main-avaliacoes data-ng-show="mostraAvaliacoes"></main-avaliacoes>
+            <main-diario-nota data-ng-show="mostraDiarioNota"></main-diario-nota>
+            <main-observacoes data-ng-show="mostraObservacoes"></main-observacoes>
+            <main-modal></main-modal>
+        </div>            
+    </div>
+</div>

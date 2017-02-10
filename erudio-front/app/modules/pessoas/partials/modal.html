@@ -1,0 +1,213 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- FORMULARIO TELEFONE -->
+<div id="telefone-modal-pessoa" class="modal" style="min-height: 540px;">
+    <div class="modal-content">       
+        <div class="modal-body">
+            <i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>
+            <div class="modal-title-phones">
+                <h4>{{ opcaoDeEnvio }} TELEFONE</h4>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col s12 form">
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">phone</i>
+                            <input id="telefone" type="text" length="15" class="validate counter" data-ng-model="telefone.numero" required />
+                            <label for="telefone">NUMERO</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">settings_phone</i>
+                            <select id="descricao" data-ng-model="telefone.descricao" required>
+                                <option disabled selected></option>
+                                <option data-ng-selected="verificaSelectDescricao('CELULAR')" value="CELULAR">CELULAR</option>
+                                <option data-ng-selected="verificaSelectDescricao('TRABALHO')" value="TRABALHO">TRABALHO</option>
+                                <option data-ng-selected="verificaSelectDescricao('RESIDENCIAL')" value="RESIDENCIAL">RESIDENCIAL</option>
+                            </select>
+                            <label for="descricao">DESCRIÇÃO</label>
+                        </div>
+                    </div>
+                    <div class="row">                   
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">contact_phone</i>
+                            <input id="falarCom" type="text" class="validate" data-ng-model="telefone.falarCom">
+                            <label for="falarCom">FALAR COM</label>
+                        </div>                                            
+                    </div>
+                    <a class="waves-effect waves-light btn-flat right modal-action modal-close" style=" top:25px" data-ng-click="salvarTelefone(telefone)"><i class="material-icons left">done</i>SALVAR</a>
+                </div>
+            </div>       
+        </div>
+    </div>    
+</div>
+<!-- Descartar dados -->
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-banner">
+            <h3 style='color: white; position: relative; top: 14rem; padding-left: 1rem;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a data-ng-click='fecharFormulario()' class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>        
+        </div>
+    </div>
+</div>
+
+<div id="remove-modal-pessoa" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover Pessoa</h4>
+                </div>
+                <p>Você realmente deseja remover esta pessoa?</p>
+            </div>
+            <div class="row">
+                <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="remover(pessoa)" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL PESSOA JA CADASTRADA -->
+<div id="pessoa-cadastrada" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-info-pessoa">
+                    <h4 style="color: white; position: relative; top: 87px; padding-left: 10px;">{{ cadastroExistente.nome | uppercase }}
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>Responsável</strong>: {{ cadastroExistente.nomeMae }}
+                    </div>
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>Data Nascimento</strong>: {{ cadastroExistente.dataNascimento | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div class="col s6">
+                        <strong>E-mail:</strong> {{ cadastroExistente.email }}
+                    </div>
+                    <div class="col s6">
+                        <strong>Contatos</strong>:
+                        <span data-ng-repeat="telefone in cadastroExistente.telefones">
+                            {{ telefone.numero }} - Falar com: {{ telefone.falarCom |uppercase }}<br />
+                        </span><br />
+                    </div>
+                    <div class="col s12" style="padding-top: 2rem; padding-bottom: 0.5rem">
+                        <strong>Endereço</strong>:<br/> 
+                        CEP: {{ cadastroExistente.endereco.cep }}<br />
+                        {{ cadastroExistente.endereco.logradouro |uppercase }}, {{ cadastroExistente.endereco.numero }}, Bairro {{ cadastroExistente.endereco.bairro }}, 
+                        {{ cadastroExistente.endereco.cidade.nome }}, {{ cadastroExistente.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ cadastroExistente.endereco.complemento }}">{{ cadastroExistente.endereco.complemento }}<br /></span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 1.5rem !important;">Deseja confirmar novo cadastro?</p>
+            <div class="end-card" style="margin-bottom: 0rem; margin-top: -1rem;">
+                <div class="modal-footer">
+                    <a href="" data-ng-click="fecharFormulario()"class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="salvarPessoa()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>             
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL PESSOA -->
+<div id="modal-pessoa" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-info-pessoa">
+                    <h4 style="color: white; position: relative; top: 87px; padding-left: 10px;">{{ pessoa.nome | uppercase }}
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>Responsável</strong>: {{ pessoa.nomeMae }}
+                    </div>
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>Data Nascimento</strong>: {{ pessoa.dataNascimento | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div class="col s6">
+                        <strong>E-mail:</strong> {{ pessoa.email }}
+                    </div>
+                    <div class="col s6">
+                        <strong>Contatos</strong>:
+                        <span data-ng-repeat="telefone in telefones">
+                            {{ telefone.numero }} - Falar com: {{ telefone.falarCom |uppercase }}<br/>
+                        </span><br/>
+                    </div>
+                    <div class="col s12" style="padding-bottom: 0.5rem;">
+                        <strong>Endereço</strong>:
+                        CEP: {{ pessoa.endereco.cep }}
+                        {{ pessoa.endereco.logradouro | uppercase }}, {{ pessoa.endereco.numero }}, Bairro {{ pessoa.endereco.bairro }}, 
+                        {{ pessoa.endereco.cidade.nome }}, {{ pessoa.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ pessoa.endereco.complemento }}">{{ pessoa.endereco.complemento }}<br /></span>
+                    </div>
+                    <div class="info-map row" style="margin-bottom: 1rem !important;">
+                        <div class="col s12">
+                            <div id="info-map" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Finalizar cadastro -->
+<div id="confirma-cadastro" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-finaliza-pessoa">
+                    <h4 style="color:white;position:relative;top: 6rem;padding-left: 2.2rem;">Finalizar cadastro</h4>
+                </div>
+                <p style="font-family: Roboto; margin: 1rem !important; font-size: 1rem;">
+                    <strong>Deseja finalizar o cadastro de {{pessoa.nome}} ?</strong>
+                </p>
+            </div>
+            <div class="end-card" style="margin-bottom:0rem; margin-top: -1rem;">
+                <div class="modal-footer">
+                    <!--<a href="" data-ng-click="confirmarCadastro()"class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>-->
+                    <a href="" data-ng-click="verificaPessoa()"class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="fecharFormulario()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

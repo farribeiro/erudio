@@ -1,0 +1,131 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row" style="position:relative;">
+    <div class="col s12">
+        <div class="card-panel row">
+            <div class="row">
+                <h3 class='card-title-h3' style="padding: 20px 0 0 20px">{{ acao }} Avaliação</h3>
+                <small class="obriga-campos"><em>Os campos marcados com * são obrigatórios</em></small>
+            </div>
+            <div class="row">                         
+                <div class="col s12 m12 l6">                                        
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">insert_comment</i>
+                        <input data-ng-model="avaliacao.nome" id="nomeFormAvaliacao" type="text">
+                        <label for="nomeFormAvaliacao">Nome</label>
+                    </div>       
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">extension</i>
+                        <select id="tipo" data-ng-model="avaliacao.tipo.id">
+                            <option data-ng-repeat="tipo in tipos" value="{{tipo.id}}" data-ng-selected="tipo.id === avaliacao.tipo.id">{{ tipo.nome | uppercase }}</option>
+                        </select>
+                        <label for="tipo">Tipo</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">local_library</i>
+                        <select id="curso" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id); resetaSelects(false, true, true, true, true)" data-ng-disabled="avaliacao.id">
+                            <option value="" disabled selected></option>
+                            <option data-ng-repeat="curso in cursos" value="{{curso.id}}" data-ng-selected="verificaSelectCurso(curso.id)">{{curso.nome | uppercase}}</option>
+                        </select>
+                        <label for="curso">Curso</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">layers</i>
+                        <select id="etapa" data-ng-model="etapa.id" data-ng-change="buscarTurmas(etapa.id); carregarEtapa(etapa.id); resetaSelects(false, false, true, true, true)" data-ng-disabled="!etapas.length || avaliacao.id">
+                            <option value="" disabled selected></option>
+                            <option data-ng-repeat="etapa in etapas | orderBy: 'nome'" value="{{etapa.id}}" data-ng-selected="verificaSelectEtapa(etapa.id)">{{etapa.nome | uppercase}}</option>
+                        </select>
+                        <label for="etapa">Etapa</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">chrome_reader_mode</i>
+                        <select id="turma" data-ng-model="turma.id" data-ng-change="buscarDisciplinas(turma.id, ''); resetaSelects(false, false, false, true, true)" data-ng-disabled="!turmas.length || avaliacao.id">
+                            <option value="" disabled selected></option>
+                            <option data-ng-repeat="turma in turmas | orderBy: 'nome'" value="{{turma.id}}" data-ng-selected="verificaSelectTurma(turma.id)">{{ turma.nome | uppercase }}-{{ turma.apelido | uppercase }}</option>
+                        </select>
+                        <label for="turma">Turma</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">import_contacts</i>
+                        <select id="disciplinas" data-ng-model="avaliacao.disciplina.id" data-ng-change="selecionaDisciplina(); buscarHorarios(avaliacao.disciplina.id); buscarAulas(turma.id, avaliacao.disciplina.id, null); buscarUmaDisciplinaOfertada(avaliacao.disciplina.id)" data-ng-disabled="!ofertadas.length || avaliacao.id">
+                            <option value="" disabled selected></option>
+                            <option data-ng-repeat="ofertada in ofertadas" value="{{ofertada.id}}" data-ng-selected="verificaSelectDisciplina(ofertada.id)">{{ofertada.disciplina.nomeExibicao | uppercase}}</option>
+                        </select>
+                        <label for="disciplinas">Disciplina</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix">iso</i>
+                        <input data-ng-model="avaliacao.media" class="numeros" id="mediaFormAvaliacao" type="number" max="{{ sistema.quantidadeMedias }}" min="1" data-ng-change="buscarHabilidades()" data-ng-disabled="avaliacao.id">
+                        <label for="mediaFormAvaliacao">Media</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12" data-ng-if="sistema.tipo==='QUANTITATIVO'">
+                        <i class="material-icons prefix">filter_list</i>
+                        <input data-ng-model="avaliacao.peso" id="pesoAvaliacao" type="text">
+                        <label for="pesoAvaliacao">Peso</label>
+                    </div>
+                </div>                    
+                <!-- CALENDARIO -->
+                <div class="col s12 m12 l6">
+                    <calendario-avaliacoes></calendario-avaliacoes>
+                </div>
+            </div>                                             
+            <div class="row col s12 m12 l12" data-ng-if="sistema.tipo==='QUALITATIVO'&& habilidades.length">                             
+                <div class="col s12 m12 l12">
+                    <table class="striped col s12 m12 l12">
+                        <thead>
+                            <tr>
+                                <th style="padding: 15px 10px 0px 1rem">
+                                    <input type="checkbox" class="filled-in FMButton" id="filled-in-box" data-ng-model="checkAll" data-ng-click="selecionarTudo(checkAll)"/>
+                                    <label for="filled-in-box">
+                                        <span class="FMTooltip" data-tooltip="Para o fechamento automático da média selecione todas as habilidades." data-delay="50" data-position="top">!</span>
+                                    </label>
+                                </th>                            
+                                <th>Habilidade</th>
+                                <th>Média</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="habilidade in habilidades">
+                                <td>
+                                    <input type="checkbox" class="filled-in" id="hab{{habilidade.id}}" data-ng-click="adicionarHabilidade(habilidade, true)" />
+                                    <label for="hab{{habilidade.id}}" style="margin: 0 10px -10px"></label>
+                                </td>                          
+                                <td>{{habilidade.nome | uppercase}}</td>
+                                <td>{{habilidade.media}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                    
+            </div>
+            <div class="row col s12 fim-form end-card" style="padding:10px;">
+                <!--data-ng-hide="AvaliacaoService.abrirFormulario"-->
+                <a data-ng-click="verificaFinalizar()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>SALVAR</a>
+                <!--<a data-ng-click="verificaFinalizar(); AvaliacaoService.fechaForm(); main.selecionar('main', '')" data-ng-show="AvaliacaoService.abrirFormulario && avaliacao.habilidades.length === habilidades.length" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>SALVAR</a>-->
+            </div>            
+        </div>
+    </div>
+</div>

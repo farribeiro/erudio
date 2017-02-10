@@ -1,0 +1,344 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+textarea { text-transform: uppercase; }
+
+.para-cima {
+    margin-top:0px;
+}
+
+.disabled-admin {
+    color: #9e9e9e;
+}
+
+.select-wrapper input.select-dropdown:disabled {
+    color: black !important;
+}
+
+.diminui-espacamento {
+    margin-left: -11px !important;
+    width: 104% !important;
+}
+
+td {
+    border-radius: 2px;
+    padding: 30px !important;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.historicoMovimentacoes-banner {
+    margin-top: -12px!important;
+    height: 20rem;
+    background: url('../images/historicoMovimentacoes.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+#btn-opcao .btn {
+    background-color: #03A9F4;
+    margin-bottom: 5px;
+}
+
+.borda-baixo {
+    border-bottom: 1px solid #e0e0e0 !important;
+    margin-bottom: 10px;
+}
+
+.borda-cima {
+    border-top: 1px solid #e0e0e0 !important;
+    padding-top: 10px !important;
+}
+
+#aceita-modal {
+    height: 415px !important;
+}
+
+.disciplinas {
+    padding: 7px 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-content {
+    padding: 24px !important;
+}
+
+.modal-title-banner {
+    height: 12rem!important;
+    background: url('../images/movimentar.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+td, th {
+    display: table-cell;
+    padding: 15px 25px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.opcao-enturmar {
+    bottom: 3%;
+    float: left;
+    left: 3%;
+    position: relative;
+}
+
+.para-baixo {
+    margin-top: 25px !important;
+}
+
+.info-aluno {
+    margin-top: 35px !important;
+    font-size: 1.5em !important;
+}
+#recusar-movimentacao{
+    max-height: 70rem;
+}
+
+.padding-turma-item {
+    /* line-height: 17px; */
+    height: 55px;
+}
+
+.padding-duas-linhas {
+    padding-top: 6px !important;
+}
+
+.secondary-content {
+    padding: 22px !important;
+}
+
+.para-direita {
+    margin-left: 5px;
+}
+.para-baixo {
+    margin-top: 5px;
+}
+
+.espaco-botao {
+    margin-top: 25px !important;
+}
+
+.sub-titulo {
+    font-weight: bold;
+    font-size: 1.1em !important;
+    color: black !important;
+}
+
+.padding-unidade-item {
+    padding-top: 12px;
+    padding-bottom: 21px;
+}
+
+.collection {
+    margin-top: 5px !important;
+}
+
+.tem-transferencia  {
+    display: none; 
+    position: absolute; 
+    z-index: 3; 
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+}
+
+.unidade-origem {
+    display:none;
+}
+
+.loader {
+    top: 87px !important;
+    right: 42px !important;
+}
+
+.padding-left {
+    padding-left: 9% !important;
+}
+
+.busca {
+    position: relative;
+}
+
+.tabs .tab a {
+    color: hsl(199, 98%, 48%) !important;
+}
+
+.ajuste-titulo-pesquisa {
+    padding: 20px 20px 40px !important;
+}
+
+.tabs .indicator {
+    background-color: #03A9F4 !important;
+}
+
+.formulario {
+    margin-top: 15px !important;
+    border-top: 1px solid #eee;
+    padding-top: 30px !important;    
+}
+
+.swipeable {
+    height: 50px;
+}
+
+.recusar {
+    color: #c0392b;
+}
+
+.btn-voltar {
+    display: block !important;
+}
+
+.filled-in[type="checkbox"]:checked + label:after {
+    background-color: #03a9f4;
+    border: 2px solid #03a9f4;
+}
+
+.lista-mobile {
+    display: none;
+}
+
+.lista-desktop {
+    display: block;
+}
+
+@media only screen and (min-width : 993px) {    
+    .btn-voltar-mobile {
+        top: 92px !important;
+        right:50px !important;
+    }       
+    
+    .collection .collection-item {
+        height: 60px !important;
+    }
+    
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .pesquisa {
+        padding-top: 15px;
+    }
+    
+    .collapsible {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+            
+    .collection .collection-item {
+        height: 60px !important;
+    }
+    
+    .busca {
+        top: 0px !important;
+    }     
+
+    #aceita-modal {
+        height: 500px;
+    }
+    
+    .input-field label {
+        font-size: 0.8rem;
+    }
+    
+    .center-mobile {
+        text-align: center;
+    }
+    
+    .info-aluno-movimentacao {
+        padding-bottom: 30px;
+    }
+    
+    .offset-s1 {
+        font-size: 20px;
+    }
+    
+    .padding-left {
+        padding-left : 0% !important;
+    }
+    
+    .seta-transferencia {
+        display: none !important;
+    }
+    
+    .unidade-transferencia {
+        padding-left: 15%;
+    }
+    
+    .ajuste-titulo-pesquisa {
+        height: 0;
+        font-size: 16px !important
+    }
+    
+    #btn-transferir {
+        margin-top: 5px !important;
+        width: 48% !important;
+    }
+    
+    #btn-aceitar {
+        margin-top: 5px !important;
+        width: 48% !important;
+    }
+    
+    #btn-recusar {
+        margin-top: 5px !important;
+        width: 46% !important;
+    }
+    
+    #btn-desligar {
+        margin-top: 5px !important;
+        width: 46% !important;
+    }
+    
+    .btn-voltar {
+        display: none !important;
+    }
+    
+    .btn-voltar-mobile {
+        position: fixed;
+        top: 16px !important;
+        right: 20px !important;
+        z-index: 1003;
+        color: #ffffff !important;
+    }
+    
+    .badge {
+        margin-top: 20px;
+    }
+    
+    #buscaTransferencias {
+        height: 350px !important;
+    }
+        
+    .lista-mobile {
+        display: block;
+    }
+    
+    .lista-desktop {
+        display: none;
+    }
+}

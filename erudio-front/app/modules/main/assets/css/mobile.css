@@ -1,0 +1,120 @@
+
+.hide-cell-mobile {
+    display: none !important;
+}
+
+.mobile-cell-align {
+    text-align: left;
+}
+.card {
+    /*width: 92% !important;*/
+}
+
+.line-data {
+    margin-top: 10px;
+    display: block;
+}
+
+.mobile-title {
+    display: block !important;
+}
+
+.label-title {
+    margin-left: 15px !important;
+    font-weight: bold !important;
+    color: #2980B9 !important;
+    margin-bottom: 10px !important;
+    margin-top: 15px !important; 
+}
+
+.mobile-label {
+    margin-top: 20px;
+    font-size: 1.0em;
+}
+
+.hide-on-mobile {
+    display: none !important;
+}
+
+.fab-add {
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.toolbar-mobile {
+    position: fixed;
+    display: block !important;
+    opacity: 0;
+    bottom: 0;
+    left: 0;
+    background: #e0e0e0;
+    width: 100%;
+    z-index: -1;
+    transition-property: all;
+    transition-duration: 0.3s;
+    height: 0px;
+}
+
+.width50{
+    width: 50%;
+    float: left;
+}
+
+.mobile-action {
+    width: 100%;
+    text-align: center;
+    float: left;
+}
+
+.show-actions {
+    height: 44px;
+    opacity: 1;
+    z-index: 101;
+}
+
+.show-veil {
+    display: block !important;
+}
+
+.black-veil {
+    transition-property: all;
+    transition-duration: 0.5s;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.backBtn {
+    position: absolute;
+    top: 7px;
+    left: 60px;
+    z-index: 100;
+    color: white;
+}
+
+.floated-toolbar .title {
+      margin-left: 32px !important;
+}
+
+.busca-mobile{
+    border: none !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 16px;
+    margin-left: 15px;
+}
+
+.width-75-P-mobile {
+   width: 75% !important; 
+}
+
+#toast {
+    left: 10px !important;
+}

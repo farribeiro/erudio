@@ -1,0 +1,135 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="mobile-full">
+    <div id="movimentacoesBusca">
+        <div data-ng-hide="editando" style="background: #fafafa; padding-top: 1rem; margin-top: -1rem;" class="z-depth-1 row">
+            <div class="col s12">
+                <!--
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">account_balance</i>
+                    <select id="buscaUnidadeMovimentar" data-ng-model="matriculaMovimentacoes.unidadeEnsino">                        
+                        <option disabled></option>
+                        <option value="{{u.id}}" data-ng-selected="u.id === unidade.id" data-ng-repeat="u in unidades">{{u.nomeCompleto | uppercase}}</option>
+                    </select>
+                    <label for="buscaUnidadeMovimentar">Unidade Escolar</label>
+                </div>-->
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">account_balance</i>
+                    <span class="digitable-icon" data-ng-show='isAdmin'><i class="material-icons">border_color</i></span>
+                    <input id="unidadeBuscaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidadeBusca" data-ng-change="buscarUnidadesOrigem(nomeUnidadeBusca)" data-activates="dropUnidadesBusca" data-ng-disabled='!isAdmin'>
+                    <label for="unidadeBuscaAutoComplete">Unidade de Ensino*</label>
+                </div>
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">school</i>
+                    <select id="curso" data-ng-model="matriculaMovimentacoes.curso">
+                        <option disabled selected></option>
+                        <option value="{{ curso.id }}" data-ng-repeat="curso in cursos">{{ curso.nome | uppercase }}</option>
+                    </select>
+                    <label for="curso">Curso</label>
+                </div>
+            </div>
+            <div class="col s12">
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">account_box</i>
+                    <input id="nomeBuscaMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.aluno_nome">
+                    <label for="nomeBuscaMovimentacoes">Nome</label>
+                </div>
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">toll</i>
+                    <input id="codigoMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.codigo" class="counter" length="12">
+                    <label for="codigoMovimentacoes">Código de Matrícula</label>
+                </div>
+            </div>                
+            <div class="row col s12 end-card right-align">
+                <a data-ng-click="reiniciarBusca()" class="waves-effect waves-blue btn-flat"><i class="material-icons">delete</i>LIMPAR BUSCA</a>
+                <a data-ng-click="buscarMatriculas(matriculaMovimentacoes, '', 'botao')" class="waves-effect waves-blue btn-flat"><i class="material-icons">search</i>BUSCAR</a>                                
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="matriculas.length && mostraListaMovimentacoes"  style="margin-top: 15px;">
+        <div class="col s12 m12 l12 card-panel">               
+            <ul class="pagination" data-ng-show="quantidadePaginas > 1">
+                <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+            </ul>
+            <div class="card-content mobile-full">
+                <table class='highlight striped table-pattern'>
+                    <thead>
+                        <tr>
+                            <th data-field='codigo' class="left-align">
+                                <div class="pointer" data-ng-click="predicate = 'aluno'; reverse = !reverse">
+                                    Aluno
+                                    <span class="sortorder" data-ng-show="predicate === 'aluno'" data-ng-class="{reverse: reverse}"></span>
+                                </div>
+                            </th>
+                            <th class='hide-on-small-only center-align' data-field='codigo'>
+                                <div class="pointer" data-ng-click="predicate = 'status'; reverse = !reverse">
+                                    Status
+                                    <span class="sortorder" data-ng-show="predicate === 'codigo'" data-ng-class="{reverse: reverse}"></span>
+                                </div>
+                            </th>
+                            <th class='hide-on-small-only center-align' data-field='opcoes' data-ng-show="escrita" style="width: 12rem!important">Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="matricula in matriculas | orderBy:'aluno.nome':reverse | comecarEm: (paginaAtual-1)*50+1 | limitTo: 50">
+                            <td class="celula-link relative mobile-full left-align" style="padding: 5px!important;width: 981px;">
+                                <div class="hide-on-small-only" style="padding: 15px">{{matricula.aluno.nome}}</div>
+                                <div class="hide-on-med-and-up" style="padding: 15px">{{matricula.aluno.nome}}</div>
+                                <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesCurso{{matricula.pessoa.id}}">
+                                    <div style="height: 100%" data-ng-click="$scope.editandoMobile = true;
+                                                carregarTransferencia(transferencia)" class="col s6 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                    <div style="height: 100%" data-ng-click="prepararRemover(matricula)" data-target="remove-modal-instituicao" class="col s6 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                </div>
+                            </td>
+                            <td class='hide-on-small-only center-align'>{{ matricula.status }}</td>
+                            <td class='hide-on-small-only center-align' data-ng-show="escrita">
+                                <i data-ng-click="carregar(matricula, 'Transferência')" data-position='top' data-delay='50' data-tooltip='Transferência' class="material-icons info-icon tooltipped" style="padding-right: 5px">account_balance</i>
+                                <i data-ng-click="carregar(matricula, 'Movimentação')" data-position='top' data-delay='50' data-tooltip='Movimentação' class="material-icons info-icon tooltipped" style="padding-right: 5px">compare_arrows</i>
+                                <i data-ng-click="carregar(matricula, 'Desligamento')" data-position='top' data-delay='50' data-tooltip='Desligamento' class="material-icons delete-icon tooltipped">power_settings_new</i>
+                            </td>
+                        </tr>
+                    </tbody>                                
+                </table>                            
+            </div>
+            <ul class="pagination" data-ng-show="quantidadePaginas > 1">
+                <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
+                <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
+                <li class="static-element sem-background" data-ng-show="paginaAtual > 4">...</li>
+                <li class="waves-effect dinamic-element" data-ng-repeat="pagina in quantidadePaginas | quantidade | comecarEm: paginaAtual-2 | limitTo: 5" data-ng-class="{'active': paginaAtual === pagina}" data-ng-click="atualizarPagina(pagina, true)" data-ng-if="pagina > 1 && pagina < quantidadePaginas"><a>{{pagina}}</a></li>
+                <li class="static-element sem-background" data-ng-show="paginaAtual < quantidadePaginas-3">...</li>
+                <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(quantidadePaginas, true)"><a>{{quantidadePaginas}}</a></li>
+                <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
+            </ul>
+        </div>
+    </div>
+</div>

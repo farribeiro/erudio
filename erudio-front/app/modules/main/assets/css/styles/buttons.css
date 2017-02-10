@@ -1,0 +1,131 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* Buttons */
+
+.btn-voltar {
+    position: fixed;
+    right: 30px;
+    top: 12px;
+    color: #000;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.5s ease !important;
+}
+
+.btn-voltar-secundario {
+    position: absolute;
+    left: 30px;
+    top: 118px;
+    color: #000;
+    z-index: 997;
+    cursor: pointer;
+}
+
+.btn-add {
+    position: fixed;
+    right: 15px;
+    bottom: 30px;
+    z-index: 998;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+ 
+}
+
+.btn-add-secundario{
+    position: absolute;
+    left: 45px;
+    top: 52px;
+    z-index: 997;
+    cursor: pointer;
+}
+
+.btn-mini-inner {
+    position: absolute !important;
+    top: 65px;
+    left: 40px;
+}
+
+.btn-add-erro {
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+.green-icon {
+    color: #2ECC71;
+}
+
+.btn-voltar-terciario {
+    top: 53px;
+    position: absolute;
+    left: 23px;
+    color: #000;
+    z-index: 997;
+    cursor: pointer;
+}
+
+.btn-telefone {
+    top: -50px;
+    right: 30px;
+}
+
+.pesquisa {
+    width: 40px;
+    cursor: pointer; 
+    line-height: inherit;
+}
+
+.btn-no-search {
+    transition: all 0.5s ease !important;
+}
+
+.green-hover {
+    color: #757575 !important;
+}
+
+.green-hover:hover {
+    color: #27ae60 !important;
+}
+
+.fab-button {
+    bottom: 1.9rem; right: 1rem;
+}
+
+.btn-disabled {
+    //background-color: #7f8c8d !important;
+    opacity: 0.5;
+    //color: #FAFAFA !important;
+}
+.btn-personAdd {
+    
+    margin-right:0.6rem;
+    
+}
+
+.aceito:hover{
+    color: #2ecc71;
+    cursor: pointer;
+}

@@ -1,0 +1,429 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+.data td {
+    border-bottom: 0.5px solid #ccc;
+    border-right: 0.5px solid #ccc;
+    height: 5.6rem;
+    padding: 0;
+    width: 150px;
+    background-color: #F5F5F5;
+    color: rgb(154, 147, 141);
+}
+
+td, th {
+    vertical-align: top !important;
+}
+
+.table-horarios-disciplina td, .table-horarios-disciplina th:not(:first-child) {
+    border: solid 1px #CFD8DC;
+}
+
+.texto-vermelho {
+    color: #e74c3c;
+}
+
+.toolchip {
+    left: -9.5rem;
+    width: 9.5rem;
+    color: #fafafa;
+    display: none;
+}
+
+.data-header {   
+    font-size: 12px;
+    padding-left: 0.4rem;
+}
+
+.horarios {
+    font-size: 11px;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.naoAlfabetizado{
+    color: #D4D4D4;    
+}
+
+.aula-escolhida {
+    background-color: #039be5 !important;
+    color: #fff !important;
+}
+
+.dia-de-aula {
+    background-color: #C8E6C9;
+    color:#7f8c8d;
+    cursor: pointer;
+}
+
+.horarios div {
+    margin-top: 5.5px;
+}
+
+.date-content {
+    height: 100% !important;
+}
+
+.turma-banner {
+    height: 20rem;
+    background: url('../images/turmas.jpg') no-repeat center center;
+    background-size: 100% auto;
+}
+
+.correcao-padding-form {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.botoes {
+    width: 100% !important;
+    height: 5.5rem !important;
+}
+
+.clicavel:hover {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+.espacamento{
+    padding: 4rem;
+}
+
+.titulo-botoes {
+    margin-top: -5rem;
+    margin-left: 6.5rem;
+    font-size: 2rem;    
+}
+
+.ajeita-loader {
+    z-index: 999999!important; 
+    right: 2rem!important
+}
+
+.icones-botoes {
+    font-size: 4rem;
+    margin-top: -1rem;
+    margin-left: -4rem !important;
+}
+
+.botao-desabilitado {
+    background-color: #7f8c8d !important;
+    color: #bdc3c7 !important;
+}
+
+.cor-botao-desabilitado {
+    color: #bdc3c7 !important;
+}
+
+.listaProfessores {
+    padding-left: 40px !important;
+    margin-bottom: 15px;
+    margin-top: 15px;    
+}
+
+.margin-card {
+    margin: 0 !important;
+}
+
+.select-busca {
+    padding-left: 0px !important;
+}
+
+.topo-pagina {
+    margin-top: 0px !important;
+}
+
+.select-wrapper #statusFrequencia{
+    left: -47px !important;
+}
+
+.collapsible-body {
+    border-bottom: 0px !important;
+}
+
+.btn-imprimir {
+    position: absolute;
+    right: 30px;
+    top: 12px;
+    color: #000;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.5s ease !important;
+}
+
+.btn-chamada {
+    position: absolute;
+    right: 30px;
+    top: 152px;
+    z-index: 2;
+    cursor: pointer;    
+}
+
+.select-wrapper-icon {
+    padding-left: 0px !important;
+}
+
+.secondary-content {
+    margin-top:1px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 18.65px;
+    background: none !important;
+}
+
+.secondary-content {
+    height: 99.5% !important;
+}
+
+.padding-duas-linhas {
+    padding-top: 6px !important;
+}
+
+.progress {
+    top: -8px !important;
+}
+
+.dia {
+    font-weight: 600;
+    text-align: center;
+    background: #fff;
+    /* border: 1px solid; */
+    margin: 2px;
+    width: 100%;
+    padding-bottom: 1rem;
+}
+
+.horario {
+    /*text-align: center;
+    background: #fff;
+    border: 3px solid;
+    margin: 2px;
+    min-height: 56px;
+    width: 100%;*/
+    /*height: 100%;*/
+    height: 70px;
+    width: 100%;
+    border: 1px solid #cfd8dc;
+    top: 0;
+    -webkit-transition: .2s ease-out;
+    transition: .2s ease-out;
+    border-collapse: collapse;
+}
+
+.modal-title-info-aluno{
+    background: url('../images/geography.jpg') center bottom;
+    background-size: 100% auto;
+    height: 140px;
+    position: relative;
+}
+
+.intervalo {
+    /*text-align: center;
+    background: #babaca;
+    border: 2px solid;
+    margin: 2px;
+    width: 100%;
+    background-color: #e3f2fd;*/
+    height: 100%;
+    width: 100%;
+    border: 1px groove;
+    border-bottom: 0px;
+    top: 0;
+    -webkit-transition: .2s ease-out;
+    transition: .2s ease-out;
+}
+
+.modal-adicionar-professor{
+    
+}
+
+
+.hora {
+    color: #7f8c8d;
+    margin-right: 0;
+    margin-top: 0px !important;
+    padding-left: 5px;
+    width: 100%;
+}
+
+.chips{
+    background-color: #eee !important   ;
+    border: 1px solid;
+    text-align: center;
+    width: initial;
+}
+
+.modal-title-info-professor{
+    background: url('../images/info-professor.jpg') center bottom;
+    background-size: 100% auto;
+    height: 140px;
+    position: relative;
+}
+
+.quadro{
+    width: 185px !important;
+    height: 400px !important;
+    padding: 0px !important;
+}
+
+.modal-content span {
+    font-size: 14px;
+    padding: 10px;
+}
+
+.modal-content p {
+    font-size: 16px;
+    padding: 20px !important;
+}
+
+/*.modal-title-banner {
+    //height: 100px;
+    position: relative;
+}*/
+
+.modal-title-banner-turma{
+    background: url('../images/removeBanner.jpg') center bottom;
+    background-size: 100% auto;
+    height: 280px;
+    position: relative;
+}
+
+.modal-adicionar-professor{
+    background: url('../images/professor.jpg') center bottom;
+    background-size: 100% auto;
+    height: 140px;
+    position: relative;
+}
+
+.modal-title-banner h4 {
+    position: absolute;
+    bottom: 18px !important;
+    left: 30px;
+    color: #fafafa;
+}
+
+.table-label {
+    height: 70px;
+    width: 100%;
+    -webkit-transition: .2s ease-out;
+    transition: .2s ease-out;
+    line-height: 4.5rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.aula-preenchida {
+    padding-top: 1.5rem;
+    padding-bottom: 1.6rem;
+    text-align: center;
+    background: #eceff1;
+}
+
+.horario {
+    overflow: hidden;
+}
+
+.remove-grid-disciplina {
+    position: absolute;
+    right: 0.2rem;
+    top: 0.2rem;
+    cursor: pointer;
+}
+
+.grabbable {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.grabbable:active { 
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.card-grab {
+    text-align: center;
+    float: left;
+    margin-right: 1rem;
+    box-shadow: none;
+    padding: 1rem !important;
+    border: 1px solid #eeeeee;
+}
+
+@media only screen and (min-width : 993px) {        
+    .width-imagem {
+        width: 51.5px !important;
+    }
+    
+}
+@media only screen and (max-width : 993px) and (orientation: landscape) {  
+    .progress {
+        top: 58px !important;
+    }
+    
+    .progress-sem-busca{
+        top: 14.9% !important;
+    }
+}
+
+@media only screen and (max-width : 993px) and (orientation: portrait) {        
+    .progress {
+        top: 50px !important;
+    }
+    .progress-sem-busca{
+        top: 7.5% !important;
+    }
+    .btnBuscaIco {       
+        width: 0px !important;
+        display: none !important;
+    }
+    .btn-add {
+        right: 10px !important;
+    }
+}
+@media only screen and (max-width : 1445px) {       
+    .btnBusca {
+        width: 117px !important;         
+    }
+    
+    .btnBuscaIco {
+        width: 0px !important;
+        display: none !important;
+    }
+    
+    .progress{
+        /* top: 50px !important; */
+    }     
+}
+
+.consertaModal ul { 
+    width : auto;
+    position : relative;
+         
+}

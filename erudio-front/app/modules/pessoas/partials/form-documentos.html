@@ -1,0 +1,118 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="docsPessoa" style="margin-top: -2.3rem;">
+    <div class="row" style="margin-top: 35px">
+        <div class="col s12 m12 l12">
+            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Documentos</h5>
+        </div>                        
+    </div>
+    <div class="row ajuste-margin-bottom">                        
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="nis" type="text" class="validate" data-ng-model="pessoa.nis" data-ng-disabled="!escrita" />
+            <label for="nis">NIS</label>
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="codigoInep" type="text" class="validate" data-ng-model="pessoa.codigoInep" data-ng-disabled="!escrita"  />
+            <label for="codigoInep">Código do INEP</label>
+        </div>   
+    </div>
+    <div class="row ajuste-margin-bottom">
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="pis" type="text" class="validate" data-ng-model="pessoa.pisPasep" data-ng-disabled="!escrita"  />
+            <label for="pis">PIS/PASEP</label>
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="cpf" type="text" class="counter cpfBuscaMask" maxlength="14" data-ng-change="verificaCpf(pessoa.cpfCnpj)" data-ng-model="pessoa.cpfCnpj" data-ng-disabled="!escrita"  />
+            <label for="cpf">CPF</label>
+        </div>                                    
+    </div>
+    <div class="row ajuste-margin-bottom">
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <select ng-change="verificaDocumentoCadastro()" style="display: none;" data-ng-model="cadDocumento" id="documento" data-ng-disabled="!escrita">
+                <option value="" disabled selected></option>
+                <option value="certidao" data-ng-selected="tipoDocumento(pessoa.certidaoNascimento)">Certidão de Nascimento(Nova - 32 Digitos)</option>                               
+                <option value="certidao-antiga">Certidão de Nascimento(Antiga - Termo/Livro/Folha)</option>
+            </select>
+            <label for="documento">Documento</label>
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="certidaoNasc" type="text" length="32" class="validate counter" data-ng-model="certidaoCad">
+            <label for="certidaoNasc">Certidão de NAscimento*</label>
+        </div>
+        <div data-ng-class="certidaoPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">event</i>
+            <input id="certidaoData" type="text" class="data" data-ng-change="selecionaData()" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
+            <label for="certidaoData" class="nomeGrande">Data Expedição Certidão</label>            
+        </div>                     
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="termo" type="text" class="counter" maxlength="7" data-ng-model="termoCad" data-ng-disabled="!escrita"  />
+            <label for="termo">Termo</label>            
+        </div>        
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="livro" type="text" class="counter numeros" maxlength="5" data-ng-model="livroCad" data-ng-disabled="!escrita"  />
+            <label for="livro">Livro</label>            
+        </div>             
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="folha" type="text" class="counter" maxlength="3" data-ng-model="folhaCad" data-ng-disabled="!escrita"  />
+            <label for="folha">Folha</label>            
+        </div>
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">event</i>
+            <input id="dataExpedicao" type="text" class="data" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
+            <label for="dataExpedicao" class="nomeGrande">Data Expedição Cartidão</label>            
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="rg" type="text" class="validate numeros" data-ng-model="pessoa.numeroRg" data-ng-disabled="!escrita" />
+            <label for="rg">RG</label>
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">event</i>
+            <input id="dataExp" type="text" class="data" data-ng-model="pessoa.dataExpedicaoRg" data-ng-disabled="!escrita" />
+            <label for="dataExp" id="nomeGrande">Data Expedição RG</label>
+        </div>                
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="orgaoExp" type="text" class="validate" data-ng-model="pessoa.orgaoExpedidorRg" data-ng-disabled="!escrita" />
+            <label for="orgaoExp">Órgão Expedidor RG</label>
+        </div>
+        <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="cns" type="text" class="validate" data-ng-model="pessoa.cns" data-ng-disabled="!escrita"  />
+            <label for="cns" style="width: 22rem">Cartão Nacional de Saúde(CNS)</label>
+        </div>
+    </div>
+</div>

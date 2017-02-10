@@ -1,0 +1,111 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+.data td {
+    border-bottom: 0.5px solid #ccc;
+    border-right: 0.5px solid #ccc;
+    height: 5.6rem;
+    padding: 0;
+    width: 150px;
+    background-color: #F5F5F5;
+    color: rgb(154, 147, 141);
+}
+
+td, th {
+    vertical-align: top !important;
+}
+
+.data-header {   
+    font-size: 12px;
+    padding-left: 0.4rem;
+}
+
+.horarios {
+    font-size: 11px;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.aula-escolhida {
+    background-color: #039be5 !important;
+    color: #fff !important;
+}
+
+.dia-de-aula {
+    background-color: #C8E6C9;
+    color:#7f8c8d;
+    cursor: pointer;
+}
+
+.horarios div {
+    margin-top: 5.5px;
+}
+
+.date-content {
+    height: 100% !important;
+}
+
+.dia-de-semana {
+    border: medium none;
+    height: 100%;
+    top: 0;
+    transition: all 0.2s ease-out 0s;
+    width: 100%;
+}
+
+.dia {
+    color: #7f8c8d;
+    margin-right: 0;
+    margin-top: 0 !important;
+    padding-left: 5px;
+    width: 100%;
+}
+
+.td-dia {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    height: 110px;
+    padding: 0;
+    width: 150px !important;
+    max-width: 10.5rem;
+}
+
+.evento {
+    background-color: #95a5a6;
+    color: #ecf0f1;
+    font-size: 13px;
+    height: 16.8%;
+    margin-top: 1px;
+    width: 100%;
+    padding-left: 5px;
+}
+
+.evento:hover {
+    background-color: #34495e;
+    color: #ecf0f1;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}

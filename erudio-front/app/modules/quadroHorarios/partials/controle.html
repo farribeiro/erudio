@@ -1,0 +1,83 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Barra de Progresso -->
+<div data-ng-show="progresso" class="progress">
+      <div class="indeterminate"></div>
+</div>
+<div data-ng-show="progresso" class="cortinaProgresso"></div>
+
+<!-- Botão Voltar (Formulário) -->
+<div data-ng-click="prepararVoltar(quadroHorario)" data-ng-show="editando" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+<i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+
+<!-- Botão Voltar (Fix) -->
+<div data-ng-click="fix=false;" data-ng-show="fix" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+<i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+
+<!-- Botão Adicionar -->
+<div data-ng-show="escrita && !editando" class="btn-add">
+    <a data-ng-click="carregarFormulario()" class="z-depth-1 tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa" data-position="left" data-delay="50" data-tooltip="Adicionar Quadro de Horario"><i class="material-icons load-map">add</i></a>
+</div>
+
+<!-- fix -->
+<div data-ng-show="isAdmin" style="right: 15px; bottom: 100px;" class="btn-add">
+    <a data-ng-click="preparaFix()" class="z-depth-1 tooltipped btn-floating btn-large waves-effect waves-circle waves-light " data-position="left" data-delay="50" data-tooltip="Fix"><i class="material-icons load-map">build</i></a>
+</div>
+
+<!-- Loader -->
+<div data-ng-show="loader" class="preloader-wrapper small active loader ajeita-loader">
+    <div class="spinner-layer spinner-red-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+<div data-ng-show="loader" class="cortinaProgresso"></div>
+
+<ul id='dropUnidadesTurmaBusca' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades">
+        <a data-ng-click="selecionaUnidade(unidade)">{{unidade.tipo.sigla }} {{ unidade.nome }}</a>
+    </li>
+</ul>
+
+<ul id='dropUnidadesTurmaBuscaInicio' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades">
+        <a data-ng-click="selecionaUnidadeBusca(unidade)">{{unidade.tipo.sigla }} {{ unidade.nome }}</a>
+    </li>
+</ul>

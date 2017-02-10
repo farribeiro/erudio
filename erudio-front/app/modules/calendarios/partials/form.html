@@ -1,0 +1,102 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="validate" class="row">
+    <div class="col s12">
+        <div class="row card-panel form-box show-form">
+            <div class="row">
+                <h3 class='card-title-h3' style="padding: 1rem 0 0 1rem">{{acao}} Calendário Escolar</h3>
+            </div>
+            <small class="obriga-campos col s12 m12 l12" style="padding-left: 1.1rem"><em>Os campos marcados com * são obrigatórios</em></small>          
+            <div class="row">                
+                <div class="input-field col s12 m12 l6" data-ng-class="{'l12': calendario.id && !calendario.calendarioBase.id}">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="nomeCalendario" type="text" class="validate" data-ng-model="calendario.nome" data-ng-disabled="!escrita || !isAdmin" required />
+                    <label for="nomeCalendario">Nome do Calendário*</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-hide="calendario.id && !calendario.calendarioBase.id">
+                    <i class="material-icons prefix">domain</i>
+                    <select id="calendarioBase" data-ng-model="calendario.calendarioBase.id" data-ng-change="selecionarBase(calendario.calendarioBase.id)" data-ng-disabled="calendario.id" class="validate">                        
+                        <option value="" disabled selected></option>
+                        <option value="{{calendarioBase.id}}" data-ng-selected="calendario.calendarioBase.id === calendarioBase.id" data-ng-repeat="calendarioBase in calendariosBases"> {{ calendarioBase.nome | uppercase }} </option>
+                    </select>
+                    <label for="calendarioBase">Calendário Base</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m12 l6 input-field">
+                    <i class="material-icons prefix">event</i>
+                    <input  id="inicioCalendario" type="text" class="date-input" data-ng-model="calendario.dataInicio" data-ng-disabled="calendario.id || !isAdmin" required>
+                    <label for="inicioCalendario">Data de Inicio*</label>
+                </div>
+                <div class="col s12 m12 l6 input-field">
+                    <i class="material-icons prefix">event</i>
+                    <input  id="terminoCalendario" type="text" class="date-input" data-ng-model="calendario.dataTermino" data-ng-disabled="calendario.id || !isAdmin" required>
+                    <label for="terminoCalendario">Data de termino*</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m12 l6" data-ng-class="{'l12': calendario.id && !calendario.calendarioBase.id}" data-ng-show="calendario.id || !isAdmin">
+                    <i class="material-icons prefix">account_balance</i>
+                    <select id="instituicao" data-ng-model="calendario.instituicao.id" class="validate" data-ng-disabled="calendario.id || !isAdmin" required>
+                        <option value="{{ instituicao.id }}" data-ng-selected="calendario.instituicao.id === instituicao.id" data-ng-repeat="instituicao in instituicoes">{{ instituicao.tipo.sigla}} {{ instituicao.nome | uppercase }}</option>
+                    </select>
+                    <label for="instituicao">Instituição/Unidade de Ensino*</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-show="isAdmin && !calendario.id">
+                    <i class="material-icons prefix">account_balance</i>
+                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                    <input id="instituicaoAutoCompleteCalendario" class="dropdown-input" type="text" data-ng-model="nomeInstituicao" data-ng-change="buscarInstituicoesNome(nomeInstituicao)" data-activates="dropInstituicoesBuscaNome">
+                    <label for="instituicaoAutoCompleteCalendario">Instituição/Unidade de Ensino</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-hide="calendario.calendarioBase.id || calendario.id">
+                    <i class="material-icons prefix">playlist_add_check</i>
+                    <select id="sistemasAvaliacao" data-ng-model="sistemaAvaliacao.id" data-ng-change="selecionarSistemaAvaliacao(sistemaAvaliacao.id)" data-ng-disabled="calendario.id">
+                        <option value="{{sistemaAvaliacao.id}}" data-ng-repeat="sistemaAvaliacao in sistemasAvaliacao">{{sistemaAvaliacao.nome | uppercase}}</option>
+                    </select>
+                    <label for="sistemasAvaliacao">Sistema de Avaliação</label>
+                </div>
+            </div>
+            <div class="col s12"style="margin-bottom: 1rem" data-ng-show="periodosMedia.length && !calendario.calendarioBase.id">
+                <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> Períodos das Médias </h5>
+            </div>
+            <div class="row" data-ng-repeat="periodoMedia in periodosMedia | orderBy: 'media'" data-ng-show="periodosMedia.length && !calendario.calendarioBase.id">
+                <div class="col s12 m2 l2" style="padding: 2rem 0 0 3.8rem">{{periodoMedia.media}}ª Média</div>
+                <div class="input-field col s12 m5 l5">
+                    <input id="{{periodoMedia.media}}dataInicio" class="date-input" type="text" data-ng-disabled="calendario.id" data-ng-model="periodoMedia.dataInicio">
+                    <label for="{{periodoMedia.media}}dataInicio">Data de Início</label>
+                </div>
+                <div class="input-field col s12 m5 l5">
+                    <input id="{{periodoMedia.media}}dataTermino" class="date-input" type="text" data-ng-disabled="calendario.id" data-ng-model="periodoMedia.dataTermino">
+                    <label for="{{periodoMedia.media}}dataTermino">Data de Término</label>
+                </div>
+            </div>
+            <div class="row end-card" data-ng-show="escrita">                
+                <a data-ng-click="prepararFinalizar(calendario)" class="right waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>                
+            </div>
+        </div>
+    </div>
+</div>

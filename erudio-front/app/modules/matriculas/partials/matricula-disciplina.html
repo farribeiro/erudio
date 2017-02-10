@@ -1,0 +1,55 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">ALOCAR DISCIPLINAS</h5>
+</div>
+<h4 style="padding-left: 1rem;">Matrícula de Disciplinas</h4>
+<div class="row" style="padding-bottom: 1.5rem;">           
+    <small class="obriga-campos" style="display: block; padding-top: 1rem;"><em>Os campos marcados com * são obrigatórios</em></small>
+</div>
+<div class="input-field col s12 m12 l6">
+    <i class="material-icons prefix">view_week</i>
+    <select id="etapaTurmaMatricula" data-ng-model="etapa.id" data-ng-change="buscarTurmasDisciplinas(etapa.id)">
+        <option value="" disabled selected></option>
+        <option value="{{ etapa.id}}" data-ng-repeat="etapa in etapas">{{ etapa.nome | uppercase}}</option>
+    </select>
+    <label for="etapaTurmaMatricula" class="ajuste-select-top-label">Etapa*</label>
+</div>
+<div class="quadroDisciplinas" data-ng-show="disciplinasCurso.length"><!--disciplinasOfertadas-->
+    <h4 class="label-title">Disciplinas a serem cursadas </h4><!--na Turma - {{turma.nome}}-->
+    <small data-ng-show="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Etapa Integral, todas as disciplinas são obrigatórias.</em></small>
+    <small data-ng-hide="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Desmarque as disciplinas que não serão cursadas.</em></small>
+    <div data-ng-repeat="disciplinas in disciplinasCurso" style="margin: 5px">                        
+        <input type="checkbox" class="filled-in" id="disciplina{{disciplinas.id}}" data-ng-click="selecionaDisciplina(disciplinas)" checked="checked" /><!--data-ng-checked="etapaCurso.integral"-->
+        <label for="disciplina{{disciplinas.id}}">{{disciplinas.nome| uppercase}}</label><br/>                                                                                                    
+    </div>  
+</div> 
+<div class="row end-card">
+    <div class="col s12 right-align">
+        <a data-ng-click="salvarDisciplinasCursadas()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+    </div>
+</div>

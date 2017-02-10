@@ -1,0 +1,86 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<div id="form-historicoEscolar">
+    <div class="row">
+        <div class="col s12 registro-matricula-banner">
+        </div>
+    </div>
+    <div class="row" data-ng-hide="editando">
+        <div class="col s12 l12 mobile-full">
+            <div class="row"style="margin-top: -60px;" >
+                <div class="col s12 l12 mobile-full"> 
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Registro de Matriculas</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Pesquise pelo nome do aluno ou matrícula para localizar o histórico escolar.<br>
+                                        Clique sobre o código do aluno para visualizar informações da matricula.<br>
+                                        Clique no ícone da impressora para imprimir o histórico escolar.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>                         
+                        </div>
+                    </div>
+                    <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
+                        <div class="row" style="padding-top: 1rem">
+                            <div class="input-field col s12 m12 l12">
+                                <i class="material-icons prefix">school</i>
+                                <select id="cursoRegistroMatricula" data-ng-model="curso.id" data-ng-change="buscarEtapas(curso.id)">
+                                    <option value="" disabled selected></option>
+                                    <option value="{{curso.id}}" data-ng-repeat="curso in cursos" data-ng-selected="curso.id === curso.id">{{curso.nome | uppercase}}</option>
+                                </select>
+                                <label for="cursoRegistroMatricula">Curso</label>
+                            </div>
+                            <div class="input-field col s12 m12 l12" style="margin: -1rem 0 1.5rem 0">
+                                <input type="checkbox" class="filled-in" id="assinatura" data-ng-model="assinatura"/>
+                                <label for="assinatura">Incluir assinatura do responsável</label>
+                            </div>
+                        </div>                        
+                    </div>       
+                    <lista-registro-matricula></lista-registro-matricula>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

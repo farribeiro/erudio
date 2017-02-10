@@ -1,0 +1,73 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Barra de Progresso -->
+<div data-ng-show="progresso" class="progress">
+      <div class="indeterminate"></div>
+</div>
+<div data-ng-show="cortina" class="cortinaProgresso"></div>
+
+<!-- Botão Voltar (Formulário) -->
+<div data-ng-click="prepararVoltar(usuario)" data-ng-show="editando" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+<i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+
+<!-- Botão Adicionar -->
+<div class="btn-add hide-on-small-only">
+    <a data-ng-hide="editando"  data-ng-click="carregar(null,true,false)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Usuário"><i class="material-icons load-map">add</i></a>
+</div>
+<!-- Botão Adicionar Mobile-->
+<div class="btn-add hide-on-med-and-up">
+    <a data-ng-hide="editando"  data-ng-click="carregar(null,true,true)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Usuário"><i class="material-icons load-map">add</i></a>
+</div>
+
+<!-- Busca -->
+<!--<nav class="busca" data-ng-hide="editando">
+    <div class="nav-wrapper">
+        <form>
+            <div class="input-field">
+                <input id="search" type="search" data-ng-model="strUsuario" placeholder="Digite para buscar" required>
+                <label for="search" class="buscaTopo" ><i class="material-icons pesquisa" data-ng-click="limparBusca()">{{icone}}</i></label>
+            </div>
+        </form>
+    </div>
+</nav>-->
+    
+<!-- Loader -->
+<div data-ng-show="loader" class="preloader-wrapper small active loader ajeita-loader">
+    <div class="spinner-layer spinner-red-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>

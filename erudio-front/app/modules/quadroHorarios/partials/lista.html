@@ -1,0 +1,154 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Listagem de Instituições -->
+<div id="listaInstituicao">
+    <div class="row">
+        <div class="col s12 quadroHorario-banner">
+        </div>
+    </div>
+    <div class="row" data-ng-hide="fix">
+        <div class="col s1 l1"></div>
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Quadro de Horario</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Quadro de horário define parâmetros para o calendário escolar de uma unidade e suas particularidades.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no botão + para cadastrar um Quadro de Horário.<br>
+                                        Clique no nome de um Quadro de Horário para editá-lo. <br>
+                                        Clique no ícone da lixeira para remover um Quadro de Horário. 
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-busca" data-ng-hide="editando">
+                        <div class="row">
+                            <div class='input-field col s12'>
+                                <i class='material-icons prefix' data-ng-hide="strNome.length">search</i>
+                                <i class='material-icons prefix pointer' data-ng-show="strNome.length" data-ng-click="strNome = ''">clear</i>
+                                <input type="text" data-ng-model="strNome" id="filtroQuadro">
+                                <label for="filtroQuadro">Busque aqui</label>
+                            </div>
+                            <div data-ng-show="isAdmin" class='input-field col s12'>
+                                <i class="material-icons prefix">account_balance</i>
+                                <select class="ng-valid initialized" id="unidadeBusca" data-ng-model="nomeUnidadeBusca" data-ng-change="buscarUnidadesBusca()">
+                                    <option value="0"></option>
+                                    <option class="truncate ng-binding" value="{{ u.id }}" data-ng-repeat="u in unidades">{{ u.nomeCompleto }}</option>
+                                </select>
+                                <label for="unidadeBusca">Unidade de Ensino*</label>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="quadroHorarios.length" class="row" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full" data-ng-hide="editando">
+                    <div class="card-panel">
+                        <div class="card-content mobile-full">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes' data-ng-show="escrita">Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="quadroHorario in quadroHorarios | orderBy: 'nome'">
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregarFormulario(quadroHorario, false, false, $index)">{{ quadroHorario.nome }}</div>
+                                            <div class="hide-on-med-and-up" data-ng-click="carregarFormulario(quadroHorario, false, true, $index)">{{ quadroHorario.nome }}</div>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesInstituicao{{ quadroHorario.id }}">
+                                                <div style="height: 100%" data-ng-click="prepararRemover(quadroHorario, $index)" data-target="remove-modal-quadroHorario" class="col s4 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                            </div>
+                                        </td>
+                                        <td class='center-align hide-on-small-only' data-ng-show="escrita">                                            
+                                            <i data-ng-click="prepararRemover(quadroHorario)" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons delete-icon tooltipped">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Form Eventos -->
+            <form-quadro-horarios data-ng-show="editando"></form-quadro-horarios>
+        </div>
+        <div class="col s1 l1"></div>
+    </div>
+    <div class="fix card-panel" data-ng-show="fix">
+        <div class="row">
+            <div class="col s12"><h3>Escolha a Unidade: </h3></div>
+            <div data-ng-show="isAdmin" class='input-field col s12'>
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidadeB" data-ng-model="quadroH.unidadeEnsino.id" data-ng-change="preparaQuadro()">
+                    <option disabled selected></option>
+                    <option value="0"></option>
+                    <option class="truncate ng-binding" value="{{ u.id }}" data-ng-repeat="u in unidades">{{ u.nomeCompleto }}</option>
+                </select>
+                <label for="unidadeB">Unidade de Ensino*</label>
+            </div>
+            <div data-ng-show="isAdmin" class='col s12'>
+                <h4>Quadros a serem criados nesta unidade: </h4>
+                <div data-ng-repeat="quadro in criados track by $index">
+                    Nome: {{ quadro.nome }} <br />
+                    Início: {{ quadro.inicio }} <br />
+                    Modelo(id): {{ quadro.modelo.id }} - {{ modelosNome[$index] }} <br />
+                    Unidade de Ensino(id): {{ quadro.unidadeEnsino.id }} - {{ nomeUnidade }} <br />
+                    Turno(id): {{ quadro.turno.id }} - {{ turnosNome[$index] }}<br />
+                    Todos os dias da semana.<span data-ng-repeat="dias in diasSemana">{{ diaSemana }}</span>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="row end-card" data-ng-show="escrita" style="margin-top: 1rem">
+            <a data-ng-click="fixQuadroHorarioPorEscola()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+        </div>
+    </div>
+    <div data-ng-hide="editando"><erro-busca-quadroHorario data-ng-hide="quadroHorarios.length"></erro-busca-quadroHorario></div>
+</div>

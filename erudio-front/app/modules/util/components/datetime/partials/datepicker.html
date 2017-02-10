@@ -1,0 +1,91 @@
+
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<style>
+    @media screen and (max-width: 990px) {
+        .mobile-top-adjust {
+              margin-top: 35px;
+        }
+        
+        .absolute {
+            position: absolute !important;
+        }
+        
+        .mobile-no-padding {
+            padding: 0;
+        }
+        
+        .mobile-text-adjust {
+            margin-left: 0;
+            padding: 0;
+            width: 100%;
+            margin-top: -20% !important;
+        }
+        .displaycolor{
+            background-color:  #03a9f4 !important;
+            
+        }
+    }
+</style>
+<div data-ng-controller="dateTimeController">
+    <div data-ng-show="showpicker">
+        <div class="col-md-12">
+        
+        </div>
+        <div class="col-md-6 mobile-top-adjust displaycolor" style="padding-right: 0; padding-left: 0;">
+            <div class="col-md-12 text-center" style="background: #004674; color: #fdfdfd; padding-top: 0.4em; padding-bottom: 0.4em;">{{ diaSemanaNome | uppercase }}</div>
+            <div class="col-md-12 relative text-center mobile-no-padding" style="background: #2980b9; color: #fdfdfd; height: 250px;">
+                <div class="col-md-12 absolute full-center mobile-text-adjust" style="font-size: 2em; top: 50%; margin-top: -30%">
+                    <span style="display:block; font-size: 0.6em;">{{ mesNome | uppercase }}</span>
+                    <span style="display:block; font-size: 2.5em; margin-bottom: -20px; margin-top: -15px;">{{ dia }}</span>
+                    <span style="display:block; font-size: 0.6em; color:#7fcac3;">{{ ano }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" style="padding-left: 0; padding-right: 0;">
+            <div class="col-md-12" style="padding-left: 0; padding-right: 0;">
+                <div style="color: #2980b9; padding-right: 0; padding-left: 0; width: 18%; float: left;">
+                    <paper-button data-ng-click="anterior()" style="margin:0; min-width: 0; padding-top: 0.4em; padding-bottom: 0.4em;"> <core-icon icon="chevron-left"></core-icon></paper-button>
+                </div>
+                <div class="text-center" style="width: 64%; float: left; margin-top: 7px;">{{ mesNome | uppercase }} {{ ano }}</div>
+                <div style="color: #2980b9; padding-left: 0; padding-right: 0; width: 18%; float: left;">
+                    <paper-button data-ng-click="proximo()" style="margin:0; min-width: 0; padding-top: 0.4em; padding-bottom: 0.4em;"> <core-icon icon="chevron-right"></core-icon></paper-button>
+                </div>    
+            </div>
+            <div class="col-md-12">
+                <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">D</div> <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">S</div> <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">T</div>
+                <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">Q</div> <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">Q</div> <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">S</div>
+                <div class="text-center" style="width: 14.28%; float: left; color: #bababa;">S</div>
+
+                <div data-ng-repeat="diaDoMes in arrayMes track by $index" class="text-center" style="width: 14.28%; float: left;">
+                    <paper-button id="day{{ diaDoMes }}" data-ng-click="selectData(diaDoMes)" class="day">{{ diaDoMes }}</paper-button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12"></div>
+    </div>
+</div>
