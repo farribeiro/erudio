@@ -1,0 +1,18 @@
+services:
+    jms_serializer.object_constructor:
+        alias: jms_serializer.doctrine_object_constructor
+        public: false
+    
+    wsse.security.authentication.provider:
+        class: AuthBundle\Security\Authentication\Provider\WsseProvider
+        arguments:
+            - "" # User Provider
+            - "%kernel.cache_dir%/security/nonces"
+            - "" 
+        public: false
+
+    wsse.security.authentication.listener:
+        class: AuthBundle\Security\Firewall\WsseListener
+        arguments: ["@security.token_storage", "@security.authentication.manager"]
+        public: false
+        

@@ -1,0 +1,11 @@
+PessoaBundle\Entity\Pessoa:
+    properties:
+        nome:
+            - NotBlank: ~
+        genero:
+            - Choice: [M, F]
+            
+PessoaBundle\Entity\Telefone:
+    properties:
+        descricao:
+            - Choice: [RESIDENCIAL, CELULAR, COMERCIAL]

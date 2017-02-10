@@ -1,0 +1,12 @@
+services:
+    facade.vinculo.alocacoes:
+      class: VinculoBundle\Service\AlocacaoFacade
+      arguments: ["@doctrine"]
+      
+    facade.vinculo.cargos:
+      class: VinculoBundle\Service\CargoFacade
+      arguments: ["@doctrine"]
+      
+    facade.vinculo.vinculos:
+      class: VinculoBundle\Service\VinculoFacade
+      arguments: ["@doctrine"]

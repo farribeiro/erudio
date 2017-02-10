@@ -1,0 +1,52 @@
+services:
+    facade.matricula.matriculas:
+      class: MatriculaBundle\Service\MatriculaFacade
+      arguments: ["@doctrine"]
+      
+    facade.matricula.disciplinas_cursadas:
+      class: MatriculaBundle\Service\DisciplinaCursadaFacade
+      arguments: ["@doctrine"]
+      calls:
+          - [setMediaFacade, ["@facade.matricula.medias"]]
+      
+    facade.matricula.enturmacoes:
+      class: MatriculaBundle\Service\EnturmacaoFacade
+      arguments: ["@doctrine"]
+      calls:
+          - [setMediaFacade, ["@facade.matricula.medias"]]
+    
+    facade.matricula.medias:
+      class: MatriculaBundle\Service\MediaFacade
+      arguments: ["@doctrine"]
+      
+    facade.matricula.notas_quantitativas:
+      class: MatriculaBundle\Service\NotaQuantitativaFacade
+      arguments: ["@doctrine"]
+      
+    facade.matricula.notas_qualitativas:
+      class: MatriculaBundle\Service\NotaQualitativaFacade
+      arguments: ["@doctrine"]
+      
+    facade.matricula.notas_habilidades:
+      class: MatriculaBundle\Service\NotaHabilidadeFacade
+      arguments: ["@doctrine"]
+      
+    facade.matricula.frequencias:
+        class: MatriculaBundle\Service\FrequenciaFacade
+        arguments: ["@doctrine"]
+        
+    facade.matricula.movimentacoes_turma:
+        class: MatriculaBundle\Service\MovimentacaoTurmaFacade
+        arguments: ["@doctrine"]
+        calls:
+          - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
+        
+    facade.matricula.transferencias:
+        class: MatriculaBundle\Service\TransferenciaFacade
+        arguments: ["@doctrine"]
+        calls:
+          - [setMediaFacade, ["@facade.matricula.medias"]]
+        
+    facade.matricula.desligamentos:
+        class: MatriculaBundle\Service\DesligamentoFacade
+        arguments: ["@doctrine"]

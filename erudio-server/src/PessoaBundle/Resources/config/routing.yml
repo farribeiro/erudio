@@ -1,0 +1,51 @@
+cidades:
+    resource: PessoaBundle\Controller\CidadeController
+    type:     rest
+    
+estados:
+    resource: PessoaBundle\Controller\EstadoController
+    type:     rest
+    
+paises:
+    resource: PessoaBundle\Controller\PaisController
+    type:     rest
+    
+pessoas:
+    resource: PessoaBundle\Controller\PessoaFisicaController
+    type:     rest
+    
+enderecos:
+    resource: PessoaBundle\Controller\EnderecoController
+    type:     rest
+    
+estados-civis:
+    resource: PessoaBundle\Controller\EstadoCivilController
+    type:     rest
+    
+particularidades:
+    resource: PessoaBundle\Controller\ParticularidadeController
+    type:     rest
+    
+necessidades-especiais:
+    resource: PessoaBundle\Controller\NecessidadeEspecialController
+    type:     rest    
+    
+racas:
+    resource: PessoaBundle\Controller\RacaController
+    type:     rest
+    
+telefones:
+    resource: PessoaBundle\Controller\TelefoneController
+    type:     rest
+    
+tipos-unidade-ensino:
+    resource: PessoaBundle\Controller\TipoUnidadeEnsinoController
+    type:     rest    
+  
+instituicoes:
+    resource: PessoaBundle\Controller\InstituicaoController
+    type:     rest    
+    
+unidades-ensino:
+    resource: PessoaBundle\Controller\UnidadeEnsinoController
+    type:     rest

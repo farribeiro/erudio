@@ -1,0 +1,37 @@
+# API
+api_pessoa:
+    resource: "@PessoaBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+api_curso:
+    resource: "@CursoBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+api_matricula:
+    resource: "@MatriculaBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+api_vinculo:
+    resource: "@VinculoBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+api_calendario:
+    resource: "@CalendarioBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+api_avaliacao:
+    resource: "@AvaliacaoBundle/Resources/config/routing.yml"
+    prefix: /api
+
+api_auth:
+    resource: "@AuthBundle/Resources/config/routing.yml"
+    prefix: /api
+
+api_asset:
+    resource: "@AssetsBundle/Resources/config/routing.yml"
+    prefix: /api
+    
+# Docs    
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /doc
