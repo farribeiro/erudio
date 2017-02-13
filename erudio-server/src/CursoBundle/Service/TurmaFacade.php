@@ -96,5 +96,24 @@ class TurmaFacade extends AbstractFacade {
             $this->orm->getManager()->flush();
         }
     }
+    
+    protected function beforeUpdate($turma) {
+        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
+        $num_vagas = count($vagas);
+        if($num_vagas != $turma->getLimiteAlunos()) {
+            if($num_vagas > $turma->getLimiteAlunos()) {
+                for($i = 0; $i < $num_vagas - $turma->getLimiteAlunos(); $i++) {
+                    $vaga = new Vaga();
+                    $vaga->setTurma($turma->getId());
+                    $this->orm->getManager()->persist($vaga);                
+                }
+            } else {
+                throw new IllegalUpdateException(
+                    IllegalUpdateException::FINAL_STATE, 
+                    'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
+                );
+            }
+        }
+    }
 
 }
