@@ -1778,7 +1778,7 @@
                                    $('select').material_select('destroy');
                                    $('select').material_select();
                                    $scope.fechaProgresso();
-                                }, 500);
+                                }, 250);
                             });
                         });
                     } else {                        
