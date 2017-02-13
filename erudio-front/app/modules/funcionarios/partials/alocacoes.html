@@ -35,9 +35,9 @@
 <div class="row" data-ng-show="escrita && totalCargaHoraria < vinculo.cargaHoraria">
     <div class="input-field col s12 m5 l5" style="width: 45%">
         <i class="material-icons prefix">school</i>
-        <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+        <span class="digitable-icon" data-ng-show="isAdmin"><i class="material-icons">border_color</i></span>
         <input id="unidadeAlocacao" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades()" data-activates="dropUnidadesAlocacao" data-ng-disabled="!isAdmin">
-        <label for="unidadeAlocacao">Busque aqui uma Unidade*</label>
+        <label for="unidadeAlocacao"><span data-ng-show="isAdmin">Busque aqui uma </span>Unidade*</label>
     </div>
     <div class="input-field col s12 m5 l5" style="width: 45%">
         <i class="material-icons prefix">query_builder</i>
