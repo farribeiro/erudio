@@ -286,66 +286,40 @@
 
         $scope.selecionarCurso = function(curso) {
             if ($scope.unidade.cursos === undefined) { $scope.unidade.cursos = []; }
-            var unidade = angular.copy($scope.unidade);
-            unidade.instituicaoPai = {id: $scope.unidade.instituicaoPai.id};
-            unidade.endereco = {id: $scope.unidade.endereco.id};
-            unidade.tipo = {id: $scope.unidade.tipo.id};
             var qtd = $scope.unidade.cursos.length;
             var total = 0;
             $('.cursoUnidade:checked').each(function(){ total++; });
             if (qtd > total) {
                 var cursoIds = [];
                 $('.cursoUnidade:checked').each(function(){ cursoIds.push($(this).val()); });
-                for (var i=0; i<$scope.unidade.cursos; i++) {
-                    var index = cursoIds.indexOf($scope.unidade.cursos[i].id);
-                    if (index === -1) { $scope.unidade.cursos.splice(index,1); }
-                }
+                $timeout(function() {
+                    for (var i=0; i<$scope.unidade.cursos.length; i++) {
+                        var index = cursoIds.indexOf($scope.unidade.cursos[i].id);
+                        if (index === -1) { $scope.unidade.cursos.splice(index,1); }
+                    }
+                },50);
             } else {
                 $scope.unidade.cursos.push(curso.plain());
             }
-            
-            Servidor.finalizar($scope.unidade, 'unidades-ensino', 'Curso');
-            $timeout(function() { 
-                var promise = Servidor.buscarUm('unidades-ensino',$scope.unidade.id);
-                promise.then(function(response){
-                    $scope.unidade = response.data;
-                    $timeout(function() {
-                        Servidor.verificaLabels();
-                        $('#cidade').material_select('destroy');
-                        $('#cidade').material_select();
-                        $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
-                        $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
-                    }, 100);
-                });
-            }, 300);
-            
-            
-            /*$scope.unidade.cursos.forEach(function(cursoUnidade, i) {
-                if (cursoUnidade.id === curso.id) {
-                    $scope.unidade.cursos.splice(i, 1);
-                    if ($scope.unidade.id) {
-                        unidade.cursos = $scope.unidade.cursos;
-                        delete unidade.endereco;
-                        var unidadeResposta = Servidor.finalizar(unidade, 'unidades-ensino', 'Curso');
-                        $timeout(function() { $scope.unidade.cursos = unidadeResposta.cursos; }, 500);*/
-                        /*promise.then(function (response){
-                            $scope.unidade.endereco = response.data.endereco;
-                        });*/
-                    /*}
-                }
-            });
-            if (qtd === $scope.unidade.cursos.length) {
-                $scope.unidade.cursos.push(curso);
-                if ($scope.unidade.id) {
-                    unidade.cursos = $scope.unidade.cursos;
-                    delete unidade.endereco;
-                    var unidadeResposta = Servidor.finalizar(unidade, 'unidades-ensino', 'Curso');
-                    $timeout(function() { $scope.unidade.cursos = unidadeResposta.cursos; }, 500);*/
-                    /*promise.then(function (response){
-                        $scope.unidade.endereco = response.data.endereco;
-                    });*/
-                /*}
-            }*/
+            console.log($scope.unidade);
+            $timeout(function() {
+                var unidade = angular.copy($scope.unidade);
+                delete unidade.instituicaoPai;
+                Servidor.finalizar(unidade, 'unidades-ensino', 'Curso'); 
+                $timeout(function() { 
+                    var promise = Servidor.buscarUm('unidades-ensino',$scope.unidade.id);
+                    promise.then(function(response){
+                        $scope.unidade = response.data;
+                        $timeout(function() {
+                            Servidor.verificaLabels();
+                            $('#cidade').material_select('destroy');
+                            $('#cidade').material_select();
+                            $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
+                            $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
+                        }, 100);
+                    });
+                }, 300);
+            }, 100);
         };
 
         $scope.atualizarPagina = function(numero, substituir) {
@@ -873,7 +847,7 @@
 
         /* Verifica selects de Instituição e Tipo */
         $scope.verificaSelectInstituicao = function (id) {
-            if ($scope.unidade.instituicaoPai !== undefined) {
+            if ($scope.unidade.instituicaoPai !== undefined && $scope.unidade.instituicaoPai !== null) {
                 if (id === $scope.unidade.instituicaoPai.id) {
                     return true;
                 }
