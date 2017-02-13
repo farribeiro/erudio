@@ -574,9 +574,10 @@
                 var promise = Servidor.buscar('disciplinas', {etapa: $scope.turma.etapa.id});
                 promise.then(function(response) {
                     if(response.data.length) {
-                        $scope.turma.unidadeEnsino = { id: $scope.turma.unidadeEnsino.id };
-                        $scope.turma.calendario = { id: $scope.turma.calendario.id };
+                        $scope.turma.unidadeEnsino = {id: $scope.turma.unidadeEnsino.id};
+                        $scope.turma.calendario = {id: $scope.turma.calendario.id};
                         $scope.turma.etapa = {id: $scope.turma.etapa.id};
+                        $scope.turma.turno = {id: $scope.turma.turno.id};
                         if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
                             var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
                             promise.then(function (response) {
@@ -623,7 +624,7 @@
                             $scope.nomeUnidade = $scope.turma.unidadeEnsino.nome;                            
                             $scope.editando = true; $('#voltar').show();
                             $scope.mostraForm = true; $scope.formTurma = true;
-                            $scope.buscarCalendarios();
+                            $scope.buscarCalendarios($scope.turma.unidadeEnsino.id);
                             $scope.buscarQuadroHorarios();
                             $scope.buscarTurnos();
                             if (opcao) {
@@ -3032,15 +3033,7 @@
                 $('#paginaAlunos, #paginaQuadro, #paginaProfessores, #paginaFrequenciaAluno').addClass('card-panel');
                 $('#dForm, #aulaForm').material_select('destroy');
                 $('.btn-add').show();
-                $timeout(function () {
-                    if ($scope.turma.id) {
-                        $scope.unidade.id = $scope.turma.unidadeEnsino.id;
-                        $scope.curso.id = $scope.turma.etapa.curso.id;
-                        $scope.etapa.id = $scope.turma.etapa.id;
-                        $scope.buscarTurmas();
-                    }
-                    $scope.fechaLoader();
-                }, 100);
+                $timeout(function () { $scope.fechaLoader(); }, 100);
             };
 
             /*Inicialização da pagina*/
