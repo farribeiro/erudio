@@ -33,7 +33,7 @@
         RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
     }]);
 
-    app.controller('AppController', function($templateCache){
+    app.controller('AppController', ['$templateCache'], function($scope, $templateCache){
         $templateCache.removeAll();
     });
 })();

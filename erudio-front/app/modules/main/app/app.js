@@ -39,7 +39,7 @@
         RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
     }]);
 
-    app.controller('AppController',['$timeout','$routeParams', '$templateCache', function($timeout, $templateCache){
+    app.controller('AppController',['$timeout', '$templateCache', function($timeout, $templateCache){
         $templateCache.removeAll();
         
         sessionStorage.setItem('baseUrl','http://10.100.0.195/erudio/Erudio/erudio-server//web/app_dev.php/api');
