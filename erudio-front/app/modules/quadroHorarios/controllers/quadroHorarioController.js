@@ -643,6 +643,9 @@
 
             //temporario
             $scope.fix = false;
+            $scope.fixGeral = false;
+            $scope.quadros = [];
+            
             $scope.quadroH = {
                 'nome': null, 'inicio': null, 'modelo': {'id': null}, 'unidadeEnsino': {id: null}, 'turno': {'id': null}, 'diasSemana': [{diaSemana: "2"}, {diaSemana: "3"}, {diaSemana: "4"}, {diaSemana: "5"}, {diaSemana: "6"}]
             };
@@ -659,9 +662,10 @@
                 });
             };
             
-            $scope.salvarParcial = function (k) {
+            $scope.salvarParcial = function (k, geral, unidadeId) {
                 var qMatutino = angular.copy($scope.quadroH);
                 var qVespertino = angular.copy($scope.quadroH);
+                if (geral) { qMatutino.unidadeEnsino.id = unidadeId; qVespertino.unidadeEnsino.id = unidadeId; }
                 
                 for (var t=0; t<$scope.turnos.length; t++) {
                     if ($scope.turnos[t].nome === "Matutino") {
@@ -670,23 +674,36 @@
                         qMatutino.nome = $scope.modelosCompativeis[k].nome + ' - ' + $scope.turnos[t].nome;
                         qMatutino.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qMat = qMatutino;
-                        $scope.turnosNome.push($scope.turnos[t].nome);
-                        $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        if (!geral) {
+                            $scope.turnosNome.push($scope.turnos[t].nome);
+                            $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        } else {
+                            console.log('Criando Quadro Matutino...');
+                            Servidor.finalizar($scope.qMat, 'quadro-horarios', 'Quadros de horario');
+                        }
                     } else if ( $scope.turnos[t].nome === "Vespertino") {
                         qVespertino.turno.id = $scope.turnos[t].id;
                         qVespertino.inicio = $scope.turnos[t].inicio;
                         qVespertino.nome = $scope.modelosCompativeis[k].nome + ' - ' + $scope.turnos[t].nome;
                         qVespertino.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qVesp = qVespertino;
-                        $scope.turnosNome.push($scope.turnos[t].nome);
-                        $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        if (!geral) {
+                            $scope.turnosNome.push($scope.turnos[t].nome);
+                            $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        } else {
+                            console.log('Criando Quadro Vespertino...');
+                            Servidor.finalizar($scope.qVesp, 'quadro-horarios', 'Quadros de horario');
+                        }
                     }
                 }
-                $timeout(function (){ $scope.criados.push($scope.qMat, $scope.qVesp); },100);
+                $timeout(function (){ 
+                    if (!geral) { $scope.criados.push($scope.qMat); $scope.criados.push($scope.qVesp); }
+                },100);
             };
             
-            $scope.salvarIntegral = function (k) {
+            $scope.salvarIntegral = function (k, geral, unidadeId) {
                 var qIntegral = angular.copy($scope.quadroH);
+                if (geral) { qIntegral.unidadeEnsino.id = unidadeId; }
                 
                 for (var t=0; t<$scope.turnos.length; t++) {
                     if ($scope.turnos[t].nome === "Integral") {
@@ -695,15 +712,23 @@
                         qIntegral.nome = $scope.modelosCompativeis[k].nome + ' - ' + $scope.turnos[t].nome;
                         qIntegral.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qIntegral = qIntegral;
-                        $scope.turnosNome.push($scope.turnos[t].nome);
-                        $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        if (!geral) {
+                            $scope.turnosNome.push($scope.turnos[t].nome);
+                            $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        } else {
+                            console.log('Criando Quadro Integral...');
+                            Servidor.finalizar($scope.qIntegral, 'quadro-horarios', 'Quadros de horario');
+                        }
                     }
                 }
-                $timeout(function (){ $scope.criados.push($scope.qIntegral); },100);
+                $timeout(function (){ 
+                    if (!geral) { $scope.criados.push($scope.qIntegral); }
+                },100);
             };
             
-            $scope.salvarNoturno = function (k) {
+            $scope.salvarNoturno = function (k, geral, unidadeId) {
                 var qNoturno = angular.copy($scope.quadroH);
+                if (geral) { qNoturno.unidadeEnsino.id = unidadeId;}
                 
                 for (var t=0; t<$scope.turnos.length; t++) {
                     if ($scope.turnos[t].nome === "Noturno") {
@@ -712,11 +737,18 @@
                         qNoturno.nome = $scope.modelosCompativeis[k].nome + ' - ' + $scope.turnos[t].nome;
                         qNoturno.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qNoturno = qNoturno;
-                        $scope.turnosNome.push($scope.turnos[t].nome);
-                        $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        if (!geral) {
+                            $scope.turnosNome.push($scope.turnos[t].nome);
+                            $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
+                        } else {
+                            console.log('Criando Quadro Noturno...');
+                            Servidor.finalizar($scope.qNoturno, 'quadro-horarios', 'Quadros de horario');
+                        }
                     }
                 }
-                $timeout(function (){ $scope.criados.push($scope.qNoturno); },100);
+                $timeout(function (){ 
+                    if (!geral) { $scope.criados.push($scope.qNoturno); }
+                },100);
             };
             
             $scope.preparaQuadro = function () {
@@ -746,10 +778,35 @@
                             var resultIntegral = nome.match(/Integral/g);
                             var resultEJA = nome.match(/EJA/g);
 
-                            if (resultFundamental !== null) { $scope.salvarParcial(k); }
-                            if (resultParcial !== null) { $scope.salvarParcial(k); }
-                            if (resultIntegral !== null) { $scope.salvarIntegral(k); }
-                            if (resultEJA !== null) { $scope.salvarNoturno(k); }
+                            if (resultFundamental !== null) { $scope.salvarParcial(k, false, null); }
+                            if (resultParcial !== null) { $scope.salvarParcial(k, false, null); }
+                            if (resultIntegral !== null) { $scope.salvarIntegral(k, false, null); }
+                            if (resultEJA !== null) { $scope.salvarNoturno(k, false, null); }
+                        }
+                    }, 100);
+                });
+            };
+            
+            $scope.salvaQuadroGeral = function (id) {
+                var promise = Servidor.buscarUm('unidades-ensino',id);
+                promise.then(function (response){
+                    var cursosUnidade = response.data.cursos;
+                    $scope.cursosUnidade = []; $scope.modelosCompativeis = [];
+                    for (var i=0; i<cursosUnidade.length; i++) { $scope.cursosUnidade.push(cursosUnidade[i].id); }
+                    for (var j=0; j<$scope.modelos.length; j++) { if ($scope.cursosUnidade.indexOf($scope.modelos[j].curso.id) !== -1) { $scope.modelosCompativeis.push($scope.modelos[j]); } }
+                    
+                    $timeout(function (){
+                        for (var k=0; k<$scope.modelosCompativeis.length; k++) {
+                            var nome = $scope.modelosCompativeis[k].nome;
+                            var resultFundamental = nome.match(/Fundamental/g);
+                            var resultParcial = nome.match(/Parcial/g);
+                            var resultIntegral = nome.match(/Integral/g);
+                            var resultEJA = nome.match(/EJA/g);
+
+                            if (resultFundamental !== null) { $scope.salvarParcial(k, true, id); }
+                            if (resultParcial !== null) { $scope.salvarParcial(k, true, id); }
+                            if (resultIntegral !== null) { $scope.salvarIntegral(k, true, id); }
+                            if (resultEJA !== null) { $scope.salvarNoturno(k, true, id); }
                         }
                     }, 100);
                 });
@@ -764,6 +821,20 @@
                             $scope.fechaProgresso(); $scope.fix = false;
                         });
                     }
+                }
+            };
+            
+            $scope.fixQuadroHorariosGeral = function () {
+                $scope.fixGeral = true;
+                $scope.mostraProgresso();
+                $scope.turnosNome = [];
+                $scope.modelosNome = [];
+                $scope.buscarFixTurnos();
+                
+                for (var u=0; u<$scope.unidades.length; u++) {
+                    console.log($scope.unidades[u].nome + ' - Gerando Quadro de Horário');
+                    $scope.salvaQuadroGeral($scope.unidades[u].id);
+                    if (u === $scope.unidades.length-1) { $scope.fechaProgresso(); }
                 }
             };
 

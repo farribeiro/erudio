@@ -135,7 +135,7 @@
             </div>
             <div data-ng-show="isAdmin" class='col s12'>
                 <h4>Quadros a serem criados nesta unidade: </h4>
-                <div data-ng-repeat="quadro in criados track by $index">
+                <div data-ng-hide="fixGeral" data-ng-repeat="quadro in criados track by $index">
                     Nome: {{ quadro.nome }} <br />
                     Início: {{ quadro.inicio }} <br />
                     Modelo(id): {{ quadro.modelo.id }} - {{ modelosNome[$index] }} <br />
@@ -147,7 +147,8 @@
             </div>
         </div>
         <div class="row end-card" data-ng-show="escrita" style="margin-top: 1rem">
-            <a data-ng-click="fixQuadroHorarioPorEscola()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+            <a data-ng-click="fixQuadroHorarioPorEscola()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>GERAR</a>
+            <a data-ng-click="fixQuadroHorariosGeral()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>GERAR TODOS</a>
         </div>
     </div>
     <div data-ng-hide="editando"><erro-busca-quadroHorario data-ng-hide="quadroHorarios.length"></erro-busca-quadroHorario></div>

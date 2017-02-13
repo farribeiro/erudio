@@ -644,7 +644,8 @@
         };
 
         this.mudarUrl = function (str, modulo) {
-            setTimeout(function(){ history.replaceState( {} , 'Pacote: Erudio   ', '/' + str + '/' + modulo); }, 2000);
+            //setTimeout(function(){ history.replaceState( {} , 'Pacote: Erudio   ', '/' + str + '/' + modulo); }, 2000);
+            setTimeout(function(){ history.replaceState( {} , 'Pacote: Erudio   ', '/' + modulo); }, 2000);
         };
         
         this.entradaPagina = function () { $('.loader-module').fadeOut(300); $('.inicio-modulo').css('opacity',1); };
