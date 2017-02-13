@@ -100,10 +100,6 @@ class TurmaFacade extends AbstractFacade {
     protected function beforeUpdate($turma) {
         $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
         $num_vagas = count($vagas);
-        throw new IllegalUpdateException(
-                    IllegalUpdateException::FINAL_STATE, 
-                    $num_vagas
-                );
         if($num_vagas != $turma->getLimiteAlunos()) {
             if($num_vagas > $turma->getLimiteAlunos()) {
                 for($i = 0; $i < $num_vagas - $turma->getLimiteAlunos(); $i++) {
