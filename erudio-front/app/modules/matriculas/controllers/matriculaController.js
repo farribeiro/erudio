@@ -46,6 +46,7 @@
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
         $scope.isAdmin = Servidor.verificaAdmin();
+        $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
             //$scope.inicializar();
@@ -1681,22 +1682,27 @@
 
         /* Todas disciplina ofertadas */
         $scope.selecionarTodasDisciplinas = function () {
+            $scope.mostraProgresso();
             $scope.disciplinasCursadas = [];
             var disciplinaCursada = {
                 'matricula': $scope.matricula.id,
                 'disciplina': null,
                 'id': null
             };
-            $scope.disciplinasCurso.forEach(function (d, index) {
+            var requisicoes = 0;
+            $scope.disciplinasCurso.forEach(function (d, index) {                                
+                requisicoes++;
                 var promise = Servidor.buscarUm('disciplinas', d.id);
                 promise.then(function (response) {
                     disciplinaCursada.disciplina = angular.copy(response.data);
                     if (response.data.opcional) {
-                        console.log(response.data.nome, response.data.opicional);
                         //$scope.colocaDisciplina[index] = $scope.disciplinasCurso[index];
                         $scope.disciplinasCursadas.push(angular.copy(disciplinaCursada));
                     } else {
                         d = disciplinaCursada;
+                    }
+                    if(--requisicoes === 0) {
+                        $scope.fechaProgresso();
                     }
                 });
             });
@@ -1736,43 +1742,48 @@
                 $scope.mostraProgresso();
                 if ($scope.etapa.id) {
                     if ($scope.disciplinasCurso !== undefined && $scope.disciplinasCurso.length) {
-                        $scope.matricula.status = 'CURSANDO';
-                        var promise = Servidor.finalizar($scope.matricula, 'matriculas', null);
+                        var promise = Servidor.buscarUm('matriculas', $scope.matricula.id);
                         promise.then(function(response) {
-                            var cursadas = [];
-                            $scope.disciplinasCursadas = [];
-                            $scope.disciplinasCurso.forEach(function (d) {
-                                $scope.disciplinaCursada.matricula.id = $scope.matricula.id;
-                                if (d.id) {
-                                    $scope.disciplinaCursada.disciplina = d;
-                                    $scope.disciplinaCursada.nome = d.nome;
-                                    $scope.disciplinaCursada.nomeExibicao = d.nomeExibicao;
-                                } else {
-                                    $scope.disciplinaCursada.disciplina = d.disciplina;
-                                    $scope.disciplinaCursada.nome = d.disciplina.nome;
-                                    $scope.disciplinaCursada.nomeExibicao = d.disciplina.nomeExibicao;
-                                }
-                                cursadas.push($scope.disciplinaCursada);
-                                Servidor.finalizar($scope.disciplinaCursada, 'disciplinas-cursadas', null);
-                                $scope.limparDisciplinaCursada();
-                                if(cursadas.length === $scope.disciplinasCurso.length) {
-                                    if($scope.mostraDisciplinas) {
-                                        $scope.selecionaOpcao('disciplinas');
+                            $scope.matricula = response.data;
+                            $scope.matricula.status = 'CURSANDO';
+                            var promise = Servidor.finalizar($scope.matricula, 'matriculas', null);
+                            promise.then(function(response) {
+                                var cursadas = [];
+                                $scope.disciplinasCursadas = [];
+                                $scope.disciplinasCurso.forEach(function (d) {
+                                    $scope.disciplinaCursada.matricula.id = $scope.matricula.id;
+                                    if (d.id) {
+                                        $scope.disciplinaCursada.disciplina = d;
+                                        $scope.disciplinaCursada.nome = d.nome;
+                                        $scope.disciplinaCursada.nomeExibicao = d.nomeExibicao;
                                     } else {
-                                        $scope.turmasCompativeis($scope.etapa.id, cursadas);
-                                        $scope.matricula.disc = true;
+                                        $scope.disciplinaCursada.disciplina = d.disciplina;
+                                        $scope.disciplinaCursada.nome = d.disciplina.nome;
+                                        $scope.disciplinaCursada.nomeExibicao = d.disciplina.nomeExibicao;
                                     }
-                                    Servidor.customToast('Etapa que irá cursar salvo(a) com sucesso.');
-                                }
+                                    cursadas.push($scope.disciplinaCursada);                                    
+                                    Servidor.finalizar($scope.disciplinaCursada, 'disciplinas-cursadas', null);
+                                    $scope.limparDisciplinaCursada();
+                                    if(cursadas.length === $scope.disciplinasCurso.length) {
+                                        if($scope.mostraDisciplinas) {
+                                            $scope.selecionaOpcao('disciplinas');
+                                        } else {
+                                            $scope.turmasCompativeis($scope.etapa.id, cursadas);
+                                            $scope.matricula.disc = true;
+                                        }
+                                        Servidor.customToast('Etapa que irá cursar salvo(a) com sucesso.');
+                                    }
+                                });
+                                $timeout(function() {
+                                   $('select').material_select('destroy');
+                                   $('select').material_select();
+                                   $scope.fechaProgresso();
+                                }, 500);
                             });
-                            $timeout(function() {
-                               $('select').material_select('destroy');
-                               $('select').material_select();
-                               $scope.fechaProgresso();
-                            }, 50);
-                        });                            
-                    } else {
+                        });
+                    } else {                        
                         Servidor.customToast('Esta etapa não possue disciplinas.');
+                        $scope.fechaProgresso();
                     }
                 } else {
                     Servidor.customToast('Existem campos obrigatórios não preenchidos');
