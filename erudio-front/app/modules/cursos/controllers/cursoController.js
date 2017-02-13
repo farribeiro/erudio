@@ -36,7 +36,7 @@
         }]);
 
     cursoModule.controller('CursoController', ['$scope', '$timeout', 'Servidor', 'Restangular', 'CursoService', 'EtapaService', '$templateCache', function ($scope, $timeout, Servidor, Restangular, CursoService, EtapaService, $templateCache) {
-
+            $templateCache.removeAll();
             $scope.escrita = Servidor.verificaEscrita('CURSO') || Servidor.verificaAdmin();                        
             
             /* Atributos Específicos */

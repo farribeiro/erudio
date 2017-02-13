@@ -30,7 +30,6 @@
         $templateCache.removeAll();        
 
         $scope.escrita = Servidor.verificaEscrita('REGIME_ENSINO');
-
         /* Atributos Específicos */
         $scope.regimes = [];
 

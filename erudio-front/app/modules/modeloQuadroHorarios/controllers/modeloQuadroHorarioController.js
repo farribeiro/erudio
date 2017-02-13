@@ -28,7 +28,6 @@
     
     var modeloQuadroHorarioModule = angular.module('modeloQuadroHorarioModule', ['servidorModule', 'modeloQuadroHorarioDirectives']);
     modeloQuadroHorarioModule.controller('modeloQuadroHorarioController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function ($scope, Servidor, Restangular, $timeout, $templateCache) {
-
         $templateCache.removeAll();
 
         /* Atributos Específicos */

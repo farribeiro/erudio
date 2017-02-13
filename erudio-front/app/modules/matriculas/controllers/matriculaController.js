@@ -37,8 +37,8 @@
     }]);
 
     matriculaModule.controller('MatriculaController', ['$scope', '$filter', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'PessoaService', 'MatriculaService', 'TurmaService', '$compile', 'dateTime', 'makePdf', function ($scope, $filter, Servidor, Restangular, $timeout, $templateCache, PessoaService, MatriculaService, TurmaService, $compile, dateTime, makePdf) {
-
         $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('MATRICULA');
         $scope.alunoService = PessoaService;
         $scope.matriculaService = MatriculaService;

@@ -105,6 +105,7 @@
 
     mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
         $templateCache.removeAll();
+        
         this.tab = 'home';
         this.tabAtual = "";
         this.leftDropdown = '';

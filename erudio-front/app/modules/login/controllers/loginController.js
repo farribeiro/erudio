@@ -27,7 +27,9 @@
 (function (){
     var mainModule = angular.module('mainModule', ['loginDirectives','angular-md5','angular-sha1']);
 
-    mainModule.controller('MainController',['$scope', '$timeout', 'md5', 'Restangular', 'sha1', function($scope, $timeout, md5, Restangular, sha1){        
+    mainModule.controller('MainController',['$scope', '$timeout', 'md5', 'Restangular', 'sha1', '$templateCache', function($scope, $timeout, md5, Restangular, sha1, $templateCache){
+        $templateCache.removeAll();
+        
         $scope.usuario = null; $scope.senha = null;
         $scope.fonte = ''; $scope.foto = '';
         $scope.btnText = 'ENTRAR';

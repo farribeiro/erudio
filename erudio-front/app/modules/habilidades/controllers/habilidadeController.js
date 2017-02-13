@@ -27,7 +27,8 @@
 (function () {
     var habilidadeModule = angular.module('habilidadeModule', ['servidorModule', 'habilidadeDirectives']);
     habilidadeModule.controller('habilidadeController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', '$compile', function ($scope, Servidor, Restangular, $timeout, $templateCache, $compile) {
-
+        $templateCache.removeAll();
+        
             $scope.escrita = Servidor.verificaEscrita('HABILIDADE');
 
             $scope.cursos = [];

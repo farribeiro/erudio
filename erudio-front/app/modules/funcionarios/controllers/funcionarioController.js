@@ -40,7 +40,6 @@
     }]);
 
     funcionarioModule.controller('funcionarioController', ['$scope', 'Servidor', 'Restangular', 'FuncionarioService', 'PessoaService', '$timeout', '$templateCache','$compile', function ($scope, Servidor, Restangular, FuncionarioService, PessoaService, $timeout, $templateCache,$compile) {
-
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('FUNCIONARIO');         

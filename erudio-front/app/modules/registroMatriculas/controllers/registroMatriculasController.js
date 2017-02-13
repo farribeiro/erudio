@@ -1,7 +1,7 @@
 (function (){
     var registroMatriculasModule = angular.module('registroMatriculasModule', ['servidorModule', 'registroMatriculaDirectives']);
     registroMatriculasModule.controller('registroMatriculasController', ['$scope', 'makePdf', 'Servidor', 'Restangular', '$timeout', '$templateCache','$compile','dateTime', function ($scope, makePdf, Servidor, Restangular, $timeout, $templateCache, $compile, dateTime){
-        
+        $templateCache.removeAll();
         $scope.editando = false;
         $scope.requisicoes = 0;
         $scope.etapa = {turmas:[]};

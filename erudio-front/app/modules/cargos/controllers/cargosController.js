@@ -28,6 +28,7 @@
     var cargosModule = angular.module('cargosModule', ['servidorModule', 'cargosDirectives']);
 
     cargosModule.controller('cargosController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function ($scope, Servidor, Restangular, $timeout, $templateCache) {
+        $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('CARGO') || Servidor.verificaAdmin();
         $scope.cargos = null;

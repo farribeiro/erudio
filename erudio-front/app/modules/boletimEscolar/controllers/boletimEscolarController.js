@@ -29,6 +29,8 @@
     var boletimEscolarModule = angular.module('boletimEscolarModule', ['servidorModule', 'boletimEscolarDirectives', 'dateTimeModule']);
 
     boletimEscolarModule.controller('boletimEscolarController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
+        $templateCache.removeAll();
+            
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };
         $scope.editando = false;

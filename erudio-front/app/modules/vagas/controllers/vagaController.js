@@ -28,8 +28,8 @@
     var vagaModule = angular.module('vagaModule', ['vagaDirectives', 'servidorModule']);
 
     vagaModule.controller('VagaController', ['$scope', '$filter', 'Servidor', 'Restangular', '$timeout', '$templateCache', '$compile', 'dateTime', 'makePdf', function ($scope, $filter, Servidor, Restangular, $timeout, $templateCache, $compile, dateTime, makePdf) {
-
         $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('SOLICITAR_VAGA');
         $scope.isAdmin = Servidor.verificaAdmin();
         $scope.role = 'SOLICITAR_VAGA';

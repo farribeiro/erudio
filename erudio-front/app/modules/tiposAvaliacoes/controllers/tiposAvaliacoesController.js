@@ -28,7 +28,8 @@
     var tiposAvaliacoesModule = angular.module('tiposAvaliacoesModule', ['servidorModule', 'tiposAvaliacoesDirectives']);
 
     tiposAvaliacoesModule.controller('tiposAvaliacoesController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function ($scope, Servidor, Restangular, $timeout, $templateCache) {
-
+        $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('TIPOS_AVALIACAO');
 
         $scope.tipos = [];

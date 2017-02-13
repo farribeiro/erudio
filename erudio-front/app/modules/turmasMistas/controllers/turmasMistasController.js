@@ -27,8 +27,9 @@
 (function() {
     var turmasMistasModule = angular.module('turmaMistaModule', ['servidorModule', 'turmaMistaDirectives']);
 
-    turmasMistasModule.controller('turmasMistasController', function($scope, Servidor) {
-
+    turmasMistasModule.controller('turmasMistasController', ['Servidor','$templateCache'], function($scope, Servidor, $templateCache) {
+        $templateCache.removeAll();
+        
         $scope.unidade = {id: parseInt(sessionStorage.getItem('unidade')) };
         $scope.escrita = Servidor.verificaEscrita('TURMAS_MISTAS');
         $scope.isAdmin = function() { return Servidor.verificaAdmin(); };

@@ -30,7 +30,6 @@
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('TURNO');
-        
         /* Atributos Específicos */        
         $scope.turnos = []; 
         $scope.inicio = null; 

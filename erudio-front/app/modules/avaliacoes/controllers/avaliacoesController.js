@@ -40,6 +40,7 @@
 
     avaliacaoModule.controller('AvaliacaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', '$filter', 'AvaliacaoService', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, $filter, AvaliacaoService, dateTime) {
         $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('AVALIACAO');
         $scope.isAdmin = Servidor.verificaAdmin();
         $scope.professor = sessionStorage.getItem('disciplina');

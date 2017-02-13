@@ -40,8 +40,8 @@
     }]);
 
     pessoaModule.controller('pessoaController', ['$scope', 'Servidor', 'Restangular', 'PessoaService', 'FuncionarioService', 'MatriculaService', '$timeout', '$templateCache', '$compile', 'dateTime', function ($scope, Servidor, Restangular, PessoaService, FuncionarioService, MatriculaService, $timeout, $templateCache, $compile, dateTime) {
-
             $templateCache.removeAll();
+            
             $scope.inicializando = false;
             $scope.escrita = Servidor.verificaEscrita('PESSOA');
             $scope.isAdmin = Servidor.verificaAdmin();

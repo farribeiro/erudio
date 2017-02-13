@@ -29,8 +29,9 @@
     var unidadeModule = angular.module('unidadeModule', ['servidorModule','unidadeDirectives']);
 
     //DEFINIÇÃO DO CONTROLADOR
-    unidadeModule.controller('UnidadeController', ['$scope', 'Servidor', 'Restangular', '$timeout', function($scope, Servidor, Restangular, $timeout) {
-
+    unidadeModule.controller('UnidadeController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function($scope, Servidor, Restangular, $timeout, $templateCache) {
+        $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('UNIDADE_ENSINO');
         $scope.unidades = [];
         $scope.estados = [];

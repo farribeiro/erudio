@@ -25,8 +25,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 (function(){
     var alunosDefasadosModule = angular.module('alunosDefasadosModule', ['servidorModule', 'alunosDefasadosDirectives']);
-    alunosDefasadosModule.controller('alunosDefasadosController', ['$scope', '$timeout', 'dateTime', 'makePdf', 'Servidor', function($scope, $timeout, dateTime, makePdf, Servidor) {
-
+    alunosDefasadosModule.controller('alunosDefasadosController', ['$scope', '$timeout', 'dateTime', 'makePdf', 'Servidor', '$templateCache', function($scope, $timeout, dateTime, makePdf, Servidor, $templateCache) {
+        $templateCache.removeAll();
+        
         $scope.cortina = false;    
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };    

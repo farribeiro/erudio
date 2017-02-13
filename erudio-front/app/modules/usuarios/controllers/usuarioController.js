@@ -29,8 +29,9 @@
     var usuarioModule = angular.module('usuarioModule', ['servidorModule','usuarioDirectives']);
 
     //DEFINIÇÃO DO CONTROLADOR
-    usuarioModule.controller('UsuarioController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', function($scope, Servidor, Restangular, $timeout, md5, sha1) {
-
+    usuarioModule.controller('UsuarioController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', '$templateCache', function($scope, Servidor, Restangular, $timeout, md5, sha1, $templateCache) {
+        $templateCache.removeAll();
+        
         $scope.usuarios = []; // ARRAY DE USUARIOS
         $scope.usuarioRemover = null; // VARIAVEL QUE MOSTRA OU ESCONDE O MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
         $scope.strUsuario = ''; // VARIAVEL QUE GUARDA A STRING DE BUSCA.

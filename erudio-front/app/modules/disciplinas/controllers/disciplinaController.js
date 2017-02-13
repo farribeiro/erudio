@@ -41,7 +41,6 @@
             $templateCache.removeAll();
             
             $scope.escrita = Servidor.verificaEscrita('DISCIPLINA');            
-            
             /* Atributos Específicos */
             $scope.disciplinas = [];
             $scope.etapas = [];

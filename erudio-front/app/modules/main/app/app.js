@@ -36,16 +36,14 @@
         $routeProvider.when('/',{
             templateUrl: 'app/modules/home/partials/blank.html'
         });
-        //RestangularProvider.setBaseUrl('http://10.100.0.11/novoeducar/web/app_dev.php/api');
-        RestangularProvider.setBaseUrl('http://10.100.0.195/novoeducar/web/app_dev.php/api');
-        //RestangularProvider.setBaseUrl('http://erudioserver.com/web/app.php/api');
-        //RestangularProvider.setBaseUrl('http://10.100.7.138/novoeducar/web/app_dev.php/api');
+        RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
     }]);
 
-    app.controller('AppController',['$timeout','$routeParams', function($timeout){
-            //console.log(sessionStorage);
-        sessionStorage.setItem('baseUrl','http://10.100.0.195/novoeducar/web/app_dev.php/api');
-        sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/novoeducar/web/bundles/assets/uploads/');
+    app.controller('AppController',['$timeout','$routeParams', '$templateCache', function($timeout, $templateCache){
+        $templateCache.removeAll();
+        
+        sessionStorage.setItem('baseUrl','http://10.100.0.195/erudio/Erudio/erudio-server//web/app_dev.php/api');
+        sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/erudio/Erudio/erudio-serverweb/bundles/assets/uploads/');
         var sessionId = sessionStorage.getItem('sessionId');
         var username = sessionStorage.getItem('username');
         var nome = sessionStorage.getItem('nome');

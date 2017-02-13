@@ -37,7 +37,7 @@
 
     /* Controller */
     etapaModule.controller('EtapaController', ['$scope', '$compile', '$timeout', 'Servidor', 'Restangular','CursoService', 'EtapaService', 'DisciplinaService','$templateCache' , '$compile', function($scope, $compile, $timeout, Servidor, Restangular, CursoService, EtapaService, DisciplinaService, $templateCache, $compile){
-            
+        $templateCache.removeAll();
         $scope.escrita = Servidor.verificaEscrita('ETAPA');
 
         /* Atributos Específicos */

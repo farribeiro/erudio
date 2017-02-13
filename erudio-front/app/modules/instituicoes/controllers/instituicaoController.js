@@ -28,7 +28,8 @@
     var instituicaoModule = angular.module('instituicaoModule', ['servidorModule','instituicaoDirectives']);
     
     instituicaoModule.controller('InstituicaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function($scope, Servidor, Restangular, $timeout, $templateCache) {
-
+        $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('INSTITUICAO');
         $scope.instituicoes = []; $scope.estados = []; $scope.cidades = [];
         $scope.estadoId = null; $scope.cidadeId = null; $scope.instituicaoRemover = null; $scope.nomeInstituicao = '';

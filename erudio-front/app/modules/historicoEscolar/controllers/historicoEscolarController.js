@@ -2,8 +2,9 @@
     var historicoEscolarModule = angular.module('historicoEscolarModule', ['servidorModule', 'historicoEscolarDirectives']);
     
     historicoEscolarModule.controller('historicoEscolarController', ['$scope', 'makePdf', 'Servidor', 'Restangular', '$timeout', '$templateCache','$compile', function ($scope, makePdf, Servidor, Restangular, $timeout, $templateCache, $compile) {
-       
-         $scope.matriculaBusca = {
+        $templateCache.removeAll();
+        
+        $scope.matriculaBusca = {
             'aluno': '',
             'status': '',
             'codigo': '',

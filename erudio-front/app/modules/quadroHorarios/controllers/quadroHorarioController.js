@@ -29,8 +29,8 @@
     var quadroHorarioModule = angular.module('quadroHorarioModule', ['servidorModule', 'quadroHorarioDirectives']);
 
     quadroHorarioModule.controller('quadroHorarioController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', '$compile', function ($scope, Servidor, Restangular, $timeout, $templateCache, $compile) {
-
             $templateCache.removeAll();
+            
             $scope.escrita = Servidor.verificaEscrita('QUADRO_HORARIO');
             $scope.isAdmin = Servidor.verificaAdmin();
             $scope.turnoNome = '';

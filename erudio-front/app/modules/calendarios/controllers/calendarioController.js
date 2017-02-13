@@ -30,6 +30,7 @@
 
     calendarioModule.controller('calendarioController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, dateTime) {
         $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('CALENDARIO');
         $scope.isAdmin = Servidor.verificaAdmin();
         $scope.instituicaoId = parseInt(sessionStorage.getItem('instituicao'));

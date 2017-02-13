@@ -27,8 +27,9 @@
 (function (){
     var servidorModule = angular.module('servidorModule', ['toastModule','angular-md5','angular-sha1']);
 
-    servidorModule.service('Servidor', ['Restangular', 'Toast', '$timeout', '$http', 'md5', 'sha1', function(Restangular, Toast, $timeout, $http, md5, sha1) {
-
+    servidorModule.service('Servidor', ['Restangular', 'Toast', '$timeout', '$http', 'md5', 'sha1', '$templateCache', function(Restangular, Toast, $timeout, $http, md5, sha1, $templateCache) {
+        $templateCache.removeAll();
+        
         /* Testa se input tem somente nùmeros */
         this.somenteNumeros = function (valor) {
             if (valor.match(/[^0-9]/g)) { return false; }

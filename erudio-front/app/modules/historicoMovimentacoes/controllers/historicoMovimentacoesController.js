@@ -27,8 +27,9 @@
 (function () {
     var historicoMovimentacoesModule = angular.module('historicoMovimentacoesModule', ['servidorModule', 'historicoMovimentacoesDirectives']);
 
-    historicoMovimentacoesModule.controller('historicoMovimentacoesController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'dateTime',function ($scope, Servidor, Restangular, $timeout, dateTime) {
-
+    historicoMovimentacoesModule.controller('historicoMovimentacoesController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'dateTime', '$templateCache',function ($scope, Servidor, Restangular, $timeout, dateTime, $templateCache) {
+        $templateCache.removeAll();
+        
         $scope.escrita = Servidor.verificaEscrita('MOVIMENTACAO');
         $scope.isAdmin = Servidor.verificaAdmin();
 

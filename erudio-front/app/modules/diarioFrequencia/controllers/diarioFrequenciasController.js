@@ -29,7 +29,8 @@
     var diarioFrequenciasModule = angular.module('diarioFrequenciasModule', ['servidorModule', 'diarioFrequenciasDirectives', 'dateTimeModule']);
 
     diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
-                
+        $templateCache.removeAll();
+        
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };
         $scope.editando = false;

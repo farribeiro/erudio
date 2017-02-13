@@ -39,8 +39,9 @@
     }]);
 
     //DEFINIÇÃO DO CONTROLADOR
-    turmaModule.controller('TurmaController', ['$scope', 'Servidor', 'dateTime', 'Restangular', '$timeout', '$compile', 'dateTime', 'TurmaService', 'MatriculaService', function ($scope, Servidor, dateTime, Restangular, $timeout, $compile, dateTime, TurmaService, MatriculaService) {
-
+    turmaModule.controller('TurmaController', ['$scope', 'Servidor', 'dateTime', 'Restangular', '$timeout', '$compile', 'dateTime', 'TurmaService', 'MatriculaService', '$templateCache', function ($scope, Servidor, dateTime, Restangular, $timeout, $compile, dateTime, TurmaService, MatriculaService, $templateCache) {
+        $templateCache.removeAll();
+        
             /* ATRIBUTOS GERAIS */
             $scope.editando = false; // VARIAVEL AUXILIAR PARA VERIFICAR SE PÁGINA É DE LISTA OU DE EDIÇÃO.
             $scope.opcoesTurma = false; // VARIAVEL DE CONTROLE PARA TELA DE PROFESSORES

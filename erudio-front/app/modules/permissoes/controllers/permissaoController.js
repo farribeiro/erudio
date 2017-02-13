@@ -29,8 +29,8 @@
     var permissaoModule = angular.module('permissaoModule', ['servidorModule','permissaoDirectives']);
 
     //DEFINIÇÃO DO CONTROLADOR
-    permissaoModule.controller('PermissaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', function($scope, Servidor, Restangular, $timeout, md5, sha1) {
-
+    permissaoModule.controller('PermissaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', '$templateCache', function($scope, Servidor, Restangular, $timeout, md5, sha1, $templateCache) {
+        $templateCache.removeAll();
         $scope.usuarios = []; // ARRAY DE USUARIOS
         $scope.permissaoRemover = null; // VARIAVEL QUE MOSTRA OU ESCONDE O MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
         $scope.strUsuario = ''; // VARIAVEL QUE GUARDA A STRING DE BUSCA.

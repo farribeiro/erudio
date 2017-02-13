@@ -27,8 +27,8 @@
 (function () {
     var moduloModule = angular.module('moduloModule', ['servidorModule', 'moduloDirectives']);
     moduloModule.controller('moduloController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function ($scope, Servidor, Restangular, $timeout, $templateCache) {
-            
             $templateCache.removeAll();
+            
             $scope.escrita = Servidor.verificaEscrita('MODULO');
             
             /* Atributos Específicos */

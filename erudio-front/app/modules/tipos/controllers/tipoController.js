@@ -30,7 +30,6 @@
         $templateCache.removeAll();        
         
         $scope.escrita = Servidor.verificaEscrita('TIPO_UNIDADE');        
-        
         /* Atributos Específicos */
         
         $scope.tipos = [];

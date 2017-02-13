@@ -29,7 +29,8 @@
     var grupoPermissaoModule = angular.module('grupoPermissaoModule', ['servidorModule','grupoPermissaoDirectives']);
     
     //DEFINIÇÃO DO CONTROLADOR
-    grupoPermissaoModule.controller('GrupoPermissaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', function($scope, Servidor, Restangular, $timeout, md5, sha1) {
+    grupoPermissaoModule.controller('GrupoPermissaoController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'md5', 'sha1', '$templateCache', function($scope, Servidor, Restangular, $timeout, md5, sha1, $templateCache) {
+        $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('GRUPO');
         $scope.isAdmin = Servidor.verificaAdmin();

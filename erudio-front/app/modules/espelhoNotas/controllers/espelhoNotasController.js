@@ -28,7 +28,8 @@
     var espelhoNotasModule = angular.module('espelhoNotasModule', ['servidorModule', 'espelhoNotasDirectives']);
 
     espelhoNotasModule.controller('espelhoNotasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
-
+        $templateCache.removeAll();
+        
         //Variáveis do controller
         $scope.cursos = [];
         $scope.curso = null;
