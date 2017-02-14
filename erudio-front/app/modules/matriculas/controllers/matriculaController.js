@@ -793,7 +793,8 @@
         // VER SE TEM SOLICITACAO
         // MESMA PESSOA -> ENTURMA SENAO NAO
         $scope.verificarVagaDisponivel = function(pessoaId, turmaId) {
-            if (!pessoaId && !turmaId) { return Servidor.customToast('Preencha os campos obrigatórios.'); }
+            $scope.mostraProgresso();
+            if (!pessoaId && !turmaId) { $scope.fechaProgresso(); return Servidor.customToast('Preencha os campos obrigatórios.'); }
             var promise = Servidor.buscar('solicitacao-vagas', {pessoa: pessoaId});
             promise.then(function(response) {
                 var solicitacoes = response.data;
