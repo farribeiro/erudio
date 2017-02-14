@@ -296,6 +296,7 @@
                         case 3:
                             $('ul.tabs').tabs('select_tab', 'tab-documentos');
                             $(".cpf").mask('000.000.000-00');
+                            $timeout(function() {$('.data').mask('00/00/0000');}, 500);
                         break;
                         case 4:
                             $('ul.tabs').tabs('select_tab', 'tab-particularidades');
