@@ -43,7 +43,7 @@
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('FUNCIONARIO');         
-        $scope.isAdmin = Servidor.verificaAdmin();
+        $scope.isAdmin = !Servidor.verificaAdmin();
         $scope.vinculos = [];
         $scope.instituicoes = [];
         $scope.unidades = [];
@@ -352,7 +352,7 @@
                 delete vinculo.funcionario.dataNascimento;
                 var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
                 promise.then(function(response) {
-                    if(!response.data.length) {
+                    if(!response.data.length || vinculo.id) {
                         var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionario');
                         result.then(function(response) {
                             vinculo = response.data;
@@ -373,6 +373,7 @@
                             }                    
                         });
                     } else {
+                        $scope.fechaLoader();
                         Servidor.customToast('Esta pessoa já possui um vinculo ativo');
                     }
                 });                    

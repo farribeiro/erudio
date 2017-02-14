@@ -45,7 +45,7 @@
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = Servidor.verificaAdmin();
+        $scope.isAdmin = !Servidor.verificaAdmin();
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
@@ -407,6 +407,9 @@
                 }
                 if (matricula.codigo !== '' || matricula.aluno !== '' || matricula.unidade !== null || matricula.curso !== null || matricula.status !== null) {
                     $scope.mostraProgresso();
+                    if(!$scope.isAdmin && matricula.aluno) {
+                        matricula.unidade = null;
+                    }
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
                         'unidadeEnsino': matricula.unidade, 'curso': matricula.curso, 'status': matricula.status});
                     promise.then(function (response) {
@@ -793,7 +796,8 @@
         // VER SE TEM SOLICITACAO
         // MESMA PESSOA -> ENTURMA SENAO NAO
         $scope.verificarVagaDisponivel = function(pessoaId, turmaId) {
-            if (!pessoaId && !turmaId) { return Servidor.customToast('Preencha os campos obrigatórios.'); }
+            $scope.mostraProgresso();
+            if (!pessoaId && !turmaId) { $scope.fechaProgresso(); return Servidor.customToast('Preencha os campos obrigatórios.'); }
             var promise = Servidor.buscar('solicitacao-vagas', {pessoa: pessoaId});
             promise.then(function(response) {
                 var solicitacoes = response.data;
@@ -1209,6 +1213,9 @@
 
         /*mostrar opçoes */
         $scope.mostraOpcoes = function (matricula, opcao, status) {
+            if(!$scope.isAdmin && matricula.unidadeEnsino.id !== $scope.unidadeAlocacao) {
+                return Servidor.customToast('Este aluno não está matriculado em sua unidade.');
+            }
             $scope.facilAcesso = status;
             $scope.mostraProgresso();
             $scope.frequentaStatus = 'frequenta';
