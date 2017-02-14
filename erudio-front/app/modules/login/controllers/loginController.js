@@ -102,6 +102,7 @@
                                         promise.then(function(response){
                                             for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
                                             if (atribuicoes.length > 0) {
+                                                console.log('chegou');
                                                 sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
                                             } else {
                                                 var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
@@ -140,7 +141,7 @@
                                         sessionStorage.setItem("vinculo","");
                                         sessionStorage.setItem("alocacao", "");
                                         sessionStorage.setItem("disciplina", "");
-                                        $timeout(function (){ window.location = 'index.html'; }, 1000);
+                                        $timeout(function (){ window.location = 'index.html'; }, 2500);
                                     });
                                 } else {
                                     //sem avatar pessoal
@@ -157,9 +158,9 @@
                                     sessionStorage.setItem("vinculo","");
                                     sessionStorage.setItem("alocacao", "");
                                     sessionStorage.setItem("disciplina", "");
-                                    $timeout(function (){ window.location = 'index.html'; }, 1000);
+                                    $timeout(function (){ window.location = 'index.html'; }, 2500);
                                 }
-                            }, 1000);
+                            }, 4000);
                         }
                     }
                 }, function(error){
