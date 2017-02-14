@@ -151,7 +151,8 @@
                                     </th>
                                     <th class="hide-on-small-only center-align" data-field='curso'>Curso</th>
                                     <th class="hide-on-small-only center-align" data-field='status'>Status</th>
-                                    <th class='center-align hide-on-small-only center-align' data-field='opcoes'>Opções</th>
+                                    <th class='center-align hide-on-small-only center-align' data-field='opcoes' data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao">Opções</th>
+                                    <th class='center-align hide-on-small-only center-align' data-field='opcoes' data-ng-show="!isAdmin && matricula.unidadeEnsino.id !== unidadeAlocacao">Unidade de Ensino</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,11 +164,14 @@
                                     <td class="hide-on-small-only center-align">{{ matricula.aluno.nome | uppercase }}</td>
                                     <td class="hide-on-small-only center-align">{{ matricula.curso.nome | uppercase }}</td>
                                     <td class="hide-on-small-only center-align">{{ matricula.status }}</td>
-                                    <td class='center-align hide-on-small-only'>
+                                    <td class='center-align hide-on-small-only' data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao">
                                         <i data-ng-click="mostraOpcoes(matricula, 'enturmacoes', true)" data-position='top' data-delay='50' data-tooltip='Enturmações' class="material-icons info-icon tooltipped">people</i>
                                         <i data-ng-click="mostraOpcoes(matricula, 'disciplinas', true)" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">local_library</i>
                                         <i data-ng-click="mostraOpcoes(matricula, 'movimentacoes', true)" data-position='top' data-delay='50' data-tooltip='Movimentações' class="material-icons info-icon tooltipped">swap_horiz</i>
                                         <i data-ng-click="mostraOpcoes(matricula, 'pdf', true)" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i>
+                                    </td>
+                                    <td class="center-align hide-on-small-only" data-ng-show="!isAdmin && matricula.unidadeEnsino.id !== unidadeAlocacao">
+                                        {{matricula.unidadeEnsino.nomeCompleto | uppercase }}
                                     </td>
                                 </tr>
                             </tbody>
