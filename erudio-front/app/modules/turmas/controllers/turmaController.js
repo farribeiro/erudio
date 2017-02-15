@@ -57,7 +57,7 @@
             $scope.excluirDisciplina = false; // VARIAVEL DE CONTROLE DE EXCLUSAO DE DISCIPLINA DA TURMA
             $scope.role = 'TURMA'; // NOME DA PERMISSAO
             $scope.permissao = true; // CONTROLE DE EXIBICAO DO MÓDULO
-            $scope.isAdmin = !Servidor.verificaAdmin();
+            $scope.isAdmin = Servidor.verificaAdmin();
             $scope.instituicao = parseInt(sessionStorage.getItem('instituicao'));
             $scope.dataInicioQuadroHorario = '';
             $scope.aulaGerada = false;
