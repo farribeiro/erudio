@@ -243,4 +243,8 @@ class Turma extends AbstractEditableEntity {
         $this->status = $status;
     }
     
+    function setQuadroHorario($quadroHorario) {
+        $this->quadroHorario = $quadroHorario;
+    }
+    
 }
