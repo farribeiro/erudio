@@ -43,7 +43,7 @@
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('FUNCIONARIO');         
-        $scope.isAdmin = !Servidor.verificaAdmin();
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.vinculos = [];
         $scope.instituicoes = [];
         $scope.unidades = [];
