@@ -139,7 +139,7 @@
                 $scope.requisicoes = 0;
                 $scope.etapasSelecionadas.forEach(function(etapa, i) {
                     $scope.requisicoes++;
-                    var promise = Servidor.buscar('turmas', {etapa: etapa.id, unidade: sessionStorage.getItem('unidade')});
+                    var promise = Servidor.buscar('turmas', {etapa: etapa.id, unidadeEnsino: sessionStorage.getItem('unidade')});
                     promise.then(function(response) {
                         etapa.turmas = response.data;
                         if (--$scope.requisicoes === 0) {
