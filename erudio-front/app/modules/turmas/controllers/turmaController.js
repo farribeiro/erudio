@@ -57,7 +57,7 @@
             $scope.excluirDisciplina = false; // VARIAVEL DE CONTROLE DE EXCLUSAO DE DISCIPLINA DA TURMA
             $scope.role = 'TURMA'; // NOME DA PERMISSAO
             $scope.permissao = true; // CONTROLE DE EXIBICAO DO MÓDULO
-            $scope.isAdmin = Servidor.verificaAdmin();
+            $scope.isAdmin = !Servidor.verificaAdmin();
             $scope.instituicao = parseInt(sessionStorage.getItem('instituicao'));
             $scope.dataInicioQuadroHorario = '';
             $scope.aulaGerada = false;
@@ -479,6 +479,9 @@
                     promise.then(function(response) {
                         $scope.cursos = response.data.cursos;
                         if(response.data.cursos.length) {
+                            if($scope.cursos.length === 1) {
+                                $scope.buscarEtapas($scope.cursos[0].id);
+                            }
                             $timeout(function () {
                                 $('#curso').material_select('destroy');
                                 $('#curso').material_select();
