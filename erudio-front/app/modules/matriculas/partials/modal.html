@@ -148,10 +148,25 @@
 </div>
 
 <!-- Modal de Movimentacao Transferencia-->
-<div id="" class="modal" style="max-height: 80%;">
+<div id="transferir-para-mim-modal" class="modal" style="max-height: 80%;">
     <div class="modal-dialog">
         <div class="modal-content">
-           
+            <div class="modal-body">
+                <div class="modal-title-info">
+                    <h4>Transferir para minha Unidade</h4>
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">content_paste</i>
+                    <input id="justificativaTransferenciaMinhaUnidade" type="text" data-ng-model="transferencia.justificativa">
+                    <label for="justificativaTransferenciaMinhaUnidade">Justificativa*</label>
+                </div>
+                <div class="modal-footer end-card">
+                    <a class="waves-effect waves-green btn-flat">
+                        <i class="material-icons left">save</i>
+                        <span data-ng-click="transferenciaLocal(matricula, transferencia.justificativa)">Salvar</span>                        
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

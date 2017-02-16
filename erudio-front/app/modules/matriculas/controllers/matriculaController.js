@@ -45,7 +45,7 @@
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = !Servidor.verificaAdmin();
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
@@ -1798,6 +1798,37 @@
                 }                  
             } else {
                 Materialize.toast('Precisa efetuar a matrícula antes de alocar as disciplinas.', 4000);
+            }
+        };
+
+        $scope.abrirModalTransferenciaLocal = function(matricula) {
+            $scope.transferencia = {justificativa: null};
+            $scope.matricula = matricula;
+            $('#transferir-para-mim-modal').openModal();
+        };
+
+        $scope.transferenciaLocal = function(matricula, justificativa) {
+            if(justificativa !== undefined && justificativa) {
+                var transferencia = {
+                    status: 'ACEITO',
+                    justificativa: justificativa,
+                    matricula: {id: matricula.id},
+                    unidadeEnsinoDestino: {id: parseInt(sessionStorage.getItem('unidade'))},
+                    unidadeEnsinoOrigem: {id: matricula.unidadeEnsino.id}
+                };
+                $scope.mostraProgresso();
+                var promise = Servidor.finalizar(transferencia, 'transferencias', 'Transferência');
+                promise.then(function(response) {
+                    var matricula = response.data.matricula;
+                    $scope.matriculas.forEach(function(m) {
+                        if(m.id === matricula.id) {
+                            m = matricula;
+                        }
+                    });
+                    $scope.fechaProgresso();
+                });
+            } else {
+                Servidor.customToast('Preencha a justificativa.');
             }
         };
 
