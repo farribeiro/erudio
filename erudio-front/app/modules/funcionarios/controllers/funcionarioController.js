@@ -43,7 +43,7 @@
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('FUNCIONARIO');         
-        $scope.isAdmin = !Servidor.verificaAdmin();
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.vinculos = [];
         $scope.instituicoes = [];
         $scope.unidades = [];
@@ -82,7 +82,7 @@
             'cargaHoraria': '', // MAXIMO 40Hrs
             'funcionario': {}, // PESSOA
             'cargo': {
-                'nome': '',
+                'id': null,
                 'professor': false // TRUE ou FALSE
             },
             'instituicao': null,
@@ -94,7 +94,7 @@
         $scope.vinculoBusca = {
             'funcionario': {'nome': null, 'cpfCnpj': null},
             'status': '',
-            'cargo': {'nome': null},
+            'cargo': {'id':null, 'nome': null},
             'codigo': null
         };
 
@@ -107,7 +107,8 @@
         };
 
         $scope.cargo = {
-            'nome': '',
+            'id': null,
+            'nome': null,
             'professor': false
         };
 
@@ -131,8 +132,8 @@
                 'cargaHoraria': '', // MAXIMO 40Hrs
                 'funcionario': {}, // PESSOA
                 'cargo': {
-                    'nome': '',
-                    'professor': '' // TRUE ou FALSE
+                    'id': null,
+                    'professor': false // TRUE ou FALSE
                 },
                 'instituicao': null,
                 'alocacao': []
@@ -140,7 +141,7 @@
             $scope.vinculoBusca = {
                 'funcionario': {'nome': null, 'cpfCnpj': null},
                 'status': '',
-                'cargo': {id: null},
+                'cargo': {'id': null, 'nome': null},
                 'codigo': null
             };
         };
@@ -170,7 +171,7 @@
         $scope.limpaCargo = function() {
             $scope.cargo = {
                 'id': '',
-                'nome': '',
+                'nome': null,
                 'professor': false
             };
         };
@@ -414,7 +415,7 @@
                             $scope.totalUnidadesEscolares = $scope.quantidadeDeUnidades();
                             $timeout(function(){ 
                                 $('.tooltipped').tooltip('remove'); 
-                                $('.tooltipped').tooltip({delay: 50});                                 
+                                $('.tooltipped').tooltip({delay: 50});
                             }, 50);
                             $scope.prepararFormulario();
                         }
@@ -448,15 +449,16 @@
                         alignment: 'left'
                     }
                 );
-                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); }, 250);
+                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); console.log($scope.vinculo); }, 250);
             }, 500);
         };
 
         // Liga um cargo ao vinculo
         $scope.carregarCargo = function(cargo){
-            $scope.vinculoBusca.cargo = cargo;
-            $scope.vinculo.cargo = cargo;
+            $scope.vinculoBusca.cargo.id = cargo.id;
+            $scope.vinculo.cargo.id = cargo.id;
             $timeout(function() {
+                console.log($scope.vinculo);
                 Servidor.verificaLabels();
             }, 100);
         };

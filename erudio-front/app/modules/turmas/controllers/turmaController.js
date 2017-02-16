@@ -479,6 +479,9 @@
                     promise.then(function(response) {
                         $scope.cursos = response.data.cursos;
                         if(response.data.cursos.length) {
+                            if($scope.cursos.length === 1) {
+                                $scope.buscarEtapas($scope.cursos[0].id);
+                            }
                             $timeout(function () {
                                 $('#curso').material_select('destroy');
                                 $('#curso').material_select();
