@@ -26,314 +26,224 @@
 
 (function (){
     var mainModule = angular.module('mainModule', ['loginDirectives','angular-md5','angular-sha1']);
-
     mainModule.controller('MainController',['$scope', '$timeout', 'md5', 'Restangular', 'sha1', '$templateCache', function($scope, $timeout, md5, Restangular, sha1, $templateCache){
+        //LIMPA CACHE
         $templateCache.removeAll();
-        
-        $scope.usuario = null; $scope.senha = null;
-        $scope.fonte = ''; $scope.foto = '';
-        $scope.btnText = 'ENTRAR';
+        $scope.usuario = null; $scope.senha = null; $scope.fonte = ''; $scope.foto = ''; $scope.btnText = 'ENTRAR';
         
         //GERADOR NONCE
         $scope.generateNonce = function () {
-            var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var text = ""; var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             for(var i = 0; i < length; i++) { text += possible.charAt(Math.floor(Math.random() * possible.length)); }
             return text;
         };
         
         //GERADOR HEADER
         $scope.criarHeader = function (username, senha) {
-            var created = moment().format(); var nonce = $scope.guid();
-            var nonceSend = btoa(nonce); var pass = md5.createHash(senha);
-            var digest = btoa(sha1.hash(nonce + created + pass));
+            var created = moment().format(); var nonce = $scope.guid(); var nonceSend = btoa(nonce); var pass = md5.createHash(senha); var digest = btoa(sha1.hash(nonce + created + pass));
             var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
             return header;
         };
         
+        //GERADOR HEADER INTRANET
         $scope.criarHeaderIntranet = function (username, senha) {
-            var created = moment().format(); var nonce = $scope.guid();
-            var nonceSend = btoa(nonce); var pass = senha;
-            var digest = btoa(sha1.hash(nonce + created + pass));
+            var created = moment().format(); var nonce = $scope.guid(); var nonceSend = btoa(nonce); var pass = senha; var digest = btoa(sha1.hash(nonce + created + pass));
             var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
             return header;
         };
         
         //GERADOR GUID
-        $scope.guid = function () {
-            function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+        $scope.guid = function () { function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); } return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4(); };
+        
+        //CRIA SESSÃO NO SESSION STORAGE
+        $scope.setaSessao = function (user, sessionId) {
+            //seta avatar
+            var profile = 'profile';
+            if (user.pessoa !== undefined && user.pessoa.genero !== 'M') { profile = 'profileGirl'; }
+            //busca pessoa para criar sessão
+            if (user.pessoa.avatar !== undefined) {
+                //busca avatar pessoal
+                var promise = rest.one('assets',user.pessoa.avatar).get();
+                promise.then(function(response){ 
+                    sessionStorage.setItem('avatar',response.data.file); sessionStorage.setItem("username", $scope.usuario);
+                    sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa)); sessionStorage.setItem("nome", user.nomeExibicao);
+                    sessionStorage.setItem("pessoaId", user.id); sessionStorage.setItem("profile", profile);
+                    sessionStorage.setItem("key", md5.createHash($scope.senha)); sessionStorage.setItem("sessionId", md5.createHash(sessionId));
+                    sessionStorage.setItem("menu",0); sessionStorage.setItem("module","main");
+                    sessionStorage.setItem("moduleOptions",""); sessionStorage.setItem("vinculo","");
+                    sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
+                    $timeout(function (){ window.location = 'index.html'; }, 1000);
+                });
+            } else {
+                //sem avatar pessoal
+                sessionStorage.setItem("username", $scope.usuario); sessionStorage.setItem("nome", user.nomeExibicao);
+                sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa)); sessionStorage.setItem("pessoaId", user.id);
+                sessionStorage.setItem("profile", profile); sessionStorage.setItem("key", md5.createHash($scope.senha));
+                sessionStorage.setItem("sessionId", md5.createHash(sessionId)); sessionStorage.setItem("menu",0);
+                sessionStorage.setItem("module","main"); sessionStorage.setItem("moduleOptions","");
+                sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
+                $timeout(function (){ window.location = 'index.html'; }, 1000);
+            }
         };
         
         //EFETUAR LOGIN
         $scope.login = function () {            
-            //se usuario e senha estiver preenchido, prossegue.
+            
+            //SÓ PROSSEGUE QUANDO USER E SENHA ESTÃO PREENCHIDOS
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
-                //cria o header
-                var sessionId = $scope.guid();
-                var header = $scope.criarHeader($scope.usuario, $scope.senha);
+                
+                //CRIA O HEADER
+                var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
                 var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
-                rest.setFullResponse(true);
+                rest.setFullResponse(true); $scope.btnText = 'CARREGANDO...';
 
-                $scope.btnText = 'CARREGANDO...';
-
-                //busca o usuario
+                //BUSCA O USUARIO
                 var promise = rest.all('users').getList({'username':$scope.usuario});
                 promise.then(function(response){
                     if (response.status === 200) {
                         if (response.data.length === 0) {
-                            //se tem resposta mas não encontra o usuario
-                            $scope.btnText = 'ENTRAR';
-                            Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
+                            //USUARIO NAO ENCONTRADO
+                            $scope.btnText = 'ENTRAR'; Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
                         } else {
                             
-                            //faz animação inicial e prepara o login
-                           $scope.loginAnimation();
+                            //ANIMACAO INICIAL
+                            $scope.loginAnimation(); var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
+                            var roles = user.rolesAtribuidas; var atribuicoes = [];
                             
-                            $timeout(function() {                                
-                                var user = response.data[0];
-                                sessionStorage.setItem('user', JSON.stringify(user));
-                                var roles = user.rolesAtribuidas;
-                                var atribuicoes = [];
-                                for (var i=0; i<roles.length; i++)
-                                {
-                                    if (roles[i].grupo !== undefined) {
-                                        var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                        promise.then(function(response){
-                                            for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                            if (atribuicoes.length > 0) {
-                                                console.log('chegou');
-                                                sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                            } else {
-                                                var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                                sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                            }
-                                        });
-                                    } else {
-                                        atribuicoes.push(roles[i]);
+                            //PREPARA PERMISSOES
+                            for (var i=0; i<roles.length; i++)
+                            {
+                                var index = i;
+                                if (roles[i].grupo !== undefined) {
+                                    var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                    promise.then(function(response){
+                                        for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
                                         if (atribuicoes.length > 0) {
                                             sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
                                         } else {
                                             var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
                                             sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
                                         }
-                                    }
-                                }
-                                //seta avatar
-                                var profile = 'profile';
-                                if (user.pessoa !== undefined && user.pessoa.genero !== 'M') { profile = 'profileGirl'; }
-                                //busca pessoa para criar sessão
-                                if (user.pessoa.avatar !== undefined) {
-                                    //busca avatar pessoal
-                                    var promise = rest.one('assets',user.pessoa.avatar).get();
-                                    promise.then(function(response){ 
-                                        sessionStorage.setItem('avatar',response.data.file);
-                                        sessionStorage.setItem("username", $scope.usuario);
-                                        sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa));
-                                        sessionStorage.setItem("nome", user.nomeExibicao);
-                                        sessionStorage.setItem("pessoaId", user.id);
-                                        sessionStorage.setItem("profile", profile);
-                                        sessionStorage.setItem("key", md5.createHash($scope.senha));
-                                        sessionStorage.setItem("sessionId", md5.createHash(sessionId));
-                                        sessionStorage.setItem("menu",0);
-                                        sessionStorage.setItem("module","main");
-                                        sessionStorage.setItem("moduleOptions","");
-                                        sessionStorage.setItem("vinculo","");
-                                        sessionStorage.setItem("alocacao", "");
-                                        sessionStorage.setItem("disciplina", "");
-                                        $timeout(function (){ window.location = 'index.html'; }, 2500);
                                     });
                                 } else {
-                                    //sem avatar pessoal
-                                    sessionStorage.setItem("username", $scope.usuario);
-                                    sessionStorage.setItem("nome", user.nomeExibicao);
-                                    sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa));
-                                    sessionStorage.setItem("pessoaId", user.id);
-                                    sessionStorage.setItem("profile", profile);
-                                    sessionStorage.setItem("key", md5.createHash($scope.senha));
-                                    sessionStorage.setItem("sessionId", md5.createHash(sessionId));
-                                    sessionStorage.setItem("menu",0);
-                                    sessionStorage.setItem("module","main");
-                                    sessionStorage.setItem("moduleOptions","");
-                                    sessionStorage.setItem("vinculo","");
-                                    sessionStorage.setItem("alocacao", "");
-                                    sessionStorage.setItem("disciplina", "");
-                                    $timeout(function (){ window.location = 'index.html'; }, 2500);
+                                    atribuicoes.push(roles[i]);
+                                    if (atribuicoes.length > 0) {
+                                        sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                    } else {
+                                        var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                        sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                    }
                                 }
-                            }, 4000);
+                            }
                         }
                     }
                 }, function(error){
-                    $scope.btnText = 'ENTRAR';
-                    if (error.status === 403){
-                        Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
-                    }
+                    //SENHA ERRADA
+                    $scope.btnText = 'ENTRAR'; if (error.status === 403){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
                 });
-            } else {
-                $scope.btnText = 'ENTRAR';
-                Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000);
-            }
+            } else { $scope.btnText = 'ENTRAR'; Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000); }
         };
 
         //ANIMAÇÃO INICIAL
         $scope.loginAnimation = function() {      
             $timeout(function() {
-                $('.card-content, .card-action, nav').addClass('fade-out');
-                $('.loader').css('opacity',1);
-                $timeout(function() {
-                    $('.card-expand').css('transform','scale(3)');
-                }, 500);
+                $('.card-content, .card-action, nav').addClass('fade-out'); $('.loader').css('opacity',1);
+                $timeout(function() { $('.card-expand').css('transform','scale(3)'); }, 500);
             }, 200);
         };
         
-        //evento de login na tecla enter
+        //EVENTO DE LOGIN NA TECLA ENTER
         $timeout(function() {
             $('#senha').keypress(function(event) {
-                var tecla = (window.event) ? event.keyCode : event.which;
-                if (tecla === 13) {
-                    $scope.login();                    
-                    return false;
-                } else {
-                    return true;
-                }
+                var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { $scope.login(); return false; } else { return true; }
             });
         }, 500);
         
+        //BUSCA PARAMETROS GET NO LOGIN VIA INTRANET
         $scope.getUrlParameter = function (sParam) {
-            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
-
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL.split('&'), sParameterName, i;
             for (i = 0; i < sURLVariables.length; i++) {
                 sParameterName = sURLVariables[i].split('=');
-
-                if (sParameterName[0] === sParam) {
-                    return sParameterName[1] === undefined ? true : sParameterName[1];
-                }
+                if (sParameterName[0] === sParam) { return sParameterName[1] === undefined ? true : sParameterName[1]; }
             }
         };
         
+        //EVENTO DE LOGIN VIA INTRANET
         $scope.intranetLogin = function () {
-            $scope.usuario = $scope.getUrlParameter('username');
-            $scope.senha = $scope.getUrlParameter('key');
-            
-            var sessionId = $scope.guid();
-            var header = $scope.criarHeaderIntranet($scope.usuario, $scope.senha);
-            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
-            rest.setFullResponse(true);
+            $scope.usuario = $scope.getUrlParameter('username'); $scope.senha = $scope.getUrlParameter('key');
+            var sessionId = $scope.guid(); var header = $scope.criarHeaderIntranet($scope.usuario, $scope.senha);
+            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); }); rest.setFullResponse(true);
             
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
-                //cria o header
+                
+                //PREPARA O HEADER
                 var promise = rest.all('users').getList({'username':$scope.usuario});
                 promise.then(function(response){
                     if (response.status === 200) {
                         if (response.data.length === 0) {
+                            
+                            //USUARIO NAO ENCONTRADO
                             Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
-                        } else {
-                            $timeout(function() {                                
-                                var user = response.data[0];
-                                sessionStorage.setItem('user', JSON.stringify(user));
-                                var roles = user.rolesAtribuidas;
-                                var atribuicoes = [];
-                                for (var i=0; i<roles.length; i++)
-                                {
-                                    if (roles[i].grupo !== undefined) {
-                                        var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                        promise.then(function(response){
-                                            for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                            if (atribuicoes.length > 0) {
-                                                sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                            } else {
-                                                var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                                sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                            }
-                                        });
-                                    } else {
-                                        atribuicoes.push(roles[i]);
+                        } else {                         
+                            var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
+                            var roles = user.rolesAtribuidas; var atribuicoes = [];
+                            
+                            //PREPARA PERMISSOES
+                            for (var i=0; i<roles.length; i++)
+                            {
+                                var index = i;
+                                if (roles[i].grupo !== undefined) {
+                                    var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                    promise.then(function(response){
+                                        for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
                                         if (atribuicoes.length > 0) {
                                             sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
                                         } else {
                                             var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
                                             sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
                                         }
-                                    }
-                                }
-                                //seta avatar
-                                var profile = 'profile';
-                                if (user.pessoa !== undefined && user.pessoa.genero !== 'M') { profile = 'profileGirl'; }
-                                //busca pessoa para criar sessão
-                                if (user.pessoa.avatar !== undefined) {
-                                    //busca avatar pessoal
-                                    var promise = rest.one('assets',user.pessoa.avatar).get();
-                                    promise.then(function(response){ 
-                                        sessionStorage.setItem('avatar',response.data.file);
-                                        sessionStorage.setItem("username", $scope.usuario);
-                                        sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa));
-                                        sessionStorage.setItem("nome", user.nomeExibicao);
-                                        sessionStorage.setItem("pessoaId", user.id);
-                                        sessionStorage.setItem("profile", profile);
-                                        sessionStorage.setItem("key", $scope.senha);
-                                        sessionStorage.setItem("sessionId", md5.createHash(sessionId));
-                                        sessionStorage.setItem("menu",0);
-                                        sessionStorage.setItem("module","main");
-                                        sessionStorage.setItem("moduleOptions","");
-                                        sessionStorage.setItem("vinculo","");
-                                        sessionStorage.setItem("alocacao", "");
-                                        sessionStorage.setItem("disciplina", "");
-                                        $timeout(function (){ window.location = 'index.html'; }, 2000);
                                     });
                                 } else {
-                                    //sem avatar pessoal
-                                    sessionStorage.setItem("username", $scope.usuario);
-                                    sessionStorage.setItem("nome", user.nomeExibicao);
-                                    sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa));
-                                    sessionStorage.setItem("pessoaId", user.id);
-                                    sessionStorage.setItem("profile", profile);
-                                    sessionStorage.setItem("key", $scope.senha);
-                                    sessionStorage.setItem("sessionId", md5.createHash(sessionId));
-                                    sessionStorage.setItem("menu",0);
-                                    sessionStorage.setItem("module","main");
-                                    sessionStorage.setItem("moduleOptions","");
-                                    sessionStorage.setItem("vinculo","");
-                                    sessionStorage.setItem("alocacao", "");
-                                    sessionStorage.setItem("disciplina", "");
-                                    $timeout(function (){ window.location = 'index.html'; }, 2000);
+                                    atribuicoes.push(roles[i]);
+                                    if (atribuicoes.length > 0) {
+                                        sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                    } else {
+                                        var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                        sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                    }
                                 }
-                            }, 1000);
+                            }
                         }
                     }
                 }, function(error){
-                    if (error.status === 403){
-                        Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
-                    }
+                    //SENHA ERRADA
+                    if (error.status === 403){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
                 });
-            } else {
-                Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000);
-            }
+            } else { Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000); }
         };
 
-        //fade-in inicial da página
+        //ANIMAÇÃO INICIAL DA PÁGINA
         $(document).ready(function(){
-            setTimeout(function(){ $('.brand-logo').css('opacity',1); }, 100);
-            setTimeout(function(){ $('.user').css('opacity',1).css('margin-bottom','5rem'); }, 100);
-            setTimeout(function(){ $('.pass').css('opacity',1);}, 300);
-            setTimeout(function(){ $('.loginBtn').css('opacity',1).css('bottom',0);}, 900);
-            setTimeout(function(){ $('.link1').css('opacity',1);}, 200);
-            setTimeout(function(){ $('.link2').css('opacity',1);}, 300);
-            setTimeout(function(){ $('.link3').css('opacity',1);}, 400);
-            setTimeout(function(){ $('.foto-user').css('opacity',1); }, 700);
-            setTimeout(function(){ $('.foto-user').css('transform','scale(1)'); }, 800);
-            setTimeout(function(){ $('#usuario').focus(); }, 1);
+            setTimeout(function(){ $('.brand-logo').css('opacity',1); }, 100); setTimeout(function(){ $('.user').css('opacity',1).css('margin-bottom','5rem'); }, 100);
+            setTimeout(function(){ $('.pass').css('opacity',1);}, 300); setTimeout(function(){ $('.loginBtn').css('opacity',1).css('bottom',0);}, 900);
+            setTimeout(function(){ $('.link1').css('opacity',1);}, 200); setTimeout(function(){ $('.link2').css('opacity',1);}, 300);
+            setTimeout(function(){ $('.link3').css('opacity',1);}, 400); setTimeout(function(){ $('.foto-user').css('opacity',1); }, 700);
+            setTimeout(function(){ $('.foto-user').css('transform','scale(1)'); }, 800); setTimeout(function(){ $('#usuario').focus(); }, 1);
             $('.login-form').css('opacity',1);            
         });
         
-        $scope.openInNewTab = function(url) {
-            var win = window.open(url, '_blank');
-            win.focus();
-        };
+        //FUNÇÃO PARA ABRIR EM NOVA ABA(?)
+        $scope.openInNewTab = function(url) { var win = window.open(url, '_blank'); win.focus(); };
 
-        //limpa a sessão toda vez que entra, forçando o login
+        //LIMPA A SESSÃO QUANDO ACESSA A PÁGINA, FORÇANDO O LOGIN
         sessionStorage.clear();
     }]);
 })();
