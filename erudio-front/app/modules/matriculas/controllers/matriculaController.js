@@ -45,7 +45,7 @@
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = !Servidor.verificaAdmin();
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
