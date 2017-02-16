@@ -30,7 +30,7 @@
     app.config(['RestangularProvider', '$httpProvider', '$logProvider', function(RestangularProvider, $httpProvider, $logProvider){
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
         $logProvider.debugEnabled(true);        
-        RestangularProvider.setBaseUrl('http://10.1.6.86:8000/api');
+        RestangularProvider.setBaseUrl('http://10.1.6.86/erudio/erudio-server/web/api');
     }]);
 
     app.controller('AppController', ['$templateCache'], function($scope, $templateCache){
