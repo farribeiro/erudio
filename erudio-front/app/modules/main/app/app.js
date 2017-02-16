@@ -36,14 +36,14 @@
         $routeProvider.when('/',{
             templateUrl: 'app/modules/home/partials/blank.html'
         });
-        RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
+        RestangularProvider.setBaseUrl('http://10.1.6.86:8000/api');
     }]);
 
     app.controller('AppController',['$timeout', '$templateCache', function($timeout, $templateCache){
         $templateCache.removeAll();
         
-        sessionStorage.setItem('baseUrl','http://10.100.0.195/erudio/Erudio/erudio-server//web/app_dev.php/api');
-        sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/erudio/Erudio/erudio-serverweb/bundles/assets/uploads/');
+        sessionStorage.setItem('baseUrl','http://10.1.6.86:8000/api');
+        sessionStorage.setItem('baseUploadUrl','http://10.1.6.86:8000/bundles/assets/uploads/');
         var sessionId = sessionStorage.getItem('sessionId');
         var username = sessionStorage.getItem('username');
         var nome = sessionStorage.getItem('nome');
