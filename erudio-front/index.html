@@ -55,6 +55,8 @@
 
         <!-- Google Maps API -->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDGYOmrW5zjuyneSG5b5D5Bvmwi5GmJfTA"></script>
+        <!-- OpenStreetMap API 
+        <script type="text/javascript" src="lib/js/jquery/openlayers/OpenLayers.js"></script> -->
 
         <!-- Angular -->
         <script type="text/javascript" src="lib/js/angular/newangular.min.js"></script>
@@ -120,9 +122,9 @@
                                 <a class="collapsible-header">Instituições e Unidades</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('INSTITUICAO')"><a data-ng-click="main.selecionar('instituicoes', '')">Instituição</a></li>
-                                        <li data-ng-show="verificarPermissoes('TIPO_UNIDADE')"><a data-ng-click="main.selecionar('tipos', '')">Tipo de Unidade</a></li>
-                                        <li data-ng-show="verificarPermissoes('UNIDADE_ENSINO')"><a data-ng-click="main.selecionar('unidades', '')">Unidade de Ensino</a></li>
+                                        <li data-ng-show="verificarPermissoes('INSTITUICAO')"><a href="#/instituicoes">Instituição</a></li>
+                                        <li data-ng-show="verificarPermissoes('TIPO_UNIDADE')"><a href="#/tipos-unidade">Tipo de Unidade</a></li>
+                                        <li data-ng-show="verificarPermissoes('UNIDADE_ENSINO')"><a href="#/unidades"">Unidade de Ensino</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -130,16 +132,16 @@
                                 <a class="collapsible-header">Gestão</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('REGIME_ENSINO')"><a data-ng-click="main.selecionar('regimes', '')">Regime de Ensino</a></li>
-                                        <li data-ng-show="verificarPermissoes('CURSO')"><a data-ng-click="main.selecionar('cursos', '')">Curso</a></li>
-                                        <li data-ng-show="verificarPermissoes('ETAPA')"><a data-ng-click="main.selecionar('etapas', '')">Etapa</a></li>
-                                        <li data-ng-show="verificarPermissoes('DISCIPLINA')"><a data-ng-click="main.selecionar('disciplinas', '')">Disciplina</a></li>
-                                        <li data-ng-show="verificarPermissoes('MODULO')"><a data-ng-click="main.selecionar('modulos', '')">Módulo</a></li>
-                                        <li data-ng-show="verificarPermissoes('TURNO')"><a data-ng-click="main.selecionar('turnos', '')">Turno</a></li>                                        
-                                        <li data-ng-show="verificarPermissoes('MODELO_QUADRO')"><a data-ng-click="main.selecionar('modeloQuadroHorarios', '')">Modelo de Horário</a></li>
-                                        <li data-ng-show="verificarPermissoes('QUADRO_HORARIO')"><a data-ng-click="main.selecionar('quadroHorarios', '')">Quadro de Horario</a></li>
-                                        <li data-ng-show="verificarPermissoes('CALENDARIO')"><a data-ng-click="main.selecionar('calendarios', '')">Calendário Escolar</a></li>
-                                        <li data-ng-show="verificarPermissoes('EVENTOS')"><a data-ng-click="main.selecionar('eventos', '')">Evento</a></li>
+                                        <li data-ng-show="verificarPermissoes('REGIME_ENSINO')"><a href="#/regimes">Regime de Ensino</a></li>
+                                        <li data-ng-show="verificarPermissoes('CURSO')"><a href="#/cursos">Curso</a></li>
+                                        <li data-ng-show="verificarPermissoes('ETAPA')"><a href="#/etapas">Etapa</a></li>
+                                        <li data-ng-show="verificarPermissoes('DISCIPLINA')"><a href="#/disciplinas">Disciplina</a></li>
+                                        <li data-ng-show="verificarPermissoes('MODULO')"><a href="#/modulos">Módulo</a></li>
+                                        <li data-ng-show="verificarPermissoes('TURNO')"><a href="#/turnos">Turno</a></li>                                        
+                                        <li data-ng-show="verificarPermissoes('MODELO_QUADRO')"><a href="#/modelo-quadro-horarios">Modelo de Horário</a></li>
+                                        <li data-ng-show="verificarPermissoes('QUADRO_HORARIO')"><a href="#/quadro-horarios">Quadro de Horario</a></li>
+                                        <li data-ng-show="verificarPermissoes('CALENDARIO')"><a href="#/calendarios">Calendário Escolar</a></li>
+                                        <li data-ng-show="verificarPermissoes('EVENTOS')"><a href="#/eventos">Evento</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -147,10 +149,9 @@
                                 <a class="collapsible-header">Vida Escolar</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('TURMA')"><a data-ng-click="main.selecionar('turmas', ''); TurmaService.fechaForm()">Turma</a></li>
-                                        <!--<li data-ng-show="verificarPermissoes('TURMAS_MISTAS')"><a data-ng-click="main.selecionar('turmasMistas', '')">Turma Mista</a></li>-->
-                                        <li data-ng-show="verificarPermissoes('MATRICULA')"><a data-ng-click="main.selecionar('matriculas', ''); MatriculaService.fechaForm(); TurmaService.fechaForm();">Matrícula e Enturmação</a></li>
-                                        <li data-ng-show="verificarPermissoes('MOVIMENTACAO')"><a data-ng-click="main.selecionar('movimentacoes', '')">Movimentação</a></li>
+                                        <li data-ng-show="verificarPermissoes('TURMA')"><a href="#/turmas" data-ng-click="TurmaService.fechaForm()">Turma</a></li>
+                                        <li data-ng-show="verificarPermissoes('MATRICULA')"><a href="#/matriculas" data-ng-click="MatriculaService.fechaForm(); TurmaService.fechaForm();">Matrícula e Enturmação</a></li>
+                                        <li data-ng-show="verificarPermissoes('MOVIMENTACAO')"><a href="#/movimentacoes">Movimentação</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -158,9 +159,9 @@
                                 <a class="collapsible-header">Pessoas</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('PESSOA')"><a data-ng-click="main.selecionar('pessoas', ''); PessoaService.fechaForm();">Pessoa</a></li>
-                                        <li data-ng-show="verificarPermissoes('CARGO')"><a data-ng-click="main.selecionar('cargos', '')">Cargo</a></li>
-                                        <li data-ng-show="verificarPermissoes('FUNCIONARIO')"><a data-ng-click="main.selecionar('funcionarios', ''); FuncionarioService.fechaForm();">Funcionário</a></li>
+                                        <li data-ng-show="verificarPermissoes('PESSOA')"><a href="#/pessoas" data-ng-click="PessoaService.fechaForm();">Pessoa</a></li>
+                                        <li data-ng-show="verificarPermissoes('CARGO')"><a href="#/cargos">Cargo</a></li>
+                                        <li data-ng-show="verificarPermissoes('FUNCIONARIO')"><a href="#/funcionarios" data-ng-click="FuncionarioService.fechaForm();">Funcionário</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -168,21 +169,21 @@
                                  <a class="collapsible-header">Avaliações</a>
                                  <div class="collapsible-body">
                                      <ul class="menuLateral">
-                                         <li data-ng-show="verificarPermissoes('TIPOS_AVALIACAO')"><a data-ng-click="main.selecionar('tiposAvaliacoes','')">Tipo</a></li>
-                                         <li data-ng-show="verificarPermissoes('HABILIDADES')"><a data-ng-click="main.selecionar('habilidades','')">Habilidade</a></li>
-                                         <li data-ng-show="verificarPermissoes('AVALIACAO')"><a data-ng-click="main.selecionar('avaliacoes',''); AvaliacaoService.fechaForm();">Avaliação</a></li>
+                                         <li data-ng-show="verificarPermissoes('TIPOS_AVALIACAO')"><a href="#/tipos-avaliacoes">Tipo</a></li>
+                                         <li data-ng-show="verificarPermissoes('HABILIDADES')"><a href="#/habilidades">Habilidade</a></li>
+                                         <li data-ng-show="verificarPermissoes('AVALIACAO')"><a href="#/avaliacoes" data-ng-click="AvaliacaoService.fechaForm();">Avaliação</a></li>
                                      </ul>
                                  </div>
                              </li>
-                             <li class="bold opacityInit">
+                            <li class="bold opacityInit">
                                  <a class="collapsible-header">Documentos</a>
                                  <div class="collapsible-body">
                                      <ul class="menuLateral">                                        
-                                        <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a data-ng-click="main.selecionar('boletimEscolar','')">Boletim Escolar</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a data-ng-click="main.selecionar('diarioFrequencia','')">Diário de Frequência</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a data-ng-click="main.selecionar('historicoEscolar','')">Historico Escolar</a></li>                                        
-                                        <li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a data-ng-click="main.selecionar('vagas', '')">Solicitação de Vaga</a></li>
-                                        <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a data-ng-click="main.selecionar('registroMatriculas','')">Registro de Matriculas</a></li>
+                                        <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a href="#/boletim-escolar">Boletim Escolar</a></li>
+                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a href="#/diario-frequencia">Diário de Frequência</a></li>
+                                        <li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a href="#/historico-escolar">Historico Escolar</a></li>                                        
+                                        <li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a href="#/vagas">Solicitação de Vaga</a></li>
+                                        <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a href="#/registro-matriculas">Registro de Matriculas</a></li>
                                      </ul>
                                  </div>
                              </li>
@@ -190,8 +191,8 @@
                                 <a class="collapsible-header">Relatórios</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a data-ng-click="main.selecionar('alunosDefasados','')">Alunos Defasados</a></li>
-                                        <li data-ng-show="verificarPermissoes('ESPELHO_NOTA')"><a data-ng-click="main.selecionar('espelhoNotas', '')">Espelho de Nota</a></li>
+                                        <li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a href="#/alunos-defasados">Alunos Defasados</a></li>
+                                        <li data-ng-show="verificarPermissoes('ESPELHO_NOTA')"><a href="#/espelho-notas">Espelho de Nota</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -199,9 +200,9 @@
                                 <a class="collapsible-header">Administrador</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('USUARIOS')"><a data-ng-click="main.selecionar('usuarios', '')">Usuário</a></li>
-                                        <li data-ng-show="verificarPermissoes('PERMISSOES')"><a data-ng-click="main.selecionar('permissoes', '')">Permissão</a></li>
-                                        <li data-ng-show="verificarPermissoes('GRUPO_PERMISSOES')"><a data-ng-click="main.selecionar('grupoPermissoes', '')">Grupo de Permissões</a></li>
+                                        <li data-ng-show="verificarPermissoes('USUARIOS')"><a href="#/usuarios">Usuário</a></li>
+                                        <li data-ng-show="verificarPermissoes('PERMISSOES')"><a href="#/permissoes">Permissão</a></li>
+                                        <li data-ng-show="verificarPermissoes('GRUPO_PERMISSOES')"><a href="#/grupo-permissoes">Grupo de Permissões</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -217,7 +218,9 @@
                     <div class="row">
                         <!-- Conteúdo -->
                         <div class="toolbar"></div>
-                        <div data-ng-include="main.tabAtual"></div>
+                        <div style="display: none;" data-ng-include="main.tabAtual"></div> <!-- Conteúdo Projetado - Obsoleto -->
+                        <!-- Conteúdo -->
+                        <div class="view_wrapper"><div style="width: 100%; min-height: 500px;" ng-view></div></div>
                     </div>
                 </div>
             </main>

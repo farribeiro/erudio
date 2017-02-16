@@ -257,7 +257,7 @@
                     }
                 );
                 Servidor.verificaLabels();
-                if (primeiraVez) { Servidor.entradaPagina(); };                
+                if (primeiraVez) { Servidor.entradaPagina(); };
             }, 1000);
         };
 

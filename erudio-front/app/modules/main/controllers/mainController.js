@@ -126,20 +126,16 @@
         this.selecionar = function (modulo, options) {
             if (options === undefined) { options = ""; }
             if (modulo !== this.tab) {
-                //url amigavel
-                if (modulo !== 'main') {
-                    if (!sessionStorage.getItem('alocacao') && !Servidor.verificarPermissoes("SUPER_ADMIN")) {
-                        return Servidor.customToast('Selecione uma alocação.');
-                    }
-                    var urlStr = window.location.href; var arr = urlStr.split('/'); var str = arr[arr.length-2];
-                    Servidor.mudarUrl(str,modulo);
-                }
                 this.tab = modulo;
                 sessionStorage.setItem('module', this.tab);
                 sessionStorage.setItem('moduleOptions', options);
                 this.tabAtual = this.carregarConteudo(modulo, options);
                 Servidor.removeTooltipp();
                 $scope.inicializar(); $scope.inicializando = true;
+                //url amigavel
+                if (modulo !== 'main') {
+                    if (!sessionStorage.getItem('alocacao') && !Servidor.verificarPermissoes("SUPER_ADMIN")) { return Servidor.customToast('Selecione uma alocação.'); }
+                }
             }
         };
 
@@ -1993,20 +1989,27 @@
         };
 
         /*Acessar modulo via URL*/
-        var url = window.location.href;
-        this.urlArray = url.split('/');
-        var urlSize = this.urlArray.length;
-        if (this.urlArray[urlSize-1] !== "" && this.urlArray[urlSize-1] !== "index.html") {
-            this.selecionar(this.urlArray[urlSize-1],'');
+        /*var link = window.location.href;
+        var url = sessionStorage.getItem('baseFrontUrl');
+        this.urlArray = link.split(url+'/');
+        var module = this.urlArray[1];
+        if (module !== "index.html") {
+            this.selecionar(module,'');
         } else {
-            this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
-        }
+            if (module === "index.html") {
+                this.selecionar('main');
+            } else {
+                this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
+            }
+        }*/
+        //$('.side-link').click(function(ev){ ev.preventDefault(); });
 
         $scope.verificarPermissoes = function (role){
             return Servidor.verificarPermissoes(role);
         };
 
         if ($scope.inicializando === false) { $scope.inicializar(); };
+        //this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
 
         /*Acessar modulo via URL*/
         /*var url = window.location.href;
