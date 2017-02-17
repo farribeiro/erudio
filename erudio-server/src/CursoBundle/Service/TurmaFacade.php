@@ -31,6 +31,7 @@ namespace CursoBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CursoBundle\Entity\Vaga;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class TurmaFacade extends AbstractFacade {
     
