@@ -106,6 +106,8 @@
                     $scope.fechaLoader();
                     Servidor.verificaLabels();
                     $scope.editando = true;
+                    $('.wrapper-padding').css('padding',0);
+                    $('.top-cards').css('margin-top','-8px');
                 }, 100);
             } else {
                 Servidor.customToast('Você deve possuir um grupo de permissões para poder criar outros.');
@@ -117,6 +119,8 @@
             $scope.editando = false; $scope.reiniciar();
             Servidor.resetarValidador('validate'); $scope.acao = "CADASTRAR";
             $('.nav-wrapper').removeClass('ajuste-nav-direita');
+            $('.wrapper-padding').css('padding','');
+            $('.top-cards').css('margin-top','-64px');
             $timeout(function (){ Servidor.verificaLabels(); },1000);
         };
         

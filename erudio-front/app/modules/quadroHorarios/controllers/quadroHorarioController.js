@@ -675,6 +675,7 @@
                         qMatutino.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qMat = qMatutino;
                         if (!geral) {
+                            console.log('Criando Quadro Matutino...');
                             $scope.turnosNome.push($scope.turnos[t].nome);
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
@@ -688,10 +689,11 @@
                         qVespertino.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qVesp = qVespertino;
                         if (!geral) {
+                            console.log('Criando Quadro Vespertino...');
                             $scope.turnosNome.push($scope.turnos[t].nome);
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
-                            console.log('Criando Quadro Vespertino...');
+                            
                             Servidor.finalizar($scope.qVesp, 'quadro-horarios', 'Quadros de horario');
                         }
                     }
@@ -713,6 +715,7 @@
                         qIntegral.modelo.id = $scope.modelosCompativeis[k].id;
                         $scope.qIntegral = qIntegral;
                         if (!geral) {
+                            console.log('Criando Quadro Integral...');
                             $scope.turnosNome.push($scope.turnos[t].nome);
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
@@ -759,31 +762,44 @@
                 var promise = Servidor.buscarUm('unidades-ensino',$scope.quadroH.unidadeEnsino.id);
                 promise.then(function (response){
                     var cursosUnidade = response.data.cursos;
-                    $scope.nomeUnidade = response.data.nome;
-                    $scope.cursosUnidade = [];
-                    $scope.modelosCompativeis = [];
-                    for (var i=0; i<cursosUnidade.length; i++) { $scope.cursosUnidade.push(cursosUnidade[i].id); }
-                    
-                    for (var j=0; j<$scope.modelos.length; j++) {
-                        if ($scope.cursosUnidade.indexOf($scope.modelos[j].curso.id) !== -1) {
-                            $scope.modelosCompativeis.push($scope.modelos[j]);
-                        }
-                    }
-                    
-                    $timeout(function (){
-                        for (var k=0; k<$scope.modelosCompativeis.length; k++) {
-                            var nome = $scope.modelosCompativeis[k].nome;
-                            var resultFundamental = nome.match(/Fundamental/g);
-                            var resultParcial = nome.match(/Parcial/g);
-                            var resultIntegral = nome.match(/Integral/g);
-                            var resultEJA = nome.match(/EJA/g);
+                        if (cursosUnidade.length > 0) {
+                        $scope.nomeUnidade = response.data.nome;
+                        $scope.cursosUnidade = [];
+                        $scope.modelosCompativeis = [];
+                        for (var i=0; i<cursosUnidade.length; i++) { $scope.cursosUnidade.push(cursosUnidade[i].id); }
 
-                            if (resultFundamental !== null) { $scope.salvarParcial(k, false, null); }
-                            if (resultParcial !== null) { $scope.salvarParcial(k, false, null); }
-                            if (resultIntegral !== null) { $scope.salvarIntegral(k, false, null); }
-                            if (resultEJA !== null) { $scope.salvarNoturno(k, false, null); }
+                        for (var j=0; j<$scope.modelos.length; j++) {
+                            if ($scope.cursosUnidade.indexOf($scope.modelos[j].curso.id) !== -1) {
+                                //$scope.modelosCompativeis.push($scope.modelos[j]);
+                                
+                                if ($scope.modelos[j].id === 12) { $scope.salvarParcial(k, false, null); } // fundamental
+                                if ($scope.modelos[j].id === 13) { $scope.salvarParcial(k, false, null); } // ensino inf parcial
+                                if ($scope.modelos[j].id === 16) { $scope.salvarParcial(k, false, null); } // edu integral
+                                if ($scope.modelos[j].id === 15) { $scope.salvarNoturno(k, false, null); } // eja
+                                if ($scope.modelos[j].id === 14) { $scope.salvarIntegral(k, false, null); } // edu infantil integral
+                            }
                         }
-                    }, 100);
+
+                        //$timeout(function (){
+                            //for (var k=0; k<$scope.modelosCompativeis.length; k++) {
+                                /*if ($scope.modelosCompativeis[k].id === 12) { $scope.salvarParcial(k, false, null); } // fundamental
+                                if ($scope.modelosCompativeis[k].id === 13) { $scope.salvarParcial(k, false, null); } // ensino inf parcial
+                                if ($scope.modelosCompativeis[k].id === 16) { $scope.salvarParcial(k, false, null); } // edu integral
+                                if ($scope.modelosCompativeis[k].id === 15) { $scope.salvarNoturno(k, false, null); } // eja
+                                if ($scope.modelosCompativeis[k].id === 14) { $scope.salvarIntegral(k, false, null); } // edu infantil integral*/
+                                //var nome = $scope.modelosCompativeis[k].nome;
+                                /*var resultFundamental = nome.match(/Fundamental/g);
+                                var resultParcial = nome.match(/Parcial/g);
+                                var resultIntegral = nome.match(/Integral/g);*/
+                                //var resultEJA = nome.match(/EJA/g);
+
+                                /*if (resultFundamental !== null) { $scope.salvarParcial(k, false, null); }
+                                if (resultParcial !== null) { $scope.salvarParcial(k, false, null); }
+                                if (resultIntegral !== null) { $scope.salvarIntegral(k, false, null); }*/
+                                //if (resultEJA !== null) { $scope.salvarNoturno(k, false, null); }
+                            //}
+                        //}, 50);
+                    }
                 });
             };
             
@@ -791,24 +807,50 @@
                 var promise = Servidor.buscarUm('unidades-ensino',id);
                 promise.then(function (response){
                     var cursosUnidade = response.data.cursos;
-                    $scope.cursosUnidade = []; $scope.modelosCompativeis = [];
-                    for (var i=0; i<cursosUnidade.length; i++) { $scope.cursosUnidade.push(cursosUnidade[i].id); }
-                    for (var j=0; j<$scope.modelos.length; j++) { if ($scope.cursosUnidade.indexOf($scope.modelos[j].curso.id) !== -1) { $scope.modelosCompativeis.push($scope.modelos[j]); } }
-                    
-                    $timeout(function (){
-                        for (var k=0; k<$scope.modelosCompativeis.length; k++) {
-                            var nome = $scope.modelosCompativeis[k].nome;
-                            var resultFundamental = nome.match(/Fundamental/g);
-                            var resultParcial = nome.match(/Parcial/g);
-                            var resultIntegral = nome.match(/Integral/g);
-                            var resultEJA = nome.match(/EJA/g);
-
-                            if (resultFundamental !== null) { $scope.salvarParcial(k, true, id); }
-                            if (resultParcial !== null) { $scope.salvarParcial(k, true, id); }
-                            if (resultIntegral !== null) { $scope.salvarIntegral(k, true, id); }
-                            if (resultEJA !== null) { $scope.salvarNoturno(k, true, id); }
+                    if (cursosUnidade.length > 0) {
+                        $scope.cursosUnidade = []; //$scope.modelosCompativeis = [];
+                        for (var i=0; i<cursosUnidade.length; i++) { $scope.cursosUnidade.push(cursosUnidade[i].id); }
+                        for (var j=0; j<$scope.modelos.length; j++) { 
+                            if ($scope.cursosUnidade.indexOf($scope.modelos[j].curso.id) !== -1) {
+                                //$scope.modelosCompativeis.push($scope.modelos[j]);
+                                if ($scope.modelos[j].id === 12) { $scope.salvarParcial(k, true, id); } // fundamental
+                                if ($scope.modelos[j].id === 13) { $scope.salvarParcial(k, true, id); } // ensino inf parcial
+                                if ($scope.modelos[j].id === 16) { $scope.salvarParcial(k, true, id); } // edu integral
+                                if ($scope.modelos[j].id === 15) { $scope.salvarNoturno(k, true, id); } // eja
+                                if ($scope.modelos[j].id === 14) { $scope.salvarIntegral(k, true, id); } // edu infantil integral
+                            }
                         }
-                    }, 100);
+                        /*$timeout(function (){
+                            for (var k=0; k<$scope.modelosCompativeis.length; k++) {
+                                if ($scope.modelosCompativeis[k].id === 12) { $scope.salvarParcial(k, true, id); }
+                                if ($scope.modelosCompativeis[k].id === 13) { $scope.salvarParcial(k, true, id); }
+                                if ($scope.modelosCompativeis[k].id === 16) { $scope.salvarParcial(k, true, id); }
+                                if ($scope.modelosCompativeis[k].id === 15) { $scope.salvarNoturno(k, true, id); }
+                                if ($scope.modelosCompativeis[k].id === 14) { $scope.salvarIntegral(k, true, id); }
+                                //var resultParcial = nome.match(/Parcial/g);
+                                //var resultEduIntegral = nome.match(/Educação|Integral/g);
+                                //var resultIntegral = nome.match(/Infantil|Integral/g);
+                                //var resultEJA = nome.match(/EJA/g);
+
+                                //if (resultParcial !== null) { $scope.salvarParcial(k, true, id); }
+                                //if (resultEduIntegral !== null) { $scope.salvarParcial(k, true, id); }
+                                //if (resultIntegral !== null) { $scope.salvarIntegral(k, true, id); }
+                                //if (resultEJA !== null) { $scope.salvarNoturno(k, true, id); }
+                                
+                                /*var resultFundamental = 0; if (nome === "Ensino Fundamental") { resultFundamental = 1; }
+                                var resultPInt = 0; if (nome === "Educação Infantil Parcial") { resultPInt = 1; }
+                                var resultIInt = 0; if (nome === "Educação Infantil Integral") { resultIInt = 1; }*/
+                                //var resultEJA = 0; if (nome === "EJA") { resultEJA = 1; }
+                                //var resultEInt = 0; if (nome === "Educação Integral") { resultEInt = 1; }
+
+                                /*if (resultFundamental) { $scope.salvarParcial(k, true, id); }
+                                if (resultPInt) { $scope.salvarParcial(k, true, id); }
+                                if (resultIInt) { $scope.salvarIntegral(k, true, id); }*/
+                                //if (resultEJA) { $scope.salvarNoturno(k, true, id); }
+                                //if (resultEInt) { $scope.salvarParcial(k, true, id); }
+                            //}
+                        //}, 50);
+                    }
                 });
             };
             
@@ -832,7 +874,7 @@
                 $scope.buscarFixTurnos();
                 
                 for (var u=0; u<$scope.unidades.length; u++) {
-                    console.log($scope.unidades[u].nome + ' - Gerando Quadro de Horário');
+                    //console.log($scope.unidades[u].nome + ' - Gerando Quadro de Horário');
                     $scope.salvaQuadroGeral($scope.unidades[u].id);
                     if (u === $scope.unidades.length-1) { $scope.fechaProgresso(); }
                 }

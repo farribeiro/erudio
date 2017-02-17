@@ -642,11 +642,10 @@
             }
             return array;
         };
-
-        this.mudarUrl = function (str, modulo) {
-            //setTimeout(function(){ history.replaceState( {} , 'Pacote: Erudio   ', '/' + str + '/' + modulo); }, 2000);
-            setTimeout(function(){ history.replaceState( {} , 'Pacote: Erudio   ', '/' + modulo); }, 2000);
-        };
+        
+        //this.mudarUrl = function (modulo) {
+            //setTimeout(function(){ history.replaceState(null,'Erudio','http://' + sessionStorage.getItem('baseFrontUrl') + '/' + modulo); }, 3000);
+        //};
         
         this.entradaPagina = function () { $('.loader-module').fadeOut(300); $('.inicio-modulo').css('opacity',1); };
         this.saidaPagina = function () { $('.inicio-modulo').css('opacity',0); };

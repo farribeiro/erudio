@@ -32,8 +32,8 @@
     </div>
     <div class="row">
         <div class="col s1 l1"></div>
-        <div class="col s12 l12 mobile-full">
-            <div class="row" style="margin-top: -64px;">
+        <div class="col s12 l12 mobile-full wrapper-padding">
+            <div class="row top-cards" style="margin-top: -64px;">
                 <div class="col s12 l12 mobile-full">
                     <div class="card" data-ng-hide="editando">
                         <div class="card-content">
@@ -94,9 +94,11 @@
                                 <tbody>
                                     <tr data-ng-repeat="grupo in grupos" data-ng-show="grupo.peso > pesoMinimo">
                                         <td class="celula-link relative mobile-full" style="padding: 0;">
-                                            <div class="waves waves-effect" data-ng-click="carregar(grupo, false)" style="padding: 15px">{{ grupo.nome }}</div>
+                                            <div class="col s12 waves waves-effect">
+                                                <div data-ng-click="carregar(grupo, false)" style="padding: 15px">{{ grupo.nome }}</div>
+                                            </div>
                                         </td>
-                                        <td class='center-align hide-on-small-only'>
+                                        <td class='center-align hide-on-small-only' style="padding: 0;">
                                             <i data-ng-click="prepararRemover(grupo)" data-ng-show="escrita" data-target="remove-modal-grupo" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
                                         </td>
                                     </tr>
