@@ -37,10 +37,10 @@
 <i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
 
 <!-- Botão Voltar matriculas -->
-<div data-ng-click="voltarMatriculas();main.selecionar('matriculas', '')" data-ng-show="voltarMatricula" class="btn-voltar hide-on-med-and-down">
-    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para Matriculas"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+<div data-ng-click="voltarMatriculas();" data-ng-show="voltarMatricula" class="btn-voltar hide-on-med-and-down">
+    <a href="#/matriculas" class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para Matriculas"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
-<i data-ng-show="voltarMatricula" class="material-icons btn-voltar hide-on-large-only" data-ng-click="voltarMatriculas();main.selecionar('matriculas', '/matriculas')">arrow_back</i>
+<i data-ng-show="voltarMatricula" href="#/matriculas" class="material-icons btn-voltar hide-on-large-only" data-ng-click="voltarMatriculas()">arrow_back</i>
 
 <!-- Botão Voltar funcionarios -->
 <div data-ng-click="voltarFuncionarios();main.selecionar('funcionarios')" data-ng-show="voltarFuncionario" class="btn-voltar hide-on-med-and-down">

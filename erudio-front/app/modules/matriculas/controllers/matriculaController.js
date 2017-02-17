@@ -2283,7 +2283,11 @@
                     $scope.matricula.unidadeEnsino.telefones = response.data;
                     promise = Servidor.buscar('enturmacoes', {matricula: $scope.matricula.id});
                     promise.then(function(response) {
-                        $scope.matricula.etapaAtual = response.data[0].turma.etapa;
+                        if(response.data.length) {
+                            $scope.matricula.etapaAtual = response.data[0].turma.etapa;
+                        } else {
+                            $scope.matricula.etapaAtual = 'ND';
+                        }
                         promise = Servidor.buscarUm('vinculos', sessionStorage.getItem('vinculo'));
                         promise.then(function(response){
                             if ($scope.matricula.codigo === undefined) { $scope.matricula.codigo = '0000000000'; }
