@@ -60,8 +60,7 @@
                     <div class="row end-card" data-ng-show="escrita">
                         <div class="col s12 right-align">
                             <a id="salvarCurso" data-ng-hide="statusBotao || !curso.modalidade.id" data-ng-click="finalizar(curso.nome)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
-                            <a id="salvarCurso" data-ng-show="statusBotao && curso.modalidade.id" data-ng-click="intraForms(curso);
-                                main.selecionar('etapas', '')" style="margin-top:15px;margin-bottom:15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                            <a href="/#/etapas" id="salvarCurso" data-ng-show="statusBotao && curso.modalidade.id" data-ng-click="intraForms(curso);" style="margin-top:15px;margin-bottom:15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
                             <a id="salvarCurso" data-ng-show="!curso.modalidade.id" data-ng-click="Materialize.toast('Seleciona uma modalidade.', 1500)" style="margin-top:15px;margin-bottom:15px;" class="waves-effect waves-blue btn-flat disabled"><i class="material-icons left">save</i>SALVAR</a>
                         </div>
                     </div>

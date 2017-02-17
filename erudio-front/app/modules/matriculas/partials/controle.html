@@ -34,8 +34,8 @@
 <div data-ng-click="fecharFormulario('')" data-ng-hide="editando || TurmaService.abrirFormulario" class="btn-voltar hide-on-med-and-down">
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
-<div data-ng-click="matriculaService.abreForm(); main.selecionar('turmas', '')" data-ng-hide="editando || !TurmaService.abrirFormulario" class="btn-voltar hide-on-med-and-down">
-    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para Turmas"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+<div data-ng-click="matriculaService.abreForm();" data-ng-hide="editando || !TurmaService.abrirFormulario" class="btn-voltar hide-on-med-and-down">
+    <a href="/#/turmas" class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para Turmas"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
 
 <!-- Botão Voltar para as informações da matrícula -->
@@ -66,7 +66,7 @@
 
 <!-- Botão Adicionar -->
 <div class="btn-add hide-on-small-only" data-ng-show="adicionaAluno" data-ng-show="escrita">
-    <a data-ng-click="intraForms();main.selecionar('pessoas')" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Cadastrar Aluno"><i class="material-icons">add</i></a>
+    <a href="/#/pessoas" data-ng-click="intraForms();" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Cadastrar Aluno"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Botão Adicionar Matrícula data-ng-hide="!editando || matriculando" -->
@@ -76,7 +76,7 @@
 
 <!-- Botão Adicionar Mobile-->
 <div data-ng-show="escrita && adicionaAluno" class="btn-add hide-on-med-and-up">
-    <a data-ng-click="intraForms();main.selecionar('pessoas')" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Etapa"><i class="material-icons">add</i></a>
+    <a href="/#/pessoas" data-ng-click="intraForms();" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Etapa"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Loader -->

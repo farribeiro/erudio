@@ -103,8 +103,8 @@
     <div class="row">
         <div class="modal-footer end-card" style="margin-bottom: 0rem">
             <div data-ng-show="AvaliacaoService.abrirFormulario">
-                <a data-ng-click="selecionarTudo(true); finalizar(); AvaliacaoService.fechaForm(); main.selecionar('main', '')" class="modal-action modal-close waves-effect waves-green btn-flat right" style="padding-right: 1.1rem">Selecionar Todas as Habilidades</a>
-                <a data-ng-click="finalizar(); AvaliacaoService.fechaForm(); main.selecionar('main', '')" class=" modal-action modal-close waves-effect waves-red btn-flat right ">Continuar Mesmo Assim</a>
+                <a href="/#/" data-ng-click="selecionarTudo(true); finalizar(); AvaliacaoService.fechaForm();" class="modal-action modal-close waves-effect waves-green btn-flat right" style="padding-right: 1.1rem">Selecionar Todas as Habilidades</a>
+                <a href="/#/" data-ng-click="finalizar(); AvaliacaoService.fechaForm();" class=" modal-action modal-close waves-effect waves-red btn-flat right ">Continuar Mesmo Assim</a>
             </div>
             <div data-ng-hide="AvaliacaoService.abrirFormulario">
                 <a data-ng-click="selecionarTudo(true); finalizar()" class="modal-action modal-close waves-effect waves-green btn-flat right" style="padding-right: 1.1rem">Selecionar Todas as Habilidades</a>

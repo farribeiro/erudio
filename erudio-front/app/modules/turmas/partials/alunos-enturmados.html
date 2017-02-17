@@ -51,7 +51,7 @@
                     <td class='center-align hide-on-small-only' style="padding-top: 2.7rem">
                         <i style="top: -5px; margin-right: 0.5rem;" data-ng-click="presencaMatricula(enturmacao.matricula)" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Frequência'>playlist_add_check</i>
                         <!-- data-ng-click="notasMatricula(enturmacao.matricula)" -->
-                        <i style="top: -5px;" data-ng-click="TurmaService.setEnturmacao(enturmacao); TurmaService.setTurma(turma); main.selecionar('matriculas', ''); TurmaService.abreForm();" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Médias'>import_contacts</i>
+                        <a href="/#/matriculas"><i style="top: -5px;" data-ng-click="TurmaService.setEnturmacao(enturmacao); TurmaService.setTurma(turma); TurmaService.abreForm();" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Médias'>import_contacts</i></a>
                         <i style="position: relative; top: 2px!important; margin-left: 0.5rem;" data-ng-click="alfabetizar(enturmacao)" data-ng-class="{'green-icon': enturmacao.matricula.alfabetizado, 'naoAlfabetizado': !enturmacao.matricula.alfabetizado}" class="material-icons modal-trigger pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Alfabetizado em {{enturmacao.matricula.alfabetizado}}'>spellcheck</i>
                     </td>
                 </tr>
