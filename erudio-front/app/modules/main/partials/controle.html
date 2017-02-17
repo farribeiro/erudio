@@ -27,8 +27,8 @@
 <!-- Cortina de progresso -->
 <div data-ng-show="cortina" class="cortinaProgresso"></div>
 
-<a data-ng-show="mostraAvaliacoes && !alunos.length" class="tooltipped btn-large btn-floating btn waver-effect waves-circle waves-light rosa btn-add" data-position="left" data-delay="50" data-tooltip="Adicionar Avaliação">
-    <i class="material-icons" data-ng-click="AvaliacaoService.abreForm(); main.selecionar('avaliacoes', '')">add</i>
+<a href="/#/avaliacoes" data-ng-show="mostraAvaliacoes && !alunos.length" class="tooltipped btn-large btn-floating btn waver-effect waves-circle waves-light rosa btn-add" data-position="left" data-delay="50" data-tooltip="Adicionar Avaliação">
+    <i class="material-icons" data-ng-click="AvaliacaoService.abreForm();">add</i>
 </a>
 
 <ul id='fecharMedia' class='dropdown-content'>
