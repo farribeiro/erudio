@@ -921,8 +921,7 @@
         }
 
         this.gerarDiarioPresenca = function(enturmacoes, disciplinas, vinculo, mes) {
-            console.log(enturmacoes, disciplinas, vinculo, mes);
-            var mesConvertido = dateTime.converterMes(mes) + ' de 2016';
+            var mesConvertido = dateTime.converterMes(mes) + ' de ' + new Date().getFullYear();
             var estilo = 'thead';
             var pdf = {
                 pageOrientation: 'landscape',
@@ -979,26 +978,28 @@
                     linha.push({text:enturmacao.matricula.aluno.nome, fontSize: 8});
                     disciplina.aulas.forEach(function(aula) {
                         status = ' ';
-                        enturmacao.matricula.frequencias.forEach(function(frequencia){
-                            if (frequencia.aula.id === aula.id){
-                                switch (frequencia.status){
-                                    case 'PRESENCA':
-                                        status = 'C';
-                                        presencas++;
-                                        break;
-                                    case 'FALTA':
-                                        status = 'F';
-                                        faltas++;
-                                        break;
-                                    case 'FALTA_JUSTIFICADA':
-                                        status = 'FJ';
-                                        break;
-                                    case 'DISPENSA':
-                                        status = 'D';
-                                        break;
+                        if(enturmacao.matricula.frequencias !== undefined) {
+                            enturmacao.matricula.frequencias.forEach(function(frequencia){
+                                if (frequencia.aula.id === aula.id){
+                                    switch (frequencia.status){
+                                        case 'PRESENCA':
+                                            status = 'C';
+                                            presencas++;
+                                            break;
+                                        case 'FALTA':
+                                            status = 'F';
+                                            faltas++;
+                                            break;
+                                        case 'FALTA_JUSTIFICADA':
+                                            status = 'FJ';
+                                            break;
+                                        case 'DISPENSA':
+                                            status = 'D';
+                                            break;
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }                            
                         linha.push({text: status, fontSize: 8, alignment: 'center'});
                     });
                     if(faltas === 0 && presencas === 0) { faltas = ' '; }
@@ -1027,11 +1028,6 @@
                         }
                     ]
                 }));
-//                pdf.content.push({
-//                    text: '\n\nDiário de Frequência - ' + disciplina.nomeExibicao,
-//                    style: 'header',
-//                    alignment: 'center'
-//                });
                 pdf.content.push({
                     style: 'tbody',
                     table: {
@@ -1043,8 +1039,7 @@
                     layout: layout
                 });
                 pdf.content.push({text:'Observações:', alignmente:'center', bold: true});
-                if (disciplina.temObservacoes) {
-                    console.log(observacoes);
+                if (disciplina.temObservacoes) {                    
                     pdf.content.push({
                         table: {
                             widths: ['10%', '90%'],

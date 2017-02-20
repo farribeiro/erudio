@@ -242,6 +242,7 @@
         
         $scope.gerarPdfDisciplina = function(disciplina) {
             $scope.disciplinasSelecionadas.push(disciplina);
+            $('#dis'+disciplina.id).prop('checked',true);
             setTimeout(function(){$scope.gerarPdf();},50);
         };
         
@@ -261,24 +262,22 @@
                         requisicoes--;
                         enturmacao.matricula.frequencias = response.data;
                         if (i === enturmacoes.length-1) {
-                            $scope.disciplinasSelecionadas.forEach(function(ofertada, j) {
+                            $scope.disciplinasSelecionadas.forEach(function(ofertada) {
                                 ofertada.temObservacoes = false;
                                 requisicoes++;
                                 var promise = Servidor.buscar('turmas/'+ofertada.turma.id+'/aulas', {disciplina: ofertada.id, mes: $scope.busca.mes.numero});
                                 promise.then(function(response) {
                                     requisicoes--;
                                     ofertada.aulas = response.data;
-                                    ofertada.aulas.forEach(function(aula, k) {
+                                    ofertada.aulas.forEach(function(aula) {
                                         requisicoes++;
                                         var promise = Servidor.buscar('aula-observacoes', {aula: aula.id});
                                         promise.then(function(response) {
                                             if (response.data.length) {
                                                 ofertada.temObservacoes = true; aula.observacoes = response.data;
                                             }
-                                            if (--requisicoes === 0) {
-                                                $timeout(function(){
-                                                    makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);                                                    
-                                                }, 50);                                                
+                                            if (--requisicoes === 0) {                                                
+                                                makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);                                                                                                    
                                                 $timeout(function() {
                                                     $scope.fecharCortina(); 
                                                 }, 500);
