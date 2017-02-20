@@ -36,6 +36,8 @@
         $scope.editando = false;
         $scope.disciplinasSelecionadas = [];
         $scope.requisicoes = 0;
+        $scope.unidade = {id: parseInt(sessionStorage.getItem('unidade'))};
+        $scope.isAdmin = Servidor.verificaAdmin();
         
         var montarSelect = function(seletor, tempo) {
             if (!tempo) { tempo = 250; }
@@ -55,6 +57,20 @@
             montarSelect('#cursoDiarioFrequencia, #etapaDiarioFrequencia, #turmaDiarioFrequencia, #mesDiarioFrequencia');
         };
             
+        $scope.buscarUnidades = function(nome) {
+            if(nome !== undefined && nome.length > 4) {
+                var promise = Servidor.buscar('unidades-ensino', {nome: nome});
+                promise.then(function(response) {
+                    $scope.unidades = response.data;
+                });
+            }
+        };
+        
+        $scope.selecionarUnidade = function(unidade) {
+            $scope.nomeUnidade = unidade.nomeCompleto;
+            $scope.unidade = unidade;
+        };
+            
         $scope.buscarCursos = function() {
             var promise = Servidor.buscar('cursos', null);
             promise.then(function(response) {
@@ -72,7 +88,7 @@
         };
         
         $scope.buscarTurmas = function(etapa) {
-            var promise = Servidor.buscar('turmas', {etapa: etapa, unidadeEnsino: sessionStorage.getItem('unidade')});
+            var promise = Servidor.buscar('turmas', {etapa: etapa, unidadeEnsino: $scope.unidade.id});
             promise.then(function(response) {
                 $scope.turmas = response.data;
                 montarSelect('#turmaDiarioFrequencia');
@@ -159,7 +175,7 @@
                 disciplina.turma = response.data;
             });
             disciplina.temObservacoes = false;
-            var promise = Servidor.buscar('enturmacoes', {turma: disciplina.turma.id});
+            var promise = Servidor.buscar('enturmacoes', {turma: disciplina.turma.id, encerrado: 0});
             promise.then(function(response) {
                 disciplina.enturmacoes = response.data;
                 var promise = Servidor.buscar('turmas/'+disciplina.turma.id+'/aulas', {mes: mes, disciplina: disciplina.id});
@@ -224,35 +240,44 @@
             });
         };
         
+        $scope.gerarPdfDisciplina = function(disciplina) {
+            $scope.disciplinasSelecionadas.push(disciplina);
+            $('#dis'+disciplina.id).prop('checked',true);
+            setTimeout(function(){$scope.gerarPdf();},50);
+        };
+        
         $scope.gerarPdf = function(){
             $scope.mostrarCortina();
             if (parseInt($scope.busca.mes.numero) < 10) { 
                 $scope.busca.mes.numero = '0' + $scope.busca.mes.numero;
             }
-            var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id});
+            var requisicoes = 0;
+            var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
             promise.then(function(response) {
                 var enturmacoes = response.data;
-                var aulas = response.data;
+                requisicoes++;
                 enturmacoes.forEach(function(enturmacao, i) {
-                   var promise = Servidor.buscar('frequencias', {matricula:enturmacao.matricula.id, mes: $scope.busca.mes.numero});
+                    var promise = Servidor.buscar('frequencias', {matricula:enturmacao.matricula.id, mes: $scope.busca.mes.numero});
                     promise.then(function(response) {
+                        requisicoes--;
                         enturmacao.matricula.frequencias = response.data;
                         if (i === enturmacoes.length-1) {
-                            $scope.disciplinasSelecionadas.forEach(function(ofertada, j) {
+                            $scope.disciplinasSelecionadas.forEach(function(ofertada) {
                                 ofertada.temObservacoes = false;
+                                requisicoes++;
                                 var promise = Servidor.buscar('turmas/'+ofertada.turma.id+'/aulas', {disciplina: ofertada.id, mes: $scope.busca.mes.numero});
                                 promise.then(function(response) {
+                                    requisicoes--;
                                     ofertada.aulas = response.data;
-                                    ofertada.aulas.forEach(function(aula, k) {
+                                    ofertada.aulas.forEach(function(aula) {
+                                        requisicoes++;
                                         var promise = Servidor.buscar('aula-observacoes', {aula: aula.id});
                                         promise.then(function(response) {
                                             if (response.data.length) {
                                                 ofertada.temObservacoes = true; aula.observacoes = response.data;
                                             }
-                                            if (j === $scope.disciplinasSelecionadas.length-1 && k === ofertada.aulas.length-1) {
-                                                $timeout(function(){
-                                                    makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
-                                                }, 50);                                                
+                                            if (--requisicoes === 0) {                                                
+                                                makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);                                                                                                    
                                                 $timeout(function() {
                                                     $scope.fecharCortina(); 
                                                 }, 500);
@@ -277,6 +302,7 @@
             $timeout(function(){
                 $('select').material_select();
                 Servidor.entradaPagina();
+                $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
             }, 500);
         };
         

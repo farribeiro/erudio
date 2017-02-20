@@ -229,6 +229,7 @@
             result.then(function (data){
                 if (label !== null && label !== '') {
                     Toast.show(label, 'removido(a)', data.status);
+                    return result;
                 }
             });
         };
