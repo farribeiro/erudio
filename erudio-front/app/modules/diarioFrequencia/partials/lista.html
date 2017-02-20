@@ -68,12 +68,18 @@
                     </div>
                     <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
                         <div class="row" style="padding-top: 1rem">
-                            <div class="input-field col s12 m12 l6">
+                            <div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
                                 <i class="material-icons prefix">account_balance</i>
                                 <span class="digitable-icon"><i class="material-icons">border_color</i></span>
                                 <input id="unidadeDiarioFrequencia" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesDiarioFrequencia">
                                 <label for="unidadeDiarioFrequencia">Unidade de Ensino*</label>
                             </div>
+                            <ul id='dropUnidadesDiarioFrequencia' class='dropdown-content' data-ng-show="unidades.length">
+                                <li class="divider"></li>
+                                <li data-ng-repeat="unidade in unidades">
+                                    <a data-ng-click="selecionarUnidade(unidade)">{{ unidade.nomeCompleto | uppercase }}</a>
+                                </li>
+                            </ul>
                             <div class="input-field col s12 m12 l6">
                                 <i class="material-icons prefix">school</i>
                                 <select id="cursoDiarioFrequencia" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
@@ -154,7 +160,7 @@
                                                     <div class="hide-on-small-only" style="padding: 15px">{{disciplinaOfertada.nomeExibicao}}</div>
                                                 </td>
                                                 <td class="center-align hide-on-small-only">
-                                                    <i data-position="top" data-delay="50" data-tooltip="Visualizar Diário de Frequência" class="material-icons tooltipped info-icon right" style="position: relative; right: 4.7rem;" data-ng-click="prepararVisualizacao(disciplinaOfertada, busca.mes.numero)">print</i>
+                                                    <i data-position="top" data-delay="50" data-tooltip="Visualizar Diário de Frequência" class="material-icons tooltipped info-icon right" style="position: relative; right: 4.7rem;" data-ng-click="gerarPdfDisciplina(disciplinaOfertada)">print</i>
                                                 </td>
                                             </tr>
                                         </tbody>
