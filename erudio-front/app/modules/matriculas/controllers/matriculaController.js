@@ -407,7 +407,7 @@
                 }
                 if (matricula.codigo !== '' || matricula.aluno !== '' || matricula.unidade !== null || matricula.curso !== null || matricula.status !== null) {
                     $scope.mostraProgresso();
-                    if(!$scope.isAdmin && matricula.aluno) {
+                    if(!$scope.isAdmin && (matricula.aluno || matricula.codigo)) {
                         matricula.unidade = null;
                     }
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
