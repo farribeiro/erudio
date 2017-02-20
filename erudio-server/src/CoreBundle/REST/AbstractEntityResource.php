@@ -40,7 +40,7 @@ use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
-* %% Deprecated %%
+ * @deprecated
 * Controlador REST que serve como base aos demais.
 * Oferece os métodos CRUD já implementados, usando o repositório informado na implementação do método getEntityClass.
 */

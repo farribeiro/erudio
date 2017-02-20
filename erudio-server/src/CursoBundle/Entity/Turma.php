@@ -125,10 +125,17 @@ class Turma extends AbstractEditableEntity {
     */
     private $enturmacoes;
     
+    /** 
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Vaga", mappedBy = "turma", fetch="EXTRA_LAZY") 
+    */
+    private $vagas;
+    
     function init() {
         $this->status = self::STATUS_CRIADO;
         $this->enturmacoes = new ArrayCollection();
         $this->solicitacoes = new ArrayCollection();
+        $this->vagas = new ArrayCollection();
         if($this->etapa->getIntegral()) {
             $this->disciplinas = new ArrayCollection();
             foreach($this->etapa->getDisciplinas() as $disciplina) {
@@ -245,6 +252,10 @@ class Turma extends AbstractEditableEntity {
     
     function setQuadroHorario($quadroHorario) {
         $this->quadroHorario = $quadroHorario;
+    }
+    
+    function getVagas() {
+        return $this->vagas;
     }
     
 }

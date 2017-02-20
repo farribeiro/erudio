@@ -31,11 +31,19 @@ namespace CursoBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CursoBundle\Entity\Vaga;
+use CursoBundle\Entity\Turma;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class TurmaFacade extends AbstractFacade {
     
+    private $vagaFacade;
+    
     function getEntityClass() {
         return 'CursoBundle:Turma';
+    }
+    
+    function setVagaFacade($vagaFacade) {
+        $this->vagaFacade = $vagaFacade;
     }
     
     function queryAlias() {
@@ -84,35 +92,30 @@ class TurmaFacade extends AbstractFacade {
     }
         
     protected function beforeRemove($turma) {
-        $turma->setStatus('ENCERRADO');
+        $turma->setStatus(Turma::STATUS_ENCERRADO);
     }
     
-    protected function afterCreate($entidade) {
-        $vagas = $entidade->getLimiteAlunos();
-        for ($i=0; $i<$vagas; $i++) {
-            $vaga = new Vaga();
-            $vaga->setTurma($entidade->getId());
-            $this->orm->getManager()->persist($vaga);
-            $this->orm->getManager()->flush();
+    protected function afterCreate($turma) {
+        $this->gerarVagas($turma, $turma->getLimiteAlunos());
+    }
+    
+    protected function afterUpdate($turma) {
+        $numeroVagas = $turma->getVagas()->count();
+        if ($numeroVagas < $turma->getLimiteAlunos()) {
+            $this->gerarVagas($turma, $turma->getLimiteAlunos() - $numeroVagas);
+        } else if ($numeroVagas > $turma->getLimiteAlunos()) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::FINAL_STATE, 
+                'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
+            );
         }
     }
     
-    protected function beforeUpdate($turma) {
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
-        $num_vagas = count($vagas);
-        if($num_vagas != $turma->getLimiteAlunos()) {
-            if($num_vagas > $turma->getLimiteAlunos()) {
-                for($i = 0; $i < $num_vagas - $turma->getLimiteAlunos(); $i++) {
-                    $vaga = new Vaga();
-                    $vaga->setTurma($turma->getId());
-                    $this->orm->getManager()->persist($vaga);                
-                }
-            } else {
-                throw new IllegalUpdateException(
-                    IllegalUpdateException::FINAL_STATE, 
-                    'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
-                );
-            }
+    private function gerarVagas(Turma $turma, $quantidade) {
+        for ($i = 0; $i < $quantidade; $i++) {
+            $vaga = new Vaga();
+            $vaga->setTurma($turma);
+            $this->vagaFacade->create($vaga);
         }
     }
 

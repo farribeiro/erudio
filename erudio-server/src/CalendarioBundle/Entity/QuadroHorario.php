@@ -111,6 +111,20 @@ class QuadroHorario extends AbstractEditableEntity {
         $this->termino = $termino;
     }
     
+    static function of($nome, $modelo, $turno, $unidadeEnsino) {
+        $quadro = new QuadroHorario();
+        $quadro->nome = $nome;
+        $quadro->modelo = $modelo;
+        $quadro->unidadeEnsino = $unidadeEnsino;
+        $quadro->turno = $turno;
+        $quadro->inicio = $turno->getInicio();
+        $quadro->diasSemana = [];
+        for($i = 2; $i < 7; $i++) {
+            $quadro->diasSemana[] = new DiaSemana($quadro, $i);
+        }
+        return $quadro;
+    }
+
     function getNome() {
         return $this->nome;
     }

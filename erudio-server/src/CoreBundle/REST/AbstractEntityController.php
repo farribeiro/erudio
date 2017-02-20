@@ -31,6 +31,8 @@ namespace CoreBundle\REST;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Doctrine\ORM\NoResultException;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\UniqueViolationException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
@@ -124,9 +126,13 @@ abstract class AbstractEntityController extends FOSRestController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $entidadeCriada = $this->getFacade()->create($entidade);
-        $view = View::create($entidadeCriada, Codes::HTTP_OK);
-        $view->getSerializationContext()->enableMaxDepthChecks();
+        try {
+            $entidadeCriada = $this->getFacade()->create($entidade);
+            $view = View::create($entidadeCriada, Codes::HTTP_OK);
+            $view->getSerializationContext()->enableMaxDepthChecks();
+        } catch (UniqueViolationException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        }
         return $this->handleView($view);
     }
     
@@ -134,9 +140,13 @@ abstract class AbstractEntityController extends FOSRestController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $this->getFacade()->createBatch($entidades);
-        $view = View::create(null, Codes::HTTP_NO_CONTENT);
-        $view->getSerializationContext()->enableMaxDepthChecks();
+        try {
+            $this->getFacade()->createBatch($entidades);
+            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view->getSerializationContext()->enableMaxDepthChecks();
+        } catch (UniqueViolationException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        }
         return $this->handleView($view);
     }
     
@@ -144,9 +154,13 @@ abstract class AbstractEntityController extends FOSRestController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
-        $view = View::create($entidadeAtualizada, Codes::HTTP_OK);
-        $view->getSerializationContext()->enableMaxDepthChecks();
+        try {
+            $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
+            $view = View::create($entidadeAtualizada, Codes::HTTP_OK);
+            $view->getSerializationContext()->enableMaxDepthChecks();
+        } catch (UniqueViolationException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        }
         return $this->handleView($view);
     }
     
@@ -164,10 +178,14 @@ abstract class AbstractEntityController extends FOSRestController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $this->getFacade()->updateBatch($entidades);
-        $view = View::create(null, Codes::HTTP_NO_CONTENT);
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        return $this->handleView($view);
+        try {
+            $this->getFacade()->updateBatch($entidades);
+            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view->getSerializationContext()->enableMaxDepthChecks();
+        } catch (UniqueViolationException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        }
+         return $this->handleView($view);
     }
     
     function delete(Request $request, $id) {

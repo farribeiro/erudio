@@ -43,15 +43,15 @@ class Vaga extends AbstractEditableEntity {
         
     /**        
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = false, name = "turma_id") 
-    * @ORM\OneToOne(targetEntity="Turma", mappedBy="id")
+    * @ORM\JoinColumn(nullable = false, name = "turma_id") 
+    * @ORM\ManyToOne(targetEntity="Turma")
     */
     private $turma;
     
     /**        
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = true, name="solicitacao_vaga_id")
-    * @ORM\OneToOne(targetEntity="SolicitacaoVaga", mappedBy="id")
+    * @ORM\JoinColumn(nullable = true, name="solicitacao_vaga_id")
+    * @ORM\ManyToOne(targetEntity="SolicitacaoVaga")
     */
     private $solicitacaoVaga = null;
     

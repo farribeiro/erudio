@@ -41,6 +41,10 @@ class CargoFacade extends AbstractFacade {
         return 'c';
     }
     
+    function uniqueMap($cargo) {
+        return ['cargo' => $cargo->getNome()];
+    }
+    
     function parameterMap() {
         return array (
             'nome' => function(QueryBuilder $qb, $value) {

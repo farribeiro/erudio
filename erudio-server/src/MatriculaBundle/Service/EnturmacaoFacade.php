@@ -65,6 +65,12 @@ class EnturmacaoFacade extends AbstractFacade {
         );
     }
     
+    function uniqueMap($enturmacao) {
+        return [
+            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma()]
+        ];
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')->orderBy('aluno.nome');
     }
@@ -91,7 +97,6 @@ class EnturmacaoFacade extends AbstractFacade {
                         $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
                         $this->orm->getManager()->merge($disciplinaCursada);
                     }
-                    
                     $enturmado = true;
                     break;
                 }                
@@ -112,12 +117,10 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($enturmacao) {
-         if ($enturmacao->getEncerrado() == false) {
-             $enturmacao->setEncerrado(false);
-             $this->orm->getManager()->merge($enturmacao);
-             //$this->orm->getManager()->flush();
-         }
-             
+        if ($enturmacao->getEncerrado() == false) {
+            $enturmacao->setEncerrado(false);
+            $this->orm->getManager()->merge($enturmacao);
+        }    
     }
     
 }
