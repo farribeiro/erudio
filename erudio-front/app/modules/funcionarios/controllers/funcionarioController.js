@@ -412,13 +412,13 @@
                         $scope.alocacoes = response.data;
                         if (response.data.length) {
                             $scope.totalCargaHoraria = $scope.verificarCargaHoraria(0);
-                            $scope.totalUnidadesEscolares = $scope.quantidadeDeUnidades();
-                            $timeout(function(){ 
-                                $('.tooltipped').tooltip('remove'); 
-                                $('.tooltipped').tooltip({delay: 50});
-                            }, 50);
-                            $scope.prepararFormulario();
+                            $scope.totalUnidadesEscolares = $scope.quantidadeDeUnidades();                            
                         }
+                        $timeout(function(){ 
+                            $('.tooltipped').tooltip('remove'); 
+                            $('.tooltipped').tooltip({delay: 50});
+                        }, 50);
+                        $scope.prepararFormulario();
                     });
                 }
             } else {
