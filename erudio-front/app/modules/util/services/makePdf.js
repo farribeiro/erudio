@@ -921,6 +921,7 @@
         }
 
         this.gerarDiarioPresenca = function(enturmacoes, disciplinas, vinculo, mes) {
+            console.log(enturmacoes, disciplinas, vinculo, mes);
             var mesConvertido = dateTime.converterMes(mes) + ' de 2016';
             var estilo = 'thead';
             var pdf = {
@@ -1000,7 +1001,7 @@
                         });
                         linha.push({text: status, fontSize: 8, alignment: 'center'});
                     });
-                    if(!faltas) { faltas = '-'; }
+                    if(faltas === 0 && presencas === 0) { faltas = ' '; }
                     linha.push({text:faltas + '', alignment:'center', fontSize: 8});
                     if (enturmacao.matricula.status === 'CURSANDO' || presencas || faltas) {
                         body.push(linha);
