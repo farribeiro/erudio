@@ -64,20 +64,15 @@
             </select>
             <label for="documento">Documento</label>
         </div>
-        <div class="input-field col s12 m12 l6">
+        <div class="input-field col s12 m12 l6" data-ng-show="cadDocumento === 'certidao'">
             <i class="material-icons prefix">description</i>
-            <input id="certidaoNasc" type="text" length="32" class="validate counter" data-ng-model="certidaoCad">
-            <label for="certidaoNasc">Certidão de Nascimento*</label>
+            <input id="certidaoNasc" type="text" length="32" class="validate counter numeros" data-ng-model="certidaoCad">
+            <label for="certidaoNasc">Certidão de Nascimento</label>
         </div>
         <div data-ng-class="certidaoPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">event</i>
             <input id="certidaoData" type="text" class="data" data-ng-change="selecionaData()" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
             <label for="certidaoData" class="nomeGrande">Data Expedição Certidão Nascimento</label>            
-        </div>                     
-        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
-            <i class="material-icons prefix">description</i>
-            <input id="termo" type="text" class="counter" maxlength="7" data-ng-model="termoCad" data-ng-disabled="!escrita"  />
-            <label for="termo">Termo</label>            
         </div>        
         <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">description</i>
@@ -89,6 +84,11 @@
             <input id="folha" type="text" class="counter" maxlength="3" data-ng-model="folhaCad" data-ng-disabled="!escrita"  />
             <label for="folha">Folha</label>            
         </div>
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="termo" type="text" class="counter" maxlength="7" data-ng-model="termoCad" data-ng-disabled="!escrita"  />
+            <label for="termo">Termo</label>            
+        </div>                
         <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">event</i>
             <input id="dataExpedicao" type="text" class="data" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
