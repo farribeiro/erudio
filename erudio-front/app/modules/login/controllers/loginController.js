@@ -25,8 +25,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function (){
-    var mainModule = angular.module('mainModule', ['loginDirectives','angular-md5','angular-sha1']);
-    mainModule.controller('MainController',['$scope', '$timeout', 'md5', 'Restangular', 'sha1', '$templateCache', function($scope, $timeout, md5, Restangular, sha1, $templateCache){
+    var mainModule = angular.module('mainModule', ['loginDirectives','angular-md5','angular-sha1', 'erudioConfig']);
+    mainModule.controller('MainController',['$scope', '$timeout', 'md5', 'Restangular', 'sha1', '$templateCache', 'ErudioConfig', function($scope, $timeout, md5, Restangular, sha1, $templateCache, ErudioConfig){
         //LIMPA CACHE
         $templateCache.removeAll();
         $scope.usuario = null; $scope.senha = null; $scope.fonte = ''; $scope.foto = ''; $scope.btnText = 'ENTRAR';
@@ -72,7 +72,7 @@
                     sessionStorage.setItem("menu",0); sessionStorage.setItem("module","main");
                     sessionStorage.setItem("moduleOptions",""); sessionStorage.setItem("vinculo","");
                     sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
-                    $timeout(function (){ window.location = 'index.html'; }, 1000);
+                    $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
                 });
             } else {
                 //sem avatar pessoal
@@ -82,12 +82,12 @@
                 sessionStorage.setItem("sessionId", md5.createHash(sessionId)); sessionStorage.setItem("menu",0);
                 sessionStorage.setItem("module","main"); sessionStorage.setItem("moduleOptions","");
                 sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
-                $timeout(function (){ window.location = 'index.html'; }, 1000);
+                $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
             }
         };
         
         //EFETUAR LOGIN
-        $scope.login = function () {            
+        $scope.login = function () {
             
             //SÓ PROSSEGUE QUANDO USER E SENHA ESTÃO PREENCHIDOS
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
@@ -108,11 +108,13 @@
                             
                             //ANIMACAO INICIAL
                             $scope.loginAnimation(); var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
-                            var roles = user.rolesAtribuidas; var atribuicoes = [];
+                            var roles = user.atribuicoes; var atribuicoes = [];
                             
                             //PREPARA PERMISSOES
+                            var unidadesPermissoes = [];
                             for (var i=0; i<roles.length; i++)
                             {
+                                unidadesPermissoes.push(roles[i].instituicao);
                                 var index = i;
                                 if (roles[i].grupo !== undefined) {
                                     var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
@@ -128,16 +130,9 @@
                                         }
                                     });
                                 } else {
-                                    atribuicoes.push(roles[i]);
-                                    if (atribuicoes.length > 0) {
-                                        sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                    } else {
-                                        var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                        sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                    }
+                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
                                 }
+                                if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
                             }
                         }
                     }

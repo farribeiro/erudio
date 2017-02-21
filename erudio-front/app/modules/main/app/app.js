@@ -25,28 +25,20 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function (){
-    var app = angular.module('erudio', ['ngRoute', 'restangular', 'mainModule']);
-    
+    var app = angular.module('erudio', ['ngRoute', 'restangular', 'mainModule', 'erudioConfig']);
     app.defaultHeaders = '"Content-type":"application/json"';
-    
-    app.config(['$routeProvider', 'RestangularProvider', '$httpProvider', '$logProvider', '$locationProvider', function($routeProvider, RestangularProvider, $httpProvider, $logProvider, $locationProvider){
-        //$httpProvider.defaults.headers["delete"] = {'Content-Type': 'application/json;charset=utf-8'};
-        //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    app.config(['$routeProvider', 'RestangularProvider', '$logProvider', 'ErudioConfigProvider', function($routeProvider, RestangularProvider, $logProvider, ErudioConfigProvider){
         $logProvider.debugEnabled(true);
-        /*$routeProvider.when('/',{
-            templateUrl: 'app/modules/home/partials/blank.html'
-        });*/
-        /*
-         * Definindo Rotas
-         */
+        /* Definindo Rotas */
         $routeProvider.when('/',{ templateUrl: 'app/modules/main/partials/main.html', controller: 'MainController'
         }).when('/instituicoes',{ templateUrl: 'app/modules/instituicoes/partials/instituicoes.html', controller: 'InstituicaoController'
         }).when('/tipos-unidade',{ templateUrl: 'app/modules/tipos/partials/tipos.html', controller: 'TipoController'
         }).when('/unidades',{ templateUrl: 'app/modules/unidades/partials/unidades.html', controller: 'UnidadeController'
         }).when('/regimes',{ templateUrl: 'app/modules/regimes/partials/regimes.html', controller: 'RegimeController'
             
-        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/lista.html', controller: 'CursoController'
-        }).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/form.html', controller: 'CursoFormController'
+        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
+        }).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
+        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
             
         }).when('/etapas',{ templateUrl: 'app/modules/etapas/partials/etapas.html', controller: 'EtapaController'
         }).when('/disciplinas',{ templateUrl: 'app/modules/disciplinas/partials/disciplinas.html', controller: 'DisciplinaController'
@@ -76,40 +68,15 @@
         }).when('/permissoes',{ templateUrl: 'app/modules/permissoes/partials/permissoes.html', controller: 'PermissaoController'
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
         });
-        RestangularProvider.setBaseUrl('http://10.1.6.86/erudio/erudio-server/web/api/');
-        //RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
+        RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
 
-    app.controller('AppController',['$timeout', '$templateCache', function($timeout, $templateCache){
+    app.controller('AppController',['$timeout', '$templateCache', 'ErudioConfig', function($timeout, $templateCache, ErudioConfig){
         $templateCache.removeAll();
-        
-        sessionStorage.setItem('baseUrl','http://10.1.6.86/erudio/erudio-server/web/api/');
-        //sessionStorage.setItem('baseUrl','http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
-        //sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/');
-        sessionStorage.setItem('baseUploadUrl','http://10.1.6.86/erudio/erudio-server/web/bundles/assets/uploads/');
-        var sessionId = sessionStorage.getItem('sessionId');
-        var username = sessionStorage.getItem('username');
-        var nome = sessionStorage.getItem('nome');
-        var key = sessionStorage.getItem('key');
-        
-        if (!sessionId) {
-            window.location = 'login.html';
-        } else {
-            $timeout(function(){
-               $('.username').html(nome);
-            },500);
-        }
-        
+        sessionStorage.setItem('baseUrl',ErudioConfig.urlServidor); sessionStorage.setItem('baseUploadUrl',ErudioConfig.urlUpload);
+        var sessionId = sessionStorage.getItem('sessionId'); var nome = sessionStorage.getItem('nome');
+        if (!sessionId) { window.location = 'login.html'; } else { $timeout(function(){ $('.username').html(nome); },500); }
         var width = $(window).width();
-        if (width < 992) {
-            $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');
-        }
-        
-        /*$(window).resize(function(){
-            var width = $(window).width();
-            if (width < 992) {
-                $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');
-            }
-        });*/
+        if (width < 992) { $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');}
     }]);
 })();

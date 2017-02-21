@@ -1,7 +1,7 @@
-<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
- *    Pacote: Erudio                                                        *
+ *    Pacote: Erudio                                                       *
  *                                                                         *
  *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
  *                       DITEC - Diretoria de Tecnologias educacionais     *
@@ -22,31 +22,22 @@
  *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
  *    02111-1307, USA.                                                     *
  *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-<link rel="stylesheet" type="text/css" href="app/modules/cargos/assets/css/cargos.css"/>
-<div data-ng-controller="cargoController" class="inicio-modulo">
-    <cargos-listas ></cargos-listas>
-    <cargos-form data-ng-show="editando"></cargos-form>
-    <cargos-controle></cargos-controle>
-    <cargos-erro></cargos-erro>
-    <cargos-modal></cargos-modal>
-</div>
+(function (){
+    var erudioConfig = angular.module('erudioConfig',[]);
 
-<!-- LOADER -->
-<div class="loader-module" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0;">
-    <div class="valign-wrapper" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0; left: 50%; margin-left: -230px;">
-        <div class="preloader-wrapper big active valign">
-            <div class="spinner-layer spinner-blue-only">
-                <div class="circle-clipper left">
-                     <div class="circle"></div>
-                </div><div class="gap-patch">
-                     <div class="circle"></div>
-                </div><div class="circle-clipper right">
-                    <div class="circle"></div>
-                </div>
-            </div>
-        </div>
-        <div style="margin-left: 10px;">Carregando...</div>
-    </div>
-</div>
+    erudioConfig.service('ErudioConfig', [function () {
+        // SERVER - http://10.1.6.86/erudio/erudio-server/web/api/
+        this.dominio = 'http://erudio.com';
+        this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
+        this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
+        this.urlTemplateInicio = "/app/modules/";
+        this.urlTemplateFinal = "/partials/";
+        
+        this.getTemplateLista = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; };
+        this.getTemplateForm = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; };
+        this.getTemplateCustom = function (modulo,arquivo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; };
+    }]);
+
+})();
