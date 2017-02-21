@@ -30,7 +30,7 @@
 
     diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
         $templateCache.removeAll();
-        
+
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };
         $scope.editando = false;
@@ -38,25 +38,25 @@
         $scope.requisicoes = 0;
         $scope.unidade = {id: parseInt(sessionStorage.getItem('unidade'))};
         $scope.isAdmin = Servidor.verificaAdmin();
-        
+
         var montarSelect = function(seletor, tempo) {
             if (!tempo) { tempo = 250; }
             $(seletor).material_select('destroy');
             setTimeout(function() { $(seletor).material_select(); }, tempo);
         };
-        
+
         $scope.limparBusca = function() {
             $scope.busca = {
                 curso: { id: null },
                 etapa: { id: null },
                 turma: { id: null },
                 mes: {numero: null, nome: null}
-            };            
+            };
             $scope.etapas = [];
             $scope.turmas = [];
             montarSelect('#cursoDiarioFrequencia, #etapaDiarioFrequencia, #turmaDiarioFrequencia, #mesDiarioFrequencia');
         };
-            
+
         $scope.buscarUnidades = function(nome) {
             if(nome !== undefined && nome.length > 4) {
                 var promise = Servidor.buscar('unidades-ensino', {nome: nome});
@@ -65,12 +65,12 @@
                 });
             }
         };
-        
+
         $scope.selecionarUnidade = function(unidade) {
             $scope.nomeUnidade = unidade.nomeCompleto;
             $scope.unidade = unidade;
         };
-            
+
         $scope.buscarCursos = function() {
             var promise = Servidor.buscar('cursos', null);
             promise.then(function(response) {
@@ -78,7 +78,7 @@
                 montarSelect('#cursoDiarioFrequencia');
             });
         };
-        
+
         $scope.buscarEtapas = function(curso) {
             var promise = Servidor.buscar('etapas', {curso: curso});
             promise.then(function(response) {
@@ -86,7 +86,7 @@
                 montarSelect('#etapaDiarioFrequencia');
             });
         };
-        
+
         $scope.buscarTurmas = function(etapa) {
             var promise = Servidor.buscar('turmas', {etapa: etapa, unidadeEnsino: $scope.unidade.id});
             promise.then(function(response) {
@@ -94,14 +94,14 @@
                 montarSelect('#turmaDiarioFrequencia');
             });
         };
-        
+
         $scope.buscarVinculo = function() {
             var promise = Servidor.buscarUm('vinculos', sessionStorage.getItem('vinculo'));
             promise.then(function(response) {
                 $scope.vinculo = response.data;
             });
         };
-        
+
         $scope.buscarDisciplinasOfertadas = function(id) {
             if (!id) { return Servidor.customToast("Selecione uma turma para realizar a busca."); };
             if ($scope.busca.mes === undefined || !$scope.busca.mes.numero) { return Servidor.customToast("Selecione um mês para realizar a busca.");}
@@ -119,9 +119,9 @@
                     $timeout(function() { $('.tooltipped').tooltip(); }, 50);
                     $scope.disciplinasSelecionadas = [];
                 });
-            });                
+            });
         };
-        
+
         $scope.selecionarTudo = function () {
             if ($scope.disciplinasSelecionadas.length === $scope.disciplinasOfertadas.length) {
                 if (!$('#disciplinas')[0].checked) {
@@ -135,13 +135,13 @@
                 }
             }
         };
-        
+
         $scope.selecionarDisciplina = function(disciplinaOfertada){
-            var achou = false; 
+            var achou = false;
             var vazio = false;
             if(!$scope.disciplinasSelecionadas.length){
                 $scope.disciplinasSelecionadas.push(disciplinaOfertada);
-                vazio = true; 
+                vazio = true;
                 achou = true;
             }
             for (var i = 0; i < $scope.disciplinasSelecionadas.length && vazio === false; i++) {
@@ -154,16 +154,16 @@
                 $scope.disciplinasSelecionadas.push(disciplinaOfertada);
             }
         };
-        
+
         $scope.carregarFrequencia = function (disciplina, mes){
             $scope.mes = dateTime.converterMes(mes);
             $scope.disciplina = disciplina;
-            $scope.editando = true;      
+            $scope.editando = true;
             $timeout(function(){
                 $scope.fecharCortina();
             }, 250);
         };
-        
+
         $scope.prepararVisualizacao = function(disciplina, mes) {
             $scope.mostrarCortina();
             $scope.disciplinasSelecionadas = [];
@@ -233,30 +233,30 @@
                                         }
                                     });
                                 });
-                            }                        
+                            }
                         });
-                    });                    
+                    });
                 });
             });
         };
-        
+
         $scope.gerarPdfDisciplina = function(disciplina) {
             $scope.disciplinasSelecionadas.push(disciplina);
             $('#dis'+disciplina.id).prop('checked',true);
             setTimeout(function(){$scope.gerarPdf();},50);
         };
-        
+
         $scope.gerarPdf = function(){
             $scope.mostrarCortina();
-            if (parseInt($scope.busca.mes.numero) < 10) { 
+            if (parseInt($scope.busca.mes.numero) < 10) {
                 $scope.busca.mes.numero = '0' + $scope.busca.mes.numero;
             }
             var requisicoes = 0;
             var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
             promise.then(function(response) {
-                var enturmacoes = response.data;
-                requisicoes++;
+                var enturmacoes = response.data;                
                 enturmacoes.forEach(function(enturmacao, i) {
+                    requisicoes++;
                     var promise = Servidor.buscar('frequencias', {matricula:enturmacao.matricula.id, mes: $scope.busca.mes.numero});
                     promise.then(function(response) {
                         requisicoes--;
@@ -276,26 +276,26 @@
                                             if (response.data.length) {
                                                 ofertada.temObservacoes = true; aula.observacoes = response.data;
                                             }
-                                            if (--requisicoes === 0) {                                                
-                                                makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);                                                                                                    
+                                            if (--requisicoes === 0) {
+                                                makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
                                                 $timeout(function() {
-                                                    $scope.fecharCortina(); 
+                                                    $scope.fecharCortina();
                                                 }, 500);
                                             }
                                         });
-                                    });                                        
-                                });                                                             
+                                    });
+                                });
                             });
                         }
-                    }); 
+                    });
                 });
-            });        
+            });
         };
-        
+
         $scope.fecharFormulario = function(){
             $scope.editando = false;
         };
-        
+
         $scope.inicializar = function(){
             $scope.buscarCursos();
             $scope.buscarVinculo();
@@ -305,8 +305,8 @@
                 $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
             }, 500);
         };
-        
+
         $scope.inicializar();
-        
+
     }]);
 })();
