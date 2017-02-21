@@ -45,18 +45,17 @@
             $scope.inicializando = false;
             $scope.escrita = Servidor.verificaEscrita('PESSOA');
             $scope.isAdmin = Servidor.verificaAdmin();
-            $scope.$watch("PessoaService", function (query) {
-                $('.tooltipped').tooltip('remove');
-                if (!$scope.inicializando) {
-                    $scope.inicializar(true, true);
-                }
+            $scope.$watch("PessoaService", function (query) {                
                 if (PessoaService.aluno) {
                     $scope.voltarMatricula = true;
-                }
-                else if (PessoaService.funcionario) {
+                } else if (PessoaService.funcionario) {
                     $scope.voltarFuncionario = true;
                 }
                 if (PessoaService.abrirFormulario) {
+                    $('.tooltipped').tooltip('remove');
+                    if (!$scope.inicializando) {
+                        $scope.inicializar(false, true);
+                    }
                     $scope.cadastrarPessoa();
                     $('.tooltipped').tooltip('remove');
                 }
@@ -761,8 +760,7 @@
             $scope.montaCertidao = function () {
                 if ($scope.cadDocumento === 'certidao-antiga') {
                     if ($scope.termoCad && $scope.livroCad && $scope.folhaCad) {
-                        var arrayData = $scope.pessoa.dataNascimento.split('-');
-                        $scope.pessoa.certidaoNascimento = arrayData[0] + "1" + $scope.livroCad + $scope.folhaCad + $scope.termoCad;
+                        $scope.pessoa.certidaoNascimento = $scope.livroCad + $scope.folhaCad + $scope.termoCad;
                         $scope.pessoa.certidaoNascimento = $scope.completaDigitos($scope.pessoa.certidaoNascimento, '32');
                         return $scope.pessoa.certidaoNascimento;
                     } else {
@@ -1599,7 +1597,9 @@
                 }, 500);
             };
 
-            $scope.inicializar(true, true);
+            if(!$scope.inicializando) {                
+                $scope.inicializar(true, true);
+            }            
             $scope.verificaDocumentoCadastro();
     }]);
 })();
