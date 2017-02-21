@@ -57,11 +57,11 @@ abstract class AbstractFacade {
     }
     
     function parameterMap() {
-        return array();
+        return [];
     }
     
-    function uniqueMap() {
-        return array();
+    function uniqueMap($entidade) {
+        return [];
     }
     
     function find($id) {
@@ -105,6 +105,7 @@ abstract class AbstractFacade {
             $this->orm->getManager()->beginTransaction();
             $entidade->init();
             $this->beforeCreate($entidade);
+            $this->checkUniqueness($entidade);
             $this->orm->getManager()->persist($entidade);
             $this->orm->getManager()->flush();
             $this->afterCreate($entidade);
@@ -122,6 +123,7 @@ abstract class AbstractFacade {
             foreach($entidades as $entidade) {
                 $entidade->init();
                 $this->beforeCreate($entidade);
+                $this->checkUniqueness($entidade);
                 $this->orm->getManager()->persist($entidade);
                 $this->orm->getManager()->flush();
                 $this->afterCreate($entidade);
@@ -148,29 +150,7 @@ abstract class AbstractFacade {
             $this->beforeUpdate($entidade);
             $entidade->merge($mergeObject);
             $this->orm->getManager()->flush();
-            $this->afterUpdate($entidade);
-            $this->orm->getManager()->commit();
-            return $entidade;
-        } catch(\Exception $ex) {
-            $this->orm->getManager()->rollback();
-            throw $ex;
-        }
-    }
-    
-    function updateDeleted($id, $mergeObject) {
-        try {
-            $this->orm->getManager()->detach($mergeObject);
-            $entidade = $this->loadDeletedEntity($id);
-            if($entidade === null) {
-                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
-            }
-            if(!$entidade instanceof AbstractEditableEntity) {
-                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
-            }
-            $this->orm->getManager()->beginTransaction();
-            $this->beforeUpdate($entidade);
-            $entidade->mergeDeleted($mergeObject);
-            $this->orm->getManager()->flush();
+            $this->checkUniqueness($entidade, true);
             $this->afterUpdate($entidade);
             $this->orm->getManager()->commit();
             return $entidade;
@@ -195,10 +175,42 @@ abstract class AbstractFacade {
                 $this->beforeUpdate($entidade);
                 $entidade->merge($mergeObject);
                 $this->orm->getManager()->flush();
+                $this->checkUniqueness($entidade, true);
                 $this->afterUpdate($entidade);
             }
             $this->orm->getManager()->commit();
             return true;
+        } catch(\Exception $ex) {
+            $this->orm->getManager()->rollback();
+            throw $ex;
+        }
+    }
+    
+    private function checkUniqueness($entidade, $isUpdate = false) {
+        foreach ($this->uniqueMap($entidade) as $constraint) {
+            if (count($this->findAll($constraint)) > $isUpdate ? 1 : 0) {
+                throw new Exception\UniqueViolationException();
+            }
+        }
+    }
+    
+    function updateDeleted($id, $mergeObject) {
+        try {
+            $this->orm->getManager()->detach($mergeObject);
+            $entidade = $this->loadDeletedEntity($id);
+            if($entidade === null) {
+                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
+            }
+            if(!$entidade instanceof AbstractEditableEntity) {
+                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
+            }
+            $this->orm->getManager()->beginTransaction();
+            $this->beforeUpdate($entidade);
+            $entidade->mergeDeleted($mergeObject);
+            $this->orm->getManager()->flush();
+            $this->afterUpdate($entidade);
+            $this->orm->getManager()->commit();
+            return $entidade;
         } catch(\Exception $ex) {
             $this->orm->getManager()->rollback();
             throw $ex;

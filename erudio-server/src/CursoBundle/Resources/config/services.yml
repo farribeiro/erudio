@@ -2,6 +2,8 @@ services:
     facade.curso.turmas:
       class: CursoBundle\Service\TurmaFacade
       arguments: ["@doctrine"]
+      calls:
+          - [setVagaFacade, ["@facade.curso.vagas"]]
     
     facade.curso.disciplinas_ofertadas:
       class: CursoBundle\Service\DisciplinaOfertadaFacade

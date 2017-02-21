@@ -82,7 +82,9 @@ class Transferencia extends Movimentacao {
     public function init() {
         parent::init();
         $this->unidadeEnsinoOrigem = $this->getMatricula()->getUnidadeEnsino();
-        $this->status = self::STATUS_PENDENTE;
+        if ($this->status != self::STATUS_ACEITO) {
+            $this->status = self::STATUS_PENDENTE;
+        }
     }
     
     function getStatus() {

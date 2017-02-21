@@ -81,6 +81,12 @@
                                 </li>
                             </ul>
                             <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">account_balance</i>
+                                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                <input id="unidadeDiarioFrequencia" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesDiarioFrequencia">
+                                <label for="unidadeDiarioFrequencia">Unidade de Ensino*</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
                                 <i class="material-icons prefix">school</i>
                                 <select id="cursoDiarioFrequencia" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
                                     <option value="" disabled selected></option>

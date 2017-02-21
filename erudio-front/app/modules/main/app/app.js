@@ -82,11 +82,10 @@
 
     app.controller('AppController',['$timeout', '$templateCache', function($timeout, $templateCache){
         $templateCache.removeAll();
-        
         sessionStorage.setItem('baseUrl','http://10.1.6.86/erudio/erudio-server/web/api/');
         //sessionStorage.setItem('baseUrl','http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
-        //sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/');
         sessionStorage.setItem('baseUploadUrl','http://10.1.6.86/erudio/erudio-server/web/bundles/assets/uploads/');
+        //sessionStorage.setItem('baseUploadUrl','http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/');
         var sessionId = sessionStorage.getItem('sessionId');
         var username = sessionStorage.getItem('username');
         var nome = sessionStorage.getItem('nome');
