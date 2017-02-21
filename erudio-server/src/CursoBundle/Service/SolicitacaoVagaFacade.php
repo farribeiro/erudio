@@ -41,11 +41,12 @@ class SolicitacaoVagaFacade extends AbstractFacade {
         return 't';
     }
     
+    function uniqueMap($solicitacao) {
+        return ['pessoa' => $solicitacao->getPessoa()];
+    }
+    
     function parameterMap() {
         return array (
-            /*'pessoa' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.pessoa LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },*/
             'pessoa' => function(QueryBuilder $qb, $value) {
                 $qb->join('t.pessoa', 'pessoa')
                    ->andWhere('pessoa.id = :pessoa')->setParameter('pessoa', $value);

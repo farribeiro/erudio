@@ -68,7 +68,7 @@ class DesligamentoFacade extends AbstractFacade {
         $matricula->getEnturmacoes()
             ->filter(function($e) {
                 return !$e->getEncerrado();
-            })->map(function($e) {
+            })->forAll(function($e) {
                 $e->encerrar();
                 $this->orm->getManager()->merge($e);
             });
@@ -76,7 +76,7 @@ class DesligamentoFacade extends AbstractFacade {
         $matricula->getDisciplinasCursadas()
             ->filter(function($d) {
                 return $d->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
-            })->map(function($d) {
+            })->forAll(function($d) {
                 $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
                 $this->orm->getManager()->merge($d);
             });

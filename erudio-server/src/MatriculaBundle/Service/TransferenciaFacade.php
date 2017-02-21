@@ -80,37 +80,47 @@ class TransferenciaFacade extends AbstractFacade {
         }
     }
     
+    protected function afterCreate($transferencia) {        
+        if($transferencia->getStatus() !== Transferencia::STATUS_PENDENTE) {
+            $this->encerrar($transferencia);
+        }
+    }
+    
     protected function afterUpdate($transferencia) {        
         if($transferencia->getStatus() !== Transferencia::STATUS_PENDENTE) {
-            if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
-                $matricula = $transferencia->getMatricula();
-                $enturmacao = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findOneBy(array('matricula' => $matricula));
-                $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $enturmacao));
-                foreach ($vagas as $vaga) {
-                    $vaga->setEnturmacao(null);
-                    $this->orm->getManager()->merge($vaga);
-                    $this->orm->getManager()->flush();
-                }
-                $matricula->getDisciplinasCursadas()
-                    ->filter(function($t) {
-                        return $t->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
-                    })->map(function($t) {
-                        $t->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
-                        $this->orm->getManager()->merge($t);
-                        $novaDisciplina = new DisciplinaCursada($t->getMatricula(), $t->getDisciplina());
-                        $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
-                        for($i = 1; $i <= $numeroMedias; $i++) {
-                                $media = new Media($novaDisciplina, $i);
-                                $this->mediaFacade->create($media);
-                        }
-                        $this->orm->getManager()->persist($novaDisciplina);
-                    });
-                $transferencia->getMatricula()->transferir($transferencia->getUnidadeEnsinoDestino());
-            }
-            $transferencia->setDataEncerramento(new \DateTime());
-            $this->orm->getManager()->merge($transferencia);
-            $this->orm->getManager()->flush();
+            $this->encerrar($transferencia);
         }
+    }
+    
+    private function encerrar($transferencia) {
+        if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
+            $matricula = $transferencia->getMatricula();
+            $enturmacao = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findOneBy(array('matricula' => $matricula));
+            $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $enturmacao));
+            foreach ($vagas as $vaga) {
+                $vaga->setEnturmacao(null);
+                $this->orm->getManager()->merge($vaga);
+                $this->orm->getManager()->flush();
+            }
+            $matricula->getDisciplinasCursadas()
+                ->filter(function($t) {
+                    return $t->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
+                })->map(function($t) {
+                    $t->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
+                    $this->orm->getManager()->merge($t);
+                    $novaDisciplina = new DisciplinaCursada($t->getMatricula(), $t->getDisciplina());
+                    $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
+                    for($i = 1; $i <= $numeroMedias; $i++) {
+                        $media = new Media($novaDisciplina, $i);
+                        $this->mediaFacade->create($media);
+                    }
+                    $this->orm->getManager()->persist($novaDisciplina);
+                });
+            $transferencia->getMatricula()->transferir($transferencia->getUnidadeEnsinoDestino());
+        }
+        $transferencia->setDataEncerramento(new \DateTime());
+        $this->orm->getManager()->merge($transferencia);
+        $this->orm->getManager()->flush();
     }
     
     function findAllByNome($params, $page = null) {

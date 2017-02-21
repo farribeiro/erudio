@@ -55,9 +55,10 @@ class HorarioController extends AbstractEntityResource {
         *  @FOS\Get("quadros-horarios/{quadro}/horarios")
         */
     function getHorariosAction(Request $request, $quadro) {
-        $horarios = $this->getDoctrine()->getRepository('CalendarioBundle:Horario')->createQueryBuilder('d')
-                ->join('d.quadroHorario', 'q')
-                ->where('q.id = :quadroHorario')->setParameter('quadroHorario', $quadro)
+        $horarios = $this->getDoctrine()->getRepository('CalendarioBundle:Horario')->createQueryBuilder('h')
+                ->join('h.quadroHorario', 'q')
+                ->where('h.ativo = true ')
+                ->andWhere('q.id = :quadroHorario')->setParameter('quadroHorario', $quadro)
                 ->getQuery()->getResult();
         $view = View::create($horarios, Codes::HTTP_OK);
         $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));

@@ -29,8 +29,6 @@
 namespace CursoBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use PessoaBundle\Entity\PessoaFisica;
@@ -45,8 +43,8 @@ class SolicitacaoVaga extends AbstractEditableEntity {
     * @JMS\Groups({"LIST"})
     * @JMS\Type("PessoaBundle\Entity\PessoaFisica")
     * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity="PessoaBundle\Entity\PessoaFisica", inversedBy="id")
-    * @ORM\JoinColumn(name="pessoa_fisica_id")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\PessoaFisica")
+    * @ORM\JoinColumn(name = "pessoa_fisica_id")
     */
     private $pessoa;
     
