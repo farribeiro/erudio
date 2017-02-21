@@ -351,6 +351,7 @@
                 $scope.mostraLoader();
                 delete vinculo.funcionario.dataExpedicaoCertidaoNascimento;
                 delete vinculo.funcionario.dataNascimento;
+                delete vinculo.cargo.professor;
                 var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
                 promise.then(function(response) {
                     if(!response.data.length || vinculo.id) {
@@ -458,7 +459,6 @@
             $scope.vinculoBusca.cargo.id = cargo.id;
             $scope.vinculo.cargo.id = cargo.id;
             $timeout(function() {
-                console.log($scope.vinculo);
                 Servidor.verificaLabels();
             }, 100);
         };
