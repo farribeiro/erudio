@@ -30,6 +30,8 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use AuthBundle\Entity\Atribuicao;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class AlocacaoFacade extends AbstractFacade {
     
@@ -63,6 +65,47 @@ class AlocacaoFacade extends AbstractFacade {
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('a.vinculo', 'vinculo');
+    }
+    
+    protected function beforeCreate($alocacao) {
+        $this->validarCargaHoraria($alocacao);
+    }
+
+    protected function afterCreate($alocacao) {
+        $this->gerarAtribuicao($alocacao);
+    }
+    
+    protected function afterRemove($alocacao) {
+        $this->removerAtribuicao($alocacao);
+    }
+    
+    private function validarCargaHoraria($alocacao) {
+        $vinculo = $alocacao->getVinculo();
+        $chTotal = 0;
+        foreach ($vinculo->getAlocacoes() as $a) {
+            $chTotal += $a->getCargaHoraria();
+        }
+        if ($vinculo->getCargaHoraria() < $chTotal) {
+            throw new IllegalOperationException(
+                'Carga horária não pode exceder limite do vínculo'
+            );
+        }
+    }
+    
+    private function gerarAtribuicao($alocacao) {
+        $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
+        if ($grupo) {
+            $atribuicao = Atribuicao::criarAtribuicao(
+                $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
+                $grupo, 
+                $alocacao->getInstituicao()
+            );
+            //salvar objeto...
+        }
+    }
+    
+    private function removerAtribuicao($alocacao) {
+        
     }
 
 }

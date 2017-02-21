@@ -31,8 +31,15 @@ namespace VinculoBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use AuthBundle\Entity\Usuario;
+use AuthBundle\Service\UsuarioFacade;
 
 class VinculoFacade extends AbstractFacade {
+    
+    private $usuarioFacade;
+    
+    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+    }
     
     function getEntityClass() {
         return 'VinculoBundle:Vinculo';
@@ -73,6 +80,14 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($vinculo) {
+        $this->gerarCodigo($vinculo);
+    }
+    
+    protected function afterCreate($vinculo) {
+        $this->gerarUsuario($vinculo->getFuncionario());
+    }
+    
+    private function gerarCodigo($vinculo) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -87,16 +102,13 @@ class VinculoFacade extends AbstractFacade {
         $vinculo->definirCodigo($numero + 1);
     }
     
-    protected function afterCreate($vinculo) {
-        $pessoa = $vinculo->getFuncionario();
-        if (!$pessoa->getUsuario()) {            
-            $usuario = new Usuario();
-            $usuario->criarUsuarioByVinculo($vinculo);
-            $em = $this->orm->getManager();
-            $em->persist($usuario);
+    private function gerarUsuario($pessoa) {
+        if (!$pessoa->getUsuario()) {
+            $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
+            $this->usuarioFacade->create($usuario);
             $pessoa->setUsuario($usuario);
-            $em->merge($pessoa);
-            $em->flush();
+            $this->orm->getManager()->merge($pessoa);
+            $this->orm->getManager()->flush();
         }
     }
 

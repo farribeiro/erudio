@@ -50,6 +50,13 @@ class Cargo extends AbstractEditableEntity {
     */
     private $professor = false;
     
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "AuthBundle\Entity\Grupo")
+    * @ORM\JoinColumn(name = "acesso_grupo_id") 
+    */
+    private $grupo;
+    
     function getNome() {
         return $this->nome;
     }
@@ -64,6 +71,14 @@ class Cargo extends AbstractEditableEntity {
 
     function setProfessor($professor) {
         $this->professor = $professor;
+    }
+    
+    function getGrupo() {
+        return $this->grupo;
+    }
+
+    function setGrupo($grupo) {
+        $this->grupo = $grupo;
     }
     
 }

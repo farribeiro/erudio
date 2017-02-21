@@ -35,7 +35,7 @@ use CoreBundle\ORM\AbstractEntity;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="edu_permissao")
+ * @ORM\Table(name="edu_acesso_permissao")
  */
 class Permissao extends AbstractEntity {
     

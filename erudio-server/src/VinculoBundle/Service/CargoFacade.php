@@ -42,7 +42,7 @@ class CargoFacade extends AbstractFacade {
     }
     
     function uniqueMap($cargo) {
-        return ['cargo' => $cargo->getNome()];
+        return ['nome' => $cargo->getNome()];
     }
     
     function parameterMap() {

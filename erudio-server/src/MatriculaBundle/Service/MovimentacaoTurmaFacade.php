@@ -91,10 +91,12 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
         
         if (is_null($vagaNova)) {
             $vagaNova->setEnturmacao($destino);
-            $this->orm->getManager()->merge($vagaNova); $this->orm->getManager()->flush();            
+            $this->orm->getManager()->merge($vagaNova); 
+            $this->orm->getManager()->flush();            
             //Depois de tudo transferido, desabilita a vaga antiga.
             foreach ($vagasOrigem as $vagaOrigem) { 
-                $vagaOrigem->setEnturmacao(null); $this->orm->getManager()->merge($vagaOrigem); 
+                $vagaOrigem->setEnturmacao(null); 
+                $this->orm->getManager()->merge($vagaOrigem); 
                 $this->orm->getManager()->flush(); 
                 
             }

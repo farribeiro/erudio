@@ -134,7 +134,9 @@ class TransferenciaFacade extends AbstractFacade {
         if (!empty($pessoas)) {
             foreach ($pessoas as $pessoa) {
                 $matriculaArray = $this->orm->getRepository('MatriculaBundle:Matricula')->findBy(array('aluno'=>$pessoa));
-                if (!empty($matriculaArray)) { foreach ($matriculaArray as $matArray) { $matriculas[] = $matArray; } }
+                if (!empty($matriculaArray)) { 
+                    foreach ($matriculaArray as $matArray) { $matriculas[] = $matArray; }
+                }
             }
             
             if (!empty($matriculas)) {

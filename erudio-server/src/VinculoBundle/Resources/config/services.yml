@@ -10,3 +10,5 @@ services:
     facade.vinculo.vinculos:
       class: VinculoBundle\Service\VinculoFacade
       arguments: ["@doctrine"]
+      calls:
+          - [setUsuarioFacade, ["@facade.auth.usuarios"]]

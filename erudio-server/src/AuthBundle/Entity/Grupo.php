@@ -35,7 +35,7 @@ use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="edu_usuario_grupo")
+ * @ORM\Table(name="edu_acesso_grupo")
  */
 class Grupo extends AbstractEditableEntity {
     
@@ -44,12 +44,6 @@ class Grupo extends AbstractEditableEntity {
     * @ORM\Column(name = "nome", nullable = false) 
     */
     private $nome;
-        
-    /** 
-    * @JMS\Groups({"LIST"})  
-    * @ORM\Column(name = "peso", nullable = false) 
-    */
-    private $peso;
     
     function getNome() {
         return $this->nome;
@@ -57,14 +51,6 @@ class Grupo extends AbstractEditableEntity {
 
     function setNome($nome) {
         return $this->nome = $nome;
-    }
-    
-    function getPeso() {
-        return $this->peso;
-    }
-
-    function setPeso($peso) {
-        $this->peso = $peso;
     }
 
 }

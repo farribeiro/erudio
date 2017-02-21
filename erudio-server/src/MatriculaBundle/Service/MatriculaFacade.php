@@ -75,6 +75,21 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($matricula) {
+        $this->gerarCodigo($matricula);
+    }
+    
+    protected function afterCreate($matricula) {
+        $this->gerarUsuario($matricula);
+    }
+    
+    protected function afterUpdate($matricula) {
+        if($matricula->getAlfabetizado() == "") {
+            $matricula->setAlfabetizado(null);
+        }
+        $this->orm->getManager()->flush();
+    }
+    
+    private function gerarCodigo($matricula) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -89,24 +104,15 @@ class MatriculaFacade extends AbstractFacade {
         $matricula->definirCodigo($numero + 1);
     }
     
-    protected function afterCreate($matricula) {
+    private function gerarUsuario($matricula) {
         $pessoa = $matricula->getAluno();
-        if (!$pessoa->getUsuario()) {            
-            $usuario = new Usuario();
-            $usuario->criarUsuarioByMatricula($matricula);
-            $em = $this->orm->getManager();
-            $em->persist($usuario);
-            $pessoa->setUsuario($usuario);
-            $em->merge($pessoa);
-            $em->flush();
+        if (!$pessoa->getUsuario()) {
+            $usuario = Usuario::criarUsuario($pessoa, $matricula->getCodigo());
+            $this->usuarioFacade->create($usuario);
+            $matricula->getAluno()->setUsuario($usuario);
+            $this->orm->getManager()->merge($pessoa);
+            $this->orm->getManager()->flush();
         }
-    }
-    
-    protected function afterUpdate($matricula) {
-        if($matricula->getAlfabetizado() == "") {
-            $matricula->setAlfabetizado(null);
-        }
-        $this->orm->getManager()->flush();
     }
     
 }

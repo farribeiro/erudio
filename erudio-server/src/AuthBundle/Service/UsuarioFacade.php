@@ -30,55 +30,11 @@ namespace AuthBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use PessoaBundle\Entity\PessoaFisica;
-use PessoaBundle\Entity\Endereco;
 
 class UsuarioFacade extends AbstractFacade {
     
-    private $pessoaCriada;
-    
-    function getPessoaCriada() {
-        return $this->pessoaCriada;
-    }
-    
-    function setPessoaCriada($pessoaCriada) {
-        $this->pessoaCriada = $pessoaCriada;
-    }
-    
     function getEntityClass() {
         return 'AuthBundle:Usuario';
-    }
-    
-    function beforeCreate($entidade) {
-        $pessoa = new PessoaFisica();
-        $endereco = new Endereco();
-        $cidade = $this->orm->getRepository('PessoaBundle:Cidade')->findByNome('Itajaí');
-        
-        $endereco->setLogradouro('Av. Abraão João Francisco');
-        $endereco->setNumero(3855);
-        $endereco->setCep('88307303');
-        $endereco->setCidade($cidade[0]);
-        $this->orm->getManager()->persist($endereco);
-        $this->orm->getManager()->flush();
-        
-        $nome = $entidade->getNomeExibicao();
-        $cpf = $entidade->getUsername();
-        $dataNasc = new \DateTime();
-        $pessoa->setNome($nome);
-        $pessoa->setCpfCnpj($cpf);
-        $pessoa->setDataNascimento($dataNasc);
-        $pessoa->setEndereco($endereco);
-        $this->orm->getManager()->persist($pessoa);
-        $this->orm->getManager()->flush();
-        
-        $this->setPessoaCriada($pessoa);
-    }
-    
-    function afterCreate($entidade) {
-        $pessoa = $this->getPessoaCriada();
-        $pessoa->setUsuario($entidade);
-        $this->orm->getManager()->merge($pessoa);
-        $this->orm->getManager()->flush();
     }
     
     function queryAlias() {

@@ -29,43 +29,21 @@
 namespace AuthBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="edu_usuario_permissao")
+ * @ORM\Table(name="edu_acesso_atribuicao")
  */
 class Atribuicao extends AbstractEditableEntity {
     
-    const ACESSO_LEITURA = 'L';
-    const ACESSO_ESCRITA = 'E';
-    
-    /** 
-    * @JMS\Groups({"LIST"})  
-    * @ORM\Column(name = "tipo", nullable = false) 
-    */
-    private $tipoAcesso;
-    
-    /** 
-    * @JMS\Groups({"LIST"})  
-    * @ORM\Column(name = "entidade_id") 
-    */
-    private $idEntidade;
-    
     /**
     * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "Usuario", inversedBy = "rolesAtribuidas") 
+    * @ORM\ManyToOne(targetEntity = "Usuario", inversedBy = "atribuicoes") 
     */
     private $usuario;
-    
-    /**
-    * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Permissao")
-    */
-    private $permissao;
-    
+   
     /**
     * @JMS\Groups({"LIST"})   
     * @ORM\ManyToOne(targetEntity = "Grupo")
@@ -74,35 +52,29 @@ class Atribuicao extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})   
-    * @ORM\Column(name = "ativo", nullable = false) 
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
     */
-    protected $ativo;
-    
-    /** 
-    * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
-    * @JMS\Groups({"LIST"})  
-    * @ORM\Column(name="data_exclusao", type="datetime", nullable=true)
-    */
-    protected $dataExclusao = null;
+    private $instituicao;
     
     function getUsuario() {
         return $this->usuario;
-    }
-
-    function getPermissao() {
-        return $this->permissao;
     }
     
     function getGrupo() {
         return $this->grupo;
     }
-    
-    function getTipoAcesso() {
-        return $this->tipoAcesso;
-    }
 
-    function getIdEntidade() {
-        return $this->idEntidade;
+    function getInstituicao() {
+        return $this->instituicao;
     }
+    
+    static function criarAtribuicao($usuario, $grupo, $instituicao) {
+        $atribuicao = new Atribuicao();
+        $atribuicao->usuario = $usuario;
+        $atribuicao->grupo = $grupo;
+        $atribuicao->instituicao = $instituicao;
+        return $atribuicao;
+    }
+    
 }
 
