@@ -593,6 +593,7 @@
         };
         
         $scope.prepararSalvarAlocacao = function() {
+            $scope.mostraLoader(); $scope.mostraProgresso();
             if($scope.vinculo.cargaHoraria) {
                 if($scope.alocacao.cargaHoraria && $scope.alocacao.instituicao.id) {                    
                     var limite = $scope.vinculo.cargaHoraria;                
@@ -601,14 +602,17 @@
                         $scope.salvarAlocacao();
                         return true;
                     } else {
+                        $scope.fechaLoader(); $scope.fechaProgresso();
                         Servidor.customToast('Carga horária ultrapassou o limite.');
                         return false;
                     }         
                 } else {
+                    $scope.fechaLoader(); $scope.fechaProgresso();
                     Servidor.customToast('Preencha os campos obrigatórios.');
                     return false;
                 }
             } else {
+                $scope.fechaLoader(); $scope.fechaProgresso();
                 Servidor.customToast('Vínculo não possui carga horária.');
             }            
         };
@@ -627,7 +631,10 @@
                         $scope.alocacao.instituicao = $scope.unidade;
                         $scope.alocacao.cargaHoraria = null;
                     }
-                    $timeout(function() { $('#btn-remover-alocacao').tooltip({delay: 50}); }, 100);
+                    $timeout(function() {
+                        $scope.fechaLoader(); $scope.fechaProgresso();
+                        $('#btn-remover-alocacao').tooltip({delay: 50});
+                    }, 100);
                 });
             } else if (!$scope.alocacao.id) {
                 var promise = Servidor.buscarUm('unidades-ensino', $scope.alocacao.instituicao.id);
@@ -636,7 +643,10 @@
                     $scope.totalCargaHoraria = $scope.verificarCargaHoraria($scope.alocacao.cargaHoraria);
                     $scope.alocacoes.push($scope.alocacao);                        
                     $scope.limpaAlocacao();
-                    $timeout(function() { $('#btn-remover-alocacao').tooltip({delay: 50}); }, 100);
+                    $timeout(function() {
+                        $scope.fechaLoader(); $scope.fechaProgresso();
+                        $('#btn-remover-alocacao').tooltip({delay: 50});
+                    }, 100);
                 });
             }
         };
