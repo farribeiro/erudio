@@ -25,16 +25,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function (){
-    var app = angular.module('loginNovoEducar', ['ngRoute', 'restangular', 'mainModule']);
+    var app = angular.module('loginNovoEducar', ['ngRoute', 'restangular', 'mainModule', 'erudioConfig']);
     app.defaultHeaders = '"Content-type":"application/json"';
-    app.config(['RestangularProvider', '$httpProvider', '$logProvider', function(RestangularProvider, $httpProvider, $logProvider){
-        //delete $httpProvider.defaults.headers.common['X-Requested-With'];
-        $logProvider.debugEnabled(true);        
-        //RestangularProvider.setBaseUrl('http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api');
-        RestangularProvider.setBaseUrl('http://10.1.6.86/erudio/erudio-server/web/api/');
+    app.config(['RestangularProvider', '$logProvider', 'ErudioConfigProvider', function(RestangularProvider, $logProvider, ErudioConfigProvider){
+        $logProvider.debugEnabled(true); RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
-
-    app.controller('AppController', ['$templateCache'], function($scope, $templateCache){
-        $templateCache.removeAll();
-    });
+    app.controller('AppController', ['$templateCache'], function($scope, $templateCache){ $templateCache.removeAll(); });
 })();

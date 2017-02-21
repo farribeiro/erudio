@@ -127,10 +127,8 @@
                     if ($("#"+input.id).hasClass('ng-invalid') && !$("#"+input.id).hasClass('ng-invalid-required')) { $("#"+input.id).addClass('invalid'); counter += 1;
                     } else { $("#"+input.id).removeClass('invalid'); }
                     if ($("#"+input.id).hasClass('ng-invalid-required')) { 
-                        required += 1; 
-                        if (typeof $('#'+input.id).attr('data-label') !== typeof undefined && $('#'+input.id).attr('data-label') !== false) {
-                            retorno += $('#'+input.id).attr('data-label') + ', '; 
-                        }
+                        required += 1;
+                        if (typeof $('#'+input.id).attr('data-label') !== typeof undefined && $('#'+input.id).attr('data-label') !== false) { retorno += $('#'+input.id).attr('data-label') + ', '; }
                     }
                 }
 
@@ -138,9 +136,9 @@
                 if (select !== null) {
                     if ($("#"+select.id).hasClass('ng-invalid') && !$("#"+select.id).hasClass('ng-invalid-required')) { $("#"+select.id).addClass('invalid'); counter += 1;
                     } else { $("#"+select.id).removeClass('invalid'); }
-                    if ($("#"+select.id).hasClass('ng-invalid-required')) { required += 1; }
-                    if (typeof $('#'+select.id).attr('data-label') !== typeof undefined && $('#'+select.id).attr('data-label') !== false) {
-                        retorno += $('#'+select.id).attr('data-label') + ', '; 
+                    if ($("#"+select.id).hasClass('ng-invalid-required')) { 
+                        required += 1;
+                        if (typeof $('#'+select.id).attr('data-label') !== typeof undefined && $('#'+select.id).attr('data-label') !== false) { retorno += $('#'+select.id).attr('data-label') + ', '; }
                     }
                 }
             });
@@ -148,9 +146,7 @@
             if (counter > 0 || required > 0) {
                 if (required > 0) {
                     Materialize.toast('Há campos obrigatórios não preenchidos!', 2000);
-                    if (retorno !== ''){
-                        Materialize.toast('Campos não preenchidos: ' + retorno);
-                    }
+                    if (retorno !== ''){ Materialize.toast('Campos não preenchidos: ' + retorno, 5000); }
                 }
                 return false;
             } else {

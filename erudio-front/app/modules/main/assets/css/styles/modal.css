@@ -95,6 +95,13 @@
     margin-top:0px;
 }
 
+.modal-title-ajuda {
+    background: url('../../images/ajuda.jpg') right bottom;
+    height: 300px;
+    position: relative;
+    margin-top:0px;
+}
+
 .modal-titulo h4 {
     position: absolute;
     bottom: 10px;

@@ -25,14 +25,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function () {
-    var mainModule = angular.module('mainModule', ['servidorModule', 'mainDirectives', 'instituicaoModule', 'cursoModule', 'etapaModule', 'regimeModule', 'moduloModule', 'turnoModule',
-        'unidadeModule', 'tipoModule', 'turmaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
-        'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
-        'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','historicoEscolarModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
-        'grupoPermissaoModule','cursoFormModule']);
+    var homeModule = angular.module('homeModule', ['servidorModule']);
 
 
-    mainModule.filter('telefone', function () {
+    homeModule.filter('telefone', function () {
         return function (telefone) {
             if (!telefone) {
                 return '';
@@ -53,7 +49,7 @@
         };
     });
 
-    mainModule.filter('horario', function () {
+    homeModule.filter('horario', function () {
         return function (horario) {
             if (!horario){
                 return '';
@@ -66,7 +62,7 @@
         };
     });
 
-    mainModule.filter('cpf', function() {
+    homeModule.filter('cpf', function() {
         return function(cpf) {
             if (!cpf) { return ''; }
             if (cpf.length === 11) {
@@ -76,7 +72,7 @@
         };
     });
 
-    mainModule.filter('comecarEm', function() {
+    homeModule.filter('comecarEm', function() {
         return function(vetor, comecarEm) {
             if(vetor === undefined) { return null; }
             if (comecarEm < 0) { comecarEm = 1; }
@@ -92,7 +88,7 @@
         };
     });
 
-    mainModule.filter('quantidade', function() {
+    homeModule.filter('quantidade', function() {
         return function(quantidade) {
             quantidade = parseInt(quantidade);
             var array = [];
@@ -103,8 +99,9 @@
         };
     });
 
-    mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService) {
-
+    homeModule.controller('HomeController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
+        $templateCache.removeAll();
+        
         this.tab = 'home';
         this.tabAtual = "";
         this.leftDropdown = '';
@@ -117,69 +114,7 @@
         $scope.FuncionarioService = FuncionarioService;
         $scope.MatriculaService = MatriculaService;
         $scope.TurmaService = TurmaService;
-        //CARREGA MÓDULO
-        this.carregarConteudo = function (modulo, options) { return "app/modules/" + modulo + "/partials/" + modulo + options + ".html"; };
-
-        //SELECIONA MÓDULO
-        this.selecionar = function (modulo, options) {
-            if (options === undefined) { options = ""; }
-            if (modulo !== this.tab) {
-                //url amigavel
-                if (modulo !== 'main') {
-                    if (!sessionStorage.getItem('alocacao') && !Servidor.verificarPermissoes("SUPER_ADMIN")) {
-                        return Servidor.customToast('Selecione uma alocação.');
-                    }
-                    //var urlStr = window.location.href; var arr = urlStr.split('/'); var str = arr[arr.length-2];
-                    //Servidor.mudarUrl(str,modulo);
-                }
-                this.tab = modulo;
-                sessionStorage.setItem('module', this.tab);
-                sessionStorage.setItem('moduleOptions', options);
-                this.tabAtual = this.carregarConteudo(modulo, options);
-                Servidor.removeTooltipp();
-                $scope.inicializar(); $scope.inicializando = true;
-            }
-        };
-
-        //SAI DO SISTEMA
-        this.logout = function () { sessionStorage.clear(); window.location = 'login.html'; };
-
-        //ABRE MODAL DE FOTO
-        this.modalAvatar = function () { $('#modalAvatarFoto').openModal(); $scope.labelUpload = 'INSERIR FOTO'; };
-
-        //EVENTO DE BOTAO
-        this.uploadAction = function () { $('#upload-file').click(); };
-
-        //ENVIA FOTO
-        $scope.sendUpload = function () {
-            $('.upload-click').hide(); $('.upload-send').show();
-            var formData = new FormData();
-            formData.append('file',$('#upload-file')[0].files[0]);
-            formData.append('username',sessionStorage.getItem('username'));
-            var url = sessionStorage.getItem('baseUrl') + '/assets';
-            $.ajax({
-                url: url, type: 'POST', data: formData, async: true,
-                complete: function (){
-                    $('#modalAvatar').closeModal(); $('.upload-click').show(); $('.upload-send').hide(); $scope.searchAvatar();
-                }, cache: false, contentType: false, processData: false
-            });
-        };
-
-        //BUSCA AVATAR
-        $scope.searchAvatar = function () {
-            var usuario = sessionStorage.getItem('pessoaId');
-            var promise = Servidor.buscar('pessoas', {usuario: usuario});
-            promise.then(function (response) {
-                var avatar = response.data[0].avatar;
-                if (avatar !== undefined) {
-                    var promise = Servidor.buscarUm('assets', response.data[0].avatar);
-                    promise.then(function (response) {
-                        sessionStorage.setItem('avatar',response.data.file);
-                        $timeout(function() { $scope.avatar = response.data.file; }, 500);
-                    });
-                }
-            });
-        };
+        $scope.isHome = true;
 
         //ATRIBUTOS
         $scope.estadosCivis = []; $scope.racas = []; $scope.buscarParticularidades = []; $scope.vinculos = []; $scope.alocacoes = [];
@@ -239,8 +174,8 @@
 
         /* Recebe informacoes pessoa */
         $scope.recebePessoa = function () {
-            var usuario = sessionStorage.getItem('pessoaId');
-            var promise = Servidor.buscarUm('pessoas', usuario);
+            var usuario = JSON.parse(sessionStorage.getItem('pessoa'));
+            var promise = Servidor.buscarUm('pessoas', usuario.id);
             promise.then(function (response) {
                 $scope.pessoa = response.data;
                 $scope.pessoa.dataNascimento = dateTime.converterDataForm ($scope.pessoa.dataNascimento);
@@ -326,6 +261,14 @@
                 }
                 $scope.vinculo = response.data; $scope.vinculo.id = '';
                 $scope.vinculo.id = sessionStorage.getItem('vinculo');
+                
+                if ($scope.vinculo.cargo.professor) {
+                    $('.side-nav').remove();
+                    $('.main-descricao').remove();
+                    $('.ui-link').remove();
+                    $('main').addClass('esconder-menu');
+                }
+                
                 $timeout(function(){ $('#vinculos').material_select('destroy'); $('#vinculos').material_select(); }, 150);
             });
         };
@@ -581,10 +524,31 @@
         $scope.buscarHorarios = function () {
             Servidor.verificaLabels();
             $scope.horarios = [];
+            var disciplina = sessionStorage.getItem('disciplina');
+            var promiseDisciplina = Servidor.buscar(disciplina);
+            promiseDisciplina.then(function (responseDisciplina) {
+                $scope.disciplinaAtual = responseDisciplina.data;
+            });
+            
             $scope.disciplinas.forEach(function(d){
                 var promise = Servidor.buscarUm('turmas',d.turma.id);
                 promise.then(function(response) {
                     var turma = response.data;
+                    var mes = new Date();
+                    var mesAtual = mes.getMonth() + 1;
+                    var promise2 = Servidor.buscar('calendarios/' + turma.calendario.id + '/meses/' + mesAtual, {});
+                    promise2.then(function (response2) {
+                        var dias = response2.data;
+                        for (var i=0; i<dias.length; i++) {
+                            if (dias[i].eventos.length > 0){
+                                for (var j=0; j<dias[i].eventos.length; j++) {
+                                    dias[i].eventos[j].data = dias[i].data;
+                                    $scope.eventos.push(dias[i].eventos[j]);
+                                }
+                            }
+                        }
+                    });
+                    
                     var promise = Servidor.buscar('calendarios/' + turma.calendario.id + '/dias', {'data': new Date().toJSON().split('T')[0]});
                     promise.then(function (response) {
                         if(response.data.length) {
@@ -592,10 +556,13 @@
                             var promise = Servidor.buscar('turmas/' + d.turma.id + '/aulas', {'dia': dia.id, 'disciplina': d.id});
                             promise.then(function (response) {
                                 if(response.data.length){
-                                    response.data[0].horario.inicio = dateTime.formatarHorario(response.data[0].horario.inicio);
-                                    response.data[0].horario.termino = dateTime.formatarHorario(response.data[0].horario.termino);
-                                    $scope.horarios.push(response.data[0]);
-                                    $scope.horarios[$scope.horarios.length-1].turma = turma;
+                                    var aulas = response.data;
+                                    for (var i=0; i<aulas.length; i++){
+                                        aulas[i].horario.inicio = dateTime.formatarHorario(aulas[i].horario.inicio);
+                                        aulas[i].horario.termino = dateTime.formatarHorario(aulas[i].horario.termino);
+                                        $scope.horarios.push(aulas[i]);
+                                        $scope.horarios[$scope.horarios.length-1].turma = turma;
+                                    }
                                     $timeout(function () { $('.collapsible').collapsible({accordion: false}); }, 500);
                                 }
                             });
@@ -996,7 +963,7 @@
         };
 
         $scope.verificaSelectCidade = function (id) {
-            if ($scope.endereco !== undefined && $scope.endereco.cidade !== undefined) {
+            if ($scope.pessoa.endereco !== undefined) {
                 var cidade = $scope.pessoa.endereco.cidade.id;
                 if (parseInt(cidade) === parseInt(id)) {
                     return true;
@@ -1007,7 +974,7 @@
         };
 
         $scope.verificaSelectEstado = function (id) {
-            if ($scope.endereco !== undefined && $scope.endereco.cidade !== undefined) {
+            if ($scope.pessoa.endereco !== undefined) {
                 var estado = $scope.pessoa.endereco.cidade.estado.id;
                 if (parseInt(estado) === parseInt(id)) {
                     return true;
@@ -1057,12 +1024,15 @@
                     $scope.recebePessoa();
                     $scope.buscarEstadoCivil();
                     $scope.mostraPerfil = true;
+                    $scope.isHome = false;
                     break
                 case 'calendario':
                     $scope.mostraCalendario = true;
+                    $scope.isHome = false;
                     if (!$scope.semanas) { $scope.montaCalendario(); };
                     break
                 case 'frequencia':
+                    $scope.isHome = false;
                     $scope.buscarEnturmacoes();
 //                    $('.data').mask('00/00/0000');
                     callDatepicker();
@@ -1080,11 +1050,13 @@
                     }, 100);
                     break
                 case 'avaliacoes':
+                    $scope.isHome = false;
                     $scope.alunos = [];
                     $scope.buscarAvaliacoes();
                     $scope.mostraAvaliacoes = true;
                     break
                 case 'diario-nota':
+                    $scope.isHome = false;
                     $scope.mostraDiarioNota = true;
                     $scope.buscarAlunos();
                     $scope.buscarConceitos();
@@ -1093,6 +1065,7 @@
                     }, 1000);
                     break
                 case 'observacoes':
+                    $scope.isHome = false;
                     $scope.buscaObservacao = {data: '', inicio: '', termino: ''};
                     var promise = Servidor.buscar('turmas/'+$scope.disciplina.turma.id+'/aulas', {disciplina: $scope.disciplina.id});
                     promise.then(function(response) {
@@ -1104,13 +1077,19 @@
                         callDatepicker();
                     });
                     break
+                default :
+                    $scope.isHome = true;
             }
             $('.tooltipped').tooltip('remove');
             $timeout(function () {
                 Servidor.verificaLabels(); window.scrollTo(0, 500);
                 $('.collapsible').collapsible({accordion: false});
                 $('.tooltipped').tooltip({delay: 50});
-                $timeout(function() { $scope.fechaCortina(); }, 500);
+                if (opcao === 'observacoes') {
+                    $timeout(function() { $scope.fechaCortina(); }, 4000);
+                } else {
+                    $timeout(function() { $scope.fechaCortina(); }, 500);
+                }
             }, 150);
         };
 
@@ -1236,12 +1215,15 @@
 
         /* Salva os dados que foram alterados */
         $scope.atualizarPessoa = function () {
+            $scope.pessoa.dataNascimento = Servidor.formataDataBanco($scope.pessoa.dataNascimento);
             Servidor.finalizar($scope.pessoa, 'pessoas', 'Modificações');
         };
 
         /* Salva os dados que foram alterados */
         $scope.atualizarEndereco = function () {
+            //var endereco = Servidor.buscar();
             var endereco = angular.copy($scope.pessoa.endereco);
+            console.log(endereco);
             endereco.route = 'enderecos';
             var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
             promise.then(function (response) {
@@ -1879,14 +1861,6 @@
 
         /* INICIALIZA A PAGINA */
         $scope.inicializar = function () {
-            var sessionId = sessionStorage.getItem('sessionId');
-            if (sessionId) { $('body').css('opacity',1); }
-
-            $timeout(function () {
-                $('.modal-trigger').leanModal();
-                Servidor.verificarMenu();
-            }, 50);
-
             if (sessionStorage.getItem('module') === 'main') {
                 $scope.vinculos = []; $scope.limparVinculo();
                 var strPessoa = sessionStorage.getItem('pessoa');
@@ -1896,7 +1870,7 @@
                 promise.then(function (response) {
                     if (response.data.length) {
                         $scope.vinculos = response.data;
-                        $timeout(function () { $('#vinculos').material_select(); }, 500);
+                        $timeout(function () { $('#vinculos').material_select(); }, 15);
                         if (sessionStorage.getItem('vinculo')) {
                             $scope.carregarVinculo(sessionStorage.getItem('vinculo'));
                             $scope.buscarAlocacoes(sessionStorage.getItem('vinculo'));
@@ -1944,21 +1918,22 @@
         };
 
         /*Acessar modulo via URL*/
-        /*var url = window.location.href;
-        this.urlArray = url.split('/');
-        var urlSize = this.urlArray.length;
-        if (this.urlArray[urlSize-1] !== "" && this.urlArray[urlSize-1] !== "index.html") {
-            this.selecionar(this.urlArray[urlSize-1],'');
+        /*var link = window.location.href;
+        var url = sessionStorage.getItem('baseFrontUrl');
+        this.urlArray = link.split(url+'/');
+        var module = this.urlArray[1];
+        if (module !== "index.html") {
+            this.selecionar(module,'');
         } else {
-            this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
+            if (module === "index.html") {
+                this.selecionar('main');
+            } else {
+                this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
+            }
         }*/
+        //$('.side-link').click(function(ev){ ev.preventDefault(); });
+        //this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
 
-        $scope.verificarPermissoes = function (role){
-            return Servidor.verificarPermissoes(role);
-        };
-
-        if ($scope.inicializando === false) { $scope.inicializar(); };
-        this.selecionar('main','');
         /*Acessar modulo via URL*/
         /*var url = window.location.href;
         this.urlArray = url.split('/');
@@ -1968,6 +1943,7 @@
         } else {
             this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
         }*/
+        if ($scope.inicializando === false) { $scope.inicializar(); };
     }]);
 
 })();

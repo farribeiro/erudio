@@ -1,5 +1,4 @@
 .main-list { padding: 0 !important; opacity: 1; transition: all 0.3s ease-in-out !important; }
-.list-items, .title-card, .init-card { transition: all 0.3s ease-in-out !important; }
 .animate-card-in-list { transform: translate(0rem,-20em) scale(1.04); }
 .animate-card-out-list { transform: scale(0.5); opacity: 0; }
 .animate-list-out { opacity: 0; }
@@ -17,3 +16,6 @@
 #instituicaoForm, #tipoUnidadeForm, #unidadeForm {
     transition: all 0.3s ease-in-out !important;
 }
+
+//colocar todos os transitions aqui
+.list-items, .title-card, .init-card { transition: all 0.3s ease-in-out !important; }
