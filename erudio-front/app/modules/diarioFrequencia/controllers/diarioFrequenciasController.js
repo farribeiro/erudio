@@ -241,7 +241,8 @@
         };
 
         $scope.gerarPdfDisciplina = function(disciplina) {
-            $scope.disciplinasSelecionadas.push(disciplina);
+            $scope.disciplinasSelecionadas = []; $scope.disciplinasSelecionadas.push(disciplina);
+            $('.checkbox-turma').prop('checked', false);
             $('#dis'+disciplina.id).prop('checked',true);
             setTimeout(function(){$scope.gerarPdf();},50);
         };
@@ -262,17 +263,24 @@
                         requisicoes--;
                         enturmacao.matricula.frequencias = response.data;
                         if (i === enturmacoes.length-1) {
-                            $scope.disciplinasSelecionadas.forEach(function(ofertada) {
+                            $scope.disciplinasSelecionadas.forEach(function(ofertada, i) {
                                 ofertada.temObservacoes = false;
                                 requisicoes++;
                                 var promise = Servidor.buscar('turmas/'+ofertada.turma.id+'/aulas', {disciplina: ofertada.id, mes: $scope.busca.mes.numero});
                                 promise.then(function(response) {
                                     requisicoes--;
                                     ofertada.aulas = response.data;
-                                    if(!ofertada.aulas.length && $scope.disciplinasSelecionadas.length === 1) {
+                                    if(!ofertada.aulas.length) {
                                         Servidor.customToast(ofertada.nomeExibicao + " não possui aulas.");
-                                        $scope.fechaCortina();
-                                    }
+                                        if($scope.disciplinasSelecionadas.length) {
+                                            $scope.fecharCortina();
+                                        }
+                                        $scope.disciplinasSelecionadas.splice(i, 1);
+                                        if(requisicoes === 0) {
+                                            makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
+                                            $timeout(function() { $scope.fecharCortina(); }, 500);
+                                        }
+                                    }                                    
                                     ofertada.aulas.forEach(function(aula) {
                                         requisicoes++;
                                         var promise = Servidor.buscar('aula-observacoes', {aula: aula.id});
