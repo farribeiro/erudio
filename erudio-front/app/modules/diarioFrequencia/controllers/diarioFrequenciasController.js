@@ -271,14 +271,7 @@
                                     ofertada.aulas = response.data;
                                     if(!ofertada.aulas.length) {
                                         Servidor.customToast(ofertada.nomeExibicao + " não possui aulas.");
-                                        if($scope.disciplinasSelecionadas.length) {
-                                            $scope.fecharCortina();
-                                        }
-                                        $scope.disciplinasSelecionadas.splice(i, 1);
-                                        if(requisicoes === 0) {
-                                            makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
-                                            $timeout(function() { $scope.fecharCortina(); }, 500);
-                                        }
+                                        return $scope.fecharCortina();                                        
                                     }                                    
                                     ofertada.aulas.forEach(function(aula) {
                                         requisicoes++;
@@ -287,7 +280,7 @@
                                             if (response.data.length) {
                                                 ofertada.temObservacoes = true; aula.observacoes = response.data;
                                             }
-                                            if (--requisicoes === 0) {
+                                            if (--requisicoes === 0 && $scope.cortina) {
                                                 makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
                                                 $timeout(function() {
                                                     $scope.fecharCortina();
