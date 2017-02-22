@@ -249,9 +249,8 @@
         $scope.gerarPdf = function(){
             $scope.mostrarCortina();
             var mes = parseInt($scope.busca.mes.numero);
-            if (mes < 10) {
-                $scope.busca.mes.numero = '0' + mes;
-            }
+            if (mes < 10) { $scope.busca.mes.numero = '0' + mes; }
+            console.log(mes, $scope.busca.mes.numero);
             var requisicoes = 0;
             var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
             promise.then(function(response) {
@@ -270,6 +269,10 @@
                                 promise.then(function(response) {
                                     requisicoes--;
                                     ofertada.aulas = response.data;
+                                    if(!ofertada.aulas.length) {
+                                        Servidor.customToast(ofertada.nomeExibicao + " não possui aulas.");
+                                        $scope.fechaCortina();
+                                    }
                                     ofertada.aulas.forEach(function(aula) {
                                         requisicoes++;
                                         var promise = Servidor.buscar('aula-observacoes', {aula: aula.id});
