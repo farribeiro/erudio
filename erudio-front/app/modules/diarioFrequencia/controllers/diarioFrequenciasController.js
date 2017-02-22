@@ -248,8 +248,9 @@
 
         $scope.gerarPdf = function(){
             $scope.mostrarCortina();
-            if (parseInt($scope.busca.mes.numero) < 10) {
-                $scope.busca.mes.numero = '0' + $scope.busca.mes.numero;
+            var mes = parseInt($scope.busca.mes.numero);
+            if (mes < 10) {
+                $scope.busca.mes.numero = '0' + mes;
             }
             var requisicoes = 0;
             var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
