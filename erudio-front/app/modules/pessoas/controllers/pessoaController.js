@@ -777,43 +777,12 @@
             $scope.desmontaCertidao = function () {
                 if ($scope.pessoa.certidaoNascimento) {
                     var temp = parseInt($scope.pessoa.certidaoNascimento);
-                    console.log(temp, temp.length);
                     if(temp.toString().length === 11) {
                         $scope.cadDocumento = 'certidao-antiga';
                         $scope.livroCad = temp.toString().slice(0, 4);
                         $scope.folhaCad = temp.toString().slice(4, 7);
                         $scope.termoCad = temp.toString().slice(7, 11);                        
-                    } 
-//                    var verifica = $scope.pessoa.certidaoNascimento.length;
-//                    var arrayCertidao = $scope.pessoa.certidaoNascimento.split("");
-//                    var contador = 0;
-//                    for (var i = 0; i < 12; i++) {
-//                        if (arrayCertidao[i] === '0') {
-//                            contador++;
-//                        }
-//                    }
-//                    if (contador === 12) {
-//                        $scope.livroCad = "";
-//                        $scope.folhaCad = "";
-//                        $scope.termoCad = "";
-//                        /*Livro certidão nascimento antiga*/
-//                        for (var i = 17; i < 22; i++) {
-//                            $scope.livroCad = $scope.livroCad + arrayCertidao[i];
-//                        }
-//                        /*Folha certidão antiga*/
-//                        for (var i = 22; i < 25; i++) {
-//                            $scope.folhaCad = $scope.folhaCad + arrayCertidao[i];
-//                        }
-//                        /*Termo certidao antiga*/
-//                        for (var i = 25; i < 32; i++) {
-//                            $scope.termoCad = $scope.termoCad + arrayCertidao[i];
-//                        }
-//                    } else {
-//                        $scope.certidaoCad = "";
-//                        for (var i = 0; i < verifica; i++) {
-//                            $scope.certidaoCad = $scope.certidaoCad + arrayCertidao[i];
-//                        }
-//                    }
+                    }
                 } else {
                     return $scope.pessoa.certidaoNascimento;
                 }
