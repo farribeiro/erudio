@@ -251,7 +251,6 @@
             $scope.mostrarCortina();
             var mes = parseInt($scope.busca.mes.numero);
             if (mes < 10) { $scope.busca.mes.numero = '0' + mes; }
-            console.log(mes, $scope.busca.mes.numero);
             var requisicoes = 0;
             var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
             promise.then(function(response) {
