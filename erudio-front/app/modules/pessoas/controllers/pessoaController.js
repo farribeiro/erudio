@@ -789,10 +789,9 @@
             };
 
             $scope.verificaCertidaoAntiga = function() {
-                console.log($scope.cadDocumento);
                 if($scope.cadDocumento === 'certidao-antiga') {
                     if($scope.livroCad !== undefined) {
-                        if($scope.livroCad.length !== 5) { Servidor.customToast('Número do livro incorreto.'); return false; }
+                        if($scope.livroCad.length !== 5) { Servidor.customToast('O número do livro deve ter 5 caracteres.'); return false; }
                     }
                     console.log($scope.folhaCad, $scope.folhaCad.length);
                     if($scope.folhaCad !== undefined) {
@@ -800,7 +799,7 @@
                         $scope.folhaCad = $scope.completaDigitos($scope.folhaCad, 3);
                     }
                     if($scope.termoCad !== undefined) {
-                        if($scope.termoCad.length !== 7) { Servidor.customToast('Número do termo incorreto.'); return false; }
+                        if($scope.termoCad.length !== 7) { Servidor.customToast('O número do termo deve ter 7 caracteres.'); return false; }
                     }
                     return true;
                 } else {
