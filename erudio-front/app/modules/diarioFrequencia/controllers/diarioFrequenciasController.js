@@ -269,7 +269,7 @@
                                 promise.then(function(response) {
                                     requisicoes--;
                                     ofertada.aulas = response.data;
-                                    if(!ofertada.aulas.length) {
+                                    if(!ofertada.aulas.length && $scope.disciplinasSelecionadas.length === 1) {
                                         Servidor.customToast(ofertada.nomeExibicao + " não possui aulas.");
                                         $scope.fechaCortina();
                                     }
