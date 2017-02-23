@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 .curso-banner {
-    height: 20rem;
+    height: 285px;
     background: url('../images/curso.jpg') no-repeat center center;
     background-size: 100% auto;
 }
