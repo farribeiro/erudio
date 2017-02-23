@@ -36,9 +36,9 @@
         }).when('/unidades',{ templateUrl: 'app/modules/unidades/partials/unidades.html', controller: 'UnidadeController'
         }).when('/regimes',{ templateUrl: 'app/modules/regimes/partials/regimes.html', controller: 'RegimeController'
             
-        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
-        }).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
-        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
+        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
+        //}).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
+        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
             
         }).when('/etapas',{ templateUrl: 'app/modules/etapas/partials/etapas.html', controller: 'EtapaController'
         }).when('/disciplinas',{ templateUrl: 'app/modules/disciplinas/partials/disciplinas.html', controller: 'DisciplinaController'
@@ -67,6 +67,8 @@
         }).when('/usuarios',{ templateUrl: 'app/modules/usuarios/partials/usuarios.html', controller: 'UsuarioController'
         }).when('/permissoes',{ templateUrl: 'app/modules/permissoes/partials/permissoes.html', controller: 'PermissaoController'
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
+        }).when('/404',{ templateUrl: 'app/modules/util/partials/404.html'
+        }).otherwise({ redirectTo: '/404'
         });
         RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
