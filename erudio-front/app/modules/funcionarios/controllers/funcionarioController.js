@@ -117,6 +117,16 @@
         $scope.loader = false;
         $scope.progresso = false;
 
+        //PREPARA REMOÇÃO DO VINCULO
+        $scope.prepararRemover = function (vinculo) { $('#remove-modal-vinculo').openModal(); $scope.vinculoDeletar = vinculo; };
+        
+        //REMOVE O VINCULO
+        $scope.remover = function () {
+            $scope.mostraProgresso();
+            Servidor.remover($scope.vinculoDeletar, 'Vínculo');
+            $timeout(function(){ $scope.fechaProgresso(); $scope.buscarVinculos($scope.vinculoBusca,'','botao'); }, 150);
+        };       
+
         // Controle da barra de progresso e loader
         $scope.mostraProgresso = function () { $scope.progresso = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; };
@@ -341,7 +351,9 @@
 
         // Finaliza o vinculo
         $scope.vincular = function() {
-            var vinculo = $scope.vinculo;
+            delete $scope.vinculo.funcionario.dataExpedicaoCertidaoNascimento; delete $scope.vinculo.funcionario.dataNascimento;
+            delete $scope.vinculo.cargo.grupo.dataModificacao; delete $scope.vinculo.cargo.professor;
+            var vinculo = angular.copy($scope.vinculo);
             if (!vinculo.cargo.id) { return Servidor.customToast('Selecione um cargo.'); }
             if (!vinculo.funcionario.id) { return Servidor.customToast('Selecione uma pessoa.'); }
             if (!vinculo.tipoContrato) { return Servidor.customToast('Selecione um tipo de contrato.'); }
@@ -349,36 +361,38 @@
             if (vinculo.cargaHoraria >= $scope.totalCargaHoraria) {
                 vinculo.instituicao = {id: $scope.vinculo.instituicao.id};
                 $scope.mostraLoader();
-                delete vinculo.funcionario.dataExpedicaoCertidaoNascimento;
-                delete vinculo.funcionario.dataNascimento;
-                delete vinculo.cargo.professor;
-                var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
-                promise.then(function(response) {
-                    if(!response.data.length || vinculo.id) {
-                        var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionario');
-                        result.then(function(response) {
-                            vinculo = response.data;
-                            if (!$scope.vinculo.id) {
-                                $scope.vinculo = response.data;
-                                $timeout(function() {
-                                    $('ul.tabs').tabs('select_tab', 'tabAlocacao');
-                                    $scope.fechaLoader();
-                                }, 250);                        
-                            } else {
-                                if($scope.alocacao.cargaHoraria && $scope.alocacao.instituicao.id) {
-                                    if(!$scope.prepararSalvarAlocacao()) {
-                                        return $scope.fechaLoader();
-                                    }
+                $timeout(function(){
+                    var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionário');
+                    result.then(function(response) {
+                        vinculo = response.data;
+                        if (!$scope.vinculo.id) {
+                            $scope.vinculo = response.data;
+                            $timeout(function() {
+                                $('ul.tabs').tabs('select_tab', 'tabAlocacao');
+                                $scope.fechaLoader();
+                            }, 250);                        
+                        } else {
+                            if($scope.alocacao.cargaHoraria && $scope.alocacao.instituicao.id) {
+                                if(!$scope.prepararSalvarAlocacao()) {
+                                    return $scope.fechaLoader();
                                 }
-                                $scope.fecharFormulario();
-                                $scope.limpaVinculo();
-                            }                    
-                        });
-                    } else {
-                        $scope.fechaLoader();
-                        Servidor.customToast('Esta pessoa já possui um vinculo ativo');
-                    }
-                });                    
+                            }
+
+                        }
+                        $scope.fecharFormulario();
+                        $scope.limpaVinculo();
+                    });
+                    /*var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
+                    promise.then(function(response) {
+                        if(!response.data.length || vinculo) {
+                            console.log(vinculo.cargaHoraria);
+
+                        } else {
+                            $scope.fechaLoader();
+                            Servidor.customToast('Esta pessoa já possui um vinculo ativo');
+                        }
+                    });*/
+                },500);
             } else {
                 Materialize.toast('Carga horária inválida.', 2000);                
             }
@@ -402,26 +416,30 @@
             $scope.alocacoes = [];
             $scope.limpaAlocacao();            
             if (vinculo) {
-                $scope.vinculo = angular.copy(vinculo);
-                if(!$scope.isAdmin) {
-                    $scope.alocacao.instituicao = $scope.unidade;
-                    $scope.nomeUnidade = $scope.unidade.nomeCompleto;
-                }
-                if (vinculo.id) {
-                    var promise = Servidor.buscar('alocacoes', {'vinculo': $scope.vinculo.id});
-                    promise.then(function(response) {
-                        $scope.alocacoes = response.data;
-                        if (response.data.length) {
-                            $scope.totalCargaHoraria = $scope.verificarCargaHoraria(0);
-                            $scope.totalUnidadesEscolares = $scope.quantidadeDeUnidades();                            
-                        }
-                        $timeout(function(){ 
-                            $('.tooltipped').tooltip('remove'); 
-                            $('.tooltipped').tooltip({delay: 50});
-                        }, 50);
-                        $scope.prepararFormulario();
-                    });
-                }
+                var promise = Servidor.buscarUm('vinculos',vinculo.id);
+                promise.then(function(response){
+                    $scope.vinculo = response.data;
+                    delete $scope.vinculo.alocacoes;
+                    if(!$scope.isAdmin) {
+                        $scope.alocacao.instituicao = $scope.unidade;
+                        $scope.nomeUnidade = $scope.unidade.nomeCompleto;
+                    }
+                    if (vinculo.id) {
+                        var promise = Servidor.buscar('alocacoes', {'vinculo': $scope.vinculo.id});
+                        promise.then(function(response) {
+                            $scope.alocacoes = response.data;
+                            if (response.data.length) {
+                                $scope.totalCargaHoraria = $scope.verificarCargaHoraria(0);
+                                $scope.totalUnidadesEscolares = $scope.quantidadeDeUnidades();                            
+                            }
+                            $timeout(function(){ 
+                                $('.tooltipped').tooltip('remove'); 
+                                $('.tooltipped').tooltip({delay: 50});
+                            }, 50);
+                            $scope.prepararFormulario();
+                        });
+                    }
+                });
             } else {
                 $scope.vinculo.funcionario = {id: null, nome: ''};
                 $scope.limpaVinculo();
@@ -567,7 +585,7 @@
         };
 
         // Prepara para remover e abre o modal
-        $scope.prepararRemover = function (vinculo) {
+        $scope.prepararDesativar = function (vinculo) {
             $scope.vinculoRemover = vinculo;
             if (vinculo.status !== 'DESLIGADO') {
                 if (vinculo.funcionario.genero === 'M') { var artigo = 'o'; } else { artigo = 'a'; }
