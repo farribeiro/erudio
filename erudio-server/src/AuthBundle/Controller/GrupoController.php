@@ -68,7 +68,6 @@ class GrupoController extends AbstractEntityController {
     * @FOS\Get("grupos")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "nome", nullable = true)
-    * @FOS\QueryParam(name = "peso", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

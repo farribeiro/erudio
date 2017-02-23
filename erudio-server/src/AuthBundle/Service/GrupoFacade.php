@@ -46,15 +46,8 @@ class GrupoFacade extends AbstractFacade {
          return array (
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('g.nome LIKE :nome')->setParameter('nome', '%'.$value.'%');
-            },
-            'peso' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('g.peso = :peso')->setParameter('g.peso', $value);
             }
         );
-    }
-    
-    function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->orderBy('g.peso', 'ASC');
     }
 }
 
