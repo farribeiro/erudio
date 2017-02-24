@@ -2242,6 +2242,16 @@
                 }
             });
         };
+        
+        $scope.reativarMatricula = function(matricula) {
+            matricula.status = 'CURSANDO';
+            $scope.mostraProgresso();
+            var promise = Servidor.finalizar(matricula, 'matriculas', null);
+            promise.then(function(response) {
+                Servidor.customToast('Matrícula reativada com sucesso.');
+                $scope.fechaProgresso();
+            });
+        };
 
         $scope.reativarEnturmacao = function(enturmacao, indice) {
             $scope.mostraProgresso();

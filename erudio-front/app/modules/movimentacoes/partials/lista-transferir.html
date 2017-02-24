@@ -31,7 +31,7 @@
                 <!--
                 <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">account_balance</i>
-                    <select id="buscaUnidadeMovimentar" data-ng-model="matriculaMovimentacoes.unidadeEnsino">                        
+                    <select id="buscaUnidadeMovimentar" data-ng-model="matriculaMovimentacoes.unidadeEnsino">
                         <option disabled></option>
                         <option value="{{u.id}}" data-ng-selected="u.id === unidade.id" data-ng-repeat="u in unidades">{{u.nomeCompleto | uppercase}}</option>
                     </select>
@@ -52,26 +52,40 @@
                     <label for="curso">Curso</label>
                 </div>
             </div>
-            <div class="col s12">
+            <div class="col s12">                
                 <div class="input-field col s12 m12 l6">
-                    <i class="material-icons prefix">account_box</i>
-                    <input id="nomeBuscaMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.aluno_nome">
-                    <label for="nomeBuscaMovimentacoes">Nome</label>
+                    <i class="material-icons prefix">description</i>
+                    <select id="statusMatriculaMovimentacoes" data-ng-model="matriculaMovimentacoes.status">
+                        <option disabled></option>
+                        <option value="CURSANDO" data-ng-selected="matricula.status === 'CURSANDO'">CURSANDO</option>
+                        <option value="APROVADO">APROVADO</option>
+                        <option value="REPROVADO">REPROVADO</option>
+                        <option value="TRANCADO">TRANCADO</option>
+                        <option value="ABANDONO">ABANDONO</option>
+                    </select>
+                    <label for="statusMatriculaMovimentacoes">Status</label>
                 </div>
                 <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">toll</i>
                     <input id="codigoMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.codigo" class="counter" length="12">
                     <label for="codigoMovimentacoes">Código de Matrícula</label>
                 </div>
-            </div>                
+            </div>
+            <div class="col s12">
+                <div class="input-field col l12">
+                    <i class="material-icons prefix">account_box</i>
+                    <input id="nomeBuscaMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.aluno_nome">
+                    <label for="nomeBuscaMovimentacoes">Nome</label>
+                </div>
+            </div>
             <div class="row col s12 end-card right-align">
                 <a data-ng-click="reiniciarBusca()" class="waves-effect waves-blue btn-flat"><i class="material-icons">delete</i>LIMPAR BUSCA</a>
-                <a data-ng-click="buscarMatriculas(matriculaMovimentacoes, '', 'botao')" class="waves-effect waves-blue btn-flat"><i class="material-icons">search</i>BUSCAR</a>                                
+                <a data-ng-click="buscarMatriculas(matriculaMovimentacoes, '', 'botao')" class="waves-effect waves-blue btn-flat"><i class="material-icons">search</i>BUSCAR</a>
             </div>
         </div>
     </div>
     <div data-ng-show="matriculas.length && mostraListaMovimentacoes"  style="margin-top: 15px;">
-        <div class="col s12 m12 l12 card-panel">               
+        <div class="col s12 m12 l12 card-panel">
             <ul class="pagination" data-ng-show="quantidadePaginas > 1">
                 <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
                 <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
@@ -113,13 +127,14 @@
                             </td>
                             <td class='hide-on-small-only center-align'>{{ matricula.status }}</td>
                             <td class='hide-on-small-only center-align' data-ng-show="escrita">
-                                <i data-ng-click="carregar(matricula, 'Transferência')" data-position='top' data-delay='50' data-tooltip='Transferência' class="material-icons info-icon tooltipped" style="padding-right: 5px">account_balance</i>
-                                <i data-ng-click="carregar(matricula, 'Movimentação')" data-position='top' data-delay='50' data-tooltip='Movimentação' class="material-icons info-icon tooltipped" style="padding-right: 5px">compare_arrows</i>
-                                <i data-ng-click="carregar(matricula, 'Desligamento')" data-position='top' data-delay='50' data-tooltip='Desligamento' class="material-icons delete-icon tooltipped">power_settings_new</i>
+                                <i data-ng-click="carregar(matricula, 'Transferência')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Transferência' class="material-icons info-icon tooltipped" style="padding-right: 5px">account_balance</i>
+                                <i data-ng-click="abrirModalTransferenciaLocal(matricula)" data-ng-show="isAdmin || matricula.unidadeEnsino.id !== unidade.id && (matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO')" data-position='top' data-delay='50' data-tooltip='Transferência para minha Unidade' class="material-icons info-icon tooltipped">swap_vert</i>
+                                <i data-ng-click="carregar(matricula, 'Movimentação')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Movimentação' class="material-icons info-icon tooltipped" style="padding-right: 5px">compare_arrows</i>                                
+                                <i data-ng-click="carregar(matricula, 'Desligamento')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Desligamento' class="material-icons delete-icon tooltipped">power_settings_new</i>
                             </td>
                         </tr>
-                    </tbody>                                
-                </table>                            
+                    </tbody>
+                </table>
             </div>
             <ul class="pagination" data-ng-show="quantidadePaginas > 1">
                 <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
