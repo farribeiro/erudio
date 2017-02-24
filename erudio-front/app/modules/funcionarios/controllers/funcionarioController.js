@@ -338,6 +338,7 @@
         $scope.ativarVinculo = function(vinculo) {
             $scope.mostraLoader();
             vinculo.status = 'ATIVO';
+            if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }
             var promise = Servidor.finalizar(vinculo, 'vinculos', 'Vínculo');
             promise.then(function(response) {
                 $scope.fechaLoader();
@@ -352,7 +353,8 @@
         // Finaliza o vinculo
         $scope.vincular = function() {
             delete $scope.vinculo.funcionario.dataExpedicaoCertidaoNascimento; delete $scope.vinculo.funcionario.dataNascimento;
-            delete $scope.vinculo.cargo.grupo.dataModificacao; delete $scope.vinculo.cargo.professor;
+            if($scope.vinculo.cargo.grupo !== undefined) { delete $scope.vinculo.cargo.grupo.dataModificacao; }
+            delete $scope.vinculo.cargo.professor;
             var vinculo = angular.copy($scope.vinculo);
             if (!vinculo.cargo.id) { return Servidor.customToast('Selecione um cargo.'); }
             if (!vinculo.funcionario.id) { return Servidor.customToast('Selecione uma pessoa.'); }
@@ -362,6 +364,7 @@
                 vinculo.instituicao = {id: $scope.vinculo.instituicao.id};
                 $scope.mostraLoader();
                 $timeout(function(){
+                    if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }                                        
                     var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionário');
                     result.then(function(response) {
                         vinculo = response.data;
