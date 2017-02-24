@@ -352,13 +352,13 @@
         // Finaliza o vinculo
         $scope.vincular = function() {
             delete $scope.vinculo.funcionario.dataExpedicaoCertidaoNascimento; delete $scope.vinculo.funcionario.dataNascimento;
-            delete $scope.vinculo.cargo.grupo.dataModificacao; delete $scope.vinculo.cargo.professor;
-            var vinculo = angular.copy($scope.vinculo);
+            delete $scope.vinculo.cargo.professor; if ($scope.vinculo.cargo.grupo !== undefined) { delete $scope.vinculo.cargo.grupo.dataModificacao; }
+            var vinculo = angular.copy($scope.vinculo); delete vinculo.alocacoes;
             if (!vinculo.cargo.id) { return Servidor.customToast('Selecione um cargo.'); }
             if (!vinculo.funcionario.id) { return Servidor.customToast('Selecione uma pessoa.'); }
             if (!vinculo.tipoContrato) { return Servidor.customToast('Selecione um tipo de contrato.'); }
             if (!vinculo.status) { return Servidor.customToast('Selecione um status.'); }
-            if (vinculo.cargaHoraria >= $scope.totalCargaHoraria) {
+            //if (vinculo.cargaHoraria >= $scope.totalCargaHoraria) {
                 vinculo.instituicao = {id: $scope.vinculo.instituicao.id};
                 $scope.mostraLoader();
                 $timeout(function(){
@@ -393,9 +393,9 @@
                         }
                     });*/
                 },500);
-            } else {
+            /*} else {
                 Materialize.toast('Carga horária inválida.', 2000);                
-            }
+            }*/
         };
 
         // Volta para a pagina de busca
@@ -419,7 +419,6 @@
                 var promise = Servidor.buscarUm('vinculos',vinculo.id);
                 promise.then(function(response){
                     $scope.vinculo = response.data;
-                    delete $scope.vinculo.alocacoes;
                     if(!$scope.isAdmin) {
                         $scope.alocacao.instituicao = $scope.unidade;
                         $scope.nomeUnidade = $scope.unidade.nomeCompleto;
@@ -486,17 +485,17 @@
             if(pessoa.cpfCnpj !== undefined && pessoa.cpfCnpj) {
                 var promise = Servidor.buscar('vinculos', {'funcionario': pessoa.id, 'status': 'ATIVO'});
                 promise.then(function(response) {
-                    if (response.data.length) {
+                    /*if (response.data.length) {
                         $scope.vinculoAtivo = response.data[0];
                         $scope.nomePessoa = '';
                         Servidor.customToast(pessoa.nome.split(' ')[0] + ' já possui um vínculo ativo.');
-                    } else {
+                    } else {*/
                         $scope.nomePessoa = pessoa.nome;
                         $scope.vinculo.funcionario = pessoa;
                         $timeout(function() {
                             Servidor.verificaLabels();
                         },100);
-                    }                    
+                    //}                    
                 });
             } else {
                 $scope.nomePessoa = "";
