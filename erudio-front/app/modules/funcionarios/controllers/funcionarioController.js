@@ -337,6 +337,7 @@
         
         $scope.ativarVinculo = function(vinculo) {
             $scope.mostraLoader();
+            if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }
             vinculo.status = 'ATIVO';
             var promise = Servidor.finalizar(vinculo, 'vinculos', 'Vínculo');
             promise.then(function(response) {
