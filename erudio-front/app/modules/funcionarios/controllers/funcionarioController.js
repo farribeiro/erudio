@@ -364,7 +364,7 @@
                 vinculo.instituicao = {id: $scope.vinculo.instituicao.id};
                 $scope.mostraLoader();
                 $timeout(function(){
-                    if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }                                        
+//                    if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }                                        
                     var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionário');
                     result.then(function(response) {
                         vinculo = response.data;
