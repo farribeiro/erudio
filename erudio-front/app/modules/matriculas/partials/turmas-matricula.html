@@ -83,8 +83,12 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <!-- Reativar Enturmacao
                             <div class="row end-card" data-ng-if="enturmacao.encerrado && $index === enturmacoes.length - 1">
                                 <a class="waves-effect waves-light btn-flat right" data-ng-click="reativarEnturmacao(enturmacao, $index)">Reativar</a>
+                            </div>-->
+                            <div class="row end-card" data-ng-if="!enturmacao.encerrado">
+                                <a class="waves-effect waves-light btn-flat right" data-ng-click="prepararRemoverEnturmacao(enturmacao)">Remover</a>
                             </div>
                         </div>
                     </li>

@@ -399,22 +399,23 @@
         </div>
     </div>
 </div>
-<!--
-Ajuda / Definição 
-<div id="modal-ajuda" class="modal">
-    <div class="modal-body">
-        <div class="modal-title-banner">
-            <h3 style='position: relative; top: 16rem; padding-left: 1rem; color: white;'>Deseja descartar os dados preenchidos?</h3>
-        </div>
+
+ <!-- Modal de Exclusão -->
+<div id="remover-enturmacao-modal" class="modal">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <p style='font-family: Roboto'>
-     
-            </p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="modal-footer end-card" style="margin-bottom: 0rem;">
+            <div class="modal-body">
+                <div class="modal-title-banner-turma">
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 14rem; color: white;">Remover Enturmacao {{enturmacao.turma.nomeCompleto}}</h4>
+                </div>
+                <p>Você realmente deseja remover esta enturmacao?</p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="removerEnturmacao(enturmacao)" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
--->

@@ -1229,7 +1229,7 @@
                     if($scope.matricula.status === 'FALECIDO' || $scope.matricula.status === 'TRANCADO' || $scope.matricula.status === 'ABANDONO'){
                         $scope.frequentaStatus = 'não Frequenta';
                     }
-                    var promiseB = Servidor.buscar('telefones', $scope.matricula.unidadeEnsino.id);
+                    var promiseB = Servidor.buscar('telefones', {pessoa: $scope.matricula.unidadeEnsino.id});
                     promiseB.then(function(response){
                        $scope.matricula.unidadeEnsino.telefones = response.data;
                     });
@@ -2395,6 +2395,25 @@
         $scope.preparaRemover = function () {
             $scope.matriculaRemover = matricula;
             $scope.index = index;
+        };
+
+        $scope.prepararRemoverEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); $scope.mostraLoader();
+            var promise = Servidor.buscarUm('enturmacoes', enturmacao.id);
+            promise.then(function(response) {
+                $scope.enturmacao = enturmacao;
+                $('#remover-enturmacao-modal').openModal();
+                $scope.fechaProgresso(); $scope.fechaLoader();
+            });
+        };
+        
+        $scope.removerEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); $scope.mostraLoader();
+            Servidor.remover(enturmacao, 'Enturmação');
+            $scope.enturmacoes = $scope.enturmacoes.filter(function(e) {
+                return e.id !== enturmacao.id;
+            });
+            $scope.fechaProgresso(); $scope.fechaLoader();
         };
 
         /*Remover*/
