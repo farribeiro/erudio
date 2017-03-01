@@ -1229,7 +1229,7 @@
                     if($scope.matricula.status === 'FALECIDO' || $scope.matricula.status === 'TRANCADO' || $scope.matricula.status === 'ABANDONO'){
                         $scope.frequentaStatus = 'não Frequenta';
                     }
-                    var promiseB = Servidor.buscar('telefones', $scope.matricula.unidadeEnsino.id);
+                    var promiseB = Servidor.buscar('telefones', {pessoa: $scope.matricula.unidadeEnsino.id});
                     promiseB.then(function(response){
                        $scope.matricula.unidadeEnsino.telefones = response.data;
                     });
@@ -2247,6 +2247,16 @@
                 }
             });
         };
+        
+        $scope.reativarMatricula = function(matricula) {
+            matricula.status = 'CURSANDO';
+            $scope.mostraProgresso();
+            var promise = Servidor.finalizar(matricula, 'matriculas', null);
+            promise.then(function(response) {
+                Servidor.customToast('Matrícula reativada com sucesso.');
+                $scope.fechaProgresso();
+            });
+        };
 
         $scope.reativarEnturmacao = function(enturmacao, indice) {
             $scope.mostraProgresso();
@@ -2390,6 +2400,25 @@
         $scope.preparaRemover = function () {
             $scope.matriculaRemover = matricula;
             $scope.index = index;
+        };
+
+        $scope.prepararRemoverEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); $scope.mostraLoader();
+            var promise = Servidor.buscarUm('enturmacoes', enturmacao.id);
+            promise.then(function(response) {
+                $scope.enturmacao = enturmacao;
+                $('#remover-enturmacao-modal').openModal();
+                $scope.fechaProgresso(); $scope.fechaLoader();
+            });
+        };
+        
+        $scope.removerEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); $scope.mostraLoader();
+            Servidor.remover(enturmacao, 'Enturmação');
+            $scope.enturmacoes = $scope.enturmacoes.filter(function(e) {
+                return e.id !== enturmacao.id;
+            });
+            $scope.fechaProgresso(); $scope.fechaLoader();
         };
 
         /*Remover*/

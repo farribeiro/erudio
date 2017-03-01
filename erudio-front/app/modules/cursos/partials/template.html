@@ -24,28 +24,30 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<link rel="stylesheet" type="text/css" href="app/modules/cursos/assets/css/cursos.css"/>
+<!-- CSS DO MODULO -->
+<link rel="stylesheet" type="text/css" href="/app/modules/cursos/assets/css/cursos.css"/>
 
-<div data-ng-controller="CursoController" class="inicio-modulo">
-    <controle-curso></controle-curso>
-    <lista-curso></lista-curso>
-    <modal-curso></modal-curso>
-</div>
-
-<!-- LOADER -->
-<div class="loader-module" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0;">
-    <div class="valign-wrapper" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0; left: 50%; margin-left: -230px;">
-        <div class="preloader-wrapper big active valign">
-            <div class="spinner-layer spinner-blue-only">
-                <div class="circle-clipper left">
-                     <div class="circle"></div>
-                </div><div class="gap-patch">
-                     <div class="circle"></div>
-                </div><div class="circle-clipper right">
-                    <div class="circle"></div>
-                </div>
-            </div>
+<div id="listaCursos" style="position: relative; bottom: 64px;" >
+    
+    <!-- BANNER --> 
+    <div class="row">
+        <div class="col s12 curso-banner"></div>
+        <div class="col s12 gradient relative">
+            <div class='absolute title-module' style='bottom: 10px; color: #fafafa; font-size: 2.5rem;'></div>
+            <i class="material-icons absolute" data-ng-click="ajuda()" style="bottom: 10px; right: 10px; color: #fafafa; cursor: pointer;">info_outline</i>
         </div>
-        <div style="margin-left: 10px;">Carregando...</div>
     </div>
+    
+    <div class="row">
+        <div class="col s1 l1 hide-on-small-only"></div>
+        <div class="col s12 l12 mobile-full init-card" style="padding: 0;">
+            <!-- VIEW -->
+            <div data-ng-include="tela"></div>
+        </div>
+        <div class="col s1 l1 hide-on-small-only"></div>
+    </div>
+    
+    <div data-ng-show="lista === true"><erro-busca-curso data-ng-hide="cursos.length"></erro-busca-curso></div>
+    <controle-curso></controle-curso>
+    <modal-curso></modal-curso>
 </div>

@@ -27,13 +27,24 @@
 <!-- Listagem de Instituições -->
 <div id="listaUsuario">
     <div class="row">
-        <div class="col s12 grupo-banner">
-        </div>
+        <div class="col s12 grupo-banner"></div>
+        <div class="col s12 hide gradient relative"><div class='absolute' style='bottom: 10px; color: #fafafa; font-size: 2.5rem;'>Grupos de Permissões</div></div>
+    </div>
+    <div class="card-busca hide" data-ng-hide="editando">
+        <div class="row">
+            <div class='input-field col s12'>
+                <i class='material-icons prefix' data-ng-hide="strGrupo.length">search</i>
+                <i class='material-icons prefix pointer' data-ng-show="strGrupo.length" data-ng-click="strGrupo = ''">clear</i>
+                <input type="text" data-ng-model="strGrupo" id="search" data-ng-disabled="verificarEscrita()">
+                <label for="search">Busque aqui</label>
+            </div>
+        </div>                            
     </div>
     <div class="row">
         <div class="col s1 l1"></div>
         <div class="col s12 l12 mobile-full wrapper-padding">
-            <div class="row top-cards" style="margin-top: -64px;">
+            <!-- <div class="row top-cards" style="margin-top: -64px;"> -->
+            <div class="row top-cards">
                 <div class="col s12 l12 mobile-full">
                     <div class="card" data-ng-hide="editando">
                         <div class="card-content">
@@ -66,17 +77,15 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class='input-field col s12'>
+                                    <i class='material-icons prefix' data-ng-hide="strGrupo.length">search</i>
+                                    <i class='material-icons prefix pointer' data-ng-show="strGrupo.length" data-ng-click="strGrupo = ''">clear</i>
+                                    <input type="text" data-ng-model="strGrupo" id="search" data-ng-disabled="verificarEscrita()">
+                                    <label for="search">Busque aqui</label>
+                                </div>
+                            </div>   
                         </div>
-                    </div>
-                    <div class="card-busca" data-ng-hide="editando">
-                        <div class="row">
-                            <div class='input-field col s12'>
-                                <i class='material-icons prefix' data-ng-hide="strGrupo.length">search</i>
-                                <i class='material-icons prefix pointer' data-ng-show="strGrupo.length" data-ng-click="strGrupo = ''">clear</i>
-                                <input type="text" data-ng-model="strGrupo" id="search" data-ng-disabled="verificarEscrita()">
-                                <label for="search">Busque aqui</label>
-                            </div>
-                        </div>                            
                     </div>
                 </div>
             </div>

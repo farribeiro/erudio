@@ -67,6 +67,8 @@
         }).when('/usuarios',{ templateUrl: 'app/modules/usuarios/partials/usuarios.html', controller: 'UsuarioController'
         }).when('/permissoes',{ templateUrl: 'app/modules/permissoes/partials/permissoes.html', controller: 'PermissaoController'
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
+        }).when('/404',{ templateUrl: 'app/modules/util/partials/404.html'
+        }).otherwise({ redirectTo: '/404'
         });
         RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
