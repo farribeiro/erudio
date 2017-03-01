@@ -488,7 +488,7 @@
                         });
                         pdf.content.push(preencheEspaco((qtd+16)%42, 30, 0));
                         pdf.content.push(assinatura(vinculo));
-                        pdf.content.push({text: '\n\n\n'})
+//                        pdf.content.push({text: '\n\n\n'});
                         if(j < etapas.length-1) {
                             quebrarPagina(pdf);
                         }                        
