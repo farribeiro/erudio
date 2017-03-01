@@ -33,6 +33,8 @@ use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Entity\Enturmacao;
+use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
     
@@ -65,35 +67,37 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
         }
-        $matricula->getEnturmacoes()
-            ->filter(function($e) {
-                return !$e->getEncerrado();
-            })->forAll(function($e) {
-                $e->encerrar();
-                $this->orm->getManager()->merge($e);
-            });
-        $this->orm->getManager()->flush();
-        $matricula->getDisciplinasCursadas()
-            ->filter(function($d) {
-                return $d->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
-            })->forAll(function($d) {
-                $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
-                $this->orm->getManager()->merge($d);
-            });
-        $this->orm->getManager()->flush();
-        $this->reabrirVagas($matricula);
+        $this->encerrarEnturmacoes($matricula);
+        $this->encerrarDisciplinas($matricula);
     }
     
-    private function reabrirVagas(Matricula $matricula) {
-        $enturmacoes = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findBy(['matricula' => $matricula]);
-        foreach($enturmacoes as $enturmacao) {
-            $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
-            foreach ($vagas as $vaga) {
-                $vaga->setEnturmacao(null);
-                $this->orm->getManager()->merge($vaga);
-            }
+    private function encerrarDisciplinas(Matricula $matricula) {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('status', DisciplinaCursada::STATUS_CURSANDO));
+        $disciplinas = $matricula->getDisciplinasCursadas()->matching($criteria);
+        foreach ($disciplinas as $d) {
+            $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
+            $this->orm->getManager()->merge($d);
+            $this->orm->getManager()->flush();
         }
-        $this->orm->getManager()->flush();
+    }
+    
+    private function encerrarEnturmacoes(Matricula $matricula) {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('encerrado', false));
+        $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
+        foreach ($enturmacoes as $e) {
+            $e->encerrar();
+            $this->liberarVagas($e);
+            $this->orm->getManager()->merge($e);
+            $this->orm->getManager()->flush();
+        }
+    }
+    
+    private function liberarVagas(Enturmacao $enturmacao) {
+        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
+        foreach ($vagas as $vaga) {
+            $vaga->setEnturmacao(null);
+            $this->orm->getManager()->merge($vaga);
+        }
     }
     
 }

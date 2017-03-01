@@ -30,7 +30,6 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CursoBundle\Entity\Vaga;
 
 class MovimentacaoTurmaFacade extends AbstractFacade {
     
@@ -64,7 +63,6 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
         );
         foreach($disciplinasCursadas as $disciplinaCursada) {
             $disciplinaCursada->setEnturmacao($movimentacao->getEnturmacaoDestino());
-            $disciplinaCursada->setDisciplinaOfertada(null);
             foreach($movimentacao->getEnturmacaoDestino()->getTurma()->getDisciplinas() as $disciplinaOfertada) {
                 if($disciplinaOfertada->getDisciplina()->getId() === $disciplinaCursada->getDisciplina()->getId()) {
                     $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
@@ -78,7 +76,6 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
         $origem = $movimentacao->getEnturmacaoOrigem();
         $destino = $movimentacao->getEnturmacaoDestino();
         $vagasOrigem = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $origem));
-        
         $vagaNova = null;
         $turma = $destino->getTurma();
         $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
@@ -88,7 +85,6 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
                 $vagaNova = $vaga;
             }
         }
-        
         if (is_null($vagaNova)) {
             $vagaNova->setEnturmacao($destino);
             $this->orm->getManager()->merge($vagaNova); 
@@ -97,11 +93,8 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
             foreach ($vagasOrigem as $vagaOrigem) { 
                 $vagaOrigem->setEnturmacao(null); 
                 $this->orm->getManager()->merge($vagaOrigem); 
-                $this->orm->getManager()->flush(); 
-                
+                $this->orm->getManager()->flush();       
             }
-        } else {
-            return false;
         }
     }
     

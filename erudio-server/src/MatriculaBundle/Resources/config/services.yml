@@ -2,6 +2,8 @@ services:
     facade.matricula.matriculas:
       class: MatriculaBundle\Service\MatriculaFacade
       arguments: ["@doctrine"]
+      calls:
+          - [setUsuarioFacade, ["@facade.auth.usuarios"]]
       
     facade.matricula.disciplinas_cursadas:
       class: MatriculaBundle\Service\DisciplinaCursadaFacade
@@ -13,7 +15,8 @@ services:
       class: MatriculaBundle\Service\EnturmacaoFacade
       arguments: ["@doctrine"]
       calls:
-          - [setMediaFacade, ["@facade.matricula.medias"]]
+          - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
+          - [setVagaFacade, ["@facade.curso.vagas"]]
     
     facade.matricula.medias:
       class: MatriculaBundle\Service\MediaFacade

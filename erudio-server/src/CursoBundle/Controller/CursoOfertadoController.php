@@ -26,94 +26,64 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CalendarioBundle\Entity;
+namespace CursoBundle\Controller;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CoreBundle\REST\AbstractEntityController;
+use CursoBundle\Entity\CursoOfertado;
 
 /**
-* @ORM\Entity
-* @ORM\Table(name = "edu_calendario_periodo")
-*/
-class Periodo extends AbstractEditableEntity {
+ * @FOS\RouteResource("cursos-ofertados")
+ */
+class CursoOfertadoController extends AbstractEntityController {
+    
+    public function getFacade() {
+        return $this->get('facade.curso.cursos-ofertados');
+    }
+
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados/{id}")
+    */
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
+    }
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
+    *  @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados")
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
     */
-    private $media;
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
+    }
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @JMS\Type("DateTime<'Y-m-d'>")
-    * @ORM\Column(name = "data_inicio", type = "date") 
+    * @ApiDoc()
+    * 
+    * @FOS\Post("cursos-ofertados")
+    * @ParamConverter("cursoOfertado", converter="fos_rest.request_body")
     */
-    private $dataInicio;
+    function postAction(Request $request, CursoOfertado $cursoOfertado, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $cursoOfertado, $errors);
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
-    private $dataTermino;
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("cursos-ofertados/{id}") 
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    } 
     
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
-    private $calendario;
-    
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-        * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-        * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-        */
-    private $sistemaAvaliacao;
-    
-    function getMedia() {
-        return $this->media;
-    }
-
-    function getDataInicio() {
-        return $this->dataInicio;
-    }
-
-    function getDataTermino() {
-        return $this->dataTermino;
-    }
-
-    function getCalendario() {
-        return $this->calendario;
-    }
-
-    function getSistemaAvaliacao() {
-        return $this->sistemaAvaliacao;
-    }
-
-    function setMedia($media) {
-        $this->media = $media;
-    }
-
-    function setDataInicio($dataInicio) {
-        $this->dataInicio = $dataInicio;
-    }
-
-    function setDataTermino($dataTermino) {
-        $this->dataTermino = $dataTermino;
-    }
-
-    function setCalendario($calendario) {
-        $this->calendario = $calendario;
-    }
-
-    function setSistemaAvaliacao($sistemaAvaliacao) {
-        $this->sistemaAvaliacao = $sistemaAvaliacao;
-    }
-
-
 }

@@ -1,4 +1,8 @@
 services:
+    facade.curso.cursos_ofertados:
+      class: CursoBundle\Service\CursoOfertadoFacade
+      arguments: ["@doctrine"]
+    
     facade.curso.turmas:
       class: CursoBundle\Service\TurmaFacade
       arguments: ["@doctrine"]

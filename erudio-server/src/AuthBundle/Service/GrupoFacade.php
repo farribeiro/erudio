@@ -30,7 +30,6 @@ namespace AuthBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use Doctrine\ORM\Mapping\OrderBy;
 
 class GrupoFacade extends AbstractFacade {
     
@@ -56,5 +55,6 @@ class GrupoFacade extends AbstractFacade {
     function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->orderBy('g.peso', 'ASC');
     }
+    
 }
 

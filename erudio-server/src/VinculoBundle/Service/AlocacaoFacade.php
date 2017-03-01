@@ -31,9 +31,17 @@ namespace VinculoBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use AuthBundle\Entity\Atribuicao;
+use AuthBundle\Service\AtribuicaoFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\ORM\Exception\UniqueViolationException;
 
 class AlocacaoFacade extends AbstractFacade {
+    
+    private $atribuicaoFacade;
+    
+    function setAtribuicaoFacade(AtribuicaoFacade $atribuicaoFacade) {
+        $this->atribuicaoFacade = $atribuicaoFacade;
+    }
     
     function getEntityClass() {
         return 'VinculoBundle:Alocacao';
@@ -79,9 +87,14 @@ class AlocacaoFacade extends AbstractFacade {
         $this->removerAtribuicao($alocacao);
     }
     
+    /**
+     * Checa se a criação da alocação viola a carga horária máxima do vínculo.
+     * 
+     * @param Alocacao $alocacao
+     */
     private function validarCargaHoraria($alocacao) {
         $vinculo = $alocacao->getVinculo();
-        $chTotal = 0;
+        $chTotal = $alocacao->getCargaHoraria();
         foreach ($vinculo->getAlocacoes() as $a) {
             $chTotal += $a->getCargaHoraria();
         }
@@ -92,20 +105,43 @@ class AlocacaoFacade extends AbstractFacade {
         }
     }
     
+    /**
+     * Gera uma atribuição para o usuário da pessoa alocada, contendo as permissões
+     * pertinentes à ela.
+     * 
+     * @param Alocacao $alocacao
+     */
     private function gerarAtribuicao($alocacao) {
         $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
         if ($grupo) {
-            $atribuicao = Atribuicao::criarAtribuicao(
-                $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
-                $grupo, 
-                $alocacao->getInstituicao()
-            );
-            //salvar objeto...
+            try {
+                $atribuicao = Atribuicao::criarAtribuicao(
+                    $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
+                    $grupo, 
+                    $alocacao->getInstituicao()
+                );
+                $this->atribuicaoFacade->create($atribuicao, false);
+            } catch (UniqueViolationException $ex) {
+                //ignorar se já existe
+            }
         }
     }
     
+    /**
+     * Remova a atribuição que foi gerada para o usuário da pessoa no ato da alocação,
+     * retirando assim suas permissões.
+     * 
+     * @param Alocacao $alocacao
+     */
     private function removerAtribuicao($alocacao) {
-        
+        $atribuicoes = $this->atribuicaoFacade->findAll([
+            'usuario' => $alocacao->getVinculo()->getFuncionario()->getUsuario(),
+            'grupo' => $alocacao->getVinculo()->getCargo()->getGrupo(), 
+            'instituicao' => $alocacao->getInstituicao()
+        ]);
+        foreach ($atribuicoes as $a) {
+            $this->atribuicaoFacade->remove($a->getId());
+        }
     }
 
 }

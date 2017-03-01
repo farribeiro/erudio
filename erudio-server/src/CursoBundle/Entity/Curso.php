@@ -40,9 +40,9 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Curso extends AbstractEditableEntity {
     
     /** 
-        * @JMS\Groups({"LIST"}) 
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     /** 

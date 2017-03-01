@@ -87,6 +87,12 @@ class VinculoFacade extends AbstractFacade {
         $this->gerarUsuario($vinculo->getFuncionario());
     }
     
+    /**
+     * Gera o código de um vínculo recém-criado. Caso o vínculo informado já possua um
+     * código, ele será simplesmente mantido.
+     * 
+     * @param Vinculo $vinculo
+     */
     private function gerarCodigo($vinculo) {
         $now = new \DateTime();
         $ano = $now->format('Y');
@@ -102,6 +108,12 @@ class VinculoFacade extends AbstractFacade {
         $vinculo->definirCodigo($numero + 1);
     }
     
+    /**
+     * Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
+     * não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
+     * 
+     * @param PessoaFisica $pessoa
+     */
     private function gerarUsuario($pessoa) {
         if (!$pessoa->getUsuario()) {
             $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());

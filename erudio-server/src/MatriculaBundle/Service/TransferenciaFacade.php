@@ -92,11 +92,11 @@ class TransferenciaFacade extends AbstractFacade {
         }
     }
     
-    private function encerrar($transferencia) {
+    private function encerrar(Transferencia $transferencia) {
         if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
             $matricula = $transferencia->getMatricula();
-            $enturmacao = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findOneBy(array('matricula' => $matricula));
-            $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $enturmacao));
+            $enturmacao = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findOneBy(['matricula' => $matricula]);
+            $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
             foreach ($vagas as $vaga) {
                 $vaga->setEnturmacao(null);
                 $this->orm->getManager()->merge($vaga);
@@ -130,7 +130,6 @@ class TransferenciaFacade extends AbstractFacade {
         $pessoas = $qb->getQuery()->getResult();
         $matriculas = array();
         $transferencias = array();
-        
         if (!empty($pessoas)) {
             foreach ($pessoas as $pessoa) {
                 $matriculaArray = $this->orm->getRepository('MatriculaBundle:Matricula')->findBy(array('aluno'=>$pessoa));
@@ -138,7 +137,6 @@ class TransferenciaFacade extends AbstractFacade {
                     foreach ($matriculaArray as $matArray) { $matriculas[] = $matArray; }
                 }
             }
-            
             if (!empty($matriculas)) {
                 unset($params['nome']);
                 foreach ($matriculas as $matricula) {
@@ -146,7 +144,6 @@ class TransferenciaFacade extends AbstractFacade {
                     $transferenciasArray = $this->findAll($params);
                     foreach ($transferenciasArray as $transArray) { $transferencias[] = $transArray; }
                 }
-                
                 if (!empty($transferencias)) { return $transferencias; } else { return array(); }
             } else { return array(); }
         } else { return array(); }

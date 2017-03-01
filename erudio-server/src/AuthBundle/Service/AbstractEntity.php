@@ -26,94 +26,45 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CalendarioBundle\Entity;
+namespace CoreBundle\ORM;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-
 
 /**
-* @ORM\Entity
-* @ORM\Table(name = "edu_calendario_periodo")
+* @ORM\MappedSuperclass
 */
-class Periodo extends AbstractEditableEntity {
+abstract class AbstractEntity {
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
+    * @ORM\Id
+    * @ORM\Column(type="integer")
+    * @ORM\GeneratedValue(strategy="AUTO")
     */
-    private $media;
+    protected $id;
     
-    /**
-    * @JMS\Groups({"LIST"}) 
-    * @JMS\Type("DateTime<'Y-m-d'>")
-    * @ORM\Column(name = "data_inicio", type = "date") 
+    /** 
+    * @JMS\Exclude
+    * @ORM\Column(type="boolean", nullable=false) 
     */
-    private $dataInicio;
+    protected $ativo = true;
     
-    /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
-    private $dataTermino;
+    function getId() {
+        return $this->id;
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
-    private $calendario;
+    function getAtivo() {
+        return $this->ativo;
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-        * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-        * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-        */
-    private $sistemaAvaliacao;
+    function init() {
+        
+    }
     
-    function getMedia() {
-        return $this->media;
+    function finalize() {
+        $this->ativo = false;
     }
-
-    function getDataInicio() {
-        return $this->dataInicio;
-    }
-
-    function getDataTermino() {
-        return $this->dataTermino;
-    }
-
-    function getCalendario() {
-        return $this->calendario;
-    }
-
-    function getSistemaAvaliacao() {
-        return $this->sistemaAvaliacao;
-    }
-
-    function setMedia($media) {
-        $this->media = $media;
-    }
-
-    function setDataInicio($dataInicio) {
-        $this->dataInicio = $dataInicio;
-    }
-
-    function setDataTermino($dataTermino) {
-        $this->dataTermino = $dataTermino;
-    }
-
-    function setCalendario($calendario) {
-        $this->calendario = $calendario;
-    }
-
-    function setSistemaAvaliacao($sistemaAvaliacao) {
-        $this->sistemaAvaliacao = $sistemaAvaliacao;
-    }
-
-
+    
 }

@@ -75,37 +75,43 @@ class AulaFacade extends AbstractFacade {
         $qb->join('a.disciplinaOfertada', 'disciplina')->join('a.dia', 'dia');    
     }
     
-    function gerarAulas($turmaId, $dataInicio = null) {
+    function gerarAulas($turmaId) {
         $turma = $this->loadEntity($turmaId, 'CursoBundle:Turma');
-        //if($turma->getStatus() != Turma::STATUS_CRIADO) { throw new IllegalOperationException('As aulas desta turma já foram definidas'); }
-        $horarios = new ArrayCollection(
-            $this->horarioDisciplinaFacade->findAll(['turma' => $turmaId])
+        if ($turma->getStatus() != Turma::STATUS_CRIADO) { 
+            throw new IllegalOperationException('As aulas desta turma já foram definidas');
+        }
+        $aulasCriadas = 0;
+        $horarios = new ArrayCollection($this->horarioDisciplinaFacade->findAll(['turma' => $turma]));
+        $dias = $turma->getCalendario()->getDias()->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), Criteria::expr()->eq('efetivo', true)
+            ))
         );
-        $dias = $turma->getCalendario()->getDias()->matching(Criteria::create()->where(Criteria::expr()->eq('efetivo', true)));
         foreach($dias as $dia) {
             $horarios
                 ->filter(function($h) use ($dia) {
                     return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
                 })
-                ->map(function($h) use ($dia) {
-                    $disciplina = $h->getDisciplina(); 
-                    $horario = $h->getHorario();
-                    $aulaBusca = $this->orm->getRepository('CalendarioBundle:Aula')->findBy(
-                        ['dia' => $dia, 'disciplinaOfertada' => $disciplina, 'horario' => $horario]
-                    );
-                    if (count($aulaBusca) == 0) {
-                        $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
-                        $this->orm->getManager()->persist($aula);
-                    }
+                ->map(function($h) use ($dia, $aulasCriadas) {
+                    $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
+                    $this->orm->getManager()->persist($aula);
+                    $aulasCriadas++;
                 });
             $this->orm->getManager()->flush();
             $this->orm->getManager()->clear('CalendarioBundle:Aula');
         }
-        $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
-        $this->orm->getManager()->flush();
+        if ($aulasCriadas) {
+            $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
+            $this->orm->getManager()->flush();
+        }
     }
     
-    function gerarNovasAulas($turmaId, $dataInicio = null) {
+    /**
+     * 
+     * @param type $turmaId
+     * @param type $dataInicio
+     */
+    function refatorarAulas($turmaId, $dataInicio = null) {
         $turma = $this->loadEntity($turmaId, 'CursoBundle:Turma');
         $dias = $turma->getCalendario()->getDias()->matching( Criteria::create()->where(Criteria::expr()->eq('efetivo', true)) );
         $horarios = new ArrayCollection($this->horarioDisciplinaFacade->findAll(array('turma' => $turmaId)));
