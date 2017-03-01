@@ -39,6 +39,13 @@
     font-size: 0.8rem;
 }
 
+.modal-title-banner-matricula{
+    background: url('../images/removeBanner.jpg') center bottom;
+    background-size: 100% auto;
+    height: 280px;
+    position: relative;
+}
+
 .quadroDisciplinas {
     margin: 20px;
 }
