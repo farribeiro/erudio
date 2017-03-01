@@ -442,14 +442,25 @@
                             } else {
                                 linha.push({stack: [dateTime.converterDataForm(enturmacao.matricula.aluno.dataNascimento)]});
                             }
-                            if (enturmacao.matricula.aluno.nomePai) {
-                                responsaveis.stack.push(enturmacao.matricula.aluno.nomePai + ' - Pai');
+                            var pai = enturmacao.matricula.aluno.nomePai;
+                            var mae = enturmacao.matricula.aluno.nomeMae;
+                            var responsavel = enturmacao.matricula.aluno.responsavelNome;
+                            if (pai) {
+                                if(pai === responsavel) {
+                                    responsaveis.stack.push(pai + ' - Pai / Responsável');
+                                } else {
+                                    responsaveis.stack.push(pai + ' - Pai');
+                                }                                
                             }
-                            if (enturmacao.matricula.aluno.nomeMae) {
-                                responsaveis.stack.push(enturmacao.matricula.aluno.nomeMae + ' - Mãe');
+                            if (mae) {
+                                if(mae === responsavel) {
+                                    responsaveis.stack.push(mae + ' - Mãe / Responsável');
+                                } else {
+                                    responsaveis.stack.push(mae + ' - Mãe');
+                                }
                             }
-                            if (enturmacao.matricula.aluno.responsavelNome) {
-                                responsaveis.stack.push(enturmacao.matricula.aluno.responsavelNome + ' - Responsável');
+                            if (responsavel && responsavel !== pai && responsavel !== mae) {
+                                responsaveis.stack.push(responsavel + ' - Responsável');
                             }
                             if (!responsaveis.stack.length) {
                                 responsaveis.stack.push(' ');
