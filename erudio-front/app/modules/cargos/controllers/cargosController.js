@@ -34,13 +34,15 @@
         $scope.cargos = null;
         $scope.cargo = {
             'nome': '',
-            'professor': false
+            'professor': false,
+            'grupo': {'id': null}
         };
         $scope.nomeCargo = '';
         $scope.editando = false;
 
         /* Inicializando */
         $scope.inicializar = function () {
+            $scope.buscarGruposPermissoes();
             $timeout(function () {
                 $(window).scroll(function () {
                     if ($(this).scrollTop() + $(this).height() === $(document).height()) {
@@ -89,7 +91,15 @@
             $timeout(function () {
                 Servidor.verificaLabels();
                 $('#nomeCargo').focus();
+                $('#grupoPermissaoCargo').material_select();
             }, 50);
+        };
+        
+        $scope.buscarGruposPermissoes = function() {
+            var promise = Servidor.buscar('grupos', null);
+            promise.then(function(response) {
+                $scope.gruposPermissoes = response.data;
+            });
         };
 
         /* Preparar remover */
@@ -108,11 +118,25 @@
 
         /* Salvar cargo */
         $scope.salvarCargo = function (nome) {
-            if ($scope.cargo.nome.length > 0) {
-                if ($scope.cargos.length > 0) {
+            if ($scope.cargo.nome.length > 0 && $scope.cargo.grupo.id) {
+                var cargos = $scope.cargos.filter(function(cargo) {
+                    return cargo.nome === $scope.cargo.nome;
+                });
+                if(cargos.length && !$scope.cargo.id) {
+                    return Servidor.customToast('Já existe um cargo com este nome.');
+                } else {
+                    $scope.cargo.grupo = {id: $scope.cargo.grupo.id};
+                    var result = Servidor.finalizar($scope.cargo, 'cargos', 'Cargo');
+                    result.then(function () {
+                        $scope.limpaCargo();
+                        $scope.editando = false;
+                        $scope.buscar();
+                    });
+                }
+                /*if ($scope.cargos.length > 0) {
                     for (var i = 0; i < $scope.cargos.length; i++) {
                         if ($scope.cargos[i].nome.toUpperCase() === nome.toUpperCase() && $scope.cargo.id !== $scope.cargos[i].id) {
-                            Servidor.customToast('Já existe o cargo com  este nome!.');
+                            Servidor.customToast('Já existe um cargo com este nome.');
                             return true;
                         }
                         if (i === $scope.cargos.length - 1) {
@@ -131,14 +155,10 @@
                         $scope.editando = false;
                         $scope.buscar();
                     });
-                }
-            }
-            else {
-                Servidor.customToast('Nome de cargo inválido.');
+                }*/
+            } else {
+                Servidor.customToast('Há campos obrigatórios não preenchidos.');
             };
-            $timeout(function () {
-                $scope.mostraProgresso();
-            }, 50);
         };
             
         /* Fechar formulario */
