@@ -30,6 +30,7 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use VinculoBundle\Entity\Alocacao;
 use AuthBundle\Entity\Atribuicao;
 use AuthBundle\Service\AtribuicaoFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
@@ -52,7 +53,7 @@ class AlocacaoFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'instituicao' => function(QueryBuilder $qb, $value) {
                 $qb->join('a.instituicao', 'instituicao')
                     ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
@@ -68,7 +69,7 @@ class AlocacaoFacade extends AbstractFacade {
                 $qb->join('vinculo.cargo', 'cargo')
                    ->andWhere('cargo.professor = :professor')->setParameter('professor', $value);
             }
-        );
+        ];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -92,7 +93,7 @@ class AlocacaoFacade extends AbstractFacade {
      * 
      * @param Alocacao $alocacao
      */
-    private function validarCargaHoraria($alocacao) {
+    private function validarCargaHoraria(Alocacao $alocacao) {
         $vinculo = $alocacao->getVinculo();
         $chTotal = $alocacao->getCargaHoraria();
         foreach ($vinculo->getAlocacoes() as $a) {
@@ -111,7 +112,7 @@ class AlocacaoFacade extends AbstractFacade {
      * 
      * @param Alocacao $alocacao
      */
-    private function gerarAtribuicao($alocacao) {
+    private function gerarAtribuicao(Alocacao $alocacao) {
         $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
         if ($grupo) {
             try {
@@ -133,7 +134,7 @@ class AlocacaoFacade extends AbstractFacade {
      * 
      * @param Alocacao $alocacao
      */
-    private function removerAtribuicao($alocacao) {
+    private function removerAtribuicao(Alocacao $alocacao) {
         $atribuicoes = $this->atribuicaoFacade->findAll([
             'usuario' => $alocacao->getVinculo()->getFuncionario()->getUsuario(),
             'grupo' => $alocacao->getVinculo()->getCargo()->getGrupo(), 

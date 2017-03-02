@@ -48,6 +48,7 @@ services:
         class: MatriculaBundle\Service\TransferenciaFacade
         arguments: ["@doctrine"]
         calls:
+          - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
           - [setMediaFacade, ["@facade.matricula.medias"]]
         
     facade.matricula.desligamentos:

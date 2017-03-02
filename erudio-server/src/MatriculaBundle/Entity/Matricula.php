@@ -163,13 +163,12 @@ class Matricula extends AbstractEditableEntity {
     * @JMS\MaxDepth(depth = 3)
     */
     function getEnturmacoesAtivas() {
-        if ($this->enturmacoes) {
-            return $this->enturmacoes->matching(
-                Criteria::create()->where(Criteria::expr()->eq('encerrado', false))
-            );
-        } else {
-            return array();
-        }        
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true),
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        );  
     }
     
 }

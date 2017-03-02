@@ -26,34 +26,50 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace VinculoBundle\Service;
+namespace AuthBundle\Entity;
 
-use Doctrine\ORM\QueryBuilder;
-use CoreBundle\ORM\AbstractFacade;
+use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\AbstractEntity;
 
-class CargoFacade extends AbstractFacade {
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="edu_acesso_permissao_grupo")
+ */
+class PermissaoGrupo extends AbstractEntity {
     
-    function getEntityClass() {
-        return 'VinculoBundle:Cargo';
+    const ACESSO_LEITURA = 'L';
+    const ACESSO_ESCRITA = 'E';
+    
+    /** 
+    * @JMS\Groups({"LIST"})  
+    * @ORM\Column(name = "tipo", nullable = false) 
+    */
+    private $tipoAcesso;
+    
+    /**
+    * @JMS\Groups({"LIST"})   
+    * @ORM\ManyToOne(targetEntity = "Permissao")
+    */
+    private $permissao;
+    
+    /**
+    * @JMS\Groups({"LIST"})   
+    * @ORM\ManyToOne(targetEntity = "Grupo")
+    */
+    private $grupo;
+    
+    function getTipoAcesso() {
+        return $this->tipoAcesso;
+    }
+        
+    function getPermissao() {
+        return $this->permissao;
     }
     
-    function queryAlias() {
-        return 'c';
+    function getGrupo() {
+        return $this->grupo;
     }
-    
-    function uniqueMap($cargo) {
-        return [ 
-            ['nome' => $cargo->getNome()]
-        ];
-    }
-    
-    function parameterMap() {
-        return [
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        ];
-    }
-
 }
 

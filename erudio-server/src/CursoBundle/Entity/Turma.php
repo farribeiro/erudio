@@ -258,4 +258,13 @@ class Turma extends AbstractEditableEntity {
         return $this->vagas;
     }
     
+    function getVagasAbertas() {
+         return $this->vagas->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->isNull('enturmacao')
+            ))
+        );
+    }
+    
 }

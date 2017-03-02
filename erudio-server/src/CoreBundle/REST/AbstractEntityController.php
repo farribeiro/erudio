@@ -186,8 +186,8 @@ abstract class AbstractEntityController extends FOSRestController {
             $view->getSerializationContext()->enableMaxDepthChecks();
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
-        }
-         return $this->handleView($view);
+        } 
+        return $this->handleView($view);
     }
     
     function delete(Request $request, $id) {

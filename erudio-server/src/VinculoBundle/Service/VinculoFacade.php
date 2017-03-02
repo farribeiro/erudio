@@ -30,6 +30,8 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use VinculoBundle\Entity\Vinculo;
+use PessoaBundle\Entity\PessoaFisica;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
 
@@ -93,7 +95,7 @@ class VinculoFacade extends AbstractFacade {
      * 
      * @param Vinculo $vinculo
      */
-    private function gerarCodigo($vinculo) {
+    private function gerarCodigo(Vinculo $vinculo) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -114,7 +116,7 @@ class VinculoFacade extends AbstractFacade {
      * 
      * @param PessoaFisica $pessoa
      */
-    private function gerarUsuario($pessoa) {
+    private function gerarUsuario(PessoaFisica $pessoa) {
         if (!$pessoa->getUsuario()) {
             $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
             $this->usuarioFacade->create($usuario);

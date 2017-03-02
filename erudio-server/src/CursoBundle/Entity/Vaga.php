@@ -43,23 +43,20 @@ class Vaga extends AbstractEditableEntity {
         
     /**        
     * @JMS\Groups({"LIST"})
-    * @ORM\JoinColumn(nullable = false, name = "turma_id") 
-    * @ORM\ManyToOne(targetEntity="Turma")
+    * @ORM\ManyToOne(targetEntity = "Turma")
     */
     private $turma;
     
-    /**        
-    * @JMS\Groups({"LIST"})
-    * @ORM\JoinColumn(nullable = true, name="solicitacao_vaga_id")
-    * @ORM\ManyToOne(targetEntity="SolicitacaoVaga")
+    /**
+    * @ORM\ManyToOne(targetEntity = "SolicitacaoVaga")
     */
-    private $solicitacaoVaga = null;
+    private $solicitacaoVaga;
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = true, name = "enturmacao_id") 
+    * @ORM\ManyToOne(targetEntity = "MatriculaBundle\Entity\Enturmacao") 
     */
-    private $enturmacao = null;
+    private $enturmacao;
     
     function liberar() {
         $this->enturmacao = null;

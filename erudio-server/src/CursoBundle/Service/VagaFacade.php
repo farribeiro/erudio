@@ -30,6 +30,8 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CursoBundle\Entity\Vaga;
+use MatriculaBundle\Entity\Enturmacao;
 
 class VagaFacade extends AbstractFacade {
     
@@ -54,5 +56,18 @@ class VagaFacade extends AbstractFacade {
             }
         );
     }
+    
+    function liberar(Vaga $vaga) {
+        $vaga->liberar();
+        $this->orm->getManager()->merge($vaga);
+        $this->orm->getManager()->flush();
+    }
+    
+    function ocupar(Vaga $vaga, Enturmacao $enturmacao) {
+        $vaga->setEnturmacao($enturmacao);
+        $this->orm->getManager()->merge($vaga);
+        $this->orm->getManager()->flush();
+    }
+    
 }
 
