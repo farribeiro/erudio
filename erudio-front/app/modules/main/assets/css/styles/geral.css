@@ -5,7 +5,8 @@ html, body {
 }
 
 body {
-      background: #eee;
+      //background: #eee;
+      background: #212121;
       font-family: Roboto !important;
       overflow-x: hidden;
       margin: 0 !important;
@@ -154,7 +155,7 @@ header, main, footer {
 
 .progress {
     position: fixed !important;
-    top: 56px;
+    top: -0.5rem;
     z-index: 2;
 }
 
@@ -316,6 +317,6 @@ header, main, footer {
     /* IE10+ */
     background-image: repeating-linear-gradient(to top,rgb(0, 0, 0) 0%,rgb(0, 0, 0) 16%,rgba(0, 0, 0, 0) 100%);
     background-image: -ms-repeating-linear-gradient(bottom,rgb(0, 0, 0) 0%,rgb(0, 0, 0) 16%,rgba(0, 0, 0, 0) 100%);
-    height: 285px;
+    height: 150px;
     position: absolute;
 }
