@@ -150,8 +150,11 @@ class Vinculo extends AbstractEditableEntity {
         $this->cargaHoraria = $cargaHoraria;
     }
     
-    function getAlocacoes() {
-        return $this->alocacoes;
+    function setTipoContrato($tipoContrato) {
+        $this->tipoContrato = $tipoContrato;
     }
     
+    function getAlocacoes() {
+        return $this->alocacoes;
+    }   
 }
