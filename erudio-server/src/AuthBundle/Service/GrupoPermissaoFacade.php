@@ -54,5 +54,6 @@ class GrupoPermissaoFacade extends AbstractFacade {
             }
         );
     }
+    
 }
 

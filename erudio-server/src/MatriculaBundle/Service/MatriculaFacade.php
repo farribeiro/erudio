@@ -31,10 +31,16 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use AuthBundle\Entity\Usuario;
+use AuthBundle\Service\UsuarioFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
-use AuthBundle\Service\MD5Encoder;
 
 class MatriculaFacade extends AbstractFacade {
+    
+    private $usuarioFacade;
+    
+    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+    }
     
     function getEntityClass() {
         return 'MatriculaBundle:Matricula';
@@ -75,6 +81,21 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($matricula) {
+        $this->gerarCodigo($matricula);
+    }
+    
+    protected function afterCreate($matricula) {
+        $this->gerarUsuario($matricula);
+    }
+    
+    protected function afterUpdate($matricula) {
+        if($matricula->getAlfabetizado() == "") {
+            $matricula->setAlfabetizado(null);
+        }
+        $this->orm->getManager()->flush();
+    }
+    
+    private function gerarCodigo($matricula) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -89,24 +110,15 @@ class MatriculaFacade extends AbstractFacade {
         $matricula->definirCodigo($numero + 1);
     }
     
-    protected function afterCreate($matricula) {
+    private function gerarUsuario($matricula) {
         $pessoa = $matricula->getAluno();
-        if (!$pessoa->getUsuario()) {            
-            $usuario = new Usuario();
-            $usuario->criarUsuarioByMatricula($matricula);
-            $em = $this->orm->getManager();
-            $em->persist($usuario);
-            $pessoa->setUsuario($usuario);
-            $em->merge($pessoa);
-            $em->flush();
+        if (!$pessoa->getUsuario()) {
+            $usuario = Usuario::criarUsuario($pessoa, $matricula->getCodigo());
+            $this->usuarioFacade->create($usuario);
+            $matricula->getAluno()->setUsuario($usuario);
+            $this->orm->getManager()->merge($pessoa);
+            $this->orm->getManager()->flush();
         }
-    }
-    
-    protected function afterUpdate($matricula) {
-        if($matricula->getAlfabetizado() == "") {
-            $matricula->setAlfabetizado(null);
-        }
-        $this->orm->getManager()->flush();
     }
     
 }

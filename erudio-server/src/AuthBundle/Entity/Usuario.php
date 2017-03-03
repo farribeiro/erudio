@@ -33,14 +33,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
 use CoreBundle\ORM\AbstractEditableEntity;
-//use SME\IntranetBundle\Entity\Role;
 use Doctrine\Common\Collections\Criteria;
-use Symfony\Component\HttpFoundation\Response;
 use AuthBundle\Service\MD5Encoder;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="sme_intranet_usuario")
+ * @ORM\Table(name="edu_acesso_usuario")
  */
 class Usuario extends AbstractEditableEntity implements UserInterface {
     
@@ -74,7 +72,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Atribuicao", mappedBy = "usuario", fetch = "EXTRA_LAZY", cascade = {"all"}) 
     */
-    private $rolesAtribuidas;
+    private $atribuicoes;
     
     public function __construct() {
         
@@ -84,7 +82,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     }
 
     public function init() {
-        $this->rolesAtribuidas = new ArrayCollection();
+        $this->atribuicoes = new ArrayCollection();
     }
     
     public function getSalt() {
@@ -125,20 +123,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         return $this->pessoa;
     }
     
-    /*public function getRoles() {
-        return array('admin');
-    }*/
-    
     public function getRoles() {
-        //return new Response('');
-        /*$array = array();
-        $roles = $this->rolesAtribuidas->matching(Criteria::create()->where(Criteria::expr()->eq('ativo', true)));
-        if (count($roles) > 0) { 
-            foreach ($roles as $role) {
-                $array[] = $role->getNomeExibicao();
-            }
-        }
-        return $array;*/
         return array();
     }
 
@@ -146,29 +131,23 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
     */
-    public function getRolesAtribuidas() {
-        return $this->rolesAtribuidas->matching(
+    public function getAtribuicoes() {
+        return $this->atribuicoes->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }
     
     public function equals(UserInterface $user) {
         return $user instanceof Usuario && $this->username === $user->getUsername();
-    }    
-    
-    public function criarUsuarioByMatricula($matricula) {
-        $this->criarUsuario($matricula->getAluno(), $matricula->getCodigo());
     }
     
-    public function criarUsuarioByVinculo($vinculo) {
-        $this->criarUsuario($vinculo->getFuncionario(), $vinculo->getFuncionario()->getCpfCnpj());
-    }
-    
-    public function criarUsuario($pessoa, $username) {        
-        $this->setUsername($username);
-        $this->setNomeExibicao($pessoa->getNome());
+    public static function criarUsuario($pessoa, $username) {
+        $usuario = new Usuario();
+        $usuario->username = $username;
+        $usuario->nomeExibicao = $pessoa->getNome();
         $password = substr(str_shuffle($username.str_replace(' ','',$pessoa->getNome())), 0, 6);            
         $md5 = new MD5Encoder();
-        $this->setPassword($md5->encodePassword($password));
+        $usuario->password = $md5->encodePassword($password);
+        return $usuario;
     }
 }

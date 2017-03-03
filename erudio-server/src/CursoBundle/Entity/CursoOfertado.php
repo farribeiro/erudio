@@ -26,28 +26,39 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AvaliacaoBundle\Service;
+namespace CursoBundle\Entity;
 
-use Doctrine\ORM\QueryBuilder;
-use CoreBundle\ORM\AbstractFacade;
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\AbstractEditableEntity;
 
-class RegimeFacade extends AbstractFacade {
+/**
+* @ORM\Entity
+* @ORM\Table(name = "edu_unidade_ensino_curso")
+*/
+class CursoOfertado extends AbstractEditableEntity {
     
-    function getEntityClass() {
-        return 'AvaliacaoBundle:Regime';
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
+    * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
+    */
+    private $unidadeEnsino;
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Curso")
+    */
+    private $curso;
+    
+    function getUnidadeEnsino() {
+        return $this->unidadeEnsino;
     }
-    
-    function queryAlias() {
-        return 'r';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('r.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        );
+
+    function getCurso() {
+        return $this->curso;
     }
     
 }
-

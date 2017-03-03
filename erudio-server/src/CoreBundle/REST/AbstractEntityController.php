@@ -31,7 +31,7 @@ namespace CoreBundle\REST;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Doctrine\ORM\NoResultException;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use CoreBundle\ORM\Exception\UniqueViolationException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -132,6 +132,8 @@ abstract class AbstractEntityController extends FOSRestController {
             $view->getSerializationContext()->enableMaxDepthChecks();
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        } catch (IllegalOperationException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         }
         return $this->handleView($view);
     }
@@ -184,8 +186,8 @@ abstract class AbstractEntityController extends FOSRestController {
             $view->getSerializationContext()->enableMaxDepthChecks();
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
-        }
-         return $this->handleView($view);
+        } 
+        return $this->handleView($view);
     }
     
     function delete(Request $request, $id) {

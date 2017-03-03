@@ -117,21 +117,21 @@ class PessoaFisica extends Pessoa {
     private $carteiraTrabalhoEstado;
     
     /**
-        * @ORM\ManyToMany(targetEntity="Particularidade")
-        * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
-        *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
-        *      inverseJoinColumns={@ORM\JoinColumn(name="particularidade_id", referencedColumnName="id")}
-        *   )
-        */
+    * @ORM\ManyToMany(targetEntity="Particularidade")
+    * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
+    *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="particularidade_id", referencedColumnName="id")}
+    *   )
+    */
     private $particularidades;
     
     /**
-        * @ORM\ManyToMany(targetEntity="NecessidadeEspecial")
-        * @ORM\JoinTable(name="sme_pessoa_fisica_necessidade_especial",
-        *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
-        *      inverseJoinColumns={@ORM\JoinColumn(name="necessidade_especial_id", referencedColumnName="id")}
-        *   )
-        */
+    * @ORM\ManyToMany(targetEntity="NecessidadeEspecial")
+    * @ORM\JoinTable(name="sme_pessoa_fisica_necessidade_especial",
+    *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="necessidade_especial_id", referencedColumnName="id")}
+    *   )
+    */
     private $necessidadesEspeciais;
     
     /**

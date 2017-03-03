@@ -1688,7 +1688,8 @@
                     $scope.disciplinasCurso = responseD.data;
                     $scope.selecionarTodasDisciplinas();
                 } else {
-                    Materialize.toast('Nao ha disciplinas nesta etapa.', 2500);
+                    $scope.fechaProgresso();
+                    Servidor.customToast('Nao ha disciplinas nesta etapa.');
                 }
             });
         };
@@ -1713,6 +1714,9 @@
                 'id': null
             };
             var requisicoes = 0;
+            if(!$scope.disciplinasCurso.length) {
+                $scope.fechaProgresso();
+            }
             $scope.disciplinasCurso.forEach(function (d, index) {                                
                 requisicoes++;
                 var promise = Servidor.buscarUm('disciplinas', d.id);
@@ -1812,6 +1816,7 @@
                     $scope.fechaProgresso();
                 }                  
             } else {
+                $scope.fechaProgresso();
                 Materialize.toast('Precisa efetuar a matrícula antes de alocar as disciplinas.', 4000);
             }
         };

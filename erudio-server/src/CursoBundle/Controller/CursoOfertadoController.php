@@ -26,28 +26,64 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AvaliacaoBundle\Service;
+namespace CursoBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
-use CoreBundle\ORM\AbstractFacade;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CoreBundle\REST\AbstractEntityController;
+use CursoBundle\Entity\CursoOfertado;
 
-class RegimeFacade extends AbstractFacade {
+/**
+ * @FOS\RouteResource("cursos-ofertados")
+ */
+class CursoOfertadoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'AvaliacaoBundle:Regime';
+    public function getFacade() {
+        return $this->get('facade.curso.cursos-ofertados');
+    }
+
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados/{id}")
+    */
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
     }
     
-    function queryAlias() {
-        return 'r';
+    /**
+    *  @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados")
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('r.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        );
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("cursos-ofertados")
+    * @ParamConverter("cursoOfertado", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, CursoOfertado $cursoOfertado, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $cursoOfertado, $errors);
     }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("cursos-ofertados/{id}") 
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    } 
     
 }
-

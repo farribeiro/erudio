@@ -30,9 +30,18 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use VinculoBundle\Entity\Vinculo;
+use PessoaBundle\Entity\PessoaFisica;
 use AuthBundle\Entity\Usuario;
+use AuthBundle\Service\UsuarioFacade;
 
 class VinculoFacade extends AbstractFacade {
+    
+    private $usuarioFacade;
+    
+    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+    }
     
     function getEntityClass() {
         return 'VinculoBundle:Vinculo';
@@ -73,6 +82,20 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($vinculo) {
+        $this->gerarCodigo($vinculo);
+    }
+    
+    protected function afterCreate($vinculo) {
+        $this->gerarUsuario($vinculo->getFuncionario());
+    }
+    
+    /**
+     * Gera o código de um vínculo recém-criado. Caso o vínculo informado já possua um
+     * código, ele será simplesmente mantido.
+     * 
+     * @param Vinculo $vinculo
+     */
+    private function gerarCodigo(Vinculo $vinculo) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -87,16 +110,19 @@ class VinculoFacade extends AbstractFacade {
         $vinculo->definirCodigo($numero + 1);
     }
     
-    protected function afterCreate($vinculo) {
-        $pessoa = $vinculo->getFuncionario();
-        if (!$pessoa->getUsuario()) {            
-            $usuario = new Usuario();
-            $usuario->criarUsuarioByVinculo($vinculo);
-            $em = $this->orm->getManager();
-            $em->persist($usuario);
+    /**
+     * Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
+     * não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
+     * 
+     * @param PessoaFisica $pessoa
+     */
+    private function gerarUsuario(PessoaFisica $pessoa) {
+        if (!$pessoa->getUsuario()) {
+            $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
+            $this->usuarioFacade->create($usuario);
             $pessoa->setUsuario($usuario);
-            $em->merge($pessoa);
-            $em->flush();
+            $this->orm->getManager()->merge($pessoa);
+            $this->orm->getManager()->flush();
         }
     }
 

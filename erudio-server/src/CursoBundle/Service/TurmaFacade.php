@@ -81,8 +81,8 @@ class TurmaFacade extends AbstractFacade {
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->join('t.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id LIKE :unidadeEnsino')
-                   ->setParameter('unidadeEnsino', '%' . $value . '%');
+                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')
+                   ->setParameter('unidadeEnsino', $value);
             }
         );
     }    

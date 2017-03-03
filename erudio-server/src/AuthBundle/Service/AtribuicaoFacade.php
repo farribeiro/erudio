@@ -61,24 +61,15 @@ class AtribuicaoFacade extends AbstractFacade {
         );
     }
     
-    function uniqueMap() {
-         return array (
-            'usuario' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.usuario = :id')->setParameter('id', $value);
-            },
-            'permissao' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.permissao = :id2')->setParameter('id2', $value);
-            },
-            'entidade' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.idEntidade = :id3')->setParameter('id3', $value);
-            },
-            'grupo' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.grupo = :id4')->setParameter('id4', $value);
-            },
-            'tipoAcesso' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.tipoAcesso = :id5')->setParameter('id5', $value);
-            }
-        );
+    function uniqueMap($atribuicao) {
+         return [
+            [
+                'usuario' => $atribuicao->getUsuario(), 
+                'instituicao' => $atribuicao->getInstituicao(), 
+                'grupo' => $atribuicao->getGrupo()
+            ]
+        ];
     }
+    
 }
 

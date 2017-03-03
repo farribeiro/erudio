@@ -30,8 +30,19 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use VinculoBundle\Entity\Alocacao;
+use AuthBundle\Entity\Atribuicao;
+use AuthBundle\Service\AtribuicaoFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\ORM\Exception\UniqueViolationException;
 
 class AlocacaoFacade extends AbstractFacade {
+    
+    private $atribuicaoFacade;
+    
+    function setAtribuicaoFacade(AtribuicaoFacade $atribuicaoFacade) {
+        $this->atribuicaoFacade = $atribuicaoFacade;
+    }
     
     function getEntityClass() {
         return 'VinculoBundle:Alocacao';
@@ -42,7 +53,7 @@ class AlocacaoFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'instituicao' => function(QueryBuilder $qb, $value) {
                 $qb->join('a.instituicao', 'instituicao')
                     ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
@@ -58,11 +69,80 @@ class AlocacaoFacade extends AbstractFacade {
                 $qb->join('vinculo.cargo', 'cargo')
                    ->andWhere('cargo.professor = :professor')->setParameter('professor', $value);
             }
-        );
+        ];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('a.vinculo', 'vinculo');
+    }
+    
+    protected function beforeCreate($alocacao) {
+        $this->validarCargaHoraria($alocacao);
+    }
+
+    protected function afterCreate($alocacao) {
+        $this->gerarAtribuicao($alocacao);
+    }
+    
+    protected function afterRemove($alocacao) {
+        $this->removerAtribuicao($alocacao);
+    }
+    
+    /**
+     * Checa se a criação da alocação viola a carga horária máxima do vínculo.
+     * 
+     * @param Alocacao $alocacao
+     */
+    private function validarCargaHoraria(Alocacao $alocacao) {
+        $vinculo = $alocacao->getVinculo();
+        $chTotal = $alocacao->getCargaHoraria();
+        foreach ($vinculo->getAlocacoes() as $a) {
+            $chTotal += $a->getCargaHoraria();
+        }
+        if ($vinculo->getCargaHoraria() < $chTotal) {
+            throw new IllegalOperationException(
+                'Carga horária não pode exceder limite do vínculo'
+            );
+        }
+    }
+    
+    /**
+     * Gera uma atribuição para o usuário da pessoa alocada, contendo as permissões
+     * pertinentes à ela.
+     * 
+     * @param Alocacao $alocacao
+     */
+    private function gerarAtribuicao(Alocacao $alocacao) {
+        $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
+        if ($grupo) {
+            try {
+                $atribuicao = Atribuicao::criarAtribuicao(
+                    $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
+                    $grupo, 
+                    $alocacao->getInstituicao()
+                );
+                $this->atribuicaoFacade->create($atribuicao, false);
+            } catch (UniqueViolationException $ex) {
+                //ignorar se já existe
+            }
+        }
+    }
+    
+    /**
+     * Remova a atribuição que foi gerada para o usuário da pessoa no ato da alocação,
+     * retirando assim suas permissões.
+     * 
+     * @param Alocacao $alocacao
+     */
+    private function removerAtribuicao(Alocacao $alocacao) {
+        $atribuicoes = $this->atribuicaoFacade->findAll([
+            'usuario' => $alocacao->getVinculo()->getFuncionario()->getUsuario(),
+            'grupo' => $alocacao->getVinculo()->getCargo()->getGrupo(), 
+            'instituicao' => $alocacao->getInstituicao()
+        ]);
+        foreach ($atribuicoes as $a) {
+            $this->atribuicaoFacade->remove($a->getId());
+        }
     }
 
 }

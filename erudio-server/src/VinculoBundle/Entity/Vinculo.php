@@ -56,19 +56,19 @@ class Vinculo extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})  
-    *  @ORM\Column(type = "string", nullable = false) 
+    * @ORM\Column(type = "string", nullable = false) 
     */
     private $status;
     
     /**
     * @JMS\Groups({"LIST"})  
-    *  @ORM\Column(name="tipo_contrato", type = "string", nullable = false) 
+    * @ORM\Column(name="tipo_contrato", type = "string", nullable = false) 
     */
     private $tipoContrato;
     
     /**
     * @JMS\Groups({"LIST"})  
-    *  @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
+    * @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
     */
     private $cargaHoraria;
     
@@ -96,7 +96,8 @@ class Vinculo extends AbstractEditableEntity {
     private $instituicao;
     
     /**
-    * @ORM\OneToMany(targetEntity = "Alocacao", mappedBy = "vinculo")
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Alocacao", mappedBy = "vinculo", fetch="EXTRA_LAZY")
     */
     private $alocacoes;
     
@@ -146,12 +147,21 @@ class Vinculo extends AbstractEditableEntity {
         $this->cargo = $cargo;
     }
     
+    function setTipoContrato($tipoContrato) {
+        $this->tipoContrato = $tipoContrato;
+    }
+   
     function setCargaHoraria($cargaHoraria) {
         $this->cargaHoraria = $cargaHoraria;
     }
     
+    /**
+     * @JMS\VirtualProperty
+     */
     function getAlocacoes() {
-        return $this->alocacoes;
+        return $this->alocacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
 }

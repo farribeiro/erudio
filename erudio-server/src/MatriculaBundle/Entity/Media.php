@@ -114,13 +114,9 @@ class Media extends AbstractEditableEntity {
     * @JMS\MaxDepth(depth = 3)
     */
     function getNotas() {
-        if ($this->notas) {
-            return $this->notas->matching(
-                Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-            );
-        } else {
-            return array();
-        }        
+        return $this->notas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );    
     }
     
     function getCalculoAutomatico() {
