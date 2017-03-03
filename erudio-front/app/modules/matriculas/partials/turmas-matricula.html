@@ -40,7 +40,7 @@
                     <thead>
                         <tr class="row col s12">
                             <th class="col s3">Unidade de Ensino</th>
-                            <th class="col s3">Curso</th>
+                            <th class="col s2">Curso</th>
                             <th class="col s2" style="padding-left: 0.7rem">Etapa</th>
                             <th class="col s2" style="padding-left: 0.5rem">Turma</th>
                             <th class="col s2" style="padding-left: 0.5rem">Status</th>
@@ -48,20 +48,22 @@
                     </thead>
                 </table>
                 <ul class="collapsible row" data-collapsible="accordion" style="margin-top: 0; box-shadow: none; border-top: none" data-ng-show="enturmacoes.length">
-                    <li data-ng-repeat="enturmacao in enturmacoes| orderBy: 'turma.etapa.nomeExibicao'">
-                        <div class="row collapsible-header" data-ng-click="buscarMediasFrequenciasAluno($index);
-                                buscarSistemaAvaliacao(enturmacao.turma.etapa)" data-ng-class="{'active': TurmaService.enturmacao.id === enturmacao.id}">
-                            <span class="col s3">{{enturmacao.turma.unidadeEnsino.tipo.sigla}} {{ enturmacao.turma.unidadeEnsino.nome}}</span>
-                            <span class="col s3">{{enturmacao.matricula.curso.nome}}</span>
-                            <span class="col s2">{{enturmacao.turma.etapa.nomeExibicao}}</span>
-                            <span class="col s2">{{enturmacao.turma.nomeCompleto}}</span>
+                    <li id="collapsible-enturmacao-{{enturmacao.id}}" data-ng-repeat="enturmacao in enturmacoes| orderBy: 'turma.etapa.nomeExibicao'">
+                        <div class="row collapsible-header" data-ng-class="{'active': TurmaService.enturmacao.id === enturmacao.id}">
+                            <span class="col s3" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.unidadeEnsino.nomeCompleto }}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.matricula.curso.nome}}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.etapa.nomeExibicao}}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.nomeCompleto}}</span>
                             <span class="col s1">
                                 <span data-ng-show="enturmacao.encerrado">ENCERRADO</span>
                                 <span data-ng-hide="enturmacao.encerrado">ATIVO</span>
                             </span>
-                            <span class="col s1 right"><i id="btn-ent{{enturmacao.id}}" class="material-icons">keyboard_arrow_down</i></span>
+                            <span class="col s2 right-align">                                
+                                <i data-ng-show="escrita" data-ng-click="prepararRemoverEnturmacao(enturmacao)" class="material-icons right delete-icon">delete</i>
+                                <i data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)" id="btn-ent{{enturmacao.id}}" class="material-icons right">keyboard_arrow_down</i>
+                            </span>
                         </div>
-                        <div class="collapsible-body" style="background-color: #fafafa">
+                        <div class="collapsible-body" style="background-color: #fafafa" data-ng-show="enturmacao.matricula.disciplinas">
                             <table class="table-pattern">
                                 <thead>
                                     <tr>
@@ -87,14 +89,15 @@
                             <div class="row end-card" data-ng-if="enturmacao.encerrado && $index === enturmacoes.length - 1">
                                 <a class="waves-effect waves-light btn-flat right" data-ng-click="reativarEnturmacao(enturmacao, $index)">Reativar</a>
                             </div>-->
+                            <!-- Remover Enturmação
                             <div class="row end-card" data-ng-if="!enturmacao.encerrado">
                                 <a class="waves-effect waves-light btn-flat right" data-ng-click="prepararRemoverEnturmacao(enturmacao)">Remover</a>
-                            </div>
+                            </div>-->
                         </div>
                     </li>
                 </ul>                
             </div>
-            <div class="card-panel" data-ng-show="!enturmacoes.length || (matricula.curso.especializado && etapas.length) || verificaCadastroEnturmacoes(enturmacoes)">
+            <div class="card-panel" data-ng-show="escrita && (!enturmacoes.length || (matricula.curso.especializado && etapas.length) || verificaCadastroEnturmacoes(enturmacoes))">
                 <h4 style="padding: 1rem 0 0 1rem"> Enturmar Aluno </h4>                   
                 <div class="row">
                     <div class="col s12 m12 l6 input-field" data-ng-show="matricula.curso.especializado">

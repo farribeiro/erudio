@@ -29,9 +29,8 @@
 
     historicoMovimentacoesModule.controller('movimentacoesController', ['$scope', 'Servidor', 'Restangular', '$timeout', 'dateTime', '$templateCache',function ($scope, Servidor, Restangular, $timeout, dateTime, $templateCache) {
         $templateCache.removeAll();
-        
         $scope.escrita = Servidor.verificaEscrita('MOVIMENTACAO');
-        $scope.isAdmin = Servidor.verificaAdmin();        
+        $scope.isAdmin = Servidor.verificaAdmin() || !sessionStorage.getItem('unidade');        
         $scope.unidade = {id: parseInt(sessionStorage.getItem('unidade'))};
         /* ------------- Históricos --------------*/
 
@@ -234,18 +233,6 @@
                 } else {
 //                    $scope.clonarDisciplinasCursadas();
                 }
-                var promise = Servidor.buscar('vagas', {turma: $scope.enturmacao.turma.id});
-                promise.then(function(response) {
-                    var vagas = response.data;
-                    var vaga = null;
-                    vagas.forEach(function(v) {
-                        if (vaga === null && (v.solicitacao === undefined || !v.solicitacao) && (v.enturmacao === undefined || !v.enturmacao)) {
-                            vaga = v;
-                        }
-                    });
-                    vaga.enturmacao = $scope.enturmacao.id;
-                    Servidor.finalizar(vaga, 'vagas', '');
-                });
             });
         };
 
@@ -1199,7 +1186,8 @@
                 $scope.movimentacao.turmaDestino.id = parseInt($scope.turma.id);
                 var promise = Servidor.finalizar($scope.movimentacao, 'movimentacoes-turma', 'Movimentação');
                 promise.then(function(response) {
-                    $scope.liberarVaga($scope.movimentacao.matricula.aluno.id);                    
+                    $scope.fecharFormulario();
+//                    $scope.liberarVaga($scope.movimentacao.matricula.aluno.id);                    
                 });
             }
         };

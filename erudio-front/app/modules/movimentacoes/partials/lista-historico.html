@@ -149,8 +149,8 @@
                                                 <td class="relative mobile-full">{{ transferencia.unidadeEnsinoDestino.nomeCompleto }}</td>
                                                 <td class="relative mobile-full">{{ transferencia.status }}</td>
                                                 <td class="relative mobile-full">
-                                                    <i data-ng-click="prepararAceitar(transferencia, true)" data-ng-show="transferencia.status==='PENDENTE' && (transferencia.unidadeEnsinoOrigem.id !== unidade.id || isAdmin)" data-position="top" data-delay="50" data-tooltip="Aceitar" class="tooltipped material-icons grey-icon aceito pointer">done</i>
-                                                    <i data-ng-click="preparaRecusar(transferencia, false)" data-ng-show="transferencia.status==='PENDENTE'"data-position="top" data-delay="50" data-tooltip="Recusar" data-target="modal-recusar-matricula" class="tooltipped modal-trigger material-icons delete-icon">clear</i>
+                                                    <i data-ng-click="prepararAceitar(transferencia, true)" data-ng-show="escrita && transferencia.status==='PENDENTE' && (transferencia.unidadeEnsinoOrigem.id !== unidade.id || isAdmin)" data-position="top" data-delay="50" data-tooltip="Aceitar" class="tooltipped material-icons grey-icon aceito pointer">done</i>
+                                                    <i data-ng-click="preparaRecusar(transferencia, false)" data-ng-show="escrita && transferencia.status==='PENDENTE'"data-position="top" data-delay="50" data-tooltip="Recusar" data-target="modal-recusar-matricula" class="tooltipped modal-trigger material-icons delete-icon">clear</i>
                                                 </td>
                                             </tr>
                                         </tbody>

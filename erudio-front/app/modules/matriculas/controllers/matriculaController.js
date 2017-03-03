@@ -38,14 +38,13 @@
 
     matriculaModule.controller('MatriculaController', ['$scope', '$filter', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'PessoaService', 'MatriculaService', 'TurmaService', '$compile', 'dateTime', 'makePdf', function ($scope, $filter, Servidor, Restangular, $timeout, $templateCache, PessoaService, MatriculaService, TurmaService, $compile, dateTime, makePdf) {
         $templateCache.removeAll();
-        
         $scope.escrita = Servidor.verificaEscrita('MATRICULA');
         $scope.alunoService = PessoaService;
         $scope.matriculaService = MatriculaService;
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = Servidor.verificaAdmin();
+        $scope.isAdmin = !Servidor.verificaAdmin() || !sessionStorage.getItem('unidade');
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
         $scope.requisicoes = 0;
         
@@ -954,7 +953,7 @@
                 if ($scope.isAdmin) {
                     var promise = Servidor.buscar('unidades-ensino', params);
                 } else {
-                    promise = Servidor.buscarUm('unidades-ensino', sessionStorage.getItem('unidade'));
+                    promise = Servidor.buscarUm('unidades-ensino', $scope.unidadeAlocacao);
                 }
                 promise.then(function (response) {
                     if ($scope.isAdmin) {
@@ -1723,7 +1722,6 @@
                 promise.then(function (response) {
                     disciplinaCursada.disciplina = angular.copy(response.data);
                     if (response.data.opcional) {
-                        //$scope.colocaDisciplina[index] = $scope.disciplinasCurso[index];
                         $scope.disciplinasCursadas.push(angular.copy(disciplinaCursada));
                     } else {
                         d = disciplinaCursada;
@@ -2439,6 +2437,7 @@
 
         $scope.prepararRemoverEnturmacao = function(enturmacao) {
             $scope.mostraProgresso(); $scope.mostraLoader();
+            $('#collapsible-enturmacao-'+enturmacao.id).collapsible();
             var promise = Servidor.buscarUm('enturmacoes', enturmacao.id);
             promise.then(function(response) {
                 $scope.enturmacao = enturmacao;
