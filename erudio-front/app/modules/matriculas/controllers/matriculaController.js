@@ -1719,7 +1719,6 @@
                 promise.then(function (response) {
                     disciplinaCursada.disciplina = angular.copy(response.data);
                     if (response.data.opcional) {
-                        //$scope.colocaDisciplina[index] = $scope.disciplinasCurso[index];
                         $scope.disciplinasCursadas.push(angular.copy(disciplinaCursada));
                     } else {
                         d = disciplinaCursada;
@@ -2434,6 +2433,7 @@
 
         $scope.prepararRemoverEnturmacao = function(enturmacao) {
             $scope.mostraProgresso(); $scope.mostraLoader();
+            $('#collapsible-enturmacao-'+enturmacao.id).collapsible();
             var promise = Servidor.buscarUm('enturmacoes', enturmacao.id);
             promise.then(function(response) {
                 $scope.enturmacao = enturmacao;
