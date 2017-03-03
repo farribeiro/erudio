@@ -101,7 +101,8 @@ class Vinculo extends AbstractEditableEntity {
     */
     private $alocacoes;
     
-    public function init() {
+    function init() {
+        $this->alocacoes = new ArrayCollection();
         $this->status = self::STATUS_ATIVO;
     }
     
@@ -163,8 +164,5 @@ class Vinculo extends AbstractEditableEntity {
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }
-    
-    function getAlocacoes() {
-        return $this->alocacoes;
-    }   
+     
 }
