@@ -86,7 +86,7 @@
                 'professor': false // TRUE ou FALSE
             },
             'instituicao': null,
-            'alocacao': []
+            'alocacoes': []
         };
 
         $scope.vinculoAtivo = {'id': null};
@@ -146,7 +146,7 @@
                     'professor': false // TRUE ou FALSE
                 },
                 'instituicao': null,
-                'alocacao': []
+                'alocacoes': []
             };
             $scope.vinculoBusca = {
                 'funcionario': {'nome': null, 'cpfCnpj': null},
