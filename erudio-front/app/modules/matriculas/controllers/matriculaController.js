@@ -38,14 +38,13 @@
 
     matriculaModule.controller('MatriculaController', ['$scope', '$filter', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'PessoaService', 'MatriculaService', 'TurmaService', '$compile', 'dateTime', 'makePdf', function ($scope, $filter, Servidor, Restangular, $timeout, $templateCache, PessoaService, MatriculaService, TurmaService, $compile, dateTime, makePdf) {
         $templateCache.removeAll();
-        
         $scope.escrita = Servidor.verificaEscrita('MATRICULA');
         $scope.alunoService = PessoaService;
         $scope.matriculaService = MatriculaService;
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = Servidor.verificaAdmin();
+        $scope.isAdmin = !Servidor.verificaAdmin() || !sessionStorage.getItem('unidade');
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
         $scope.requisicoes = 0;
         
@@ -954,7 +953,7 @@
                 if ($scope.isAdmin) {
                     var promise = Servidor.buscar('unidades-ensino', params);
                 } else {
-                    promise = Servidor.buscarUm('unidades-ensino', sessionStorage.getItem('unidade'));
+                    promise = Servidor.buscarUm('unidades-ensino', $scope.unidadeAlocacao);
                 }
                 promise.then(function (response) {
                     if ($scope.isAdmin) {
