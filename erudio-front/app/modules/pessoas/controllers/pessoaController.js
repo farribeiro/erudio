@@ -793,7 +793,6 @@
                     if($scope.livroCad !== undefined) {
                         if($scope.livroCad.length !== 5) { Servidor.customToast('O número do livro deve ter 5 caracteres.'); return false; }
                     }
-                    console.log($scope.folhaCad, $scope.folhaCad.length);
                     if($scope.folhaCad !== undefined) {
                         if(!$scope.folhaCad.length) { Servidor.customToast('Preencha o número da folha.'); return false; }
                         $scope.folhaCad = $scope.completaDigitos($scope.folhaCad, 3);
