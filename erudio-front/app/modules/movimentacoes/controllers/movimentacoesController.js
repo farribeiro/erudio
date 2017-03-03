@@ -1199,7 +1199,8 @@
                 $scope.movimentacao.turmaDestino.id = parseInt($scope.turma.id);
                 var promise = Servidor.finalizar($scope.movimentacao, 'movimentacoes-turma', 'Movimentação');
                 promise.then(function(response) {
-                    $scope.liberarVaga($scope.movimentacao.matricula.aluno.id);                    
+                    $scope.fecharFormulario();
+//                    $scope.liberarVaga($scope.movimentacao.matricula.aluno.id);                    
                 });
             }
         };
