@@ -32,14 +32,26 @@
                 <div class="card-panel">
                     <form id="cargoForm">
                         <div class="row">
-                            <h3 class='card-title-h3' style="padding: 1rem 0 0 1rem">Cargo</h3>
+                            <h3 class='card-title-h3' style="padding: 1rem 0 0 1rem">
+                                <span data-ng-show="cargo.id">Editar </span>
+                                <span data-ng-hide="cargo.id">Cadastrar </span>
+                                Cargo
+                            </h3>
                         </div>
                         <small class="obriga-campos col s12 m12 l12" style="padding-left: 1.1rem"><em>Os campos marcados com * são obrigatórios</em></small>
                         <div class="row">
-                            <div class="input-field col s12 m12 l12">
+                            <div class="input-field col s12 m12 l6">
                                 <i class="material-icons prefix">account_circle</i>
                                 <input id="nomeCargo" type="text" class="validate" data-ng-model="cargo.nome" data-ng-disabled="!escrita" required />
                                 <label for="nomeCargo">Nome do Cargo*</label>
+                            </div>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix">group</i>
+                                <select id="grupoPermissaoCargo" data-ng-model="cargo.grupo.id" data-ng-disabled="!escrita">
+                                    <option disabled selected></option>
+                                    <option data-ng-repeat="grupo in gruposPermissoes" data-ng-selected="cargo.grupo.id === grupo.id" value="{{grupo.id}}">{{grupo.nome | uppercase}}</option>
+                                </select>
+                                <label for="grupoPermissaoCargo">Grupo de Permissão*</label>
                             </div>
                             <div class="input-field col s12 m12 l12" style="padding-top: 1rem">                                
                                 <input type="checkbox" class="filled-in" id="filled-in-box" data-ng-model="cargo.professor" checked="checked" data-ng-disabled="!escrita" />

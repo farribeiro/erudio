@@ -1,3 +1,5 @@
+<?php
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
@@ -24,32 +26,64 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-.estadoId .caret {
-    display: none;
-}
+namespace CursoBundle\Controller;
 
-.grupo-banner {
-    height: 285px;
-    background: url('../images/bg-key.jpg') no-repeat center center;
-    background-size: 100% auto;
-}
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CoreBundle\REST\AbstractEntityController;
+use CursoBundle\Entity\CursoOfertado;
 
-.correcao-padding-form {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
+/**
+ * @FOS\RouteResource("cursos-ofertados")
+ */
+class CursoOfertadoController extends AbstractEntityController {
+    
+    public function getFacade() {
+        return $this->get('facade.curso.cursos-ofertados');
+    }
 
-.input-telefone {
-    width: 30% !important;
-}
-
-.margin-card {
-    margin: 0 !important;
-}
-
-.modal-title-info-aluno{
-    background: url('../images/geography.jpg') center bottom;
-    background-size: 100% auto;
-    height: 140px;
-    position: relative;
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados/{id}")
+    */
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
+    }
+    
+    /**
+    *  @ApiDoc()
+    * 
+    * @FOS\Get("cursos-ofertados")
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("cursos-ofertados")
+    * @ParamConverter("cursoOfertado", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, CursoOfertado $cursoOfertado, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $cursoOfertado, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("cursos-ofertados/{id}") 
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    } 
+    
 }

@@ -6,6 +6,8 @@
         $scope.requisicoes = 0;
         $scope.etapa = {turmas:[]};
         $scope.etapasSelecionadas = [];
+        $scope.isAdmin = Servidor.verificaAdmin();
+        var timeout;
         
         $scope.mostrarCortina = function () { $scope.cortina = true; };
         $scope.esconderCortina = function () { $scope.cortina = false; };
@@ -14,6 +16,30 @@
             var promise = Servidor.buscarUm('vinculos', sessionStorage.getItem('vinculo'));
             promise.then(function(response) {
                 $scope.vinculo = response.data;
+            });
+        };
+        
+        $scope.buscarUnidades = function(nome) {
+            $timeout.cancel(timeout);
+            timeout = $timeout(function() {
+                var promise = Servidor.buscar('unidades-ensino', {nome: nome});
+                promise.then(function(response) {
+                    $scope.unidades = response.data;
+                });
+            }, 500);
+        };
+        
+        $scope.selecionarUnidade = function(unidade) {
+            $scope.unidade = unidade;
+            $scope.nomeUnidade = unidade.nomeCompleto;
+            var promise = Servidor.buscarUm('unidades-ensino', unidade.id);
+            promise.then(function(response) {
+                $scope.cursos = response.data.cursos;
+                if($scope.cursos.length === 1) {
+                    $scope.curso = $scope.cursos[0];
+                    $scope.buscarEtapas($scope.curso.id);
+                }
+                $timeout(function(){ $('#cursoRegistroMatricula').material_select(); },50);
             });
         };
         
@@ -28,18 +54,19 @@
             });
         };
         
-        $scope.buscarCursos = function () {
-            var promiseInstituicao = Servidor.buscarUm('instituicoes', sessionStorage.getItem('unidade'));
+        $scope.buscarCursos = function (unidade) {
+            unidade = ($scope.isAdmin) ? unidade : sessionStorage.getItem('unidade');
+            var promiseInstituicao = Servidor.buscarUm('instituicoes', unidade);
             promiseInstituicao.then(function(response){
-               var instituicao = response.data; 
-               $scope.cursos = instituicao.cursos;
-               if ($scope.cursos.length === 1) {
-                   $scope.curso = $scope.cursos[0];
-                   $scope.buscarEtapas($scope.curso.id);
-               }
-               $timeout(function(){
-                   $('#cursoRegistroMatricula').material_select();
-               },50);
+                var instituicao = response.data; 
+                $scope.cursos = instituicao.cursos;
+                if ($scope.cursos.length === 1) {
+                    $scope.curso = $scope.cursos[0];
+                    $scope.buscarEtapas($scope.curso.id);
+                }
+                $timeout(function(){
+                    $('#cursoRegistroMatricula').material_select();
+                },50);
             });
         };
         
@@ -71,10 +98,11 @@
             $scope.etapasSelecionadas.forEach(function(etapaS, i) {
                 if (parseInt(etapaS.id) === parseInt(etapa.id)) {
                     if ($scope.etapasSelecionadas.length === $scope.etapas.length) {
-                        $('#checkboxEtapas').prop('checked', false);
+                        $('#checkboxEtapas').prop('checked', false);                        
                     }
                     $scope.etapasSelecionadas.splice(i, 1);
                     encontrou = true;
+                    $('#eta'+etapa.id)[0].checked = false;
                 }
             });
             if (!encontrou) {
@@ -223,18 +251,19 @@
         }
         
         $scope.inicializar = function(){
-            $('.tooltipped').tooltip('remove');
-            $timeout(function(){
-                $scope.buscarCursos();
-                $('select').material_select();
-                Servidor.entradaPagina();
-                $(document).ready(function () {
-                    $('.tooltipped').tooltip({delay: 50});
-                });
-            },500);
-            $('.tooltipped').tooltip({delay: 50});
             $scope.buscarVinculo();
             $scope.buscarAlocacao();
+            if(!$scope.isAdmin) { $scope.buscarCursos(); }
+            $('#formBuscaRegistroMatricula').ready(function() {
+                $('.tooltipped').tooltip('remove');
+                $timeout(function(){                    
+                    $('select').material_select();                    
+                    $('.tooltipped').tooltip({delay: 50});
+                    $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
+                    Servidor.entradaPagina();                    
+                }, 500);
+                $('.tooltipped').tooltip({delay: 50});
+            });
         };     
         
         $scope.inicializar();

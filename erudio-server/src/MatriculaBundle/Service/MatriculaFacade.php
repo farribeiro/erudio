@@ -31,10 +31,16 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use AuthBundle\Entity\Usuario;
+use AuthBundle\Service\UsuarioFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
-use AuthBundle\Service\MD5Encoder;
 
 class MatriculaFacade extends AbstractFacade {
+    
+    private $usuarioFacade;
+    
+    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+    }
     
     function getEntityClass() {
         return 'MatriculaBundle:Matricula';

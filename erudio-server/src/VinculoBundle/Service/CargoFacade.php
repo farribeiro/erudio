@@ -42,15 +42,17 @@ class CargoFacade extends AbstractFacade {
     }
     
     function uniqueMap($cargo) {
-        return ['nome' => $cargo->getNome()];
+        return [ 
+            ['nome' => $cargo->getNome()]
+        ];
     }
     
     function parameterMap() {
-        return array (
+        return [
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             }
-        );
+        ];
     }
 
 }

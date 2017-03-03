@@ -93,3 +93,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de Movimentacao Transferencia-->
+<div id="transferencia-local-movimentacoes-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 0rem!important;  ">
+            <div class="modal-body">
+                <div class="modal-title-banner">
+                    <h4>Transferir para minha Unidade</h4>
+                </div>
+                <div class="row">
+                    <span>Aluno:</span> {{matricula.aluno.nome}}
+                    <span>Data de Nascimento:</span> {{matricula.aluno.dataNascimento | date: 'dd/MM/yyyy'}}
+                    <span>Curso:</span> {{matricula.curso.nome}}
+                    <span>Unidade Atual:</span> {{matricula.unidadeEnsino.nomeCompleto}}
+                </div>
+                <div class="input-field">
+                    <i class="material-icons prefix">content_paste</i>
+                    <input id="justificativaTransferenciaMinhaUnidade" type="text" data-ng-model="transferencia.justificativa">
+                    <label for="justificativaTransferenciaMinhaUnidade">Justificativa*</label>
+                </div>
+                <div class="modal-footer end-card">
+                    <a class="waves-effect waves-green btn-flat">
+                        <i class="material-icons left">save</i>
+                        <span data-ng-click="solicitarTransferirenciaLocal(matricula, transferencia.justificativa)">Salvar</span>                        
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 <?php
 
- /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
  *    Pacote: Erudio                                                       *
@@ -43,7 +43,7 @@ use AuthBundle\Entity\Atribuicao;
 class AtribuicaoController extends AbstractEntityController {
     
     public function getFacade() {
-        return $this->get('facade.auth.atribucoes');
+        return $this->get('facade.auth.atribuicoes');
     }
     
     /**
@@ -152,4 +152,5 @@ class AtribuicaoController extends AbstractEntityController {
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
     }
+    
 }

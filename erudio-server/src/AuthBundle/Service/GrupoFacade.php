@@ -30,7 +30,6 @@ namespace AuthBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use Doctrine\ORM\Mapping\OrderBy;
 
 class GrupoFacade extends AbstractFacade {
     

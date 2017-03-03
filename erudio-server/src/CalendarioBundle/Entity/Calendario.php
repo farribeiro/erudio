@@ -41,9 +41,9 @@ use Symfony\Component\HttpFoundation\Response;
 class Calendario extends AbstractEditableEntity {
     
     /**
-        * @JMS\Groups({"LIST"}) 
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     /**

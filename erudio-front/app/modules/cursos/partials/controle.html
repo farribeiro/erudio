@@ -25,38 +25,21 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <!-- Barra de Progresso -->
-<div data-ng-show="progresso" class="progress">
-      <div class="indeterminate"></div>
-</div>
+<div data-ng-show="progresso" class="progress"><div class="indeterminate"></div></div>
 <div data-ng-show="cortina" class="cortinaProgresso"></div>
 
-<!-- Botão Voltar (Formulário) -->
-<div data-ng-click="prepararVoltar(curso)" data-ng-show="editando" class="btn-voltar hide-on-med-and-down">
-    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
-</div>
-
-<i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+<!-- Botão Voltar -->
+<div data-ng-click="prepararVoltar(curso)" class="btn-voltar hide-on-med-and-down" data-ng-show="lista !== true"><a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a></div>
+<i data-ng-show="lista !== true" class="material-icons btn-voltar hide-on-large-only" data-ng-click="prepararVoltar(curso)">arrow_back</i> 
 
 <!-- Botão Adicionar -->
-<div class="btn-add hide-on-small-only" data-ng-show="escrita">
-    <a data-ng-hide="editando" data-ng-click="verificaAcao('',false)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Curso"><i class="material-icons load-map">add</i></a>
-</div>
-<!-- Botão Adicionar Mobile-->
-<div class="btn-add hide-on-med-and-up" data-ng-show="escrita">
-    <a data-ng-hide="editando"  data-ng-click="verificaAcao('',false)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Curso"><i class="material-icons load-map">add</i></a>
-</div>
+<div class="btn-add hide-on-small-only" data-ng-show="escrita && lista === true"><a href="/#/cursos/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Curso"><i class="material-icons load-map">add</i></a></div>
 
 <!-- Loader -->
 <div data-ng-show="loader" class="preloader-wrapper small active loader">
     <div class="spinner-layer spinner-red-only">
-        <div class="circle-clipper left">
-            <div class="circle"></div>
-        </div>
-        <div class="gap-patch">
-            <div class="circle"></div>
-        </div>
-        <div class="circle-clipper right">
-            <div class="circle"></div>
-        </div>
+        <div class="circle-clipper left"><div class="circle"></div></div>
+        <div class="gap-patch"><div class="circle"></div></div>
+        <div class="circle-clipper right"><div class="circle"></div></div>
     </div>
 </div>

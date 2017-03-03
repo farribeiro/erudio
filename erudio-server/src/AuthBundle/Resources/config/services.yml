@@ -14,7 +14,7 @@ services:
       class: AuthBundle\Service\UsuarioFacade
       arguments: ["@doctrine"]
     
-    facade.auth.atribucoes:
+    facade.auth.atribuicoes:
       class: AuthBundle\Service\AtribuicaoFacade
       arguments: ["@doctrine"]
       

@@ -68,7 +68,7 @@
         };
 
         //SAI DO SISTEMA
-        this.logout = function () { sessionStorage.clear(); window.location = 'login.html'; };
+        this.logout = function () { sessionStorage.clear(); window.location = 'http://educacao.itajai.sc.gov.br/'; };
 
         //ABRE MODAL DE FOTO
         this.modalAvatar = function () { $('#modalAvatar').openModal(); $scope.labelUpload = 'INSERIR FOTO'; };

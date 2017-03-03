@@ -57,8 +57,9 @@ class Disciplina extends AbstractEditableEntity {
     private $cargaHoraria;
     
     /**
-        * @ORM\Column(type = "boolean", nullable = false) 
-        */
+    *@JMS\Groups({"LIST"})
+    * @ORM\Column(type = "boolean", nullable = false) 
+    */
     private $opcional = false;
     
     /**

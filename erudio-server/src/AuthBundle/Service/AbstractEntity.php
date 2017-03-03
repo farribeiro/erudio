@@ -1,4 +1,6 @@
-<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+<?php
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
  *    Pacote: Erudio                                                       *
@@ -22,30 +24,47 @@
  *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
  *    02111-1307, USA.                                                     *
  *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-<link rel="stylesheet" type="text/css" href="app/modules/cursos/assets/css/cursos.css"/>
+namespace CoreBundle\ORM;
 
-<div data-ng-controller="CursoController" class="inicio-modulo">
-    <controle-curso></controle-curso>
-    <lista-curso></lista-curso>
-    <modal-curso></modal-curso>
-</div>
+use Doctrine\ORM\Mapping AS ORM;
+use JMS\Serializer\Annotation as JMS;
 
-<!-- LOADER -->
-<div class="loader-module" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0;">
-    <div class="valign-wrapper" style="position: absolute !important; z-index: 10; width: 100%; height: 100%; top:0; left: 50%; margin-left: -230px;">
-        <div class="preloader-wrapper big active valign">
-            <div class="spinner-layer spinner-blue-only">
-                <div class="circle-clipper left">
-                     <div class="circle"></div>
-                </div><div class="gap-patch">
-                     <div class="circle"></div>
-                </div><div class="circle-clipper right">
-                    <div class="circle"></div>
-                </div>
-            </div>
-        </div>
-        <div style="margin-left: 10px;">Carregando...</div>
-    </div>
-</div>
+/**
+* @ORM\MappedSuperclass
+*/
+abstract class AbstractEntity {
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
+    * @ORM\Id
+    * @ORM\Column(type="integer")
+    * @ORM\GeneratedValue(strategy="AUTO")
+    */
+    protected $id;
+    
+    /** 
+    * @JMS\Exclude
+    * @ORM\Column(type="boolean", nullable=false) 
+    */
+    protected $ativo = true;
+    
+    function getId() {
+        return $this->id;
+    }
+    
+    function getAtivo() {
+        return $this->ativo;
+    }
+    
+    function init() {
+        
+    }
+    
+    function finalize() {
+        $this->ativo = false;
+    }
+    
+}

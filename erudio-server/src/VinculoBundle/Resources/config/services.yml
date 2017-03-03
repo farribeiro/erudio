@@ -2,6 +2,8 @@ services:
     facade.vinculo.alocacoes:
       class: VinculoBundle\Service\AlocacaoFacade
       arguments: ["@doctrine"]
+      calls:
+          - [setAtribuicaoFacade, ["@facade.auth.atribuicoes"]]
       
     facade.vinculo.cargos:
       class: VinculoBundle\Service\CargoFacade

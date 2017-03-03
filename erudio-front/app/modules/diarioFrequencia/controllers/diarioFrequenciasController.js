@@ -241,16 +241,16 @@
         };
 
         $scope.gerarPdfDisciplina = function(disciplina) {
-            $scope.disciplinasSelecionadas.push(disciplina);
+            $scope.disciplinasSelecionadas = []; $scope.disciplinasSelecionadas.push(disciplina);
+            $('.checkbox-turma').prop('checked', false);
             $('#dis'+disciplina.id).prop('checked',true);
             setTimeout(function(){$scope.gerarPdf();},50);
         };
 
         $scope.gerarPdf = function(){
             $scope.mostrarCortina();
-            if (parseInt($scope.busca.mes.numero) < 10) {
-                $scope.busca.mes.numero = '0' + $scope.busca.mes.numero;
-            }
+            var mes = parseInt($scope.busca.mes.numero);
+            if (mes < 10) { $scope.busca.mes.numero = '0' + mes; }
             var requisicoes = 0;
             var promise = Servidor.buscar('enturmacoes', {turma: $scope.disciplinasSelecionadas[0].turma.id, encerrado: 0});
             promise.then(function(response) {
@@ -262,13 +262,17 @@
                         requisicoes--;
                         enturmacao.matricula.frequencias = response.data;
                         if (i === enturmacoes.length-1) {
-                            $scope.disciplinasSelecionadas.forEach(function(ofertada) {
+                            $scope.disciplinasSelecionadas.forEach(function(ofertada, i) {
                                 ofertada.temObservacoes = false;
                                 requisicoes++;
                                 var promise = Servidor.buscar('turmas/'+ofertada.turma.id+'/aulas', {disciplina: ofertada.id, mes: $scope.busca.mes.numero});
                                 promise.then(function(response) {
                                     requisicoes--;
                                     ofertada.aulas = response.data;
+                                    if(!ofertada.aulas.length) {
+                                        Servidor.customToast(ofertada.nomeExibicao + " não possui aulas.");
+                                        return $scope.fecharCortina();                                        
+                                    }                                    
                                     ofertada.aulas.forEach(function(aula) {
                                         requisicoes++;
                                         var promise = Servidor.buscar('aula-observacoes', {aula: aula.id});
@@ -276,7 +280,7 @@
                                             if (response.data.length) {
                                                 ofertada.temObservacoes = true; aula.observacoes = response.data;
                                             }
-                                            if (--requisicoes === 0) {
+                                            if (--requisicoes === 0 && $scope.cortina) {
                                                 makePdf.gerarDiarioPresenca(enturmacoes, $scope.disciplinasSelecionadas, $scope.vinculo, $scope.busca.mes.numero);
                                                 $timeout(function() {
                                                     $scope.fecharCortina();

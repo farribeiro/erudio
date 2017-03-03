@@ -57,6 +57,12 @@ class Enturmacao extends AbstractEditableEntity {
     */
     private $turma;
     
+    /**  
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "enturmacao", fetch = "EXTRA_LAZY")
+    */
+    private $disciplinasCursadas;
+    
     function __construct(Matricula $matricula, Turma $turma) {
         $this->matricula = $matricula;
         $this->turma = $turma;
@@ -76,6 +82,10 @@ class Enturmacao extends AbstractEditableEntity {
 
     function getTurma() {
         return $this->turma;
+    }
+    
+    function getDisciplinasCursadas() {
+        return $this->disciplinasCursadas;
     }
 
     function encerrar() {

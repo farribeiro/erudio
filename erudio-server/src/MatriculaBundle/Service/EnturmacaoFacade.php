@@ -31,15 +31,28 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use MatriculaBundle\Entity\Media;
 use MatriculaBundle\Entity\Enturmacao;
+use CursoBundle\Service\VagaFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class EnturmacaoFacade extends AbstractFacade {
     
-    private $mediaFacade;
+    private $disciplinaCursadaFacade;
+    private $vagaFacade;
     
-    function setMediaFacade($mediaFacade) {
-        $this->mediaFacade = $mediaFacade;
+    function encerrarPorTransferencia(Enturmacao $enturmacao) {
+        $enturmacao->encerrar();
+        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        $this->liberarVagas($enturmacao);
+        $this->orm->getManager()->flush();
+    }
+    
+    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    }
+    
+    function setVagaFacade(VagaFacade $vagaFacade) {
+        $this->vagaFacade = $vagaFacade;
     }
     
     function getEntityClass() {
@@ -51,7 +64,7 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'matricula' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
             },
@@ -62,7 +75,7 @@ class EnturmacaoFacade extends AbstractFacade {
             'encerrado' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.encerrado = :encerrado')->setParameter('encerrado', $value);
             }
-        );
+        ];
     }
     
     function uniqueMap($enturmacao) {
@@ -75,7 +88,23 @@ class EnturmacaoFacade extends AbstractFacade {
         $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')->orderBy('aluno.nome');
     }
     
+    protected function beforeCreate($enturmacao) {
+        if ($this->possuiVagaAberta($enturmacao) == false) {
+            throw new IllegalOperationException('Não existem vagas disponíveis nesta turma');
+        }
+    }
+    
     protected function afterCreate($enturmacao) {
+        $this->vincularDisciplinas($enturmacao);
+        $this->ocuparVaga($enturmacao);
+    }
+    
+    protected function afterRemove($enturmacao) {
+        $this->excluirDisciplinas($enturmacao);
+        $this->liberarVagas($enturmacao);
+    }
+    
+    private function vincularDisciplinas(Enturmacao $enturmacao) {
         $matricula = $enturmacao->getMatricula();
         $disciplinasOfertadas = $enturmacao->getTurma()->getDisciplinas();
         $qb = $this->orm->getRepository('MatriculaBundle:DisciplinaCursada')->createQueryBuilder('d')
@@ -101,26 +130,39 @@ class EnturmacaoFacade extends AbstractFacade {
                     break;
                 }                
             }
-            /*if (!$enturmado) {  
-                $novaDisciplina = new DisciplinaCursada($matricula, $disciplinaOfertada->getDisciplina());
-                $novaDisciplina->setEnturmacao($enturmacao);
-                $novaDisciplina->setDisciplinaOfertada($disciplinaOfertada);
-                $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
-                for($i = 1; $i <= $numeroMedias; $i++) {
-                        $media = new Media($novaDisciplina, $i);
-                        $this->mediaFacade->create($media);
-                }
-                $this->orm->getManager()->persist($novaDisciplina);
-            }*/
         }
         $this->orm->getManager()->flush();
     }
     
-    protected function afterUpdate($enturmacao) {
-        if ($enturmacao->getEncerrado() == false) {
-            $enturmacao->setEncerrado(false);
-            $this->orm->getManager()->merge($enturmacao);
-        }    
+    private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
+        foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
+            $disciplina->setStatus($status);
+            $this->disciplinaCursadaFacade->update($disciplina->getId(), $disciplina);
+        }
+    }
+    
+    private function excluirDisciplinas(Enturmacao $enturmacao) {
+        $this->disciplinaCursadaFacade->removeBatch(
+            $enturmacao->getDisciplinasCursadas()
+                ->map(function($d) { return $d->getId(); })
+                ->toArray()
+        );
+    }
+    
+    private function possuiVagaAberta(Enturmacao $enturmacao) {
+        return $enturmacao->getTurma()->getVagasAbertas()->count() > 0;
+    }
+    
+    private function ocuparVaga(Enturmacao $enturmacao) {
+        $this->vagaFacade->ocupar(
+                $enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
+    }
+    
+    private function liberarVagas(Enturmacao $enturmacao) {
+        $vagas = $this->vagaFacade->findAll(['enturmacao' => $enturmacao]);
+        foreach ($vagas as $vaga) {
+            $this->vagaFacade->liberar($vaga);
+        }
     }
     
 }

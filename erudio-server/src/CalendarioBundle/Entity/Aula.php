@@ -79,7 +79,5 @@ class Aula extends AbstractEditableEntity {
     function getHorario() {
         return $this->horario;
     }
-
-
     
 }

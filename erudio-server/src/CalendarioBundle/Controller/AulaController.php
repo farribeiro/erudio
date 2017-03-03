@@ -36,6 +36,7 @@ use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use Symfony\Component\HttpFoundation\Response;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 /**
  * @FOS\RouteResource("aulas")
@@ -76,33 +77,25 @@ class AulaController extends AbstractEntityController {
     *  @FOS\Post("turmas/{turma}/aulas")
     */
     function postBatchAction(Request $request, $turma) {
-        $this->getFacade()->gerarAulas($turma);
-        $view = View::create(null, Codes::HTTP_CREATED);
+        try {
+            $this->getFacade()->gerarAulas($turma);
+            $view = View::create(null, Codes::HTTP_CREATED);
+        } catch (IllegalUpdateException $ex) {
+            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+        }
         return $this->handleView($view);
     }
     
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Post("turmas/{turma}/novas-aulas")
+    *  @FOS\Put("turmas/{turma}/aulas")
     */
-    function postNovoBatchAction(Request $request, $turma) {
-        $dataInicio = $request->get('dataInicio');
+    function putBatchAction(Request $request, $turma) {
+        $dataInicio = $request->query->get('dataInicio');
         $this->getFacade()->gerarNovasAulas($turma, $dataInicio);
         $view = View::create(null, Codes::HTTP_CREATED);
         return $this->handleView($view);
     }
-
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Delete("aulas")
-    */
-    function deleteBatchAction(Request $request) {
-        $ids = $request->get('ids');
-        foreach ($ids as $id) { 
-            $this->delete($request, $id);
-        }
-        return new Response('removido');
-    }
+    
 }

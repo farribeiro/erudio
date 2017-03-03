@@ -1,4 +1,6 @@
-<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+<?php
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
  *    Pacote: Erudio                                                       *
@@ -22,34 +24,41 @@
  *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
  *    02111-1307, USA.                                                     *
  *                                                                         *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-<!-- Barra de Progresso -->
-<div data-ng-show="progresso" class="progress">
-      <div class="indeterminate"></div>
-</div>
-<div data-ng-show="cortina" class="cortinaProgresso"></div>
+namespace CursoBundle\Entity;
 
-<!-- Botão Voltar (Formulário) -->
-<div data-ng-click="prepararVoltar(curso)" data-ng-show="editando" class="btn-voltar hide-on-med-and-down">
-    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
-</div>
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\AbstractEditableEntity;
 
-<i data-ng-show="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+/**
+* @ORM\Entity
+* @ORM\Table(name = "edu_unidade_ensino_curso")
+*/
+class CursoOfertado extends AbstractEditableEntity {
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
+    * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
+    */
+    private $unidadeEnsino;
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Curso")
+    */
+    private $curso;
+    
+    function getUnidadeEnsino() {
+        return $this->unidadeEnsino;
+    }
 
-
-
-<!-- Loader -->
-<div data-ng-show="loader" class="preloader-wrapper small active loader">
-    <div class="spinner-layer spinner-red-only">
-        <div class="circle-clipper left">
-            <div class="circle"></div>
-        </div>
-        <div class="gap-patch">
-            <div class="circle"></div>
-        </div>
-        <div class="circle-clipper right">
-            <div class="circle"></div>
-        </div>
-    </div>
-</div>
+    function getCurso() {
+        return $this->curso;
+    }
+    
+}

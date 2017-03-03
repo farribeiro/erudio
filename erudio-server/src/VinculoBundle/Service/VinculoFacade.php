@@ -30,6 +30,8 @@ namespace VinculoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use VinculoBundle\Entity\Vinculo;
+use PessoaBundle\Entity\PessoaFisica;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
 
@@ -87,7 +89,13 @@ class VinculoFacade extends AbstractFacade {
         $this->gerarUsuario($vinculo->getFuncionario());
     }
     
-    private function gerarCodigo($vinculo) {
+    /**
+     * Gera o código de um vínculo recém-criado. Caso o vínculo informado já possua um
+     * código, ele será simplesmente mantido.
+     * 
+     * @param Vinculo $vinculo
+     */
+    private function gerarCodigo(Vinculo $vinculo) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()
@@ -102,7 +110,13 @@ class VinculoFacade extends AbstractFacade {
         $vinculo->definirCodigo($numero + 1);
     }
     
-    private function gerarUsuario($pessoa) {
+    /**
+     * Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
+     * não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
+     * 
+     * @param PessoaFisica $pessoa
+     */
+    private function gerarUsuario(PessoaFisica $pessoa) {
         if (!$pessoa->getUsuario()) {
             $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
             $this->usuarioFacade->create($usuario);

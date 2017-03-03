@@ -41,16 +41,16 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Periodo extends AbstractEditableEntity {
     
     /**
-        * @JMS\Groups({"LIST"}) 
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $media;
     
     /**
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_inicio", type = "date") 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_inicio", type = "date") 
+    */
     private $dataInicio;
     
     /** 

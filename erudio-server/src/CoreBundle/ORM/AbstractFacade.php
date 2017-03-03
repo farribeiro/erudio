@@ -100,7 +100,7 @@ abstract class AbstractFacade {
         return $this->buildReverseQuery($params)->getQuery()->getResult();
     }
 
-    function create($entidade) {
+    function create($entidade, $rollbackOnFailure = true) {
         try {
             $this->orm->getManager()->beginTransaction();
             $entidade->init();
@@ -112,7 +112,7 @@ abstract class AbstractFacade {
             $this->orm->getManager()->commit();
             return $entidade;
         } catch(\Exception $ex) {
-            $this->orm->getManager()->rollback();
+            if ($rollbackOnFailure) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
     }

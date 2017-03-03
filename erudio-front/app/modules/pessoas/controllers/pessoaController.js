@@ -776,41 +776,37 @@
             /*Separa a certiao em livro,folha e termo*/
             $scope.desmontaCertidao = function () {
                 if ($scope.pessoa.certidaoNascimento) {
-                    var verifica = $scope.pessoa.certidaoNascimento.length;
-                    var arrayCertidao = $scope.pessoa.certidaoNascimento.split("");
-                    var contador = 0;
-                    for (var i = 0; i < 12; i++) {
-                        if (arrayCertidao[i] === '0') {
-                            contador++;
-                        }
-                    }
-                    if (contador === 12) {
-                        $scope.livroCad = "";
-                        $scope.folhaCad = "";
-                        $scope.termoCad = "";
-                        /*Livro certidão nascimento antiga*/
-                        for (var i = 17; i < 22; i++) {
-                            $scope.livroCad = $scope.livroCad + arrayCertidao[i];
-                        }
-                        /*Folha certidão antiga*/
-                        for (var i = 22; i < 25; i++) {
-                            $scope.folhaCad = $scope.folhaCad + arrayCertidao[i];
-                        }
-                        /*Termo certidao antiga*/
-                        for (var i = 25; i < 32; i++) {
-                            $scope.termoCad = $scope.termoCad + arrayCertidao[i];
-                        }
-                    } else {
-                        $scope.certidaoCad = "";
-                        for (var i = 0; i < verifica; i++) {
-                            $scope.certidaoCad = $scope.certidaoCad + arrayCertidao[i];
-                        }
+                    var temp = parseInt($scope.pessoa.certidaoNascimento);
+                    if(temp.toString().length === 15) {
+                        $scope.cadDocumento = 'certidao-antiga';
+                        $scope.livroCad = temp.toString().slice(0, 5);
+                        $scope.folhaCad = temp.toString().slice(5, 8);
+                        $scope.termoCad = temp.toString().slice(8, 15);
                     }
                 } else {
                     return $scope.pessoa.certidaoNascimento;
                 }
             };
 
+            $scope.verificaCertidaoAntiga = function() {
+                if($scope.cadDocumento === 'certidao-antiga') {
+                    if($scope.livroCad !== undefined) {
+                        if($scope.livroCad.length !== 5) { Servidor.customToast('O número do livro deve ter 5 caracteres.'); return false; }
+                    }
+                    console.log($scope.folhaCad, $scope.folhaCad.length);
+                    if($scope.folhaCad !== undefined) {
+                        if(!$scope.folhaCad.length) { Servidor.customToast('Preencha o número da folha.'); return false; }
+                        $scope.folhaCad = $scope.completaDigitos($scope.folhaCad, 3);
+                    }
+                    if($scope.termoCad !== undefined) {
+                        if($scope.termoCad.length !== 7) { Servidor.customToast('O número do termo deve ter 7 caracteres.'); return false; }
+                    }
+                    return true;
+                } else {
+                    return true;
+                }
+            };
+            
             /*Verifica tipo Nacionalidade*/
             $scope.tipoNacionalidade = function (nacionalidade) {
                 if (nacionalidade === $scope.pessoa.nacionalidade) {
@@ -1267,6 +1263,10 @@
             $scope.salvarPessoa = function () {
                 if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 3) {
                     $scope.mostraLoader();
+                    if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); } else { return $scope.fechaLoader(); }
+                    if ($scope.pessoa.dataNascimento && $scope.pessoa.dataNascimento !== undefined) {
+                        $scope.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
+                    }
                     if ($scope.pessoa.certidaoNascimento === null) {
                         $scope.pessoa.certidaoNascimento = '';
                     }
@@ -1279,11 +1279,7 @@
                     }
                     if ($scope.pessoa.dataExpedicaoCertidaoNascimento) {
                         $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                    }
-                    $scope.montaCertidao();
-                    if ($scope.pessoa.dataNascimento && $scope.pessoa.dataNascimento !== undefined) {
-                        $scope.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
-                    }
+                    }                    
                     if ($scope.telaNumero === 1) {
                         if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                             var endereco = angular.copy($scope.pessoa.endereco);

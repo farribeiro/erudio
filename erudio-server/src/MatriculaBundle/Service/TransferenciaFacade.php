@@ -30,20 +30,26 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\IllegalUpdateException; 
 use MatriculaBundle\Entity\Transferencia;
+use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Media;
 
 class TransferenciaFacade extends AbstractFacade {
     
+    private $enturmacaoFacade;
     private $mediaFacade;
     
-    function setMediaFacade($mediaFacade) {
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
+    
+    function setMediaFacade(MediaFacade $mediaFacade) {
         $this->mediaFacade = $mediaFacade;
     }
     
-     function getEntityClass() {
+    function getEntityClass() {
         return 'MatriculaBundle:Transferencia';
     }
     
@@ -92,35 +98,41 @@ class TransferenciaFacade extends AbstractFacade {
         }
     }
     
-    private function encerrar($transferencia) {
+    function encerrar(Transferencia $transferencia) {
         if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
             $matricula = $transferencia->getMatricula();
-            $enturmacao = $this->orm->getRepository('MatriculaBundle:Enturmacao')->findOneBy(array('matricula' => $matricula));
-            $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $enturmacao));
-            foreach ($vagas as $vaga) {
-                $vaga->setEnturmacao(null);
-                $this->orm->getManager()->merge($vaga);
-                $this->orm->getManager()->flush();
-            }
-            $matricula->getDisciplinasCursadas()
-                ->filter(function($t) {
-                    return $t->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
-                })->map(function($t) {
-                    $t->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
-                    $this->orm->getManager()->merge($t);
-                    $novaDisciplina = new DisciplinaCursada($t->getMatricula(), $t->getDisciplina());
-                    $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
-                    for($i = 1; $i <= $numeroMedias; $i++) {
-                        $media = new Media($novaDisciplina, $i);
-                        $this->mediaFacade->create($media);
-                    }
-                    $this->orm->getManager()->persist($novaDisciplina);
-                });
+            $this->encerrarEnturmacoes($matricula);
+            $this->transferirDisciplinas($matricula);
             $transferencia->getMatricula()->transferir($transferencia->getUnidadeEnsinoDestino());
         }
         $transferencia->setDataEncerramento(new \DateTime());
         $this->orm->getManager()->merge($transferencia);
         $this->orm->getManager()->flush();
+    }
+    
+    private function encerrarEnturmacoes(Matricula $matricula) {
+        $enturmacoes = $this->enturmacaoFacade->findAll(['matricula' => $matricula]);
+        foreach ($enturmacoes as $enturmacao) {
+            $this->enturmacaoFacade->encerrarPorTransferencia($enturmacao);
+        }
+        $this->orm->getManager()->flush();
+    }
+    
+    private function transferirDisciplinas(Matricula $matricula) {
+         $matricula->getDisciplinasCursadas()
+            ->filter(function($t) {
+                return $t->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
+            })->map(function($t) {
+                $t->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
+                $this->orm->getManager()->merge($t);
+                $novaDisciplina = new DisciplinaCursada($t->getMatricula(), $t->getDisciplina());
+                $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
+                for($i = 1; $i <= $numeroMedias; $i++) {
+                    $media = new Media($novaDisciplina, $i);
+                    $this->mediaFacade->create($media);
+                }
+                $this->orm->getManager()->persist($novaDisciplina);
+            });
     }
     
     function findAllByNome($params, $page = null) {
@@ -130,7 +142,6 @@ class TransferenciaFacade extends AbstractFacade {
         $pessoas = $qb->getQuery()->getResult();
         $matriculas = array();
         $transferencias = array();
-        
         if (!empty($pessoas)) {
             foreach ($pessoas as $pessoa) {
                 $matriculaArray = $this->orm->getRepository('MatriculaBundle:Matricula')->findBy(array('aluno'=>$pessoa));
@@ -138,7 +149,6 @@ class TransferenciaFacade extends AbstractFacade {
                     foreach ($matriculaArray as $matArray) { $matriculas[] = $matArray; }
                 }
             }
-            
             if (!empty($matriculas)) {
                 unset($params['nome']);
                 foreach ($matriculas as $matricula) {
@@ -146,7 +156,6 @@ class TransferenciaFacade extends AbstractFacade {
                     $transferenciasArray = $this->findAll($params);
                     foreach ($transferenciasArray as $transArray) { $transferencias[] = $transArray; }
                 }
-                
                 if (!empty($transferencias)) { return $transferencias; } else { return array(); }
             } else { return array(); }
         } else { return array(); }
