@@ -24,12 +24,12 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<div class="row form-geral card-panel" data-ng-if="!enturmacaoAutomatica">
+<div class="row form-geral card-panel" data-ng-if="!enturmacaoAutomatica" style="margin: 0;">
     <div class="col s12 mobile-full">
         <div class="row form-box show-form">
             <div id="paginaAlunos">
                 <div class="row">
-                    <h3 class='col s12 m8 l8 card-title-h3' style="padding: 20px; padding-top: 30px">Pesquisar Matriculas</h3>
+                    <h4 class='col s12 m8 l8 card-title-h3' style="padding-top: 10px;">Pesquisar Matriculas</h4>
                     <div class="col s12 m4 l4" data-ng-if="botaoEnturmacaoAutomatica">
                         <a data-ng-click="carregarFormularioEnturmacaoAutomatica()" class="waves-effect waves-light btn dropdown-button green lighten-1 black-text right" style="top: 2.25rem">Enturmação Automática</a>
                     </div>
@@ -60,7 +60,7 @@
                     <div class="row end-card">
                         <div class="col s12 right-align">
                             <a data-ng-click="reiniciarBuscaMatriculas()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
-                            <a data-ng-click="buscarMatriculas(matriculaBusca, true)" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                            <a data-ng-click="buscarMatriculas(matriculaBusca)" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
                         </div>
                     </div>
                 </div>

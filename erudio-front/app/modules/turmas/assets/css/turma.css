@@ -38,7 +38,7 @@ td, th {
     vertical-align: top !important;
 }
 
-.table-horarios-disciplina td, .table-horarios-disciplina th:not(:first-child) {
+.table-horarios-disciplina td {
     border: solid 1px #CFD8DC;
 }
 
@@ -88,7 +88,7 @@ td, th {
 }
 
 .turma-banner {
-    height: 20rem;
+    height: 150px;
     background: url('../images/turmas.jpg') no-repeat center center;
     background-size: 100% auto;
 }

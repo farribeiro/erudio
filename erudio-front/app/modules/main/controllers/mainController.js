@@ -25,8 +25,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function () {
-    var mainModule = angular.module('mainModule', ['servidorModule', 'mainDirectives', 'instituicaoModule', 'cursoModule', 'cursoFormModule', 'etapaModule', 'regimeModule', 'moduloModule', 'turnoModule',
-        'unidadeModule', 'tipoModule', 'turmaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
+    var mainModule = angular.module('mainModule', ['servidorModule', 'mainDirectives', 'instituicaoModule', 'cursoModule', 'cursoFormModule', 'etapaModule', 'etapaFormModule','regimeModule', 'moduloModule', 'turnoModule',
+        'unidadeModule', 'tipoModule', 'turmaModule', 'turmaFormModule', 'turmaAlunosModule', 'turmaAlunosEnturmarModule', 'turmaProfessoresModule', 'turmaAlunoPresencaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
         'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
         'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','historicoEscolarModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
         'grupoPermissaoModule', 'turmaMistaModule','homeModule']);
@@ -140,9 +140,15 @@
         }*/
         var sessionId = sessionStorage.getItem('sessionId');
         if (sessionId) { $('body').css('opacity',1); }
+        if (sessionStorage.getItem('show_menu')) { $("#slide-out").show(); $('main').css('padding-left',''); $(this).css('left','250px'); }
+        else { $("#slide-out").hide(); $('main').css('padding-left','0'); $(this).css('left','10px'); }
         $timeout(function () {
-            $('.modal-trigger').leanModal();
-            Servidor.verificarMenu();
+            $('.modal-trigger').leanModal(); Servidor.verificarMenu();
+            $('.menu_swap').click(function(){
+                var visivel = $("#slide-out").css('display');
+                if (visivel !== 'none') { $("#slide-out").hide(); $('main').css('padding-left','0'); $(this).css('left','10px'); sessionStorage.setItem('show_menu',false);
+                } else { $("#slide-out").show(); $('main').css('padding-left',''); $(this).css('left','250px'); sessionStorage.setItem('show_menu',true); }
+            });
         }, 50);
     }]);
 

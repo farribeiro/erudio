@@ -26,7 +26,7 @@
 
 (function () {
     var cursoFormModule = angular.module('cursoFormModule', ['cursoDirectives', 'servidorModule', 'erudioConfig']);
-    cursoFormModule.controller('CursoFormController', ['$scope', 'Servidor', 'EtapaService', '$templateCache', '$routeParams', '$timeout', 'ErudioConfig', function ($scope, Servidor, EtapaService, $templateCache, $routeParams, $timeout, ErudioConfig) {
+    cursoFormModule.controller('CursoFormController', ['$scope', 'Servidor', '$templateCache', '$routeParams', '$timeout', 'ErudioConfig', function ($scope, Servidor, $templateCache, $routeParams, $timeout, ErudioConfig) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
         $templateCache.removeAll();
         $scope.escrita = Servidor.verificaEscrita('CURSO') || Servidor.verificaAdmin();                        
@@ -34,8 +34,7 @@
         $scope.tela = ErudioConfig.getTemplateForm('cursos');
         //ATRIBUTOS
         $scope.modalidades = []; $scope.modalidadeId = null; $scope.progresso = false;
-        $scope.loader = false; $scope.acao = 'Adicionar'; $scope.cortina = false;
-        $scope.EtapaService = EtapaService; $scope.statusBotao = true;
+        $scope.loader = false; $scope.acao = 'Adicionar'; $scope.cortina = false; $scope.statusBotao = true;
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
@@ -51,10 +50,15 @@
         $scope.selecionaModalidade = function () { $scope.curso.modalidade.id = $scope.modalidadeId; };
         //MODAL DE CERTEZA PARA VOLTAR
         $scope.prepararVoltar = function (objeto) { if (objeto.nome && !objeto.id) { $('#modal-certeza').openModal(); } else { window.location.href = "/#/cursos"; } };
-        //ABRE AJUDA
-        $scope.ajuda = function () { $('#modal-ajuda-curso').openModal(); };
+        
         //INICIALIZAÇÃO BÁSICA
-        $scope.inicializar = function () { $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove(); };
+        $scope.inicializar = function () { 
+            $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove();
+            $('#cursoForm').keydown(function(event){
+                var keyCode = (event.keyCode ? event.keyCode : event.which);
+                if (keyCode === 13) { $('#salvarCurso').trigger('click'); }
+            });
+        };
         
         //BUSCANDO MODALIDADES DE ENSINO
         $scope.buscarModalidades = function (inicializa) {

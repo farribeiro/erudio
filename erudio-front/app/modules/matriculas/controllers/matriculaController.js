@@ -44,7 +44,7 @@
         $scope.TurmaService = TurmaService;
         $scope.mostraCadastros = false;
         $scope.mostraCadastro = false;
-        $scope.isAdmin = !Servidor.verificaAdmin() || !sessionStorage.getItem('unidade');
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.unidadeAlocacao = parseInt(sessionStorage.getItem('unidade'));
         $scope.requisicoes = 0;
         
@@ -1644,7 +1644,6 @@
                     $scope.fechaProgresso();
                 }
                 turmas.forEach(function (turma, i) {
-                    var compativeis = 0;
                     $scope.requisicoes++;
                     requisicoesTurmasCompativeis++;
                     promise = Servidor.buscar('disciplinas-ofertadas', {'turma': turma.id});
@@ -1652,16 +1651,12 @@
                         var ofertadas = response.data;
                         cursadas.forEach(function (cursada) {
                             ofertadas.forEach(function (ofertada) {
-                                if (cursada.disciplina.id === ofertada.disciplina.id) {
-                                    if (++compativeis === cursadas.length) {
-                                        $scope.turmas.push(turma);
-                                    }
-                                }
+                                if (cursada.disciplina.id === ofertada.disciplina.id) { $scope.turmas.push(turma); }
                             });
                         });
                         $scope.requisicoes--;
                         if (--requisicoesTurmasCompativeis === 0) {
-                            if (!$scope.turmas.length) {
+                            if ($scope.turmas.length === 0) {
                                 $scope.turmas = [];
                                 Materialize.toast('Não há nenhuma turma compatível nesta etapa', 2500);
                             }

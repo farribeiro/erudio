@@ -31,7 +31,7 @@
 }
 
 .etapa-banner {
-    height: 20rem;
+    height: 150px;
     background: url('../images/escada.jpg') no-repeat center center;
     background-size: 100% auto;
 }
