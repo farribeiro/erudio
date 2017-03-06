@@ -30,6 +30,7 @@ namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use CoreBundle\ORM\AbstractEditableEntity;
 use PessoaBundle\Entity\UnidadeEnsino;
@@ -102,6 +103,7 @@ class Matricula extends AbstractEditableEntity {
     private $enturmacoes;
     
     public function init() {
+        $this->enturmacoes = new ArrayCollection();
         $this->status = self::STATUS_CURSANDO;
     }
     

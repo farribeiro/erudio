@@ -32,7 +32,6 @@ use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class MatriculaFacade extends AbstractFacade {
     
