@@ -24,32 +24,30 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<div class="row card-panel form-box show-form" id="paginaAlunos">
-    <div class="card-content" data-ng-hide="alunos.length">
+<!-- ALUNOS -->
+<div class="row card-panel form-box show-form" id="paginaAlunos" style="margin-top: 0px;">
+    <div class="card-content" data-ng-show="enturmacoes.length">
         <table class='highlight striped'>
             <thead>
                 <tr>
-                    <th></th>
-                    <th>Código</th>
-                    <th data-field='nome'>Nome</th>
-                    <th>Data de Matrícula</th>
-                    <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                    <th></th><th>Código</th><th data-field='nome'>Nome</th><th>Turma</th><th>Data de Matrícula</th><th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
                 </tr>
             </thead>
             <tbody>
                 <tr data-ng-repeat="enturmacao in enturmacoes | orderBy: 'matricula.aluno.nome'">
-                    <td class="center-align"><img src="app/modules/main/assets/images/profile.jpg" class="circle" style="width: 4.5rem"></td>
-                    <td style="padding-top: 2.7rem">
+                    <td class="center-align" style="padding: 0;"><img src="app/modules/main/assets/images/profile.jpg" class="circle" style="width: 27px; margin-top: 11px;"></td>
+                    <td style="padding-bottom: 5px">
                         {{enturmacao.matricula.codigo}}
                     </td>
-                    <td class="relative mobile-full" style="padding-top: 2.7rem">
+                    <td class="relative mobile-full" style="padding-bottom: 5px">
                         <div class="celula-link" data-ng-click="infoAluno(enturmacao)">{{ enturmacao.matricula.aluno.nome | uppercase }}</div>
                     </td>
-                    <td style="padding-top: 2.7rem">
+                    <td>{{ turma.nome }}</td>
+                    <td style="padding-bottom: 5px">
                         {{enturmacao.matricula.dataCadastro | date: 'dd/MM/yyyy'}}
                     </td>
-                    <td class='center-align hide-on-small-only' style="padding-top: 2.7rem">
-                        <i style="top: -5px; margin-right: 0.5rem;" data-ng-click="presencaMatricula(enturmacao.matricula)" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Frequência'>playlist_add_check</i>
+                    <td class='center-align hide-on-small-only' style="padding-bottom: 5px">
+                        <a href="/#/turmas/{{ turma.id }}/alunos/{{ enturmacao.matricula.id }}/presencas"><i style="top: -5px; margin-right: 0.5rem;" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Frequência'>playlist_add_check</i></a>
                         <!-- data-ng-click="notasMatricula(enturmacao.matricula)" -->
                         <a href="/#/matriculas"><i style="top: -5px;" data-ng-click="TurmaService.setEnturmacao(enturmacao); TurmaService.setTurma(turma); TurmaService.abreForm();" class="material-icons modal-trigger grey-icon pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Médias'>import_contacts</i></a>
                         <i style="position: relative; top: 2px!important; margin-left: 0.5rem;" data-ng-click="alfabetizar(enturmacao)" data-ng-class="{'green-icon': enturmacao.matricula.alfabetizado, 'naoAlfabetizado': !enturmacao.matricula.alfabetizado}" class="material-icons modal-trigger pointer tooltipped" data-position='top' data-delay='50' data-tooltip='Alfabetizado em {{enturmacao.matricula.alfabetizado}}'>spellcheck</i>

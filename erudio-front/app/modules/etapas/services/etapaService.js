@@ -24,99 +24,13 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
-/* Toolbar */
-
-.navbar-fixed {
-    z-index: 997 !important;
-    position: fixed !important;
-}
-
-.bold > a {
-    font-weight: bold;
-}
-
-ul.side-nav.fixed {
-    line-height: 44px;
-}
-
-ul.side-nav.fixed li a {
-    font-size: 13px;
-    height: 44px;
-    line-height: 44px;
-    cursor: pointer;
-}
-
-.side-nav.fixed a {
-    color: #444;
-    display: block;
-    padding: 0 15px;
-}
-
-.side-nav .collapsible-body li a {
-    margin: 0 1rem 0 2rem;
-}
-
-.side-nav li:hover, .side-nav li.active {
-    background: transparent !important;
-}
-
-.side-nav .no-padding ul li:hover, .side-nav .no-padding li.active {
-    background: #f2f2f2 !important;
-}
-
-ul.side-nav.fixed li.logo {
-    border-bottom: 1px solid #ddd;
-    /*margin-bottom: 16px;*/
-    text-align: center;
-    //background: rgba(0, 0, 0, 0) url("../../images/userSidebar.jpg") repeat scroll 0 0 / auto 100% !important;
-    //background-size: auto 100%;
-    background: #212121;
-}
-ul.side-nav.fixed li.logo:hover { background: #212121; }
-
-#logo-container {
-    height: 150px;
-    background: #212121;
-}
-
-nav {
-    box-shadow: none;
-    height: 122px;
-    background: #0288d1 !important;
-    color: #fafafa !important;
-    border-bottom: 1px solid #81D4FA;
-    box-shadow: none !important;
-}
-
-nav a.page-title {
-    font-size: 20px;
-    line-height: 65px;
-}
-
-.progress-sem-busca {
-    top: -8px !important;
-}
-
-.toolbar {
-    width: 100%;
-    float: left;
-    height: 64px;
-    background: #2196f3;
-    position: fixed;
-    top: 0;
-    transition: all 0.5s ease !important;
-    border-bottom: 1px solid #90caf9;
-    z-index: 997;
-    display:none;
-}
-
-.main-banner {
-    height: 20rem;
-    background: url('../../images/init.jpg') no-repeat center center;
-    background-size: 100% auto;
-}
-
-.card-title-h3 {
-    margin-top: 0 !important;
-}
+(function () {
+    var etapaService = angular.module('etapaService', []);
+    etapaService.service('EtapaService', [function () {
+        this.abrirFormulario = false;
+        this.etapa = {'id':null, 'curso': {'id': null}};
+        this.curso = {'id': null};
+        this.abreForm = function () { this.abrirFormulario = true; };
+        this.fechaForm = function () { this.abrirFormulario = false; };
+    }]);
+})();

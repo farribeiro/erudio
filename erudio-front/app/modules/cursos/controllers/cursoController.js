@@ -26,24 +26,22 @@
 
 (function () {
     var cursoModule = angular.module('cursoModule', ['cursoDirectives', 'etapaDirectives', 'servidorModule', 'erudioConfig']);
-    cursoModule.controller('CursoController', ['$scope', '$timeout', 'Servidor', 'EtapaService', '$templateCache', 'ErudioConfig', function ($scope, $timeout, Servidor, EtapaService, $templateCache, ErudioConfig) {
+    cursoModule.controller('CursoController', ['$scope','$rootScope','$timeout', 'Servidor', '$templateCache', 'ErudioConfig', function ($scope,$rootScope,$timeout, Servidor, $templateCache, ErudioConfig) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
         $templateCache.removeAll();
         $scope.escrita = Servidor.verificaEscrita('CURSO') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateLista('cursos'); $scope.lista = true;
         //ATRIBUTOS
-        $scope.cursos = []; $scope.cursoRemover = null; $scope.progresso = false; $scope.loader = false;
-        $scope.cortina = false; $scope.pagina = 0; $scope.EtapaService = EtapaService; $scope.titulo = "Cursos";
+        $scope.cursos = []; $scope.cursoRemover = null; $scope.progresso = false;
+        $scope.cortina = false; $scope.pagina = 0; $scope.titulo = "Cursos";
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
-        $scope.mostraLoader = function (cortina) { $scope.loader = true; if (cortina) { $scope.cortina = true; } };
-        $scope.fechaLoader = function () { $scope.loader = false; $scope.cortina = false; };
         //PREPARA REMOÇÃO DO CURSO
         $scope.prepararRemover = function (curso) { $('#remove-modal-curso').openModal(); $scope.cursoRemover = curso; };
-        //PASSA ARGUMENTO PARA O MÓDULO DE ETAPAS - TESTAR
-        $scope.intraForms = function (curso) { EtapaService.abreForm(); EtapaService.curso = curso; };
+        //PASSA ARGUMENTO PARA O MÓDULO DE ETAPAS
+        $scope.intraForms = function (curso) { $rootScope.etapaCurso = curso; };
         //ABRE AJUDA
         $scope.ajuda = function () { $('#modal-ajuda-curso').openModal(); };
         //INICIALIZAÇÃO BÁSICA

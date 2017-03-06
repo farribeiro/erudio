@@ -71,7 +71,7 @@
                     sessionStorage.setItem("key", md5.createHash($scope.senha)); sessionStorage.setItem("sessionId", md5.createHash(sessionId));
                     sessionStorage.setItem("menu",0); sessionStorage.setItem("module","main");
                     sessionStorage.setItem("moduleOptions",""); sessionStorage.setItem("vinculo","");
-                    sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
+                    sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", ""); sessionStorage.setItem('show_menu',true);
                     $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
                 });
             } else {
@@ -81,7 +81,7 @@
                 sessionStorage.setItem("profile", profile); sessionStorage.setItem("key", md5.createHash($scope.senha));
                 sessionStorage.setItem("sessionId", md5.createHash(sessionId)); sessionStorage.setItem("menu",0);
                 sessionStorage.setItem("module","main"); sessionStorage.setItem("moduleOptions","");
-                sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
+                sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", ""); sessionStorage.setItem('show_menu',true);
                 $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
             }
         };

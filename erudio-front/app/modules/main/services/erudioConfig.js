@@ -28,10 +28,11 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        // SERVER - http://10.1.6.86/erudio/erudio-server/web/api/
         this.dominio = 'http://erudio.com';
         this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
         this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
+        //this.urlServidor = 'http://10.1.6.86/erudio/erudio-server/web/api';
+        //this.urlUpload = 'http://10.1.6.86/erudio/erudio-server/web/bundles/assets/uploads/';
         this.urlTemplateInicio = "/app/modules/";
         this.urlTemplateFinal = "/partials/";
         

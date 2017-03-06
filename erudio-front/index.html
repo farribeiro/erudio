@@ -224,6 +224,7 @@
                     </div>
                 </div>
             </main>
+            <div class="menu_swap absolute" style="left: 250px; top: 10px; color: #fafafa; cursor: pointer;"><i class="material-icons">menu</div>
             
             <div id="remove-modal-turma" class="modal">
                 <div class="modal-dialog">
@@ -281,10 +282,11 @@
         <!-- Angular App -->
         <script type="text/javascript" src="app/modules/main/app/app.js"></script>
 
-        <!-- Angular Controllers -->
+        <!-- Home e Main Controllers -->
         <script type="text/javascript" src="app/modules/main/controllers/mainController.js"></script>
         <script type="text/javascript" src="app/modules/main/controllers/homeController.js"></script>
         <script type="text/javascript" src="app/modules/main/services/erudioConfig.js"></script>
+        
         <script type="text/javascript" src="app/modules/instituicoes/controllers/instituicaoController.js"></script>
         
         <!-- Cursos -->
@@ -292,14 +294,28 @@
         <script type="text/javascript" src="app/modules/cursos/controllers/cursoFormController.js"></script>
         <script type="text/javascript" src="app/modules/cursos/directives/cursoDirectives.js"></script>
         
+        <!-- Etapas -->
         <script type="text/javascript" src="app/modules/etapas/controllers/etapaController.js"></script>
+        <script type="text/javascript" src="app/modules/etapas/controllers/etapaFormController.js"></script>
+        <script type="text/javascript" src="app/modules/etapas/directives/etapaDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/etapas/services/etapaService.js"></script>
+        
         <script type="text/javascript" src="app/modules/disciplinas/controllers/disciplinaController.js"></script>
         <script type="text/javascript" src="app/modules/regimes/controllers/regimeController.js"></script>
         <script type="text/javascript" src="app/modules/modulos/controllers/moduloController.js"></script>
         <script type="text/javascript" src="app/modules/turnos/controllers/turnoController.js"></script>
         <script type="text/javascript" src="app/modules/unidades/controllers/unidadeController.js"></script>
         <script type="text/javascript" src="app/modules/tipos/controllers/tipoController.js"></script>
+        
+        <!-- Turmas -->
         <script type="text/javascript" src="app/modules/turmas/controllers/turmaController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaFormController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaAlunosController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaAlunoPresencaController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaProfessoresController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaAlunosEnturmarController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/directives/turmaDirectives.js"></script>
+        
         <script type="text/javascript" src="app/modules/calendarios/controllers/calendarioController.js"></script>
         <script type="text/javascript" src="app/modules/eventos/controllers/eventoController.js"></script>
         <script type="text/javascript" src="app/modules/quadroHorarios/controllers/quadroHorarioController.js"></script>
@@ -329,14 +345,14 @@
         <!-- Angular Directives -->
         <script type="text/javascript" src="app/modules/main/directives/mainDirectives.js"></script>
         <script type="text/javascript" src="app/modules/instituicoes/directives/instituicaoDirectives.js"></script>
-        <script type="text/javascript" src="app/modules/etapas/directives/etapaDirectives.js"></script>
+        
         <script type="text/javascript" src="app/modules/disciplinas/directives/disciplinaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/regimes/directives/regimeDirectives.js"></script>
         <script type="text/javascript" src="app/modules/modulos/directives/moduloDirectives.js"></script>
         <script type="text/javascript" src="app/modules/turnos/directives/turnoDirectives.js"></script>
         <script type="text/javascript" src="app/modules/unidades/directives/unidadeDirectives.js"></script>
         <script type="text/javascript" src="app/modules/tipos/directives/tipoDirectives.js"></script>
-        <script type="text/javascript" src="app/modules/turmas/directives/turmaDirectives.js"></script>
+        
         <script type="text/javascript" src="app/modules/matriculas/directives/matriculaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/calendarios/directives/calendarioDirectives.js" ></script>
         <script type="text/javascript" src="app/modules/eventos/directives/eventoDirectives.js" ></script>
