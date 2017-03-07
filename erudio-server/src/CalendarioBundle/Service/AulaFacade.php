@@ -42,11 +42,9 @@ use CursoBundle\Entity\Turma;
 class AulaFacade extends AbstractFacade {
     
     private $horarioDisciplinaFacade;
-    private $logger;
     
     function __construct(Registry $doctrine, Logger $logger) {
-        parent::__construct($doctrine);
-        $this->logger = $logger;
+        parent::__construct($doctrine, $logger);
     }
     
     function setHorarioDisciplinaFacade(HorarioDisciplinaFacade $horarioDisciplinaFacade) {

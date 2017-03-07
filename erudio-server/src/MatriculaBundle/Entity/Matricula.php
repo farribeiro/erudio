@@ -44,6 +44,7 @@ class Matricula extends AbstractEditableEntity {
     const STATUS_CURSANDO = "CURSANDO",
           STATUS_APROVADO = "APROVADO",
           STATUS_REPROVADO = "REPROVADO",
+          STATUS_CANCELADO = "CANCELADO",
           STATUS_TRANCADO = "TRANCADO",
           STATUS_ABANDONO = "ABANDONO",
           STATUS_FALECIDO = "FALECIDO";

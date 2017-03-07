@@ -28,6 +28,7 @@
 
 namespace CoreBundle\ORM;
 
+use Symfony\Bridge\Monolog\Logger;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
@@ -45,9 +46,11 @@ abstract class AbstractFacade {
     const PAGE_SIZE = 50;
     
     protected $orm;
+    protected $logger;
     
-    public function __construct (Registry $doctrine) {
+    function __construct (Registry $doctrine, Logger $logger = null) {
         $this->orm = $doctrine;
+        $this->logger = $logger;
     }
     
     abstract function getEntityClass();

@@ -59,7 +59,7 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
     protected function beforeCreate($movimentacao) {
         $movimentacao->aplicar();
         $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll(
-            array('enturmacao' => $movimentacao->getEnturmacaoOrigem()->getId())
+            ['enturmacao' => $movimentacao->getEnturmacaoOrigem()->getId()]
         );
         foreach($disciplinasCursadas as $disciplinaCursada) {
             $disciplinaCursada->setEnturmacao($movimentacao->getEnturmacaoDestino());
