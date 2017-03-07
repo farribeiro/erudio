@@ -40,7 +40,7 @@
     //DEFINIÇÃO DO CONTROLADOR
     turmaModule.controller('TurmaController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll();
+        $templateCache.removeAll(); $scope.config = ErudioConfig;
         $scope.escrita = Servidor.verificaEscrita('TURMA') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateLista('turmas'); $scope.lista = true;
@@ -68,8 +68,7 @@
                     $scope.cursos = response.data.cursos;
                     if(response.data.cursos.length) {
                         if($scope.cursos.length === 1) { $scope.buscarEtapas($scope.cursos[0].id); }
-                        $timeout(function () {
-                            $('#curso').material_select('destroy'); $('#curso').material_select(); $scope.fechaProgresso(); }, 500);
+                        $timeout(function () { $('#curso').material_select('destroy'); $('#curso').material_select(); $scope.fechaProgresso(); }, 500);
                     } else { $scope.buscarCursos(true); }
                 });
             }                    

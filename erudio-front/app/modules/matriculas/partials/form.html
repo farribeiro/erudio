@@ -158,8 +158,8 @@
                             <div class="input-field col s12 m12 l12">
                                 <i class="material-icons prefix" data-ng-class="{'cinza': !matricula.disc}">group_add</i>
                                 <select id="turmaEnturmacaoDisciplinasMatricula"  data-ng-model="turmaMatricula.id" data-ng-disabled="!turmas.length" data-ng-disabled="!matricula.disc"><!--data-ng-change="buscarDisciplinas()"-->
-                                    <option disabled selected></option>
-                                    <option value="{{ turma.id}}" data-ng-repeat="turma in turmas">{{turma.nomeCompleto | uppercase}} {{turma.turno.nome | uppercase }}</option>
+                                    <option selected></option>
+                                    <option value="{{ turma.id}}" data-ng-repeat="turma in turmas track by $index">{{turma.nomeCompleto | uppercase}} {{turma.turno.nome | uppercase }}</option>
                                 </select>
                                 <label for="turmaEnturmacaoDisciplinasMatricula" class="ajuste-select-top-label">Turma*</label>
                             </div>

@@ -112,8 +112,8 @@
                     <div class="col s12 m12 input-field" data-ng-class="{'l6': matricula.curso.especializado}">
                         <i class="material-icons prefix">chrome_reader_mode</i>
                         <select id="enturmacaoTurma" data-ng-model="enturmacao.turma.id">
-                            <option disabled selected></option>
-                            <option data-ng-repeat="turma in turmas" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
+                            <option selected></option>
+                            <option data-ng-repeat="turma in turmas track by $index" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
                         </select>
                         <label for="enturmacaoTurma">Turma</label>
                     </div>
