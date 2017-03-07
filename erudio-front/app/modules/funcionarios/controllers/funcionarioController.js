@@ -380,8 +380,8 @@
                             }
 
                         }
-                        $scope.fecharFormulario();
-                        $scope.limpaVinculo();
+                        //$scope.fecharFormulario();
+                        //$scope.limpaVinculo();
                     });
                     /*var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
                     promise.then(function(response) {

@@ -1631,10 +1631,8 @@
         };
 
         $scope.turmasCompativeis = function (id, cursadas) {
-            if (!id) { id = $scope.etapa.id; }
-            $scope.turmas = [];
-            var requisicoesTurmasCompativeis = 0;
-            $scope.requisicoes++;
+            if (!id) { id = $scope.etapa.id; } $scope.turmas = [];
+            var requisicoesTurmasCompativeis = 0; $scope.requisicoes++;
             var promise = Servidor.buscar('turmas', {'etapa': id, unidadeEnsino: $scope.matricula.unidadeEnsino.id});
             promise.then(function (response) {
                 $scope.requisicoes--;
@@ -1644,18 +1642,23 @@
                     $scope.fechaProgresso();
                 }
                 turmas.forEach(function (turma, i) {
-                    $scope.requisicoes++;
+                    $scope.requisicoes++; var compativeis = 0;
                     requisicoesTurmasCompativeis++;
                     promise = Servidor.buscar('disciplinas-ofertadas', {'turma': turma.id});
                     promise.then(function (response) {                        
                         var ofertadas = response.data;
                         cursadas.forEach(function (cursada) {
                             ofertadas.forEach(function (ofertada) {
-                                if (cursada.disciplina.id === ofertada.disciplina.id) { $scope.turmas.push(turma); }
+                                if (cursada.disciplina.id === ofertada.disciplina.id) {
+                                    if (++compativeis === cursadas.length) {
+                                        $scope.turmas.push(turma);
+                                    }
+                                }
                             });
                         });
                         $scope.requisicoes--;
                         if (--requisicoesTurmasCompativeis === 0) {
+                            console.log($scope.turmas);
                             if ($scope.turmas.length === 0) {
                                 $scope.turmas = [];
                                 Materialize.toast('Não há nenhuma turma compatível nesta etapa', 2500);

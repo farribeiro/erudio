@@ -28,7 +28,7 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        this.dominio = 'http://erudio.com';
+        this.dominio = 'http://10.100.0.196/erudio-git-final/Erudio/erudio-front'; this.extraUrl = '/erudio-git-final/Erudio/erudio-front';
         this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
         this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
         //this.urlServidor = 'http://10.1.6.86/erudio/erudio-server/web/api';
@@ -36,9 +36,9 @@
         this.urlTemplateInicio = "/app/modules/";
         this.urlTemplateFinal = "/partials/";
         
-        this.getTemplateLista = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; };
-        this.getTemplateForm = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; };
-        this.getTemplateCustom = function (modulo,arquivo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; };
+        this.getTemplateLista = function (modulo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; };
+        this.getTemplateForm = function (modulo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; };
+        this.getTemplateCustom = function (modulo,arquivo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; };
     }]);
 
 })();
