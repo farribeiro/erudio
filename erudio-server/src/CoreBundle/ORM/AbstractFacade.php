@@ -140,10 +140,10 @@ abstract class AbstractFacade {
         try {
             $this->orm->getManager()->detach($mergeObject);
             $entidade = $this->loadEntity($id);
-            if($entidade === null) {
+            if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
             }
-            if(!$entidade instanceof AbstractEditableEntity) {
+            if (!$entidade instanceof AbstractEditableEntity) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             $this->orm->getManager()->beginTransaction();
@@ -166,10 +166,10 @@ abstract class AbstractFacade {
             foreach($mergeObjects as $mergeObject) {
                 $this->orm->getManager()->detach($mergeObject);
                 $entidade = $this->loadEntity($mergeObject->getId());
-                if($entidade === null) {
+                if ($entidade === null) {
                     throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
                 }
-                if(!$entidade instanceof AbstractEditableEntity) {
+                if (!$entidade instanceof AbstractEditableEntity) {
                     throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
                 }
                 $this->beforeUpdate($entidade);
@@ -198,10 +198,10 @@ abstract class AbstractFacade {
         try {
             $this->orm->getManager()->detach($mergeObject);
             $entidade = $this->loadDeletedEntity($id);
-            if($entidade === null) {
+            if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
             }
-            if(!$entidade instanceof AbstractEditableEntity) {
+            if (!$entidade instanceof AbstractEditableEntity) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             $this->orm->getManager()->beginTransaction();
@@ -219,7 +219,7 @@ abstract class AbstractFacade {
     
     function remove($id) {
         $entidade = $this->loadEntity($id);
-        if($entidade != null) {
+        if ($entidade != null) {
             try {
                 $this->orm->getManager()->beginTransaction();
                 $this->beforeRemove($entidade);
@@ -228,7 +228,7 @@ abstract class AbstractFacade {
                 $this->afterRemove($entidade);
                 $this->orm->getManager()->commit();
                 return true;
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 $this->orm->getManager()->rollback();
                 throw $ex;
             }
@@ -240,7 +240,7 @@ abstract class AbstractFacade {
             $this->orm->getManager()->beginTransaction();
             foreach($ids as $id) {
                 $entidade = $this->loadEntity($id);
-                if($entidade != null) {
+                if ($entidade != null) {
                     $this->beforeRemove($entidade);
                     $entidade->finalize();
                     $this->orm->getManager()->merge($entidade);

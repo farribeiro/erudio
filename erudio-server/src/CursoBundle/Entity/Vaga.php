@@ -29,8 +29,6 @@
 namespace CursoBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\SolicitacaoVaga;

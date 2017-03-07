@@ -65,7 +65,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $disciplina;
     
-    /** @ORM\ManyToOne(targetEntity = "Enturmacao") */
+    /** @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") */
     private $enturmacao;
     
     /** 

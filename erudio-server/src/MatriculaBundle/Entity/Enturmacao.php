@@ -29,6 +29,7 @@
 namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Turma;
@@ -66,6 +67,7 @@ class Enturmacao extends AbstractEditableEntity {
     function __construct(Matricula $matricula, Turma $turma) {
         $this->matricula = $matricula;
         $this->turma = $turma;
+        $this->disciplinasCursadas = new ArrayCollection();
     }
     
     function getEncerrado() {

@@ -38,6 +38,11 @@ class TurmaFacade extends AbstractFacade {
     
     private $vagaFacade;
     
+    function removerAgrupamento(Turma $turma) {
+        $turma->setAgrupamento(null);
+        $this->orm->getManager()->flush();
+    }
+    
     function getEntityClass() {
         return 'CursoBundle:Turma';
     }

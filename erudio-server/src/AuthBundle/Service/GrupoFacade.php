@@ -48,6 +48,5 @@ class GrupoFacade extends AbstractFacade {
             }
         );
     }
-    
 }
 

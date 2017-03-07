@@ -42,9 +42,10 @@ class EnturmacaoFacade extends AbstractFacade {
     
     function encerrarPorTransferencia(Enturmacao $enturmacao) {
         $enturmacao->encerrar();
+        $this->orm->getManager()->merge($enturmacao);
+        $this->orm->getManager()->flush();
         $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
         $this->liberarVagas($enturmacao);
-        $this->orm->getManager()->flush();
     }
     
     function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
@@ -137,8 +138,9 @@ class EnturmacaoFacade extends AbstractFacade {
     private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
             $disciplina->setStatus($status);
-            $this->disciplinaCursadaFacade->update($disciplina->getId(), $disciplina);
+            $this->orm->getManager()->merge($disciplina);
         }
+        $this->orm->getManager()->flush();
     }
     
     private function excluirDisciplinas(Enturmacao $enturmacao) {

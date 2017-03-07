@@ -89,9 +89,5 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         }
     }
     
-    protected function beforeRemove($disciplinaCursada) {
-        
-    }
-    
 }
 

@@ -29,7 +29,6 @@
 namespace CalendarioBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -78,6 +77,15 @@ class Aula extends AbstractEditableEntity {
 
     function getHorario() {
         return $this->horario;
+    }
+    
+    function trocarDataHorario(Aula $aula) {
+        $dia = $this->dia;
+        $horario = $this->horario;
+        $this->dia = $aula->dia;
+        $this->horario = $aula->horario;
+        $aula->dia = $dia;
+        $aula->horario = $horario;
     }
     
 }
