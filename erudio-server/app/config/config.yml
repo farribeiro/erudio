@@ -1,11 +1,10 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    # Serviços de terceiros
     - { resource: services.yml }
     # Serviços da API
     - { resource: "@AuthBundle/Resources/config/services.yml" }
-    - { resource: "@PDFBundle/Resources/config/services.yml" }
+    - { resource: "@ReportBundle/Resources/config/services.yml" }
     - { resource: "@PessoaBundle/Resources/config/services.yml" }
     - { resource: "@CursoBundle/Resources/config/services.yml" }
     - { resource: "@CalendarioBundle/Resources/config/services.yml" }

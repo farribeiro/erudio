@@ -40,14 +40,6 @@ class EnturmacaoFacade extends AbstractFacade {
     private $disciplinaCursadaFacade;
     private $vagaFacade;
     
-    function encerrarPorTransferencia(Enturmacao $enturmacao) {
-        $enturmacao->encerrar();
-        $this->orm->getManager()->merge($enturmacao);
-        $this->orm->getManager()->flush();
-        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
-        $this->liberarVagas($enturmacao);
-    }
-    
     function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
@@ -85,6 +77,14 @@ class EnturmacaoFacade extends AbstractFacade {
         ];
     }
     
+    function encerrarPorTransferencia(Enturmacao $enturmacao) {
+        $enturmacao->encerrar();
+        $this->orm->getManager()->merge($enturmacao);
+        $this->orm->getManager()->flush();
+        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        $this->liberarVagas($enturmacao);
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')->orderBy('aluno.nome');
     }
@@ -108,28 +108,24 @@ class EnturmacaoFacade extends AbstractFacade {
     private function vincularDisciplinas(Enturmacao $enturmacao) {
         $matricula = $enturmacao->getMatricula();
         $disciplinasOfertadas = $enturmacao->getTurma()->getDisciplinas();
-        $qb = $this->orm->getRepository('MatriculaBundle:DisciplinaCursada')->createQueryBuilder('d')
-            ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
-            ->where('d.' . self::ATTR_ATIVO . ' = true')
-            ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', array(
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO)
-            )
-            ->andWhere('etapa.id = :etapa')->setParameter('etapa', $enturmacao->getTurma()->getEtapa()->getId());
-        $disciplinasCursadas = $qb->getQuery()->getResult();
+        $disciplinasEmAndamento = $this->disciplinaCursadaFacade
+                ->findByMatriculaAndEtapa($matricula, $enturmacao->getTurma()->getEtapa());
         foreach ($disciplinasOfertadas as $disciplinaOfertada) {   
-            $enturmado = false;                     
-            foreach ($disciplinasCursadas as $disciplinaCursada) {
+            $emAndamento = false;                     
+            foreach ($disciplinasEmAndamento as $disciplinaCursada) {
                 if($disciplinaCursada->getDisciplina()->getId() === $disciplinaOfertada->getDisciplina()->getId()) {
-                    if($disciplinaCursada->getDisciplinaOfertada() === null && $disciplinaCursada->getStatus() === DisciplinaCursada::STATUS_CURSANDO) {
-                        $disciplinaCursada->setEnturmacao($enturmacao);
-                        $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
-                        $this->orm->getManager()->merge($disciplinaCursada);
-                    }
-                    $enturmado = true;
+                    $disciplinaCursada->setEnturmacao($enturmacao);
+                    $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
+                    $this->orm->getManager()->merge($disciplinaCursada);
+                    $emAndamento = true;
                     break;
                 }                
+            }
+            if (!$emAndamento) {
+                $disciplinaCursada = new DisciplinaCursada($matricula, $disciplinaOfertada->getDisciplina());
+                $disciplinaCursada->setEnturmacao($enturmacao);
+                $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
+                $this->disciplinaCursadaFacade->create($disciplinaCursada);
             }
         }
         $this->orm->getManager()->flush();

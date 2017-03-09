@@ -1,0 +1,51 @@
+<pdf orientation="L">
+    <dynamic-page encoding="UTF-8" page-size="a4-landscape">
+        <column-layout number-of-columns="2" equals-columns="true">
+            <img style="width: 50%;" src="bundles/report/brasao.jpg"/>
+            <column-break />
+            <div>
+                <h1 margin-top="0" margin-bottom="2px">
+                    Diário de Frequência - 
+                    {{aulas[0].dia.data|localizeddate('medium', 'none', app.request.locale, null, 'MMMM')|title}}
+                </h1>
+                <h3 margin-top="0" margin-bottom="2px">
+                    Turma {{disciplina.turma.nome}}, {{disciplina.disciplina.etapa.nome}}, {{disciplina.nomeExibicao}}
+                </h3>
+                <h3 margin-top="0">Professores:
+                    {% for p in disciplina.professores %}
+                        {{p.vinculo.funcionario.nome}}
+                    {% endfor %}
+                </h3>
+            </div>
+            <column-break />
+        </column-layout>
+        <div margin-top="10px">
+            <table>
+                <tr>
+                    <td style="width: 25px; padding-top: 40px;">Nº</td>
+                    <td>Aluno</td>
+                    {% for aula in aulas %}
+                        <td padding-left="5px">
+                            <span rotate="90deg" break="false">{{aula.dia.data|date('d')}}</span>
+                        </td>
+                    {% endfor %}
+                    <td style="width: 60px;">
+                        <span>Faltas</span>
+                    </td>
+                </tr>
+                {% for i, enturmacao in enturmacoes %}
+                    <tr>
+                        <td>{{i + 1}}</td>
+                        <td style="width: 200px; text-align: left;">
+                            {{enturmacao.matricula.aluno.nome}}
+                        </td>
+                        {% for aula in aulas %}
+                            <td></td>
+                        {% endfor %}
+                        <td></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </dynamic-page>
+</pdf>

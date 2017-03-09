@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new AvaliacaoBundle\AvaliacaoBundle(),
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
-            new PDFBundle\PDFBundle(),
+            new ReportBundle\ReportBundle(),
             new AssetsBundle\AssetsBundle()
         );
 

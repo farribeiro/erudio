@@ -16,3 +16,8 @@ services:
         arguments: ["@security.token_storage", "@security.authentication.manager"]
         public: false
         
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }
+        

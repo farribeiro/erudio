@@ -65,8 +65,9 @@ class AulaFacade extends AbstractFacade {
                 $qb->andWhere('dia.id = :dia')->setParameter('dia', $value);
             },
             'mes' => function(QueryBuilder $qb, $value) {
+                $mes = $value < 10 ? '0' . $value : $value;
                 $qb->andWhere('dia.data LIKE :mes')
-                   ->setParameter('mes', '%-' . $value . '-%');
+                   ->setParameter('mes', '%-' . $mes . '-%');
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
