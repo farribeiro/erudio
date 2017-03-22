@@ -30,13 +30,12 @@ class WsseProvider implements AuthenticationProviderInterface
             $authenticatedToken->setUser($user);
             return $authenticatedToken;
         }
-        
         throw new AuthenticationException('The WSSE authentication failed.');
     }
 
     protected function validateDigest($digest, $nonce, $created, $secret) {
         $date = new \DateTime();
-        $date->modify('+15 minutes');
+        $date->modify('+20 minutes');
         $time = $date->getTimestamp();
         
         // Check created time is not in the future
@@ -57,13 +56,13 @@ class WsseProvider implements AuthenticationProviderInterface
 
         // If cache directory does not exist create it
         if (!is_dir($this->cacheDir)) {
-            mkdir($this->cacheDir, 0777, true);
+            mkdir($this->cacheDir, 0755, true);
         }
         //file_put_contents($this->cacheDir.'/'.$nonce, $time);
 
         // Validate Secret
-        $expected = \base64_encode(\sha1(\base64_decode($nonce).$created.$secret, false));
-        return StringUtils::equals($expected, $digest);
+        $expected = base64_encode(sha1(base64_decode($nonce) . $created . $secret, false));
+        return hash_equals($expected, $digest);
     }
 
     public function supports(TokenInterface $token) {

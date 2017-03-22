@@ -38,25 +38,22 @@ class AtribuicaoFacade extends AbstractFacade {
     }
     
     function queryAlias() {
-        return 'u';
+        return 'a';
     }
     
     function parameterMap() {
          return array (
             'usuario' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.usuario = :id')->setParameter('id', $value);
+                $qb->join('a.usuario', 'usuario')
+                   ->andWhere('usuario.id = :usuario')->setParameter('usuario', $value);
             },
-            'permissao' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.permissao = :id2')->setParameter('id2', $value);
-            },
-            'entidade' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.idEntidade = :id3')->setParameter('id3', $value);
+            'instituicao' => function(QueryBuilder $qb, $value) {
+                $qb->join('a.instituicao', 'instituicao')
+                    ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
             },
             'grupo' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.grupo = :id4')->setParameter('id4', $value);
-            },
-            'tipoAcesso' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.tipoAcesso = :id5')->setParameter('id5', $value);
+                $qb->join('a.grupo', 'grupo')
+                   ->andWhere('grupo.id = :grupo')->setParameter('grupo', $value);
             }
         );
     }

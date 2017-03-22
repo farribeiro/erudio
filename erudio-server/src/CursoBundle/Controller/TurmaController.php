@@ -33,6 +33,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Turma;
@@ -42,7 +43,7 @@ use CursoBundle\Entity\Turma;
  */
 class TurmaController extends AbstractEntityController {
     
-    public function getFacade() {
+    function getFacade() {
         return $this->get('facade.curso.turmas');
     }
         

@@ -52,7 +52,7 @@ class Vaga extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "MatriculaBundle\Entity\Enturmacao") 
+    * @ORM\OneToOne(targetEntity = "MatriculaBundle\Entity\Enturmacao", inversedBy="vaga") 
     */
     private $enturmacao;
     

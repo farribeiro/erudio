@@ -20,15 +20,16 @@ class AppKernel extends Kernel
             new FOS\RestBundle\FOSRestBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new Ps\PdfBundle\PsPdfBundle(),
             new CoreBundle\CoreBundle(),
             new AuthBundle\AuthBundle(),
-            new PDFBundle\PDFBundle(),
             new PessoaBundle\PessoaBundle(),
             new CursoBundle\CursoBundle(),
             new CalendarioBundle\CalendarioBundle(),
             new AvaliacaoBundle\AvaliacaoBundle(),
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
+            new ReportBundle\ReportBundle(),
             new AssetsBundle\AssetsBundle()
         );
 

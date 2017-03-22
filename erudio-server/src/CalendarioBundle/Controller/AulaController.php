@@ -86,16 +86,4 @@ class AulaController extends AbstractEntityController {
         return $this->handleView($view);
     }
     
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("turmas/{turma}/aulas")
-    */
-    function putBatchAction(Request $request, $turma) {
-        $dataInicio = $request->query->get('dataInicio');
-        $this->getFacade()->gerarNovasAulas($turma, $dataInicio);
-        $view = View::create(null, Codes::HTTP_CREATED);
-        return $this->handleView($view);
-    }
-    
 }

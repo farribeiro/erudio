@@ -79,4 +79,13 @@ class Aula extends AbstractEditableEntity {
         return $this->horario;
     }
     
+    function trocarDataHorario(Aula $aula) {
+        $dia = $this->dia;
+        $horario = $this->horario;
+        $this->dia = $aula->dia;
+        $this->horario = $aula->horario;
+        $aula->dia = $dia;
+        $aula->horario = $horario;
+    }
+    
 }
