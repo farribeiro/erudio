@@ -80,10 +80,13 @@ class HorarioDisciplinaController extends AbstractEntityController {
     *  @FOS\Put("horarios-disciplinas/{id}/troca")
     *  @ParamConverter("horarioTroca", converter="fos_rest.request_body")
     */
-    function swapAction($id, HorarioDisciplina $horarioTroca) {
+    function swapAction(Request $request, $id, HorarioDisciplina $horarioTroca) {
         try {
+            $dataInicio = $request->query->has('dataInicio')
+                    ? \DateTime::createFromFormat('Y-m-d', $request->query->get('dataInicio'))
+                    : new \DateTime();
             $horario = $this->getFacade()->find($id);
-            $this->getFacade()->trocar($horario, $horarioTroca);
+            $this->getFacade()->trocar($horario, $horarioTroca, $dataInicio);
             $view = View::create(null, Codes::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
             $view = FOS\View::create(null, Codes::HTTP_NOT_FOUND);

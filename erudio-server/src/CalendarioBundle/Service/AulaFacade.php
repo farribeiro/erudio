@@ -103,19 +103,18 @@ class AulaFacade extends AbstractFacade {
             ))
         );
         foreach($dias as $dia) {
-            $horarios
-                ->filter(function($h) use ($dia) {
-                    return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
-                })
-                ->map(function($h) use ($dia, $aulasCriadas) {
-                    $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
-                    $this->orm->getManager()->persist($aula);
-                    $aulasCriadas++;
-                });
+            $horariosAula = $horarios->filter(function($h) use ($dia) {
+                return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
+            });
+            foreach ($horariosAula as $h) {
+                $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
+                $this->orm->getManager()->persist($aula);
+                $aulasCriadas++;
+            }
             $this->orm->getManager()->flush();
             $this->orm->getManager()->clear('CalendarioBundle:Aula');
         }
-        if ($aulasCriadas) {
+        if ($aulasCriadas > 0) {
             $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
             $this->orm->getManager()->flush();
         }

@@ -30,10 +30,16 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use MatriculaBundle\Entity\MovimentacaoTurma;
 
 class MovimentacaoTurmaFacade extends AbstractFacade {
     
+    private $enturmacaoFacade;
     private $disciplinaCursadaFacade;
+    
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
     
     function setDisciplinaCursadaFacade($disciplinaCursadaFacade) {
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
@@ -57,45 +63,14 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($movimentacao) {
-        $movimentacao->aplicar();
-        $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll(
-            ['enturmacao' => $movimentacao->getEnturmacaoOrigem()->getId()]
-        );
-        foreach($disciplinasCursadas as $disciplinaCursada) {
-            $disciplinaCursada->setEnturmacao($movimentacao->getEnturmacaoDestino());
-            foreach($movimentacao->getEnturmacaoDestino()->getTurma()->getDisciplinas() as $disciplinaOfertada) {
-                if($disciplinaOfertada->getDisciplina()->getId() === $disciplinaCursada->getDisciplina()->getId()) {
-                    $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
-                    break;
-                }
-            }
-        }
+       $movimentacao->aplicar();
     }
     
     protected function afterCreate($movimentacao) {
-        $origem = $movimentacao->getEnturmacaoOrigem();
-        $destino = $movimentacao->getEnturmacaoDestino();
-        $vagasOrigem = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $origem));
-        $vagaNova = null;
-        $turma = $destino->getTurma();
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
-        foreach ($vagas as $vaga) {
-            $enturma = $vaga->getEnturmacao();
-            if (is_null($enturma)) {
-                $vagaNova = $vaga;
-            }
-        }
-        if (is_null($vagaNova)) {
-            $vagaNova->setEnturmacao($destino);
-            $this->orm->getManager()->merge($vagaNova); 
-            $this->orm->getManager()->flush();            
-            //Depois de tudo transferido, desabilita a vaga antiga.
-            foreach ($vagasOrigem as $vagaOrigem) { 
-                $vagaOrigem->setEnturmacao(null); 
-                $this->orm->getManager()->merge($vagaOrigem); 
-                $this->orm->getManager()->flush();       
-            }
-        }
+        $this->enturmacaoFacade->executarMovimentacaoTurma(
+            $movimentacao->getEnturmacaoOrigem(), 
+            $movimentacao->getEnturmacaoDestino()
+        );
     }
     
 }

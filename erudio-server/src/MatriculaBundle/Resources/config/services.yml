@@ -42,6 +42,7 @@ services:
         class: MatriculaBundle\Service\MovimentacaoTurmaFacade
         arguments: ["@doctrine"]
         calls:
+          - [setEnturmacaoFacade, [@facade.matricula.enturmacoes]]
           - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
         
     facade.matricula.transferencias:

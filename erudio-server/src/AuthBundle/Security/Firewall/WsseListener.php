@@ -21,19 +21,16 @@ class WsseListener implements ListenerInterface {
 
     public function handle(GetResponseEvent $event) {
         $request = $event->getRequest();
-
         $wsseRegex = '/UsernameToken Username="([^"]+)", PasswordDigest="([^"]+)", Nonce="([^"]+)", Created="([^"]+)"/';
         if (!$request->headers->has('x-wsse') || 1 !== preg_match($wsseRegex, $request->headers->get('x-wsse'), $matches)) {
             return;
         }
-        
         $arr = array();
         $token = new WsseUserToken($arr);
         $token->setUser($matches[1]);
         $token->digest   = $matches[2];
         $token->nonce    = $matches[3];
         $token->created  = $matches[4];
-        
         try {
             $authToken = $this->authenticationManager->authenticate($token);
             $this->tokenStorage->setToken($authToken);
@@ -51,7 +48,6 @@ class WsseListener implements ListenerInterface {
             $event->setResponse($response);
             return;
         }
-
         // O padrão é negar a autenticação.
         $response = new Response();
         $response->setStatusCode(Response::HTTP_FORBIDDEN);

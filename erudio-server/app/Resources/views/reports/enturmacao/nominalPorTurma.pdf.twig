@@ -1,0 +1,30 @@
+<pdf>
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}Relação de Alunos da Turma {{turma.nome}} - {{turma.apelido}}{% endblock %}
+        {% block content %}
+            <div margin-top="15px" font-size="8px" breakable="false">
+                <table>
+                    <tr>
+                        <td width="90px"><strong>Matrícula</strong></td>
+                        <td><strong>Nome</strong></td>
+                        <td width="60px"><strong>Data Nascimento</strong></td>
+                        <td width="35px"><strong>Gênero</strong></td>
+                        <td><strong>Pais</strong></td>
+                    </tr>
+                    {% for e in enturmados %}
+                        <tr>
+                            <td>{{e.matricula.codigo}}</td>
+                            <td text-align="left">{{e.matricula.aluno.nome|upper}}</td>
+                            <td>{{e.matricula.aluno.dataNascimento|date('d/m/Y')}}</td>
+                            <td>{{e.matricula.aluno.genero}}</td>
+                            <td  text-align="left">
+                                {{e.matricula.aluno.nomeMae|upper}} 
+                                <br/> {{e.matricula.aluno.nomePai|upper}}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+       {% endblock %}
+    {% endembed %}
+</pdf>

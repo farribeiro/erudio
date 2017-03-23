@@ -44,7 +44,7 @@ class Enturmacao extends AbstractEditableEntity {
     * @JMS\Groups({"LIST"}) 
     * @ORM\Column(type = "boolean", nullable = false) 
     */
-    private $encerrado = false;
+    private $encerrado;
     
     /**  
     * @JMS\Groups({"LIST"}) 
@@ -64,10 +64,19 @@ class Enturmacao extends AbstractEditableEntity {
     */
     private $disciplinasCursadas;
     
+    /**
+    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
+    */
+    private $vaga;
+    
     function __construct(Matricula $matricula, Turma $turma) {
         $this->matricula = $matricula;
         $this->turma = $turma;
         $this->disciplinasCursadas = new ArrayCollection();
+    }
+    
+    function init() {
+        $this->encerrado = false;
     }
     
     function getEncerrado() {
@@ -84,6 +93,10 @@ class Enturmacao extends AbstractEditableEntity {
 
     function getTurma() {
         return $this->turma;
+    }
+    
+    function getVaga() {
+        return $this->vaga;
     }
     
     function getDisciplinasCursadas() {

@@ -43,7 +43,7 @@ use CursoBundle\Entity\Turma;
  */
 class TurmaController extends AbstractEntityController {
     
-    public function getFacade() {
+    function getFacade() {
         return $this->get('facade.curso.turmas');
     }
         

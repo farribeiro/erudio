@@ -191,7 +191,7 @@ abstract class AbstractFacade {
     
     private function checkUniqueness($entidade, $isUpdate = false) {
         foreach ($this->uniqueMap($entidade) as $constraint) {
-            if (count($this->findAll($constraint)) > $isUpdate ? 1 : 0) {
+            if (count($this->findAll($constraint)) > ($isUpdate ? 1 : 0)) {
                 throw new Exception\UniqueViolationException();
             }
         }
@@ -287,7 +287,7 @@ abstract class AbstractFacade {
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if($v != null && key_exists($k, $this->parameterMap())) {
+            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }
