@@ -10,7 +10,6 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class CursoOfertadoFacade extends AbstractFacade {
     

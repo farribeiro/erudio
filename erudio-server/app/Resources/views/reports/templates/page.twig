@@ -15,20 +15,20 @@
             </div>
         </footer>
         <header>
-            <div height="{% block headerHeight %}50px{% endblock %}" width="100%">
+            <div height="{% block headerHeight %}60px{% endblock %}" width="100%">
                 <div width="50%" float="left">
                     <img width="50%" src="bundles/report/brasao.jpg" />
                 </div>
                 <div position="absolute" top="50px" right="0" text-align="center">
-                    <h3 margin-top="0" margin-bottom="2px">
+                    <div margin-top="0" margin-bottom="2px">
                         {% block title %}Relatório Erudio{% endblock %}
-                    </h3>
+                        <h3 margin-top="0">{{instituicao.nomeCompleto}}</h3>
+                    </div>
                 </div>
                 <div position="absolute" top="50px" right="0" text-align="right">
-                    <h3 margin-top="0" margin-bottom="2px">
-                        {{instituicao.nomeCompleto}}
+                    <div margin-top="0" margin-bottom="2px">
                         {% block info %}{% endblock %}
-                    </h3>
+                    </div>
                 </div>
             </div>
         </header>

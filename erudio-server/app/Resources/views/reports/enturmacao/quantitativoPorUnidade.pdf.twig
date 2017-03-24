@@ -1,6 +1,9 @@
 <pdf orientation="L">
     {% embed 'reports/templates/page.twig' %}
-        {% block title %}Relatório Quantitativo de Alunos Enturmados{% endblock %}
+        {% block title %}
+            <h1>Alunos Enturmados</h1>
+            <h3>Quantitativo por Unidade Escolar</h3>
+        {% endblock %}
         {% block content %}
             <div margin-top="15px" font-size="8px">
                 <table>

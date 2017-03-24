@@ -72,6 +72,9 @@ class AulaFacade extends AbstractFacade {
             'disciplina' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
             },
+            'disciplinas' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplina.id IN (:disciplinas)')->setParameter('disciplinas', $value);
+            },
             'horario' => function(QueryBuilder $qb, $value) {
                 $qb->join('a.horario', 'horario')
                    ->andWhere('horario.id = :horario')->setParameter('horario', $value);

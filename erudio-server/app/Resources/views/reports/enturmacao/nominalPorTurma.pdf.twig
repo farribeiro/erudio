@@ -1,14 +1,22 @@
 <pdf>
     {% embed 'reports/templates/page.twig' %}
-        {% block title %}Relação de Alunos da Turma {{turma.nome}} - {{turma.apelido}}{% endblock %}
+        {% block title %}
+            <h1>Alunos Enturmados</h1>
+            <h3>Nominal</h3>
+        {% endblock %}
+        
+        {% block info %}
+            <h3>Turma: {{turma.nomeExibicao}}</h3>
+        {% endblock %}    
+        
         {% block content %}
-            <div margin-top="15px" font-size="8px" breakable="false">
+            <div font-size="8px" breakable="false">
                 <table>
-                    <tr>
+                    <tr font-size="9px">
                         <td width="90px"><strong>Matrícula</strong></td>
                         <td><strong>Nome</strong></td>
                         <td width="60px"><strong>Data Nascimento</strong></td>
-                        <td width="35px"><strong>Gênero</strong></td>
+                        <td width="38px"><strong>Gênero</strong></td>
                         <td><strong>Pais</strong></td>
                     </tr>
                     {% for e in enturmados %}

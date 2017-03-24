@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class EnturmacaoReportController extends Controller {
     
@@ -23,6 +24,15 @@ class EnturmacaoReportController extends Controller {
     }
     
     /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Relação nominal de alunos enturmados por turma",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
     * @Route("/enturmacoes/nominal-turma", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
@@ -46,6 +56,15 @@ class EnturmacaoReportController extends Controller {
     }
     
     /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Relatório quantitativo de alunos enturmados por instituição",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
     * @Route("/enturmacoes/quantitativo-instituicao", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
@@ -72,6 +91,15 @@ class EnturmacaoReportController extends Controller {
     }
     
     /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Relatório quantitativo de alunos enturmados por unidade de ensino",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
     * @Route("/enturmacoes/quantitativo-unidade", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */

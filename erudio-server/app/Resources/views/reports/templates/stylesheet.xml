@@ -2,6 +2,14 @@
     <td>
         <attribute name="padding" value="3px" />
         <attribute name="text-align" value="center" />
-        <attribute name="vertical-align" value="center" />
+        <attribute name="vertical-align" value="middle" />
     </td>
+    <h1>
+        <attribute name="padding" value="0px" />
+        <attribute name="margin" value="0px" />
+    </h1>
+    <h3>
+        <attribute name="padding" value="0px" />
+        <attribute name="margin" value="0px" />
+    </h3>
 </stylesheet>

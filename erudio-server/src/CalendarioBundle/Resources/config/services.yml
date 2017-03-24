@@ -1,4 +1,8 @@
 services:
+    facade.calendario.dias:
+        class: CalendarioBundle\Service\DiaFacade
+        arguments: ["@doctrine"]
+    
     facade.calendario.horarios_disciplinas:
         class: CalendarioBundle\Service\HorarioDisciplinaFacade
         arguments: ["@doctrine"]
