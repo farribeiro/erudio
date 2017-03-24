@@ -44,6 +44,8 @@ class Regime extends AbstractEditableEntity {
     */
     private $nome;
     
+    private $unidade;
+            
     function getNome() {
         return $this->nome;
     }
@@ -52,4 +54,12 @@ class Regime extends AbstractEditableEntity {
         $this->nome = $nome;
     }
     
+    function getUnidade() {
+        return $this->unidade;
+    }
+
+    function setUnidade($unidade) {
+        $this->unidade = $unidade;
+    }
+
 }
