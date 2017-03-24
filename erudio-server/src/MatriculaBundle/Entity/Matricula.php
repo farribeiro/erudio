@@ -55,12 +55,6 @@ class Matricula extends AbstractEditableEntity {
     */
     private $codigo;
     
-    /**  
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(type = "string", nullable = true) 
-    */
-    private $alfabetizado;
-    
     /**
     * @JMS\Groups({"LIST"})  
     * @ORM\Column(type = "string", nullable = false) 
@@ -117,10 +111,6 @@ class Matricula extends AbstractEditableEntity {
             $this->codigo = $codigo;
         }
     }
-    
-    function getAlfabetizado() {
-        return $this->alfabetizado;
-    }
 
     function getStatus() {
         return $this->status;
@@ -136,10 +126,6 @@ class Matricula extends AbstractEditableEntity {
 
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
-    }
-
-    function setAlfabetizado($alfabetizado) {
-        $this->alfabetizado = $alfabetizado;
     }
     
     function setStatus($status) {
