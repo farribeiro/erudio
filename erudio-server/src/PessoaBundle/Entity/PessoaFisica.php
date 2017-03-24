@@ -117,6 +117,11 @@ class PessoaFisica extends Pessoa {
     private $carteiraTrabalhoEstado;
     
     /**
+     * @ORM\Column 
+     */
+    private $alfabetizado;
+    
+    /**
     * @ORM\ManyToMany(targetEntity="Particularidade")
     * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
@@ -313,6 +318,12 @@ class PessoaFisica extends Pessoa {
         $this->necessidadesEspeciais = $necessidadesEspeciais;
     }
 
+    function getAlfabetizado() {
+        return $this->alfabetizado;
+    }
 
+    function setAlfabetizado($alfabetizado) {
+        $this->alfabetizado = $alfabetizado;
+    }
 
 }

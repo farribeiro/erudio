@@ -71,6 +71,12 @@ class Etapa extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(name = "frequencia_unificada", type = "boolean", nullable = false) 
+    */
+    private $frequenciaUnificada = false;
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\ManyToOne(targetEntity = "Modulo") 
     */
     private $modulo;
@@ -162,6 +168,14 @@ class Etapa extends AbstractEditableEntity {
     
     function setModulo(Modulo $modulo) {
         $this->modulo = $modulo;
+    }
+    
+    function getFrequenciaUnificada() {
+        return $this->frequenciaUnificada;
+    }
+
+    function setFrequenciaUnificada($frequenciaUnificada) {
+        $this->frequenciaUnificada = $frequenciaUnificada;
     }
     
 }
