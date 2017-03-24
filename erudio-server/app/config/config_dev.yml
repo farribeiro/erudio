@@ -17,7 +17,7 @@ monolog:
             type:  rotating_file
             max_files: 30
             path:   "%kernel.logs_dir%/%kernel.environment%.log"
-            level:  info
+            level:  INFO
             channels: [!event]
         console:
             type:   console

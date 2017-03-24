@@ -1,12 +1,12 @@
 <pdf>
     {% for d in diarios %}
         {% embed 'reports/templates/page.twig' %}
-            {% block pageType %}a4-landscape{% endblock %}
+            {% block pageType %}a4{% endblock %}
             
            {% block title %}
                 <p margin="0" padding="0"><h1 margin="0">Diário de Notas</h1></p>
                 <p margin="0" padding="0">{{d.disciplina.nomeExibicao}}</p>
-                <p margin="0" padding="0">{{mes}} {{"now"|date('Y')}}</p>
+                <p margin="0" padding="0"> Média {{media}}</p>
             {% endblock %}
             {% block headerHeight %}70px{% endblock %}
             
@@ -31,21 +31,23 @@
                 <div margin="0" padding="0" font-size="8px">
                     <table>
                         <tr>
+                            <td border.type="none"></td>
+                            <td border.type="none"></td>
+                            <td border.style="dotted" colspan="10"><h4><strong>Avaliações</strong></h4></td>
+                            <td border.type="none"></td>
+                        </tr>
+                        <tr>
                             <td width="25px">
-                                <strong>Nº</strong>
+                                <h4><strong>Nº</strong></h4>
                             </td>
-                            <td><h4 margin="0"><strong>Aluno</strong></h4></td>
-                            {% for aula in d.aulas %}
-                                <td width="28px" padding-left="5px">
-                                    <h4 margin="0"><strong>{{aula.dia.data|date('d')}}</strong></h4>
-                                </td>
-                            {% else %}
-                                {% for i in 1..25 %}
-                                    <td width="28px" padding-left="5px"></td>
+                            <td>
+                                <h4><strong>Aluno</strong></h4>
+                            </td>
+                                {% for i in 1..10 %}
+                                    <td width="60px" padding-left="5px"></td>
                                 {% endfor %}
-                            {% endfor %}
                             <td width="60px">
-                                <h4 margin="0"><strong>Faltas</strong></h4>
+                                <h4><strong>Média</strong></h4>
                             </td>
                         </tr>
                         {% for i, enturmacao in d.enturmacoes %}
@@ -54,20 +56,13 @@
                                 <td text-align="left">
                                     {{enturmacao.matricula.aluno.nome|upper}}
                                 </td>
-                                {% if d.aulas|length > 0 %}
-                                    {% for aula in 1..d.aulas|length %}
+                                    {% for i in 1..10 %}
                                         <td></td>
                                     {% endfor %}
-                                {% else %}
-                                    {% for i in 1..25 %}
-                                        <td></td>
-                                    {% endfor %}
-                                {% endif%}
-                                <td></td>
+                                 <td></td>
                             </tr>
                         {% endfor %}
                     </table>
-                    <p margin="0" text-align="right">Total de aulas do mês: {{d.aulas|length > 0 ? d.aulas|length : '_________'}}</p>
                 </div>
                 <column-layout number-of-columns="3" equals-columns="true" margin-top="25px" font-size="10px">
                     <div breakable="false">
@@ -86,34 +81,6 @@
                     </div>
                     <column-break />
                 </column-layout>
-            {% endblock %}
-        {% endembed %}
-        
-        {% embed 'reports/templates/page.twig' %}
-            {% block pageType %}a4-landscape{% endblock %}
-            
-            {% block title %}
-                <p margin="0" padding="0"><h1 margin="0">Diário de Frequência</h1></p>
-                <p margin="0" padding="0">{{d.disciplina.nomeExibicao}}</p>
-                <p margin="0" padding="0">{{mes}} {{"now"|date('Y')}}</p>
-            {% endblock %}
-            
-            {% block info %}
-
-                <p margin="0" padding="0">
-                    {{d.disciplina.disciplina.etapa.nome}} - 
-                    Turma {{d.disciplina.turma.apelido == null ? d.disciplina.turma.apelido : d.disciplina.turma.nome}}
-                </p>
-                <p margin="0" padding="0">Prof.
-                    {% for p in d.disciplina.professores %}
-                        {{p.vinculo.funcionario.nome}}
-                    {% endfor %}
-                </p>
-            {% endblock %}
-            
-            {% block content %}
-                <h3 margin-top="50px" padding-top="0" text-align="center">Observações</h3>
-                {% for i in 1..20 %} <hr /> {% endfor %}
             {% endblock %}
         {% endembed %}
     {% endfor %}

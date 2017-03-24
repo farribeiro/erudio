@@ -4,4 +4,7 @@
         <attribute name="text-align" value="center" />
         <attribute name="vertical-align" value="center" />
     </td>
+    <h4>
+        <attribute name="margin" value="0" />
+    </h4>
 </stylesheet>
