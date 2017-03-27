@@ -23,19 +23,19 @@ class NotasQuantitativoReportController extends Controller {
     }
     
     /**
-    * @Route("/notas-quantitativo", defaults={ "_format" = "pdf" })
+    * @Route("/diario-notas", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
     function diarioAction(Request $request) {
         try {
             $mes = $request->query->getInt('mes', (new \DateTime())->format('m'));
-            $media = $request->query->getInt('media', 1);
             $disciplina = $this->getDisciplinaOfertadaFacade()->find(
                 $request->query->getInt('disciplina')
             );
             return $this->render('reports/nota/notaQuantitativo.pdf.twig', [
                 'instituicao' => $disciplina->getTurma()->getUnidadeEnsino(),
                 'mes' => $this->mesToString($mes),
+                'enturmacoes' => $disciplina->getTurma()->getEnturmacoes(),
                 'diarios' => [ $this->gerarDiario($disciplina, $mes) ]
             ]);
         } catch (\Exception $ex) {
@@ -45,7 +45,7 @@ class NotasQuantitativoReportController extends Controller {
     }
     
     /**
-    * @Route("/notas-quantitativos", defaults={ "_format" = "pdf" })
+    * @Route("/diarios-notas", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
     function diariosAction(Request $request) {
@@ -60,6 +60,7 @@ class NotasQuantitativoReportController extends Controller {
             return $this->render('reports/nota/notaQuantitativo.pdf.twig', [
                 'instituicao' => $disciplina->getTurma()->getUnidadeEnsino(),
                 'media' => $media,
+                'enturmacoes' => $turma->getEnturmacoes(),
                 'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
@@ -73,18 +74,13 @@ class NotasQuantitativoReportController extends Controller {
      * em determinado mês.
      * 
      * @param $disciplina
-     * @param $mes
-     * @return array diário de frequência
+     * @return array diário de notas
      */
-    private function gerarDiario($disciplina, $media, $autoPreenchimento = true) {
-        $enturmacoes = $disciplina->getTurma()->getEnturmacoes()->toArray();
-        usort($enturmacoes, function($e1, $e2) {
-            return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
-                    $e2->getMatricula()->getAluno()->getNome()); 
-        });
+    private function gerarDiario($disciplina, $autoPreenchimento = true) {
+        $avaliacoes = $autoPreenchimento ? [] : [];
         return [
             'disciplina' => $disciplina,
-            'enturmacoes' => $enturmacoes
+            'avaliacoes' => $avaliacoes
         ];
     }
     
