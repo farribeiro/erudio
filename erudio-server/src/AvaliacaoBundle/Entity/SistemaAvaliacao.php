@@ -101,4 +101,12 @@ class SistemaAvaliacao extends AbstractEntity {
         return $this->regime;
     }
     
+    function isQualitativo() {
+        return $this->tipo == self::TIPO_QUALITATIVO;
+    }
+    
+    function isQuantitativo() {
+        return $this->tipo == self::TIPO_QUANTITATIVO;
+    }
+    
 }

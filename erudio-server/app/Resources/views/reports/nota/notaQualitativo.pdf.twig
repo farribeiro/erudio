@@ -11,7 +11,7 @@
             {% block headerHeight %}70px{% endblock %}
             
             {% block info %}
-            {% embed 'reports/templates/info.twig' %}{% endembed %}
+                {% embed 'reports/templates/info.twig' %}{% endembed %}
             {% endblock %}
             {% block content %}
                 <div margin="0" padding="0" font-size="8px">
@@ -19,26 +19,22 @@
                         <tr>
                             <td border.type="none"></td>
                             <td border.type="none"></td>
-                            <td border.style="dotted" colspan="10"><h4><strong>Avaliações</strong></h4></td>
-                            <td border.type="none"></td>
+                            <td border.style="dotted" colspan="{{d.habilidades|length}}"><h4><strong>Habilidades</strong></h4></td>
                         </tr>
                         <tr>
                             <td width="25px">
                                 <h4><strong>Nº</strong></h4>
                             </td>
-                            <td>
+                            <td  width="350px">
                                 <h4><strong>Aluno</strong></h4>
                             </td>
                                 {% for avaliacao in d.avaliacoes %}
                                     <td width="35px" padding-left="5px"></td>
                                 {% else %}
-                                    {% for i in 1..10 %}
-                                        <td width="35px" padding-left="5px"></td>
+                                    {% for i, habilidade in d.habilidades %}
+                                        <td padding-left="5px">{{i + 1}}</td>
                                     {% endfor %}
                                 {% endfor %}
-                            <td width="60px">
-                                <h4><strong>Média</strong></h4>
-                            </td>
                         </tr>
                         {% for i, enturmacao in enturmacoes %}
                             <tr>
@@ -46,32 +42,28 @@
                                 <td text-align="left">
                                     {{enturmacao.matricula.aluno.nome|upper}}
                                 </td>
-                                    {% for i in 1..10 %}
-                                        <td></td>
-                                    {% endfor %}
-                                 <td></td>
-                            </tr>
-                        {% endfor %}
-                        {% for i in 1..5 %}
-                            <tr>
-                                <td>-</td>
-                                <td></td>
-                                {% for avaliacao in d.avaliacoes %}
-                                    <td width="35px" padding-left="5px"></td>
-                                {% else %}
-                                    {% for i in 1..10 %}
-                                        <td width="35px" padding-left="5px"></td>
-                                    {% endfor %}
+                                {% for habilidade in d.habilidades %}
+                                    <td></td>
                                 {% endfor %}
-                                <td></td>
                             </tr>
                         {% endfor %}
-                        
                     </table>
                 </div>
                 {% block assinaturas %}    
                     {% embed 'reports/templates/assinaturas.twig' %}{% endembed %}    
                 {% endblock %}
+                <div width="30%" position="absolute" float="left" margin-top="20px">
+                    <p><strong>Conceitos:</strong></p>
+                    {% for conceito in conceitos %}
+                        <p padding-left="5px">{{conceito.sigla}} - {{conceito.nome}}</p>
+                    {% endfor %}
+                </div>
+                <div width="68%" position="absolute" float="right" margin-top="20px">
+                    <p><strong>Habiliades:</strong></p>
+                    {% for i, habilidade in d.habilidades %}
+                        <p padding-left="5px">{{i + 1}} - {{habilidade.nome}}</p>
+                    {% endfor %}
+                </div>
             {% endblock %}
         {% endembed %}
     {% endfor %}
