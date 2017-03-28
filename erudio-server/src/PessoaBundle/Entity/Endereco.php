@@ -128,8 +128,8 @@ class Endereco extends AbstractEditableEntity {
     
     function getEnderecoCompleto() {
         return "{$this->getLogradouro()}, {$this->getNumero()}, {$this->getBairro()}, "
-            . "CEP {$this->getCep()}, {$this->getCidade()->getNome()}/"
-            . "{$this->getCidade()->getEstado()->getNome()}";
+            . "CEP {$this->getCep()}, {$this->getCidade()->getNome()} - "
+            . "{$this->getCidade()->getEstado()->getSigla()}";
     }
     
 }

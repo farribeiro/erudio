@@ -199,7 +199,7 @@ class Turma extends AbstractEditableEntity {
     function getNomeExibicao() {
         return $this->apelido 
                 ? "{$this->etapa->getNomeExibicao()} - {$this->apelido}" 
-                : $this->nome;
+                : "{$this->etapa->getNomeExibicao()} - {$this->nome}";
     }
     
     function getNome() {

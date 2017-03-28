@@ -83,7 +83,7 @@ abstract class AbstractFacade {
         return $entidade;
     }
 
-    function findAll($params, $page = null) {
+    function findAll($params = [], $page = null) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
