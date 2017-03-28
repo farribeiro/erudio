@@ -69,23 +69,9 @@
                         
                     </table>
                 </div>
-                <column-layout number-of-columns="3" equals-columns="true" margin-top="25px" font-size="10px">
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Professor</p>
-                    </div>
-                    <column-break />
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Supervisor Escolar</p>
-                    </div>
-                    <column-break />
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Secretário Escolar</p>
-                    </div>
-                    <column-break />
-                </column-layout>
+                {% block assinaturas %}    
+                    {% embed 'reports/templates/assinaturas.twig' %}{% endembed %}    
+                {% endblock %}
             {% endblock %}
         {% endembed %}
     {% endfor %}

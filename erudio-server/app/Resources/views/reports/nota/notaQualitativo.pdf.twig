@@ -11,7 +11,7 @@
             {% block headerHeight %}70px{% endblock %}
             
             {% block info %}
-            {% embed 'reports/templates/info.twig' %}{% endembed %}
+                {% embed 'reports/templates/info.twig' %}{% endembed %}
             {% endblock %}
             {% block content %}
                 <div margin="0" padding="0" font-size="8px">
@@ -47,10 +47,11 @@
                                 {% endfor %}
                             </tr>
                         {% endfor %}
-                        
-                        
                     </table>
                 </div>
+                {% block assinaturas %}    
+                    {% embed 'reports/templates/assinaturas.twig' %}{% endembed %}    
+                {% endblock %}
                 <div width="30%" position="absolute" float="left" margin-top="20px">
                     <p><strong>Conceitos:</strong></p>
                     {% for conceito in conceitos %}
@@ -63,23 +64,6 @@
                         <p padding-left="5px">{{i + 1}} - {{habilidade.nome}}</p>
                     {% endfor %}
                 </div>
-                <column-layout number-of-columns="3" equals-columns="true" margin-top="50px" font-size="10px">
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Professor</p>
-                    </div>
-                    <column-break />
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Supervisor Escolar</p>
-                    </div>
-                    <column-break />
-                    <div breakable="false">
-                        <p text-align="center" margin="0" padding="0">___________________________________</p>
-                        <p text-align="center" padding-top="0" margin-top="0">Secretário Escolar</p>
-                    </div>
-                    <column-break />
-                </column-layout>
             {% endblock %}
         {% endembed %}
     {% endfor %}
