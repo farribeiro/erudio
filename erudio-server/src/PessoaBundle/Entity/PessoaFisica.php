@@ -119,7 +119,7 @@ class PessoaFisica extends Pessoa {
     /**
      * @ORM\Column 
      */
-    private $alfabetizado;
+    private $alfabetizado = false;
     
     /**
     * @ORM\ManyToMany(targetEntity="Particularidade")

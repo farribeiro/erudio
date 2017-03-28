@@ -66,15 +66,16 @@ class EnturmacaoReportController extends Controller {
     * )
     * 
     * @Route("/enturmacoes/quantitativo-instituicao", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
+    * @Pdf(stylesheet = "reports/templates/stylesheet.xml", enableCache = true)
     */
     function quantitativoPorInstituicaoAction(Request $request) {
         try {
             $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->find(
                 ['id' => $request->query->getInt('instituicao', 0), 'ativo' => true]
             );
+            $tipo = $request->query->getInt('tipo', 0);
             $unidades = $this->getDoctrine()->getRepository('PessoaBundle:UnidadeEnsino')->findBy(
-                ['instituicaoPai' => $instituicao, 'ativo' => true]
+                ['instituicaoPai' => $instituicao, 'ativo' => true, 'tipo' => $tipo]
             );
             $relatorios = [];
             foreach ($unidades as $unidade) {

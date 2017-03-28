@@ -72,9 +72,6 @@ class MatriculaFacade extends AbstractFacade {
             'codigo' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.codigo LIKE :codigo')->setParameter('codigo', '%' . $value . '%');
             },
-            'alfabetizado' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('m.alfabetizado = :alfabetizado')->setParameter('alfabetizado', $value);
-            },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             }
@@ -93,9 +90,6 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($matricula) {
-        if($matricula->getAlfabetizado() == "") {
-            $matricula->setAlfabetizado(null);
-        }
         $this->orm->getManager()->flush();
     }
     

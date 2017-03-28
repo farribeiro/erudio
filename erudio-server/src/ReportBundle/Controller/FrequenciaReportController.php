@@ -146,18 +146,19 @@ class FrequenciaReportController extends Controller {
      * @return array diário de frequência
      */
     private function gerarDiarioDisciplina($disciplina, $mes, $autoPreenchimento = true) {
-         $aulas = [];
-         if ($autoPreenchimento) {
-             $aulas = array_map(
-                function($a) { return $a->getDia(); },
-                $this->getAulaFacade()->findAll(['mes' => $mes, 'disciplina' => $disciplina->getId()])
-            );
-         }
+        $aulas = [];
+        if ($autoPreenchimento) {
+            $aulas = array_map(
+               function($a) { return $a->getDia(); },
+               $this->getAulaFacade()->findAll(['mes' => $mes, 'disciplina' => $disciplina->getId()])
+           );
+        }
         $professor = $disciplina->getProfessores()->count() > 0 
-                ? $disciplina->getProfessores()->first() : '';
+                ? $disciplina->getProfessores()->first()->getVinculo()->getFuncionario()->getNome() 
+                : '';
         return [
             'disciplina' => $disciplina->getNomeExibicao(),
-            'professor' => $professor->getVinculo()->getFuncionario()->getNome(),
+            'professor' => $professor,
             'aulas' => $aulas
         ];
     }
@@ -182,12 +183,13 @@ class FrequenciaReportController extends Controller {
                 }
             }
             ksort($aulas);
-         }
+        }
+        $nomeProfessor = $professor ? $professor->getVinculo()->getFuncionario()->getNome() : '';
         return [
             'disciplina' => count($disciplinas) > 1 
                 ? 'Multidisciplinar'
                 : $disciplinas[0]->getDisciplina()->getNomeExibicao(),
-            'professor' => $professor->getVinculo()->getFuncionario()->getNome(),
+            'professor' => $nomeProfessor,
             'aulas' => $aulas
         ];
     }

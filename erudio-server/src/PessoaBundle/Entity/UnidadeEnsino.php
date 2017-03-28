@@ -59,7 +59,7 @@ class UnidadeEnsino extends Instituicao {
     * @JMS\VirtualProperty()
     */
     function getNomeCompleto() {
-        return $this->tipo->getSigla() . ' ' . $this->getNome();
+        return $this->tipo != null ? "{$this->tipo->getSigla()} {$this->getNome()}" : $this->getNome();
     }    
     
     function getTipo() {
