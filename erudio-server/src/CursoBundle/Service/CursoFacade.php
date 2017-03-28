@@ -31,10 +31,10 @@ namespace CursoBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 
-class CursoOfertadoFacade extends AbstractFacade {
+class CursoFacade extends AbstractFacade {
     
     function getEntityClass() {
-        return 'CursoBundle:CursoOfertado';
+        return 'CursoBundle:Curso';
     }
     
     function queryAlias() {
@@ -43,9 +43,8 @@ class CursoOfertadoFacade extends AbstractFacade {
     
     function parameterMap() {
         return [
-            'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.curso', 'curso')                   
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->join('c.unidadeEnsino', 'unidadeEnsino')

@@ -157,6 +157,10 @@ class PessoaFisica extends Pessoa {
         parent::__construct();
     }
     
+    function getIdade() {
+        return (new \DateTime())->diff($this->getDataNascimento());
+    }
+    
     function getNumeroRg() {
         return $this->numeroRg;
     }

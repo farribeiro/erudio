@@ -28,44 +28,6 @@ class FrequenciaReportController extends Controller {
     }
     
     /**
-    * 
-    * @Route("/diarios-frequencia-por-professor", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function diariosPorProfessor(Request $request) {
-         try {
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
-            $mes = $request->query->getInt('mes', 1);
-            $auto = $request->query->get('auto', true);
-            $modelos = [];
-            foreach ($turma->getDisciplinas() as $d) {
-                foreach ($d->getProfessores() as $p) {
-                    if(array_key_exists($p->getId(), $modelos) == false) {
-                        $modelos[$p->getId()] = ['professor' => $p, 'disciplinas' => [$d]];
-                    } else {
-                        $modelos[$p->getId()]['disciplinas'][] = $d;
-                    }
-                }
-            }
-            $diarios = [];
-            foreach ($modelos as $modelo) {
-                $diarios[] = $this->gerarDiarioMultidisciplina(
-                        $modelo['disciplinas'], $modelo['professor'], $mes, $auto);
-            }
-            return $this->render('reports/frequencia/diarios.pdf.twig', [
-                'instituicao' => $turma->getUnidadeEnsino(),
-                'turma' => $turma,
-                'mes' => $this->mesToString($mes),
-                'enturmacoes' => $turma->getEnturmacoes(),
-                'diarios' => $diarios
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
-        }
-    }
-    
-    /**
     * @ApiDoc(
     *   resource = true,
     *   section = "Módulo Relatórios",
@@ -115,10 +77,7 @@ class FrequenciaReportController extends Controller {
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
             $mes = $request->query->getInt('mes', 1);
             $auto = $request->query->get('auto', true);
-            $diarios = [];
-            foreach ($turma->getDisciplinas() as $disciplina) {
-                $diarios[] = $this->gerarDiarioDisciplina($disciplina, $mes, $auto);
-            }
+            $diarios = $this->gerarDiariosTurma($turma, $mes, $auto);
             return $this->render('reports/frequencia/diarios.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
@@ -133,8 +92,54 @@ class FrequenciaReportController extends Controller {
     }
     
     /**
-     * Gera a estrutura de um diário de frequência, para determinada disciplina ofertada, 
-     * em determinado mês.
+     * Gera as estruturas de todos os diários da turma, que podem variar de acordo
+     * com curso, etapa, e outras variáveis.
+     * 
+     * @param $turma
+     * @param $mes mês do diário
+     * @param $auto indica se o relatório usará as aulas cadastradas para montar o diário
+     * @return type
+     */
+    private function gerarDiariosTurma($turma, $mes, $auto = true) {
+        $diarios = [];
+        if ($turma->getEtapa()->getFrequenciaUnificada()) {
+            $this->get('logger')->info('>> BINGO');
+            $modelos = $this->gerarModelosDiariosPorProfessor($turma);
+            foreach ($modelos as $modelo) {
+                $diarios[] = $this->gerarDiarioMultidisciplina(
+                        $modelo['disciplinas'], $modelo['professor'], $mes, $auto);
+            }
+        } else {
+            foreach ($turma->getDisciplinas() as $disciplina) {
+                $diarios[] = $this->gerarDiarioDisciplina($disciplina, $mes, $auto);
+            }
+        }
+        return $diarios;
+    }
+    
+    /**
+     * Gera um array, onde as chaves são os ids dos professores da turma, e os valores
+     * são arrays contendo o professor e as disciplinas que este ministra.
+     * 
+     * @param $turma
+     * @return array
+     */
+    private function gerarModelosDiariosPorProfessor($turma) {
+        $modelos = [];
+        foreach ($turma->getDisciplinas() as $d) {
+            foreach ($d->getProfessores() as $p) {
+                if(array_key_exists($p->getId(), $modelos) == false) {
+                    $modelos[$p->getId()] = ['professor' => $p, 'disciplinas' => [$d]];
+                } else {
+                    $modelos[$p->getId()]['disciplinas'][] = $d;
+                }
+            }
+        }
+        return $modelos;
+    }
+    
+    /**
+     * Gera a estrutura de um diário de frequência, para determinada disciplina ofertada.
      * 
      * @param $disciplina
      * @param $mes
@@ -158,8 +163,9 @@ class FrequenciaReportController extends Controller {
     }
     
     /**
-     * Gera a estrutura de um diário de frequência único para todas as disciplinas
-     * informadas.
+     * Gera a estrutura de um diário de frequência único para um grupo de disciplinas.
+     * Utilizado principalmente nos primeiros anos do Ensino Fundamental, onde um professor
+     * ministra várias disciplinas.
      * 
      * @param $turma
      * @param $mes

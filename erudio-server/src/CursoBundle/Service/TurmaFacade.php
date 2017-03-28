@@ -93,7 +93,7 @@ class TurmaFacade extends AbstractFacade {
         );
     }    
     
-    protected function prepareQuery(QueryBuilder $qb, array $params){
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.etapa', 'etapa')->orderBy('etapa.ordem');
     }
         

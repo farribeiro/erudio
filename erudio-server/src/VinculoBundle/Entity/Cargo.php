@@ -64,21 +64,9 @@ class Cargo extends AbstractEditableEntity {
     function getProfessor() {
         return $this->professor;
     }
-
-    function setNome($nome) {
-        $this->nome = $nome;
-    }
-
-    function setProfessor($professor) {
-        $this->professor = $professor;
-    }
     
     function getGrupo() {
         return $this->grupo;
-    }
-
-    function setGrupo($grupo) {
-        $this->grupo = $grupo;
     }
     
 }

@@ -79,6 +79,11 @@ class Enturmacao extends AbstractEditableEntity {
         $this->encerrado = false;
     }
     
+    function getAnosDefasagem() {
+        $idadeEtapa = $this->turma->getEtapa()->getIdadeRecomendada();
+        return $idadeEtapa ? $this->matricula->getAluno()->getIdade()->y - $idadeEtapa : 0;
+    }
+    
     function getEncerrado() {
         return $this->encerrado;
     }

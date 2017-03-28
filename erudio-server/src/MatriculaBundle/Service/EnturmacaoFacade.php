@@ -78,6 +78,37 @@ class EnturmacaoFacade extends AbstractFacade {
         ];
     }
     
+    /**
+     * Lista enturmaçẽos de alunos defasados de um curso ofertado, em determinada etapa.
+     * 
+     * @param Etapa $etapa
+     * @return array alunos defasados
+     */
+    function getAlunosDefasados($cursoOfertado, $etapa, \DateTime $dataReferencia = null) {
+        $dataLimite = $dataReferencia ? $dataReferencia 
+                : \DateTime::createFromFormat('Y-m-d', (new \DateTime())->format('Y') . '-03-31');
+        $idadeLimite = $etapa->getIdadeRecomendada() + $etapa->getCurso()->getLimiteDefasagem();
+        $dataLimite->sub(new \DateInterval("P{$idadeLimite}Y"));
+        $qb = $this->orm->getManager()->createQueryBuilder()->select('en')
+            ->from($this->getEntityClass(), 'en')
+            ->join('en.turma', 't')->join('t.etapa', 'e')->join('t.unidadeEnsino', 'u')
+            ->join('en.matricula', 'm')->join('m.aluno', 'a')
+            ->where('en.ativo = true')->andWhere('en.encerrado = false')
+            ->andWhere('u.id = :unidadeEnsino')->andWhere('e.id = :etapa')
+            ->andWhere('a.dataNascimento < :limiteInferior')
+            ->setParameter('etapa', $etapa->getId())
+            ->setParameter('unidadeEnsino', $cursoOfertado->getUnidadeEnsino()->getId())
+            ->setParameter('limiteInferior', $dataLimite);
+        return $qb->getQuery()->getResult();
+    }
+    
+    /**
+     * Conta alunos de uma turma. O parâmetro adicional filtra a contagem por gênero.
+     * 
+     * @param Turma $turma
+     * @param $genero 'M' para masculino e 'F' para feminino
+     * @return integer número de alunos da turma
+     */
     function countByTurma(Turma $turma, $genero = '') {
         $qb = $this->orm->getManager()->createQueryBuilder()->select('COUNT(e.id)')
             ->from($this->getEntityClass(), 'e')
@@ -90,6 +121,13 @@ class EnturmacaoFacade extends AbstractFacade {
         return $qb->getQuery()->getSingleScalarResult();
     }
     
+    /**
+     * Realiza as operações para mover o aluno de uma turma para outra, na mesma
+     * unidade de ensino.
+     * 
+     * @param Enturmacao $origem Enturmação atual, que será encerrada
+     * @param Enturmacao $destino Enturmação que está sendo criada
+     */
     function executarMovimentacaoTurma(Enturmacao $origem, Enturmacao $destino) {
         $origem->encerrar();
         $this->orm->getManager()->merge($origem);
@@ -101,6 +139,12 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->ocuparVaga($destino);
     }
     
+    /**
+     * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
+     * de ensino, bem como suas disciplinas cursadas.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     function encerrarPorTransferencia(Enturmacao $enturmacao) {
         $enturmacao->encerrar();
         $this->orm->getManager()->merge($enturmacao);
@@ -131,6 +175,12 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->liberarVaga($enturmacao);
     }
     
+    /**
+     * Vincula disciplinas cursadas existentes à uma enturmação recém-criada, ou cria
+     * novas disciplinas cursadas de acordo com aquelas oferecidas na turma.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function vincularDisciplinas(Enturmacao $enturmacao) {
         $matricula = $enturmacao->getMatricula();
         $disciplinasOfertadas = $enturmacao->getTurma()->getDisciplinas();
@@ -157,6 +207,12 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->orm->getManager()->flush();
     }
     
+    /**
+     * Transfere disciplinas cursadas de uma enturmação para outra.
+     * 
+     * @param Enturmacao $origem
+     * @param Enturmacao $destino
+     */
     private function transferirDisciplinas(Enturmacao $origem, Enturmacao $destino) {
         $disciplinasCursadas = $origem->getDisciplinasCursadas();
         foreach($disciplinasCursadas as $disciplinaCursada) {
@@ -170,6 +226,12 @@ class EnturmacaoFacade extends AbstractFacade {
         }
     }
     
+    /**
+     * Encerra disciplinas cursadas de uma enturmação, com o status informado.
+     * 
+     * @param Enturmacao $enturmacao
+     * @param $status
+     */
     private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
             $disciplina->setStatus($status);
@@ -178,6 +240,11 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->orm->getManager()->flush();
     }
     
+    /**
+     * Exclui disciplinas de uma enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function excluirDisciplinas(Enturmacao $enturmacao) {
         $this->disciplinaCursadaFacade->removeBatch(
             $enturmacao->getDisciplinasCursadas()
@@ -186,17 +253,33 @@ class EnturmacaoFacade extends AbstractFacade {
         );
     }
     
+    /**
+     * Indica se existe vaga aberta para a enturmação informada.
+     * 
+     * @param Enturmacao $enturmacao
+     * @return true caso a turma da enturmação possua vaga disponível, e false em
+     * caso contrário
+     */
     private function possuiVagaAberta(Enturmacao $enturmacao) {
         return $enturmacao->getTurma()->getVagasAbertas()->count() > 0;
     }
     
+    /**
+     * Aloca uma vaga na turma da enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function ocuparVaga(Enturmacao $enturmacao) {
         $this->vagaFacade->ocupar($enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
     }
     
+    /**
+     * Libera a vaga ocupada pela enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function liberarVaga(Enturmacao $enturmacao) {
         $this->vagaFacade->liberar($enturmacao->getVaga());
     }
     
 }
-

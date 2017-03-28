@@ -65,18 +65,6 @@ class Etapa extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(type = "boolean", nullable = false) 
-    */
-    private $integral = true;
-    
-    /** 
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(name = "frequencia_unificada", type = "boolean", nullable = false) 
-    */
-    private $frequenciaUnificada = false;
-    
-    /** 
-    * @JMS\Groups({"LIST"}) 
     * @ORM\ManyToOne(targetEntity = "Modulo") 
     */
     private $modulo;
@@ -97,12 +85,30 @@ class Etapa extends AbstractEditableEntity {
     private $sistemaAvaliacao;
     
     /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(name = "idade_recomendada", type = "integer") 
+    */
+    private $idadeRecomendada;
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(type = "boolean", nullable = false) 
+    */
+    private $integral = true;
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(type = "boolean", nullable = false, name = "frequencia_unificada") 
+    */
+    private $frequenciaUnificada = false;
+    
+    /** 
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "etapa") 
     */
     private $disciplinas;
     
-    function __construct() {
+    function init() {
         $this->disciplinas = new ArrayCollection();
     }
     
@@ -176,6 +182,14 @@ class Etapa extends AbstractEditableEntity {
 
     function setFrequenciaUnificada($frequenciaUnificada) {
         $this->frequenciaUnificada = $frequenciaUnificada;
+    }
+    
+    function getIdadeRecomendada() {
+        return $this->idadeRecomendada;
+    }
+
+    function setIdadeRecomendada($idadeRecomendada) {
+        $this->idadeRecomendada = $idadeRecomendada;
     }
     
 }
