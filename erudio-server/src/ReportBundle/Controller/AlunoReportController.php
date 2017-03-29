@@ -70,9 +70,10 @@ class AlunoReportController extends Controller {
     function defasadosNominalPorCursoOfertadoAction(Request $request) {
         try {
             $cursoOfertado = $this->getCursoOfertadoFacade()->find($request->query->getInt('curso'));
+            $relatorio = $this->gerarRelatorioDefasados($cursoOfertado);
             return $this->render('reports/aluno/defasados-nominal.pdf.twig', [
                 'instituicao' => $cursoOfertado->getUnidadeEnsino(),
-                'relatorios' => [ $this->gerarRelatorioDefasados($cursoOfertado) ]
+                'relatorios' => [$relatorio]
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());
