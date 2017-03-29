@@ -13,7 +13,7 @@ services:
       
     facade.matricula.enturmacoes:
       class: MatriculaBundle\Service\EnturmacaoFacade
-      arguments: ["@doctrine"]
+      arguments: ["@doctrine", "@logger"]
       calls:
           - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
           - [setVagaFacade, ["@facade.curso.vagas"]]

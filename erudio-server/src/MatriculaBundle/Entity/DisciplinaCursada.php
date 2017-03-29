@@ -101,7 +101,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     public function init() {
-        if(!$this->status) {
+        if(is_null($this->status)) {
             $this->status = self::STATUS_CURSANDO;
         }
     }
