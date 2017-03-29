@@ -10,16 +10,8 @@
             
             {% block headerHeight %}70px{% endblock %}
             
-             {% block info %}
-                <h3 margin="0" padding="0">
-                    {{turma.etapa.nome}} - Turma {{turma.nomeExibicao}}
-                </h3>
-                <h3 margin="0" padding="0">
-                    Disciplina: {{d.disciplina}}
-                </h3>
-                <h3 margin="0" padding="0">
-                    Prof. {{d.professor}}
-                </h3>
+            {% block info %}
+                {% embed 'reports/templates/info.twig' %}{% endembed %}
             {% endblock %}
             
             {% block content %}
