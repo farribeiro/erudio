@@ -26,20 +26,35 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+namespace CursoBundle\Service;
 
-namespace AssetsBundle\Form;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-
-class AssetType extends AbstractType {
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        $builder->add('file', FileType::class, array());
+class DisciplinaFacade extends AbstractFacade {
+    
+   function getEntityClass() {
+        return 'CursoBundle:Disciplina';
     }
     
-    public function configureOptions(OptionsResolver $resolver) {
-        $resolver->setDefaults(array('data_class'=>'AssetsBundle\Entity\Asset','csrf_protection' => false));
+    function queryAlias() {
+        return 'd';
     }
+    
+    function parameterMap() {
+        return [
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('d.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'curso' => function(QueryBuilder $qb, $value) {
+                $qb->join('d.curso', 'curso')
+                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+            },
+            'etapa' => function(QueryBuilder $qb, $value) {
+                $qb->join('d.etapa', 'etapa')
+                   ->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+            }
+        ];
+    }
+    
 }

@@ -26,89 +26,31 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CursoBundle\Entity;
+namespace CursoBundle\Service;
 
-use Doctrine\ORM\Mapping AS ORM;
-use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-use PessoaBundle\Entity\PessoaFisica;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
 
-/**
-* @ORM\Entity
-* @ORM\Table(name = "edu_solicitacao_vaga")
-*/
-class SolicitacaoVaga extends AbstractEditableEntity {
+class ModuloFacade extends AbstractFacade {
     
-    /**        
-    * @JMS\Groups({"LIST"})
-    * @JMS\Type("PessoaBundle\Entity\PessoaFisica")
-    * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\PessoaFisica")
-    * @ORM\JoinColumn(name = "pessoa_fisica_id")
-    */
-    private $pessoa;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = true) 
-    */
-    private $descricao;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = false, name = "data_solicitacao") 
-    */
-    private $dataSolicitacao;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = false, name = "data_expiracao") 
-    */
-    private $dataExpiracao;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(nullable = false) 
-    */
-    private $status;
-    
-    function getPessoa() {
-        return $this->pessoa;
-    }
-
-    function getDescricao() {
-        return $this->descricao;
+    function getEntityClass() {
+        return 'CursoBundle:Modulo';
     }
     
-    function getDataSolicitacao() {
-        return $this->dataSolicitacao;
-    }
-
-    function setPessoa(PessoaFisica $pessoa) {
-        $this->pessoa = $pessoa;
-    }
-
-    function setDescricao($descricao) {
-        $this->descricao = $descricao;
+    function queryAlias() {
+        return 'm';
     }
     
-    function setDataSolicitacao($dataSolicitacao) {
-        $this->dataSolicitacao = $dataSolicitacao;
+    function parameterMap() {
+        return [
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('m.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'curso' => function(QueryBuilder $qb, $value) {
+                $qb->join('m.curso', 'curso')
+                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+            }
+        ];
     }
     
-    function getDataExpiracao() {
-        return $this->dataExpiracao;
-    }
-
-    function setDataExpiracao($dataExpiracao) {
-        $this->dataExpiracao = $dataExpiracao;
-    }
-    
-    function getStatus() {
-        return $this->status;
-    }
-
-    function setStatus($status) {
-        $this->status = $status;
-    }
 }

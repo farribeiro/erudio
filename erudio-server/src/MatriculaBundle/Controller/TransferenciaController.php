@@ -36,7 +36,6 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Transferencia;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
 * @FOS\RouteResource("transferencias")
@@ -102,15 +101,6 @@ class TransferenciaController extends AbstractEntityController {
     */
     function putAction(Request $request, $id, Transferencia $transferencia, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $transferencia, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Delete("transferencias/{id}")
-    */
-    function deleteAction(Request $request, $id) {
-        //implementar
     }
 
 }

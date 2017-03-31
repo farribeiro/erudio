@@ -26,19 +26,32 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace PDFBundle\Service;
+namespace CalendarioBundle\Service;
 
-use Symfony\Component\HttpFoundation\Response;
-use PDFBundle\Report\PDFDocument;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
 
-class PDF
-{
-
-    public function render(PDFDocument $pdf) {
-        return new Response(
-            $pdf->render(),
-            200,
-            array('Content-type' => 'application/pdf')
+class EventoFacade extends AbstractFacade {
+    
+    function getEntityClass() {
+        return 'CalendarioBundle:Evento';
+    }
+    
+    function queryAlias() {
+        return 'e';
+    }
+    
+    function parameterMap() {
+        return array (
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'descricao' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.descricao LIKE :descricao')->setParameter('descricao', '%' . $value . '%');
+            },
+            'tipo' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.tipo = :tipo')->setParameter('tipo', $value);
+            }
         );
     }
     

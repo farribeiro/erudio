@@ -26,38 +26,30 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CursoBundle\Service;
+namespace PessoaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 
-class SolicitacaoVagaFacade extends AbstractFacade {
+class CidadeFacade extends AbstractFacade {
     
     function getEntityClass() {
-        return 'CursoBundle:SolicitacaoVaga';
+        return 'PessoaBundle:Cidade';
     }
     
     function queryAlias() {
-        return 't';
-    }
-    
-    function uniqueMap($solicitacao) {
-        return ['pessoa' => $solicitacao->getPessoa()];
+        return 'c';
     }
     
     function parameterMap() {
-        return array (
-            'pessoa' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.pessoa', 'pessoa')
-                   ->andWhere('pessoa.id = :pessoa')->setParameter('pessoa', $value);
+        return [
+            'estado' => function(QueryBuilder $qb, $value) {
+                $qb->join('c.estado', 'e')->andWhere('e.id = :estado')->setParameter('estado', $value);
             },
-            'vaga' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.vaga LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'status' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.status LIKE :status')->setParameter('status', '%' . $value . '%');
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             }
-        );
+        ];
     }
+    
 }
-

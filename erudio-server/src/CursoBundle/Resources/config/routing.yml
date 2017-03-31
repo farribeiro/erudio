@@ -41,7 +41,3 @@ turnos:
 vagas:
     resource: CursoBundle\Controller\VagaController
     type:     rest
-
-solicitacao-vagas:
-    resource: CursoBundle\Controller\SolicitacaoVagaController
-    type:     rest

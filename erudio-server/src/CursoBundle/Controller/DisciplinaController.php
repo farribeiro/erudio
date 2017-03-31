@@ -30,127 +30,71 @@ namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
-use CursoBundle\Entity\Disciplina;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use CursoBundle\Entity\DisciplinaOfertada;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CoreBundle\REST\AbstractEntityController;
+use CursoBundle\Entity\Disciplina;
 
 /**
-* @RouteResource("disciplinas")
+* @FOS\RouteResource("disciplinas")
 */
-class DisciplinaController extends AbstractEntityResource {
+class DisciplinaController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CursoBundle:Disciplina';
-    }
-    
-    function queryAlias() {
-        return 'd';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('d.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
-            },
-            'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.etapa', 'etapa')
-                   ->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.curso.disciplinas');
     }
     
     /**
-        *   @ApiDoc()
-        */
-    function getAction(Request $request, $id) {
-        return $this->getOne($id);
-    }
-    
-    /**
-        *   @ApiDoc()
-        * 
-        *   @QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @QueryParam(name = "nome", nullable = true) 
-        *   @QueryParam(name = "curso", requirements="\d+", nullable = true) 
-        *   @QueryParam(name = "etapa", requirements="\d+", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
-    }
-    
-    /**
-        *  @ApiDoc()
-        * 
-        *  @Post("disciplinas")
-        *  @ParamConverter("disciplina", converter="fos_rest.request_body")
-        */
-    function postAction(Request $request, Disciplina $disciplina, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($disciplina);
-    }
-    
-    /**
-        *  @ApiDoc()
-        * 
-        *  @Put("disciplinas/{id}")
-        *  @ParamConverter("disciplina", converter="fos_rest.request_body")
-        */
-    function putAction(Request $request, $id, Disciplina $disciplina, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $disciplina);
-    }
-    
-    /**
-        *   @ApiDoc()
-        */
-    function deleteAction(Request $request, $id) {
-        return $this->remove($id);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Get("turmaDisciplina/{id}")
+    *   @ApiDoc()
+    *   
+    *   @FOS\Get("disciplinas/{id}") 
     */
-    /*
-    function criarTurmaDisciplinaAction(Request $request, $id) {
-        $turmas = $this->getDoctrine()->getRepository('CursoBundle:Turma')->createQueryBuilder('t')
-            ->join('t.etapa', 'etapa')                   
-            ->join('etapa.curso', 'curso')                   
-            ->andWhere('curso.id = :curso')
-            ->setParameter('curso', $id)
-            ->getQuery()->getResult();
-        foreach ($turmas as $turma) {
-            $turmaDisciplina = $turma->getDisciplinas();
-            if(count($turmaDisciplina) == 0) {
-                $disciplinas = $turma->getEtapa()->getDisciplinas();
-                foreach($disciplinas as $disciplina) {
-                    $disciplinaOfertada = new DisciplinaOfertada($turma, $disciplina);
-                    $turma->getDisciplinas()->add($disciplinaOfertada);
-                    $this->getDoctrine()->getManager()->merge($turma);
-                }
-            }            
-        }        
-        $this->getDoctrine()->getManager()->flush();
-        return new Response('Disciplinas ofertadas criadas!');
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
     }
-*/
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("disciplinas") 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "nome", nullable = true) 
+    *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
+    }
+    
+    /**
+    *  @ApiDoc()
+    * 
+    *  @FOS\Post("disciplinas")
+    *  @ParamConverter("disciplina", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, Disciplina $disciplina, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $disciplina, $errors);
+    }
+    
+    /**
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("disciplinas/{id}")
+    *  @ParamConverter("disciplina", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, Disciplina $disciplina, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $disciplina, $errors);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("disciplinas/{id}") 
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    }
+    
 }

@@ -68,10 +68,10 @@ class Horario extends AbstractEditableEntity {
     private $termino;
     
     /**  
-        * @JMS\Exclude
-        * @ORM\ManyToOne(targetEntity = "QuadroHorario", inversedBy= "horarios") 
-        * @ORM\JoinColumn(name = "quadro_horario_id") 
-        */
+    * @JMS\Exclude
+    * @ORM\ManyToOne(targetEntity = "QuadroHorario", inversedBy= "horarios") 
+    * @ORM\JoinColumn(name = "quadro_horario_id") 
+    */
     private $quadroHorario;
     
     function __construct(QuadroHorario $qHorario, \DateTime $inicio, \DateTime $termino, $diaSemana) {

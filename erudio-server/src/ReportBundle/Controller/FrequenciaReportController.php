@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use ReportBundle\Util\DateTimeUtil;
 
 class FrequenciaReportController extends Controller {
     
@@ -49,7 +50,7 @@ class FrequenciaReportController extends Controller {
             return $this->render('reports/frequencia/diarios.pdf.twig', [
                 'instituicao' => $disciplina->getTurma()->getUnidadeEnsino(),
                 'turma' => $disciplina->getTurma(),
-                'mes' => $this->mesToString($mes),
+                'mes' => DateTimeUtil::mesPorExtenso($mes),
                 'enturmacoes' => $disciplina->getTurma()->getEnturmacoes(),
                 'diarios' => [ $this->gerarDiarioDisciplina($disciplina, $mes) ]
             ]);
@@ -81,7 +82,7 @@ class FrequenciaReportController extends Controller {
             return $this->render('reports/frequencia/diarios.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
-                'mes' => $this->mesToString($mes),
+                'mes' => DateTimeUtil::mesPorExtenso($mes),
                 'enturmacoes' => $turma->getEnturmacoes(),
                 'diarios' => $diarios
             ]);
@@ -192,23 +193,6 @@ class FrequenciaReportController extends Controller {
             'professor' => $nomeProfessor,
             'aulas' => $aulas
         ];
-    }
-    
-    function mesToString($mes) {
-        switch($mes) {
-            case 1: return 'Janeiro';
-            case 2: return 'Fevereiro';
-            case 3: return 'Março';
-            case 4: return 'Abril';
-            case 5: return 'Maio';
-            case 6: return 'Junho';
-            case 7: return 'Julho';
-            case 8: return 'Agosto';
-            case 9: return 'Setembro';
-            case 10: return 'Outubro';
-            case 11: return 'Novembro';
-            case 12: return 'Dezembro';
-        }
     }
     
 }

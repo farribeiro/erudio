@@ -39,15 +39,15 @@ use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Request\ParamFetcher;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
 use AssetsBundle\Entity\Asset;
 use AssetsBundle\Form\AssetType;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
+ * @deprecated
  * @RouteResource("assets")
  */
-class AssetsController extends AbstractEntityResource {
+class AssetsController {
     
     function getEntityClass() {
         return 'AssetsBundle:Asset';

@@ -116,7 +116,7 @@ class EnturmacaoFacade extends AbstractFacade {
             ->where('e.ativo = true')->andWhere('e.encerrado = false')
             ->andWhere('t.id = :turma')->setParameter('turma', $turma->getId());
         if ($genero) {
-            $qb = $qb->join('m.aluno', 'a')->andWhere('a.genero = :masc')->setParameter('masc', 'M');
+            $qb = $qb->join('m.aluno', 'a')->andWhere('a.genero = :genero')->setParameter('genero', $genero);
         }
         return $qb->getQuery()->getSingleScalarResult();
     }
