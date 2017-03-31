@@ -22,7 +22,7 @@ class AulaObservacao extends AbstractEditableEntity {
     
     /**        
     * @ORM\ManyToOne(targetEntity = "Aula")
-    * @ORM\JoinColumn(name = "aula_id") 
+    * @ORM\JoinColumn(name = "aula_id")
     */
     private $aula;
     
@@ -36,10 +36,6 @@ class AulaObservacao extends AbstractEditableEntity {
 
     function setObservacao($observacao) {
         $this->observacao = $observacao;
-    }
-
-    function setAula($aula) {
-        $this->aula = $aula;
     }
     
 }

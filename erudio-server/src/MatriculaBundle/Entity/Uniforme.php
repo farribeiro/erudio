@@ -68,10 +68,6 @@ class Uniforme extends AbstractEditableEntity {
         return $this->calcadoNumero;
     }
 
-    function setMatricula($matricula) {
-        $this->matricula = $matricula;
-    }
-
     function setUniformeNumero($uniformeNumero) {
         $this->uniformeNumero = $uniformeNumero;
     }

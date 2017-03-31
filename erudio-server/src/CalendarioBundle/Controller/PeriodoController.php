@@ -30,66 +30,42 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\Periodo;
 
 /**
  * @FOS\RouteResource("periodos")
  */
-class PeriodoController extends AbstractEntityResource {
+class PeriodoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:Periodo';
-    }
-    
-    function queryAlias() {
-        return 'p';
-    }
-    
-    function parameterMap() {
-        return array (
-            'media' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('p.media = :media')->setParameter('media', $value);
-            },
-            'calendario' => function(QueryBuilder $qb, $value) {
-                $qb->join('p.calendario', 'calendario')
-                   ->andWhere('calendario.id = :calendario')->setParameter('calendario', $value);
-            },
-            'sistemaAvaliacao' => function(QueryBuilder $qb, $value) {
-                $qb->join('p.sistemaAvaliacao', 'sistemaAvaliacao')
-                   ->andWhere('sistemaAvaliacao.id = :sistemaAvaliacao')->setParameter('sistemaAvaliacao', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.calendario.periodos');
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        * @FOS\Get("periodos/{id}")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("periodos/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        *  
-        *   @FOS\Get("periodos")
-        *   @FOS\QueryParam(name = "media", requirements="\d+", default = null) 
-        *   @FOS\QueryParam(name = "calendario", nullable = false) 
-        *   @FOS\QueryParam(name = "sistemaAvaliacao", nullable = false)
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc()
+    *  
+    *   @FOS\Get("periodos")
+    *   @FOS\QueryParam(name = "media", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "calendario", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "sistemaAvaliacao", requirements="\d+", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
@@ -99,10 +75,7 @@ class PeriodoController extends AbstractEntityResource {
     *  @ParamConverter("periodo", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Periodo $periodo, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($periodo);
+        return $this->post($request, $periodo, $errors);
     }
     
     /**
@@ -112,17 +85,16 @@ class PeriodoController extends AbstractEntityResource {
     *  @ParamConverter("periodo", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Periodo $periodo, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $periodo);
+        return $this->put($request, $id, $periodo, $errors);
     }
     
     /**
-    * @ApiDoc()
+    *    @ApiDoc()
+    * 
+    *   @FOS\Delete("periodos/{id}")
     */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

@@ -31,67 +31,79 @@ namespace CursoBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Etapa;
-use CursoBundle\Entity\Turma;
 
 /**
  * @FOS\RouteResource("etapas")
  */
-class EtapaController extends AbstractEntityResource {
-    
-    function getEntityClass() {
-        return 'CursoBundle:Etapa';
-    }
-    
-    function queryAlias() {
-        return 'e';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('e.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('e.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
-            }
-        );
-    }
-    
-    /**
-    * @ApiDoc()
-    */
-    function getAction(Request $request, $id) {
-        return $this->getOne($id);
+class EtapaController extends AbstractEntityController {
+  
+    function getFacade() {
+        return $this->get('facade.curso.etapas');
     }
     
     /**
     *   @ApiDoc()
     * 
+    *   @FOS\Get("etapas/{id}") 
+    */
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("etapas") 
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
     */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
     *  @ApiDoc()
     * 
-    * @FOS\Get("etapas-ofertadas")
-    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = false) 
+    *  @FOS\Post("etapas")
+    *  @ParamConverter("etapa", converter="fos_rest.request_body")
     */
-    function getOfertadasAction(Request $request, ParamFetcher $paramFetcher) {
+    function postAction(Request $request, Etapa $etapa, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $etapa, $errors);
+    }
+    
+    /**
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("etapas/{id}")
+    *  @ParamConverter("etapa", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, Etapa $etapa, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $etapa, $errors);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("etapas/{id}") 
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    }
+
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("etapas-ofertadas")
+    *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = false)
+    */
+    function getOfertadasAction(Request $request, ParamFetcherInterface $paramFetcher) {
         $unidadeEnsino = $paramFetcher->get('unidadeEnsino', true);
         $turmas = new ArrayCollection($this->get('facade.curso.turmas')->findAll(
             ['unidadeEnsino' => $unidadeEnsino, 'encerrado' => false]
@@ -103,41 +115,4 @@ class EtapaController extends AbstractEntityResource {
         return $this->handleView($view);
     }
     
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Post("etapas")
-    *  @ParamConverter("etapa", converter="fos_rest.request_body")
-    */
-    function postAction(Request $request, Etapa $etapa, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($etapa);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("etapas/{id}")
-    *  @ParamConverter("etapa", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, Etapa $etapa, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $etapa);
-    }
-    
-    /**
-        *   @ApiDoc()
-        */
-    function deleteAction(Request $request, $id) {
-        return $this->remove($id);
-    }
-    
-    protected function beforeExecuteQuery(QueryBuilder $qb, array $params) {
-        $qb->orderBy('e.ordem', 'ASC');
-    }
-
 }

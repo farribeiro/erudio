@@ -29,8 +29,8 @@
 namespace CalendarioBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
-use \CoreBundle\ORM\AbstractFacade;
-use \CalendarioBundle\Entity\Calendario;
+use CoreBundle\ORM\AbstractFacade;
+use CalendarioBundle\Entity\Calendario;
 
 class DiaFacade extends AbstractFacade {
     
@@ -79,4 +79,5 @@ class DiaFacade extends AbstractFacade {
             }                
         }
     }
+    
 }

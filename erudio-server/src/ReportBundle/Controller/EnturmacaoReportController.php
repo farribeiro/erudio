@@ -51,7 +51,7 @@ class EnturmacaoReportController extends Controller {
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
+            return new Response($ex->getMessage(), 500, array('Content-type' => 'text/html'));
         }
     }
     
@@ -73,13 +73,13 @@ class EnturmacaoReportController extends Controller {
             $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->find(
                 ['id' => $request->query->getInt('instituicao', 0), 'ativo' => true]
             );
-            $tipo = $request->query->getInt('tipo', 0);
+            $curso = $request->query->getInt('curso', 0);
             $unidades = $this->getDoctrine()->getRepository('PessoaBundle:UnidadeEnsino')->findBy(
-                ['instituicaoPai' => $instituicao, 'ativo' => true, 'tipo' => $tipo]
+                ['instituicaoPai' => $instituicao, 'ativo' => true], ['nome' => 'ASC']
             );
             $relatorios = [];
             foreach ($unidades as $unidade) {
-                $relatorios[] = $this->gerarRelatorio($unidade);
+                $relatorios[] = $this->gerarRelatorio($unidade, $curso);
             }
             return $this->render('reports/enturmacao/quantitativoPorInstituicao.pdf.twig', [
                 'instituicao' => $instituicao,
@@ -121,21 +121,27 @@ class EnturmacaoReportController extends Controller {
         }
     }
     
-    private function gerarRelatorio($unidadeEnsino) {
-        $turmas = $this->getTurmaFacade()->findAll(['unidadeEnsino' => $unidadeEnsino->getId()]);
+    private function gerarRelatorio($unidadeEnsino, $cursoId = 0) {
+        $params = ['unidadeEnsino' => $unidadeEnsino->getId()];
+        if ($cursoId) {
+            $params['curso'] = $cursoId;
+        }
+        $turmas = $this->getTurmaFacade()->findAll($params);
         $enturmados = [];
-        $totais = ['masculino' => 0, 'feminino' => 0];
+        $totais = ['masculino' => 0, 'feminino' => 0, 'total' => 0];
         foreach ($turmas as $turma) {
             $total = $this->getEnturmacaoFacade()->countByTurma($turma);
             $masc = $this->getEnturmacaoFacade()->countByTurma($turma, 'M');
+            $fem = $this->getEnturmacaoFacade()->countByTurma($turma, 'F');
             $enturmados[] = [
                 'turma' => $turma,
                 'masculino' => $masc,
-                'feminino' => $total - $masc,
+                'feminino' => $fem,
                 'total' => $total
             ];
             $totais['masculino'] += $masc;
-            $totais['feminino'] += ($total - $masc);
+            $totais['feminino'] += $fem;
+            $totais['total'] += $total;
         }
         return ['unidadeEnsino' => $unidadeEnsino, 'enturmados' => $enturmados, 'totais' => $totais];
     }

@@ -30,92 +30,85 @@ namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\Endereco;
 
 /**
- * @RouteResource("enderecos")
+ * @FOS\RouteResource("enderecos")
  */
-class EnderecoController extends AbstractEntityResource {
+class EnderecoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'PessoaBundle:Endereco';
+    function getFacade() {
+        return $this->get('facade.pessoa.enderecos');
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Busca um endereço por seu id",
-        * parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *  },
-        *   statusCodes = {
-        *       200 = "Retorno do objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        */
+    *   @ApiDoc(
+    *       section = "Módulo Pessoa",
+    *       description = "Busca um endereço por seu id",
+    *       parameters={
+    *           {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *       },
+    *       statusCodes = {
+    *           200 = "Retorno do objeto",
+    *           404 = "Objeto não encontrado"
+    *       }
+    *   )
+    * 
+    *   @FOS\Get("enderecos/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc(
-        *   resource = true,
-        *   section = "Módulo Pessoa",
-        *   description = "Busca de enderecos",
-        *   statusCodes = {
-        *       200 = "Retorno dos resultados da busca"
-        *   }
-        * ) 
-        * 
-        * @QueryParam(name = "page", requirements="\d+", default = null)
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc(
+    *       resource = true,
+    *       section = "Módulo Pessoa",
+    *       description = "Busca de enderecos",
+    *       statusCodes = {
+    *           200 = "Retorno dos resultados da busca"
+    *       }
+    *   ) 
+    * 
+    *   @FOS\Get("enderecos") 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        * @ApiDoc()
-        *
-        * @Post("enderecos")
-        * @ParamConverter("endereco", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    *
+    *   @FOS\Post("enderecos")
+    *   @ParamConverter("endereco", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, Endereco $endereco, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($endereco);
+        return $this->post($request, $endereco, $errors);
     }
     
     /**
-        * @ApiDoc()
-        * 
-        * @Put("enderecos/{id}")
-        * @ParamConverter("endereco", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Put("enderecos/{id}")
+    *   @ParamConverter("endereco", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, Endereco $endereco, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        //return !empty($endereço) ? $this->update($id, $endereco) : false;
-        return $this->update($id, $endereco);
-        //return false;
+        return $this->put($request, $id, $endereco, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("enderecos/{id}") 
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

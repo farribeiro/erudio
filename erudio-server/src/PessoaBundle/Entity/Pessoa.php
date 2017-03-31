@@ -82,13 +82,6 @@ class Pessoa extends AbstractEditableEntity {
     */
     private $genero;
     
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(name="arquivo_id") 
-    * @ORM\OneToOne(targetEntity="AssetsBundle\Entity\Asset")
-    */
-    private $avatar;
-    
     /**
     * @ORM\OneToOne(targetEntity = "Endereco", cascade = {"all"}, orphanRemoval = true)
     */
@@ -151,14 +144,6 @@ class Pessoa extends AbstractEditableEntity {
 
     public function setEmail($email) {
         $this->email = $email;
-    }
-    
-    public function getAvatar() {
-        return $this->avatar;
-    }
-
-    public function setAvatar(Asset $avatar) {
-        $this->avatar = $avatar;
     }
     
     function getGenero() {

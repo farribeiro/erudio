@@ -55,3 +55,7 @@ services:
     facade.matricula.desligamentos:
         class: MatriculaBundle\Service\DesligamentoFacade
         arguments: ["@doctrine"]
+        
+    facade.matricula.uniformes:
+        class: MatriculaBundle\Service\UniformeFacade
+        arguments: ["@doctrine"]

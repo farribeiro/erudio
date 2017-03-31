@@ -39,23 +39,23 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Turno extends AbstractEditableEntity {
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time", nullable = false) 
+    */
     private $inicio;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time", nullable = false) 
+    */
     private $termino;
     
     function getNome() {

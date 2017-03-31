@@ -29,71 +29,56 @@
 namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\QueryBuilder;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 
 /**
-* @RouteResource("cidades")
+* @FOS\RouteResource("cidades")
 */
-class CidadeController extends AbstractEntityResource {
+class CidadeController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'PessoaBundle:Cidade';
-    }
-    
-    
-    function queryAlias() {
-        return 'c';
-    }
-    
-    function parameterMap() {
-        return array (
-            'estado' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.estado', 'e')->andWhere('e.id = :estado')->setParameter('estado', $value);
-            },
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.pessoa.cidades');
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Busca uma cidade por seu id",
-        * parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *  },
-        *   statusCodes = {
-        *       200 = "Retorno do objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        */
+    *   @ApiDoc(
+    *       section = "Módulo Pessoa",
+    *       description = "Busca uma cidade por seu id",
+    *       parameters={
+    *           {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *       },
+    *       statusCodes = {
+    *           200 = "Retorno do objeto",
+    *           404 = "Objeto não encontrado"
+    *       }
+    *   )
+    * 
+    *   @FOS\Get("cidades/{id}") 
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc(
-        *   resource = true,
-        *   section = "Módulo Pessoa",
-        *   description = "Busca de cidades",
-        *   statusCodes = {
-        *       200 = "Retorno dos resultados da busca"
-        *   }
-        * )
-        * 
-        * @QueryParam(name = "page", requirements="\d+", default = null) 
-        * @QueryParam(name = "nome", nullable = true) 
-        * @QueryParam(name = "estado", requirements="\d+", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc(
+    *       resource = true,
+    *       section = "Módulo Pessoa",
+    *       description = "Busca de cidades",
+    *       statusCodes = {
+    *           200 = "Retorno dos resultados da busca"
+    *       }
+    *   )
+    * 
+    *   @FOS\Get("cidades") 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "nome", nullable = true) 
+    *   @FOS\QueryParam(name = "estado", requirements="\d+", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
 
 }

@@ -31,7 +31,6 @@ namespace CursoBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use PessoaBundle\Entity\UnidadeEnsino;
 
 /**
 * @ORM\Entity
@@ -40,9 +39,9 @@ use PessoaBundle\Entity\UnidadeEnsino;
 class AgrupamentoTurma extends AbstractEditableEntity {
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(nullable = false)
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = false)
+    */
     private $nome;
 
     /** 
@@ -64,11 +63,5 @@ class AgrupamentoTurma extends AbstractEditableEntity {
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
     }
-
-    function setUnidadeEnsino($unidadeEnsino) {
-        $this->unidadeEnsino = $unidadeEnsino;
-    }
-
-
     
 }

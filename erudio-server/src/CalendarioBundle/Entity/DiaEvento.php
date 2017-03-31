@@ -47,15 +47,15 @@ class DiaEvento extends AbstractEditableEntity {
     private $inicio;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time") 
+    */
     private $termino;
     
     /** 
-        * @ORM\ManyToOne(targetEntity = "Dia", inversedBy = "eventos") 
-        */
+    * @ORM\ManyToOne(targetEntity = "Dia", inversedBy = "eventos") 
+    */
     private $dia;
     
     /** 

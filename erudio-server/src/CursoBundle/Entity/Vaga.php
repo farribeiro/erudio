@@ -45,11 +45,6 @@ class Vaga extends AbstractEditableEntity {
     */
     private $turma;
     
-    /**
-    * @ORM\ManyToOne(targetEntity = "SolicitacaoVaga")
-    */
-    private $solicitacaoVaga;
-    
     /** 
     * @JMS\Groups({"LIST"})
     * @ORM\OneToOne(targetEntity = "MatriculaBundle\Entity\Enturmacao", inversedBy="vaga") 
@@ -64,23 +59,12 @@ class Vaga extends AbstractEditableEntity {
         return $this->turma;
     }
 
-    function getSolicitacaoVaga() {
-        return $this->solicitacaoVaga;
-    }
-
     function getEnturmacao() {
         return $this->enturmacao;
     }
 
-    function setTurma($turma) {
-        $this->turma = $turma;
-    }
-
-    function setSolicitacaoVaga($solicitacao) {
-        $this->solicitacaoVaga = $solicitacao;
-    }
-
     function setEnturmacao($enturmacao) {
         $this->enturmacao = $enturmacao;
-    }    
+    }
+    
 }

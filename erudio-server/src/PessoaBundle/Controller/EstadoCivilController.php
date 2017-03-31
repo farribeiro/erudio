@@ -29,52 +29,54 @@
 namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 
 /**
- * @RouteResource("estados-civis")
+ * @FOS\RouteResource("estados-civis")
  */
-class EstadoCivilController extends AbstractEntityResource {
+class EstadoCivilController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'PessoaBundle:EstadoCivil';
+    function getFacade() {
+        return $this->get('facade.pessoa.estados_civis');
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Busca um estado civil por seu id",
-        * parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *  },
-        *   statusCodes = {
-        *       200 = "Retorno do objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        */
+    *   @ApiDoc(
+    *       section = "Módulo Pessoa",
+    *       description = "Busca um estado civil por seu id",
+    *       parameters={
+    *           {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *       },
+    *       statusCodes = {
+    *           200 = "Retorno do objeto",
+    *           404 = "Objeto não encontrado"
+    *       }
+    *   )
+    * 
+    *   @FOS\Get("estados-civis/{id}") 
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc(
-        *   resource = true,
-        *   section = "Módulo Pessoa",
-        *   description = "Busca de estados civis",
-        *   statusCodes = {
-        *       200 = "Retorno dos resultados da busca"
-        *   }
-        * ) 
-        * 
-        *  @QueryParam(name = "page", requirements="\d+", default = null) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc(
+    *       resource = true,
+    *       section = "Módulo Pessoa",
+    *       description = "Busca de estados civis",
+    *       statusCodes = {
+    *           200 = "Retorno dos resultados da busca"
+    *       }
+    *   ) 
+    * 
+    *   @FOS\Get("estados-civis")
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
 
 }

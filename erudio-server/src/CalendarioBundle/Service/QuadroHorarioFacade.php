@@ -38,15 +38,27 @@ class QuadroHorarioFacade extends AbstractFacade {
     }
     
     function queryAlias() {
-        return 'h';
+        return 'q';
     }
     
     function parameterMap() {
-        return array (
+        return [
+            'nome' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('q.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('h.unidadeEnsino = :ue')->setParameter('ue', $value);
+                $qb->andWhere('q.unidadeEnsino = :unidade')->setParameter('unidade', $value);
             }
-        );
+        ];
+    }
+    
+     protected function beforeUpdate($quadroHorario) {
+        foreach($quadroHorario->getDiasSemana() as $dia) {
+            $dia->setQuadroHorario($quadroHorario);
+        }
+        foreach($quadroHorario->getHorarios() as $horario) {
+            $horario->setQuadroHorario($quadroHorario);
+        }
     }
 }
 
