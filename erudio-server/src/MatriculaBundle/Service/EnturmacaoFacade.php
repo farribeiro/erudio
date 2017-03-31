@@ -166,6 +166,7 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($enturmacao) {
+        $enturmacao->getMatricula()->redefinirEtapa();
         $this->vincularDisciplinas($enturmacao);
         $this->ocuparVaga($enturmacao);
     }

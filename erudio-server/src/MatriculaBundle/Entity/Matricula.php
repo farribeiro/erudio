@@ -77,6 +77,12 @@ class Matricula extends AbstractEditableEntity {
     */
     private $curso;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Etapa") 
+    */
+    private $etapa;
+    
     /** 
     * @JMS\Groups({"LIST"}) 
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
@@ -123,6 +129,15 @@ class Matricula extends AbstractEditableEntity {
     function getCurso() {
         return $this->curso;
     }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    * @JMS\MaxDepth(depth = 1)
+    */
+    function getEtapaAtual() {
+        return $this->etapa ? $this->etapa : $this->redefinirEtapa();
+    }
 
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
@@ -130,6 +145,13 @@ class Matricula extends AbstractEditableEntity {
     
     function setStatus($status) {
         $this->status = $status;
+    }
+    
+    function redefinirEtapa() {
+        if($this->getEnturmacoesAtivas()->count() > 0) {
+            $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
+        }
+        return $this->etapa;
     }
 
     function transferir(UnidadeEnsino $unidadeEnsino) {
@@ -144,7 +166,9 @@ class Matricula extends AbstractEditableEntity {
     }
 
     function getEnturmacoes() {
-        return $this->enturmacoes;
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     /**  
