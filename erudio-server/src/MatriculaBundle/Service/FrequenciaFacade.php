@@ -30,7 +30,6 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class FrequenciaFacade extends AbstractFacade {
     

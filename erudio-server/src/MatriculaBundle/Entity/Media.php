@@ -80,6 +80,7 @@ class Media extends AbstractEditableEntity {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
         $this->nome = 'M' . $numero;
+        $this->calculoAutomatico = true;
         $this->init();
     }
     

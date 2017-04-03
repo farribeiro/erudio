@@ -31,6 +31,7 @@ namespace CursoBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
@@ -112,6 +113,12 @@ class Etapa extends AbstractEditableEntity {
         $this->disciplinas = new ArrayCollection();
     }
     
+    function getDisciplinas() {
+        return $this->disciplinas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
     function getNome() {
         return $this->nome;
     }
@@ -146,10 +153,6 @@ class Etapa extends AbstractEditableEntity {
     
     function getSistemaAvaliacao() {
         return $this->sistemaAvaliacao;
-    }
-
-    function getDisciplinas() {
-        return $this->disciplinas;
     }
 
     function setNome($nome) {

@@ -149,7 +149,7 @@ class EnturmacaoFacade extends AbstractFacade {
         $enturmacao->encerrar();
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
-        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        $this->desvincularDisciplinas($enturmacao);
         if ($enturmacao->getVaga()) {
            $this->liberarVaga($enturmacao);
 	}
@@ -225,6 +225,20 @@ class EnturmacaoFacade extends AbstractFacade {
                 }
             }
         }
+    }
+    
+    /**
+     * Encerra disciplinas cursadas de uma enturmação, com o status informado.
+     * 
+     * @param Enturmacao $enturmacao
+     * @param $status
+     */
+    private function desvincularDisciplinas(Enturmacao $enturmacao) {
+        foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
+            $disciplina->desvincularEnturmacao();
+            $this->orm->getManager()->merge($disciplina);
+        }
+        $this->orm->getManager()->flush();
     }
     
     /**

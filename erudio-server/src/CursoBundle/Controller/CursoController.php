@@ -37,6 +37,9 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Curso;
 
+/**
+ * @FOS\RouteResource("cursos")
+ */
 class CursoController extends AbstractEntityController {
     
     function getFacade() {

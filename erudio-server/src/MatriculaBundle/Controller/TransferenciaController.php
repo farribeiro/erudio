@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Transferencia;
@@ -60,27 +60,14 @@ class TransferenciaController extends AbstractEntityController {
     * 
     * @FOS\Get("transferencias")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "matricula_aluno_nome", nullable = true)
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "unidadeEnsinoOrigem", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "unidadeEnsinoDestino", requirements="\d+", nullable = true) 
     */
-    function getListAction(Request $request, ParamFetcher $paramFetcher) {
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Get("transferencias-pessoa")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    * @FOS\QueryParam(name = "nome",  nullable = false)
-    * @FOS\QueryParam(name = "status", nullable = true) 
-    * @FOS\QueryParam(name = "unidadeEnsinoOrigem", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "unidadeEnsinoDestino", requirements="\d+", nullable = true)
-    */
-    function getListByNomeAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getListByNome($request, $paramFetcher);
     }
     
     /**

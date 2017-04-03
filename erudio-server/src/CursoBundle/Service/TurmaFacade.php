@@ -36,6 +36,7 @@ use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class TurmaFacade extends AbstractFacade {
     
+    private $disciplinaOfertadaFacade;
     private $vagaFacade;
     
     function removerAgrupamento(Turma $turma) {
@@ -47,7 +48,11 @@ class TurmaFacade extends AbstractFacade {
         return 'CursoBundle:Turma';
     }
     
-    function setVagaFacade($vagaFacade) {
+    function setDisciplinaOfertadaFacade(DisciplinaOfertadaFacade $disciplinaOfertadaFacade) {
+        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
+    }
+    
+    function setVagaFacade(VagaFacade $vagaFacade) {
         $this->vagaFacade = $vagaFacade;
     }
     
@@ -98,31 +103,54 @@ class TurmaFacade extends AbstractFacade {
     }
         
     protected function beforeRemove($turma) {
-        $turma->setStatus(Turma::STATUS_ENCERRADO);
+        if ($turma->getEnturmacoes()->count() > 0) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::ILLEGAL_STATE_TRANSITION, 
+                'Operação não permitida, não é possível excluir uma turma com alunos enturmados'
+            );
+        }
     }
     
     protected function afterCreate($turma) {
-        $this->gerarVagas($turma, $turma->getLimiteAlunos());
+        $this->gerarVagas($turma);
     }
     
     protected function afterUpdate($turma) {
+        $this->gerarVagas($turma);
+    }
+    
+    protected function afterRemove($turma) {
+        $this->encerrarDisciplinas($turma);
+        $this->encerrarVagas($turma);
+    }
+    
+    private function gerarVagas(Turma $turma) {
         $numeroVagas = $turma->getVagas()->count();
         if ($numeroVagas < $turma->getLimiteAlunos()) {
-            $this->gerarVagas($turma, $turma->getLimiteAlunos() - $numeroVagas);
+            $quantidade = $turma->getLimiteAlunos() - $numeroVagas;
+            for ($i = 0; $i < $quantidade; $i++) {
+                $vaga = new Vaga($turma);
+                $this->vagaFacade->create($vaga);
+            }
         } else if ($numeroVagas > $turma->getLimiteAlunos()) {
             throw new IllegalUpdateException(
                 IllegalUpdateException::FINAL_STATE, 
                 'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
             );
         }
+        
     }
     
-    private function gerarVagas(Turma $turma, $quantidade) {
-        for ($i = 0; $i < $quantidade; $i++) {
-            $vaga = new Vaga();
-            $vaga->setTurma($turma);
-            $this->vagaFacade->create($vaga);
+    private function encerrarDisciplinas(Turma $turma) {
+        foreach ($turma->getDisciplinas() as $disciplina) {
+            $this->disciplinaOfertadaFacade->remove($disciplina);
         }
+    }
+    
+    private function encerrarVagas(Turma $turma) {
+        foreach ($turma->getVagasAbertas() as $vaga) {
+            $this->vagaFacade->remove($vaga);
+        } 
     }
 
 }

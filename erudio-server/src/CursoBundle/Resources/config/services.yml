@@ -28,6 +28,7 @@ services:
       arguments: ["@doctrine"]
       calls:
           - [setVagaFacade, ["@facade.curso.vagas"]]
+          - [setDisciplinaOfertadaFacade, ["@facade.curso.disciplinas_ofertadas"]]
           
     facade.curso.agrupamentos_turma:
         class: CursoBundle\Service\AgrupamentoTurmaFacade

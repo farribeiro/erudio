@@ -45,13 +45,13 @@ class MediaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'disciplinaCursada' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.disciplinaCursada', 'disciplinaCursada')
                     ->andWhere('disciplinaCursada.id = :disciplinaCursada')
                     ->setParameter('disciplinaCursada', $value);
             }
-        );
+        ];
     }
     
     function calcular($media) {

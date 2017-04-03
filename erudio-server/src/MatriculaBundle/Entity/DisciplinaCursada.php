@@ -122,6 +122,11 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
+    function desvincularEnturmacao() {
+        $this->enturmacao = null;
+        $this->disciplinaOfertada = null;
+    }
+    
     function getMatricula() {
         return $this->matricula;
     }

@@ -92,17 +92,8 @@ class DesligamentoFacade extends AbstractFacade {
         $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
         foreach ($enturmacoes as $e) {
             $e->encerrar();
-            $this->liberarVagas($e);
             $this->orm->getManager()->merge($e);
             $this->orm->getManager()->flush();
-        }
-    }
-    
-    private function liberarVagas(Enturmacao $enturmacao) {
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
-        foreach ($vagas as $vaga) {
-            $vaga->setEnturmacao(null);
-            $this->orm->getManager()->merge($vaga);
         }
     }
     
