@@ -1,0 +1,46 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* 
+    Todas as fontes foram convertidas de acordo com a tabela SP to PX na escala HDPI.
+    Escala válida para Américas e Europa - criar novo para Ásia E Oriente Médio.
+*/
+
+h1 { font-size: 168px !important; font-family: RobotoLight; }
+h2 { font-size: 84px !important; }
+h3 { font-size: 67.5px !important; }
+h4 { font-size: 51px !important; }
+h5 { font-size: 36px !important; }
+.titulo-typo { font-size: 30px; color: #fafafa; bottom: 10px; }
+.subtitulo-typo { font-size: 22.5px; }
+.body-high-typo { font-size: 19.5px; }
+.body-typo { font-size: 19.5px; }
+.caption-typo { font-size: 18px; }
+.button-typo, button { font-size: 21px; text-transform: uppercase; }
+.app-bar-typo, .button-typo, button, .titulo-typo, .body-high-typo { font-family: RobotoMedium; }
+.subtitulo-typo, .body-typo, h2, h3, h4, h5, .caption-typo { font-family: Roboto; }
+
+

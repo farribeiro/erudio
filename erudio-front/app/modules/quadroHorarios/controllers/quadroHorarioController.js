@@ -430,7 +430,7 @@
 
             $scope.prepararVoltar = function (objeto) {
                 if (objeto.nome && !objeto.id) {
-                    $('#modal-certeza-quadro').openModal();
+                    $('#modal-certeza-quadro').modal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -539,7 +539,7 @@
                         });
                     }
                     $('.tooltipped').tooltip({delay: 50});
-                    $('.modal-trigger').leanModal({dismissible: true, complete: function () {
+                    $('.modal-trigger').modal({dismissible: true, complete: function () {
                             $('.lean-overlay').hide();
                         }});
                     /*Inicializando controles via Jquery Mobile */
@@ -565,7 +565,7 @@
                         Servidor.customToast('Quadro de Horários não pode ser excluido.');
                     } else {
                         $scope.quadroHorarioRemover = quadroHorario;
-                        $('#remove-modal-quadroHorario').openModal();
+                        $('#remove-modal-quadroHorario').modal();
                     }
                 });
             };

@@ -35,10 +35,10 @@
                     <tbody>
                         <tr data-ng-repeat="curso in cursos | orderBy: 'nome'">
                             <td class="celula-link relative mobile-full" style="padding: 0;">
-                                <a style="color: #000 !important;" href="/#/cursos/{{ curso.id }}"><div class="col s12 waves waves-effect"><div style="padding-top: 15px; padding-bottom: 15px; padding-left: 7px;">{{ curso.nome }}</div></div></a>
+                                <a style="color: #000 !important;" href="{{ config.dominio }}/#/cursos/{{ curso.id }}"><div class="col s12 waves waves-effect"><div style="padding-top: 15px; padding-bottom: 15px; padding-left: 7px;">{{ curso.nome }}</div></div></a>
                             </td>
                             <td style="padding: 0;">
-                                <a href="/#/etapas"><i data-ng-click="intraForms(curso);" data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">chrome_reader_mode</i></a>
+                                <a href="{{ config.dominio }}/#/etapas"><i data-ng-click="intraForms(curso);" data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">chrome_reader_mode</i></a>
                                 <i data-ng-click="prepararRemover(curso)" data-target="remove-modal-curso" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped" data-ng-show="escrita">delete</i>
                             </td>
                         </tr>

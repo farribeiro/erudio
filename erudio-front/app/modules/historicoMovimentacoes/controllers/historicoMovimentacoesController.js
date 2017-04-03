@@ -458,7 +458,7 @@
 
         $scope.preparaRecusar = function(transferencia){
           $scope.transferencia = transferencia;
-          $('#recusar-movimentacao').openModal();
+          $('#recusar-movimentacao').modal();
         };
 
         $scope.abrirEnturmacao = function() {
@@ -1016,7 +1016,7 @@
                 promise.then(function (response) {
                     $('.tooltipped').tooltip('remove');
                     $timeout(function () {
-                        $('.modal-trigger').leanModal();
+                        $('.modal-trigger').modal();
                         $('.tooltipped').tooltip({delay: 50});
                         /*Inicializando controles via Jquery Mobile */
                         if ($(window).width() < 993) {

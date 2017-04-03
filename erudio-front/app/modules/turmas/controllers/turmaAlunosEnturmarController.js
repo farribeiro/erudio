@@ -29,7 +29,7 @@
     //DEFINIÇÃO DO CONTROLADOR
     turmaAlunosEnturmarModule.controller('TurmaAlunosEnturmarController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$routeParams', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $routeParams) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig;
+        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('TURMA') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateCustom('turmas','enturmar');
@@ -40,7 +40,7 @@
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
         //PREPARA VOLTAR
-        $scope.prepararVoltar = function (objeto) { window.location = '/#/turmas/' + $routeParams.id + '/alunos'; };
+        $scope.prepararVoltar = function (objeto) { window.location = $scope.config.dominio+'/#/turmas/' + $routeParams.id + '/alunos'; };
         //MOSTRA LABELS MENU FAB
         $scope.mostrarLabels = function () { $('.toolchip').fadeToggle(250); };
         //TELA DE ENTURMACAO DE ALUNOS
@@ -226,7 +226,7 @@
                             $scope.requisicoes--; var enturmacao = response.data; enturmacao.achouVaga = false;
                             vagas.forEach(function(v) {
                                 if (!enturmacao.achouVaga && (!v.enturmacao || v.enturmacao === undefined) && (!v.solicitacao || v.solicitacao === undefined)) {
-                                    v.enturmacao = response.data.id; enturmacao.achouVaga = true; $scope.requisicoes++;
+                                    v.enturmacao = {id: response.data.id}; enturmacao.achouVaga = true; $scope.requisicoes++;
                                     var promise = Servidor.finalizar(v, 'vagas', '');
                                     promise.then(function() {
                                         if (--$scope.requisicoes === 0) { $scope.fechaProgresso(); $scope.buscarEnturmacoes($scope.turma, true); }
@@ -250,7 +250,7 @@
                         if (alunoAprovado(e.disciplinasCursadas)) { $scope.aprovados.push(e); } else { $scope.reprovados.push(e); }
                         if (--$scope.requisicoes === 0) {
                             if ($scope.reprovados.length) {
-                                $timeout(function() { $('#alunos-reprovados-modal').openModal(); $('.collapsible').collapsible({ accordion : false }); }, 250);
+                                $timeout(function() { $('#alunos-reprovados-modal').modal('open'); $('.collapsible').collapsible({ accordion : false }); }, 250);
                             } else { $scope.enturmarAutomaticamente(); }
                         }
                     });

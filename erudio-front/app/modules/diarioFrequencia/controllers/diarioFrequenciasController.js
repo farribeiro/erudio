@@ -26,11 +26,11 @@
 
 (function () {
 
-    var diarioFrequenciasModule = angular.module('diarioFrequenciasModule', ['servidorModule', 'diarioFrequenciasDirectives', 'dateTimeModule']);
-
-    diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
+    var diarioFrequenciasModule = angular.module('diarioFrequenciasModule', ['servidorModule', 'diarioFrequenciasDirectives', 'dateTimeModule', 'erudioConfig']);
+    diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', 'ErudioConfig', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime, ErudioConfig) {
         $templateCache.removeAll();
 
+        $scope.config = ErudioConfig;
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };
         $scope.editando = false;
@@ -103,9 +103,9 @@
         };
 
         $scope.buscarDisciplinasOfertadas = function(id) {
-            if (!id) { return Servidor.customToast("Selecione uma turma para realizar a busca."); };
-            if ($scope.busca.mes === undefined || !$scope.busca.mes.numero) { return Servidor.customToast("Selecione um mês para realizar a busca.");}
-            var promise = Servidor.buscarUm('turmas', id);
+            //if (!id) { return Servidor.customToast("Selecione uma turma para realizar a busca."); };
+            //if ($scope.busca.mes === undefined || !$scope.busca.mes.numero) { return Servidor.customToast("Selecione um mês para realizar a busca.");}
+            /*var promise = Servidor.buscarUm('turmas', id);
             promise.then(function(response) {
                 $scope.checkAll = false;
                 var turma = response.data;
@@ -119,7 +119,7 @@
                     $timeout(function() { $('.tooltipped').tooltip(); }, 50);
                     $scope.disciplinasSelecionadas = [];
                 });
-            });
+            });*/
         };
 
         $scope.selecionarTudo = function () {

@@ -26,58 +26,39 @@
 
 (function () {
     var turmaModule = angular.module('turmaModule', ['servidorModule', 'turmaDirectives','erudioConfig']);
-    
-    turmaModule.service('TurmaService', [function () {
-        this.abrirFormulario = false;
-        this.abreForm = function () { this.abrirFormulario = true; };
-        this.fechaForm = function() { this.abrirFormulario = false; this.setEnturmacao({id:null}); };
-        this.enturmacao;
-        this.setEnturmacao = function(enturmacao) { this.enturmacao = enturmacao; };
-        this.turma;
-        this.setTurma = function(turma) { this.turma = turma; };
-    }]);
-
     //DEFINIÇÃO DO CONTROLADOR
-    turmaModule.controller('TurmaController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig) {
+    turmaModule.controller('TurmaController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$rootScope', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $rootScope) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll(); $scope.config = ErudioConfig;
+        $templateCache.removeAll(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('TURMA') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateLista('turmas'); $scope.lista = true;
         //ATRIBUTOS
         $scope.titulo = "Turmas"; $scope.progresso = false; $scope.cortina = false; $scope.unidades = []; $scope.cursos = []; $scope.etapas = [];
-        $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}}; $scope.nomeUnidade = null;
+        $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}}; $scope.nomeUnidade = null; $scope.unidade = {id:null};
         //ABRE AJUDA
-        $scope.ajuda = function () { $('#modal-ajuda-turma').openModal(); };
+        $scope.ajuda = function () { $('#modal-ajuda-turma').modal('open'); };
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
         
         //CARREGA SELECT CURSOS
-        $scope.buscarCursos = function (todos) {
+        $scope.buscarCursos = function () {
             $scope.mostraProgresso();
-            if(todos) {
-                var promise = Servidor.buscar('cursos', null);
-                promise.then(function (response) {
-                    $scope.cursos = response.data;                        
+            var promise = Servidor.buscar('cursos-ofertados', {unidadeEnsino: $scope.unidade.id});
+            promise.then(function(response) {
+                $scope.cursos = response.data;
+                if(response.data.length) {
+                    if($scope.cursos.length === 1) { $scope.buscarEtapas($scope.cursos[0].curso.id); }
                     $timeout(function () { $('#curso').material_select('destroy'); $('#curso').material_select(); $scope.fechaProgresso(); }, 500);
-                });
-            } else {
-                var promise = Servidor.buscarUm('unidades-ensino', sessionStorage.getItem('unidade'));
-                promise.then(function(response) {
-                    $scope.cursos = response.data.cursos;
-                    if(response.data.cursos.length) {
-                        if($scope.cursos.length === 1) { $scope.buscarEtapas($scope.cursos[0].id); }
-                        $timeout(function () { $('#curso').material_select('destroy'); $('#curso').material_select(); $scope.fechaProgresso(); }, 500);
-                    } else { $scope.buscarCursos(true); }
-                });
-            }                    
+                } else { $scope.fechaProgresso(); Servidor.customToast('Não há cursos nesta unidade.'); }
+            });
         };
         
         //PREPARAÇÃO PARA REMOÇÃO DE TURMA
         $scope.prepararRemover = function (turma) {
             if(turma.quantidadeAlunos > 0) { Servidor.customToast('Esta turma possui enturmações, portanto não é possível removê-la.');
-            } else { $scope.turmaRemover = turma; $('#remove-modal-turma').openModal(); }                
+            } else { $scope.turmaRemover = turma; $('#remove-modal-turma').modal('open'); }                
         };
 
         //REMOÇÃO DE TURMA
@@ -101,7 +82,6 @@
         
         //VERIFICA SE HÁ ALOCAÇÃO SELECIONADA
         $scope.verificaAlocacao = function (nomeUnidade) {
-            var alocacao = sessionStorage.getItem('alocacao');
             if ($scope.escrita) {
                 var promise = Servidor.buscar('unidades-ensino', {'nome': nomeUnidade});
                 promise.then(function (response) {
@@ -109,11 +89,19 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscarUm('alocacoes', alocacao);
-                    promise.then(function (response) {
-                        $scope.alocacao = response.data; $scope.unidades = [$scope.alocacao.instituicao];
-                        if ($scope.unidades.length === 1) { $scope.unidade = $scope.alocacao.instituicao; }
-                        $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    promise.then(function(response) {
+                        var user = response.data[0];
+                        $scope.atribuicoes = user.atribuicoes;
+                        $timeout(function () {
+                            for (var i=0; $scope.atribuicoes.length; i++) {
+                                if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); }
+                                if (i === $scope.atribuicoes.length-1) {
+                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.buscarCursos(); }
+                                    $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                                }
+                            }
+                        },500);
                     });
                 }
             }
@@ -122,10 +110,13 @@
         //CARREGA O SELECT DE ETAPAS
         $scope.buscarEtapas = function (id) {
             if (id) {
-                $scope.turmaBusca.etapa.id = null; var promise = Servidor.buscar('etapas', {'curso': id});
+                //$scope.turmaBusca.etapa.id = null;
+                var promise = Servidor.buscar('etapas', {'curso': id});
                 promise.then(function (response) {
                     $scope.etapas = response.data; if ($scope.etapas.length === 0) { Materialize.toast('Nenhuma etapa cadastrada', 1500); }
-                    $timeout(function () { $('#etapa').material_select('destroy'); $('#etapa').material_select(); }, 50);
+                    if ($rootScope.ultimaBuscaTurma === undefined) {
+                        $timeout(function () { $('#etapa').material_select('destroy'); $('#etapa').material_select(); }, 100);
+                    }
                 });
             }
         };
@@ -138,8 +129,8 @@
             } else if ($scope.unidade.id) {
                 var promise = Servidor.buscar('turmas', {'unidadeEnsino': $scope.unidade.id, 'etapa': $scope.turmaBusca.etapa.id, 'curso': $scope.turmaBusca.curso.id});
                 promise.then(function (response) {
-                    $scope.turmas = response.data;
-                    if ($scope.turmas.length > 0) {
+                    $scope.turmas = response.data; $rootScope.ultimaBuscaTurma = $scope.turmaBusca; 
+                   if ($scope.turmas.length > 0) {
                         for (var i =0; i<$scope.turmas.length; i++) {
                             var promise = Servidor.buscar('vagas', {'turma': $scope.turmas[i].id});
                             promise.then(function(response){
@@ -147,7 +138,7 @@
                             });
                         }
                         $('.tooltipped').tooltip('remove');
-                        $timeout(function () { $('.modal-trigger').leanModal(); $('.tooltipped').tooltip({delay: 50}); }, 500);
+                        $timeout(function () { $('.modal-trigger').modal(); $('.tooltipped').tooltip({delay: 50}); }, 500);
                     } else { Servidor.customToast('Nenhuma turma encontrada. Verifique os parâmetros de busca e tente novamente.'); }
                     $scope.fechaProgresso();
                 });
@@ -171,20 +162,24 @@
         //SELECIONA UNIDADE DE ENSINO
         $scope.selecionaUnidade = function(unidade) {
             if (unidade.tipo === undefined) { unidade.tipo = {sigla:''}; } $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome;
-            $scope.unidade = unidade; $timeout(function(){ Servidor.verificaLabels(); },100);
+            $scope.unidade = unidade; $rootScope.ultimaUnidadeBuscaTurma = unidade; $timeout(function(){ Servidor.verificaLabels(); $scope.buscarCursos(); },100);
         };
         
         //INICIALIZAR
         $scope.inicializar = function () {
-            $('.title-module').html($scope.titulo); $('#modal-ajuda-turma').leanModal(); $('.material-tooltip').remove();
+            $('.title-module').html($scope.titulo); $('.material-tooltip').remove();
+            if ($rootScope.ultimaBuscaTurma !== null && $rootScope.ultimaBuscaTurma !== undefined) { 
+                $scope.selecionaUnidade($rootScope.ultimaUnidadeBuscaTurma); $scope.turmaBusca = $rootScope.ultimaBuscaTurma; $scope.buscarTurmas();
+                $scope.buscarEtapas($rootScope.ultimaBuscaTurma.curso.id);
+            }
             $timeout(function () {
-                $('.tooltipped').tooltip({delay: 50}); $('ul.tabs').tabs();
+                $('.tooltipped').tooltip({delay: 50}); $('ul.tabs').tabs(); $('#modal-ajuda-turma').modal(); 
                 $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
                 $('select').material_select('destroy'); $('select').material_select(); Servidor.entradaPagina();
             }, 1000);
         };
 
         //INICIALIZANDO
-        $scope.buscarUnidades(); ($scope.escrita) ? $scope.buscarCursos(true) : $scope.buscarCursos(false); $scope.inicializar();
+        $scope.buscarUnidades(); $scope.inicializar();
     }]);
 })();

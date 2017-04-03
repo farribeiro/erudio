@@ -42,7 +42,7 @@
         //ESTRUTURA
         $scope.etapa = { nome: null, nomeExibicao: null, ordem: null, modulo:{ id:null }, modeloQuadroHorario:{ id:null }, sistemaAvaliacao:{ id:null }, limiteAlunos: null, integral: true, curso: { id:null } };
         //MODAL DE CERTEZA PARA VOLTAR
-        $scope.prepararVoltar = function(objeto) {  if (objeto.nome && !objeto.id) { $('#modal-certeza').openModal(); } else { window.location = "/#/etapas"; } };
+        $scope.prepararVoltar = function(objeto) {  if (objeto.nome && !objeto.id) { $('#modal-certeza').modal(); } else { window.location = "/#/etapas"; } };
         //BUSCAR SISTEMAS DE AVALIACAO
         $scope.buscarSistemasAvaliacao = function() { var promise = Servidor.buscar('sistemas-avaliacao',null); promise.then(function (response){ $scope.sistemaAvaliacoes = response.data; $scope.buscarModulos(); }); };
         //VALIDAR FORM
@@ -67,7 +67,7 @@
         
         //INICIALIZAR
         $scope.inicializar = function () {
-            $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove();
+            $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').modal(); $('.material-tooltip').remove();
             $('.counter').each(function(){  $(this).characterCounter(); });
             $('#etapaForm').keydown(function(event){ var keyCode = (event.keyCode ? event.keyCode : event.which); if (keyCode === 13) { $('#salvarEtapa').trigger('click'); } });
             Servidor.entradaPagina();
@@ -76,7 +76,7 @@
         //CARREGAR MODULOS
         $scope.carregarModulo = function() {
             var promise = Servidor.buscarUm('cursos', $scope.etapa.curso.id);
-            promise.then(function(response) { $scope.modulo = { 'curso': response.data, 'nome': '' }; $('#form-modal-modulo').openModal(); $timeout(function() { Servidor.verificaLabels(); }, 150); });
+            promise.then(function(response) { $scope.modulo = { 'curso': response.data, 'nome': '' }; $('#form-modal-modulo').modal(); $timeout(function() { Servidor.verificaLabels(); }, 150); });
         };
 
         //SALVAR MODULOS

@@ -78,16 +78,14 @@
     </div>    
 </div>
 <div class="row col s12 card-panel" data-ng-if="!enturmacaoAutomatica && matriculas.length" style="margin-top: 2rem">
-    <div class="row">
-        <h3 class='card-title-h3' style="padding: 1.5rem">Matrículas Compatíveis</h3>        
-    </div>
+    <div class="row"><h4 class='col s12 m8 l8 card-title-h3' style="padding-top: 10px;">Matrículas Compatíveis</h4></div>
     <div style="padding-left: 1.5rem" data-ng-class="{'texto-vermelho': alunosCompativeisSelecionados > turma.limiteAlunos-turma.quantidadeAlunos, 'negrito': alunosCompativeisSelecionados > turma.limiteAlunos-turma.quantidadeAlunos}">
         Vagas a serem preenchidas: {{alunosCompativeisSelecionados}}/{{turma.limiteAlunos - turma.quantidadeAlunos}}
     </div>
     <table class="striped">
         <thead>
             <tr>
-                <th style="padding-left: 1.5rem">
+                <th style="padding-left: 1.5rem; padding-bottom: 5px !important;">
                     <input type="checkbox" class="filled-in" id="enturmacoesCheckAll" data-ng-click="selecionarTodasMatriculasCompativeis()"/>
                     <label for="enturmacoesCheckAll"></label>
                 </th>
@@ -97,7 +95,7 @@
         </thead>
         <tbody>
             <tr data-ng-repeat="matricula in matriculas| orderBy:'aluno.nome':reverse">
-                <td style="padding-left: 1.5rem">
+                <td style="padding-left: 1.5rem; padding-bottom: 5px">
                     <input class="filled-in matricula-compativel" type="checkbox" id="{{matricula.codigo}}turma" data-ng-click="selecionarUmaMatriculaCompativel(matricula.codigo)"/>
                     <label for="{{matricula.codigo}}turma"></label>
                 </td>

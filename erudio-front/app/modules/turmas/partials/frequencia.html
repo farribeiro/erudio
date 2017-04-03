@@ -23,84 +23,73 @@
  *    02111-1307, USA.                                                     *
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<div class="row">          
-    <h3 class='card-title-h3' style="padding: 20px; padding-top: 30px">Lista de Chamada</h3> 
-</div>                
-<div class="row"> 
-    <div class="input-field col s12 m12 l4">
-        <i class="material-icons prefix">settings_brightness</i>
-        <input id="turmaFormularioTurma" type="text" class="validate" value="{{turma.nome | uppercase}}" disabled />
-        <label for="turmaFormularioTurma">Turma</label>
+
+<div class="card" style="margin-top: 0;">
+    <div class="row" style="padding-top: 10px;"> 
+        <div class="input-field col s12 m12 l4">
+            <i class="material-icons prefix">settings_brightness</i>
+            <input id="turmaFormularioTurma" type="text" class="validate" value="{{turma.nome | uppercase}}" disabled />
+            <label for="turmaFormularioTurma">Turma</label>
+        </div>
+        <div class="input-field col s12 m12 l4">
+            <i class="material-icons prefix">today</i>
+            <input id="diaHojeTurma" type="text" class="data" data-ng-model="diaChamada" placeholder="dd/MM/AAAA" data-ng-change="escolheDiaChamada(diaChamada)"/>
+            <label for="diaHojeTurma">Data Chamada*</label>
+        </div>
+        <div class="input-field col s12 m12 l4" data-ng-show="aulasDia.length">
+            <i class="material-icons prefix">settings_brightness</i>
+            <select id="dForm" data-ng-model="index" data-ng-change="carregarAulas(index)" required>                                            
+                <option selected disabled></option> <option value="todas">TODAS</option>
+                <option value="{{ $index }}" data-ng-repeat="d in aulasDia">{{$index+1}}ª aula - {{ d.disciplinaOfertada.nomeExibicao | uppercase }}</option>
+            </select>
+            <label for="dForm">DISCIPLINA*</label>
+        </div>
+        <table class="bordered" data-ng-show="horarioAula">
+            <thead>
+                <tr>
+                    <th style="padding-left: 18px;">Nº</th> <th data-field="name">NOME</th>
+                    <th class="center" data-field="dln">{{ aulaDisciplina.disciplinaOfertada.nomeExibicao | uppercase }}
+                        &nbsp;&nbsp;<input id="todasEnturmacoes" type="checkbox" class="filled-in" name="presencaTodos" data-ng-click="selecionarTodasEnturmacoes(aulaDisciplina.id)" />
+                        <label for="todasEnturmacoes">Todos</label>                                                                
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="enturmacao in enturmacoesDisciplinas | orderBy: 'matricula.aluno.nome'">
+                    <td style="padding-left: 18px; padding-bottom: 5px;"><div>{{ $index+1 }}º</div></td>
+                    <td style="padding-bottom: 5px;"><div>{{ enturmacao.matricula.aluno.nome | uppercase }}</div></td>
+                    <td style="padding-bottom: 5px;" class="center">                                         
+                        <input id="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aulaDisciplina.id}}" type="checkbox" class="filled-in aula{{aulaDisciplina.id}}" name="{{enturmacao.matricula.codigo}}" data-ng-click="verificaFaltaPresenca(enturmacao, aulaDisciplina)"  />
+                        <label for="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aulaDisciplina.id}}"></label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="bordered" data-ng-show="presencas && !horarioAula"><!--data-ng-show="presencas"-->
+            <thead>
+                <tr>
+                    <th style="padding-left: 18px;">Nº</th><th data-field="name">NOME</th>
+                    <th class="center" data-field="dln" data-ng-repeat="aula in aulasDia">                    
+                        <input id="desmarcar{{aula.id}}" type="checkbox" class="filled-in" data-ng-click="selecionarTodasPrecencasDisciplinas(aula)" checked="checked">
+                        <label for="desmarcar{{aula.id}}">{{$index+1}}ª aula - {{ aula.disciplinaOfertada.nomeExibicao | uppercase }}</label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="enturmacao in enturmacoesDisciplinas | orderBy: 'matricula.aluno.nome'">
+                    <td style="padding-left: 18px; padding-bottom: 5px;"><div>{{ $index+1 }}º</div></td>
+                    <td style="padding-bottom: 5px;"><div>{{ enturmacao.matricula.aluno.nome | uppercase }}</div></td>
+                    <td style="padding-bottom: 5px;" class="center" data-ng-repeat="aula in aulasDia">                                         
+                        <input id="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aula.id}}" type="checkbox" class="filled-in" name="{{enturmacao.matricula.codigo}}" data-ng-click="verificaFaltaPresenca(enturmacao, aula)"  />
+                        <label for="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aula.id}}"></label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  
     </div>
-    <div class="input-field col s12 m12 l4">
-        <i class="material-icons prefix">today</i>
-        <input id="diaHojeTurma" type="text" class="data" data-ng-model="diaChamada" placeholder="dd/MM/AAAA" data-ng-change="escolheDiaChamada(diaChamada)"/>
-        <label for="diaHojeTurma">Data Chamada* (dd/mm/aaaa)</label>
-    </div>
-    <div class="input-field col s12 m12 l4" data-ng-show="aulasDia.length">
-        <i class="material-icons prefix">settings_brightness</i>
-        <select id="dForm" data-ng-model="index" data-ng-change="carregarAulas(index)" required>                                            
-            <option selected disabled></option>
-            <option value="todas">TODAS</option>
-            <option value="{{ $index }}" data-ng-repeat="d in aulasDia">{{$index+1}}ª aula - {{ d.disciplinaOfertada.nomeExibicao | uppercase }}</option>
-        </select>
-        <label for="dForm">DISCIPLINA*</label>
-    </div>
-    <table class="bordered" data-ng-show="horarioAula">
-        <thead>
-            <tr>
-                <th>Nº</th>
-                <th data-field="name">NOME</th>
-                <th class="center" data-field="dln">{{ aulaDisciplina.disciplinaOfertada.nomeExibicao | uppercase }}<br />
-                    <input id="todasEnturmacoes" type="checkbox" class="filled-in" name="presencaTodos" data-ng-click="selecionarTodasEnturmacoes(aulaDisciplina.id)" />
-                    <label for="todasEnturmacoes">Marcar/Desmarcar todos</label>                                                                
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr data-ng-repeat="enturmacao in enturmacoesDisciplinas | orderBy: 'matricula.aluno.nome'">
-                <td>
-                    <div>{{ $index+1 }}º</div>
-                </td>
-                <td>
-                    <div>{{ enturmacao.matricula.aluno.nome | uppercase }}</div>
-                </td>
-                <td class="center">                                         
-                    <input id="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aulaDisciplina.id}}" type="checkbox" class="filled-in aula{{aulaDisciplina.id}}" name="{{enturmacao.matricula.codigo}}" data-ng-click="verificaFaltaPresenca(enturmacao, aulaDisciplina)"  />
-                    <label for="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aulaDisciplina.id}}"></label>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="bordered" data-ng-show="presencas && !horarioAula"><!--data-ng-show="presencas"-->
-        <thead>
-            <tr>
-                <th>Nº</th>
-                <th data-field="name">NOME</th>
-                <th class="center" data-field="dln" data-ng-repeat="aula in aulasDia">                    
-                    <input id="desmarcar{{aula.id}}" type="checkbox" class="filled-in" data-ng-click="selecionarTodasPrecencasDisciplinas(aula)" checked="checked">
-                    <label for="desmarcar{{aula.id}}">{{$index+1}}ª aula - {{ aula.disciplinaOfertada.nomeExibicao | uppercase }}</label>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr data-ng-repeat="enturmacao in enturmacoesDisciplinas | orderBy: 'matricula.aluno.nome'">
-                <td>
-                    <div>{{ $index+1 }}º</div>
-                </td>
-                <td>
-                    <div>{{ enturmacao.matricula.aluno.nome | uppercase }}</div>
-                </td>
-                <td class="center" data-ng-repeat="aula in aulasDia">                                         
-                    <input id="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aula.id}}" type="checkbox" class="filled-in" name="{{enturmacao.matricula.codigo}}" data-ng-click="verificaFaltaPresenca(enturmacao, aula)"  />
-                    <label for="PRESENCA{{enturmacao.id}}{{enturmacao.matricula.id}}{{aula.id}}"></label>
-                </td>
-            </tr>
-        </tbody>
-    </table>  
-</div>
-<div class="row end-card" data-ng-show="enturmacoesDisciplinas.length && index">
-    <div class="col s12 right-align">
-        <a data-ng-click="verificaTurmaDispensada()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR CHAMADA</a>
+    <div class="row end-card" data-ng-show="enturmacoesDisciplinas.length && index">
+        <div class="col s12 right-align">
+            <a data-ng-click="verificaTurmaDispensada()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR CHAMADA</a>
+        </div>
     </div>
 </div>

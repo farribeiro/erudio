@@ -142,7 +142,7 @@
                     $('.tooltipped').tooltip('remove');
                     $timeout(function() {
                         $('.tooltipped').tooltip({delay: 50});
-                        $('.modal-trigger').leanModal({ dismissible: true, in_duration: 100, out_duration: 100 }); $scope.fechaProgresso();
+                        $('.modal-trigger').modal({ dismissible: true, in_duration: 100, out_duration: 100 }); $scope.fechaProgresso();
                         $scope.fechaLoader();
                         Servidor.entradaPagina();
                         $('.tooltipped').tooltip({delay: 30});
@@ -230,7 +230,7 @@
         /* MODAL DE RETORNO */
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nomeExibicao || objeto.username && !objeto.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }

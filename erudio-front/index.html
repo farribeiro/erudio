@@ -52,7 +52,9 @@
         <link type="text/css" rel="stylesheet" href="lib/css/materialize/css/materialize.min.css"  media="screen,projection"/>
         <script type="text/javascript" src="lib/css/materialize/js/materialize.js"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+        <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>-->
+        
         <!-- Google Maps API -->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDGYOmrW5zjuyneSG5b5D5Bvmwi5GmJfTA"></script>
         <!-- OpenStreetMap API 
@@ -76,7 +78,7 @@
     <body data-ng-app='erudio' data-ng-controller="AppController as app">
         <div data-ng-controller="MainController as main" data-ng-cloak>
             <header class="head">
-                <div class="navbar-fixed hide-on-large-only">
+                <!--<div class="navbar-fixed hide-on-large-only">
                     <nav>
                         <div class="container">
                             <div class="nav-wrapper" style="margin-left: -15px;">
@@ -85,124 +87,116 @@
                             </div>
                         </div>
                     </nav>
-                </div>
-                <ul id="slide-out" class="side-nav fixed">
-                    <li class="no-padding">
-                        <ul class="collapsible collapsible-accordion">
-                            <li class="logo">
-                                <!-- Topo do Sidebar -->
-                                <div id="logo-container">
-                                    <div class="row valign-wrapper" style='padding-top: 15px;'>
-                                        <div class="col s7">
-                                            <div class='col s12 white-text' style="margin: -3rem 0px 0px -3rem;">
-                                                <i class="material-icons dropdown-button pointer" data-ng-click='main.ajustaMenu()' data-activates='dropdown1'>more_vert</i>
-                                                <!-- <i style='cursor: pointer; font-size: 2rem; margin-right: 6px; margin-left: 6px;' class="mdi-navigation-menu hide-on-med-and-down" data-ng-click="main.sliderMenu(false)"></i> -->
-                                            </div>
-                                            <ul id='dropdown1' class='dropdown-content {{main.leftDropdown}}' style="width: 10rem!important">
-                                                <li class="divider"></li>
-                                                <li data-ng-click="verificaOpcoes()"><a href="#!"> <i class="material-icons">home</i> <span style='display: block; float: right; margin-top: 3px;'>Início</span></a></li>
-                                                <li class="divider"></li>
-                                                <li><a data-ng-click="abrirModalSobre()"> <i class="material-icons">face</i> <span style='display: block; float: right; margin-top: 3px;'>Sobre</span></a></li>
-                                                <li class="divider"></li>
-                                                <li data-ng-click='main.logout()'><a href="#!"> <i class="material-icons">power_settings_new</i> <span style='display: block; float: right; margin-top: 3px;'>Sair</span></a></li>
-                                            </ul>
-                                        </div>
-                                        <div class="col s5">
-                                            <div data-ng-show="avatar" class='col s12'><img data-ng-click='main.modalAvatar()' src="{{ main.baseUpload }}{{avatar}}" alt="" class="circle responsive-img avatar-img z-depth-2 pointer"></div>
-                                            <div data-ng-hide="avatar" class='col s12'><img data-ng-click='main.modalAvatar()' src="app/modules/main/assets/images/{{main.profile}}.jpg" alt="" class="circle responsive-img avatar-img z-depth-2 pointer"></div>
-                                        </div>
-                                    </div>
-                                    <div class='row'>
-                                        <a style="font-size: 15px;" href="#/"><div class='white-text username truncate pointer left' style="padding: 1.2rem 0 0 1rem"></div></a>
-                                    </div>
-                                </div>
-                            </li>
+                </div>-->
+                <ul id="slide-out" class="side-nav fixed" style="width: 240px;">
+                    <li class="no-bg">
+                        <i class="material-icons dropdown-button pointer white-text" data-ng-click='main.ajustaMenu()' data-activates='dropdown1'>more_vert</i>
+                        <ul id='dropdown1' class='dropdown-content {{main.leftDropdown}}' style="width: 7rem !important; min-height: 10px !important;">
+                            <li class="divider"></li>
+                            <li data-ng-click="verificaOpcoes()"><a style="height: inherit; line-height: initial; padding: 5px !important;" href="#!"> <i class="material-icons">home</i> <span style='display: block; float: right; margin-top: 3px;'>Início</span></a></li>
+                            <li class="divider"></li>
+                            <li><a style="height: inherit; line-height: initial; padding: 5px !important;" data-ng-click="abrirModalSobre()"> <i class="material-icons">face</i> <span style='display: block; float: right; margin-top: 3px;'>Sobre</span></a></li>
+                            <li class="divider"></li>
+                            <li data-ng-click='main.logout()'><a style="height: inherit; line-height: initial; padding: 5px !important;" href="#!"> <i class="material-icons">power_settings_new</i> <span style='display: block; float: right; margin-top: 3px;'>Sair</span></a></li>
+                        </ul>
+                        <div data-ng-show="avatar" style="width: 3.5rem; right: 10px; top: 7px;" class='absolute'><img data-ng-click='main.modalAvatar()' src="{{ main.baseUpload }}{{avatar}}" alt="" class="circle responsive-img avatar-img z-depth-2 pointer"></div>
+                        <div data-ng-hide="avatar" style="width: 3.5rem; right: 10px; top: 7px;" class='absolute'><img data-ng-click='main.modalAvatar()' src="app/modules/main/assets/images/{{main.profile}}.jpg" alt="" class="circle responsive-img avatar-img z-depth-2 pointer"></div>
+                    </li>
+                    <li class="no-bg" style="padding-bottom: 15px; padding-top: 43px;">
+                        <a style="font-size: 15px; padding: 0 !important;" href="#/"><div class='white-text username truncate pointer left' style="padding: 1.2rem 0 0 1rem"></div></a>
+                    </li>
+                    <li>
+                        <ul class="collapsible" data-collpsible="accordion">
                             <!-- Menu --> 
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Instituições e Unidades</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Instituições e Unidades</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('INSTITUICAO')"><a href="#/instituicoes">Instituição</a></li>
-                                        <li data-ng-show="verificarPermissoes('TIPO_UNIDADE')"><a href="#/tipos-unidade">Tipo de Unidade</a></li>
-                                        <li data-ng-show="verificarPermissoes('UNIDADE_ENSINO')"><a href="#/unidades">Unidade de Ensino</a></li>
+                                        <li data-ng-show="verificarPermissoes('INSTITUICAO')"><a class="submenu-style" href="#/instituicoes">Instituição</a></li>
+                                        <li data-ng-show="verificarPermissoes('TIPO_UNIDADE')"><a class="submenu-style" href="#/tipos-unidade">Tipo de Unidade</a></li>
+                                        <li data-ng-show="verificarPermissoes('UNIDADE_ENSINO')"><a class="submenu-style" href="#/unidades">Unidade de Ensino</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Gestão</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Gestão</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('REGIME_ENSINO')"><a href="#/regimes">Regime de Ensino</a></li>
-                                        <li data-ng-show="verificarPermissoes('CURSO')"><a href="#/cursos">Curso</a></li>
-                                        <li data-ng-show="verificarPermissoes('ETAPA')"><a href="#/etapas">Etapa</a></li>
-                                        <li data-ng-show="verificarPermissoes('DISCIPLINA')"><a href="#/disciplinas">Disciplina</a></li>
-                                        <li data-ng-show="verificarPermissoes('MODULO')"><a href="#/modulos">Módulo</a></li>
-                                        <li data-ng-show="verificarPermissoes('TURNO')"><a href="#/turnos">Turno</a></li>                                        
-                                        <li data-ng-show="verificarPermissoes('MODELO_QUADRO')"><a href="#/modelo-quadro-horarios">Modelo de Horário</a></li>
-                                        <li data-ng-show="verificarPermissoes('QUADRO_HORARIO')"><a href="#/quadro-horarios">Quadro de Horario</a></li>
-                                        <li data-ng-show="verificarPermissoes('CALENDARIO')"><a href="#/calendarios">Calendário Escolar</a></li>
-                                        <li data-ng-show="verificarPermissoes('EVENTOS')"><a href="#/eventos">Evento</a></li>
+                                        <li data-ng-show="verificarPermissoes('REGIME_ENSINO')"><a class="submenu-style" href="#/regimes">Regime de Ensino</a></li>
+                                        <li data-ng-show="verificarPermissoes('CURSO')"><a class="submenu-style" href="#/cursos">Curso</a></li>
+                                        <li data-ng-show="verificarPermissoes('ETAPA')"><a class="submenu-style" href="#/etapas">Etapa</a></li>
+                                        <li data-ng-show="verificarPermissoes('DISCIPLINA')"><a class="submenu-style" href="#/disciplinas">Disciplina</a></li>
+                                        <li data-ng-show="verificarPermissoes('MODULO')"><a class="submenu-style" href="#/modulos">Módulo</a></li>
+                                        <li data-ng-show="verificarPermissoes('TURNO')"><a class="submenu-style" href="#/turnos">Turno</a></li>                                        
+                                        <li data-ng-show="verificarPermissoes('MODELO_QUADRO')"><a class="submenu-style" href="#/modelo-quadro-horarios">Modelo de Horário</a></li>
+                                        <li data-ng-show="verificarPermissoes('QUADRO_HORARIO')"><a class="submenu-style" href="#/quadro-horarios">Quadro de Horario</a></li>
+                                        <li data-ng-show="verificarPermissoes('CALENDARIO')"><a class="submenu-style" href="#/calendarios">Calendário Escolar</a></li>
+                                        <li data-ng-show="verificarPermissoes('EVENTOS')"><a class="submenu-style" href="#/eventos">Evento</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Vida Escolar</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Vida Escolar</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('TURMA')"><a href="#/turmas" data-ng-click="TurmaService.fechaForm()">Turma</a></li>
-                                        <li data-ng-show="verificarPermissoes('MATRICULA')"><a href="#/matriculas" data-ng-click="MatriculaService.fechaForm(); TurmaService.fechaForm();">Matrícula e Enturmação</a></li>
-                                        <li data-ng-show="verificarPermissoes('MOVIMENTACAO')"><a href="#/movimentacoes">Movimentação</a></li>
+                                        <li data-ng-show="verificarPermissoes('TURMA')"><a class="submenu-style" href="#/turmas" data-ng-click="TurmaService.fechaForm()">Turma</a></li>
+                                        <li data-ng-show="verificarPermissoes('FREQUENCIA')"><a class="submenu-style" href="#/frequencias">Frequência</a></li>
+                                        <li data-ng-show="verificarPermissoes('MATRICULA')"><a class="submenu-style" href="#/matriculas" data-ng-click="MatriculaService.fechaForm(); TurmaService.fechaForm();">Matrícula e Enturmação</a></li>
+                                        <li data-ng-show="verificarPermissoes('MOVIMENTACAO')"><a class="submenu-style" href="#/movimentacoes">Movimentação</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Pessoas</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Pessoas</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('PESSOA')"><a href="#/pessoas" data-ng-click="PessoaService.fechaForm();">Pessoa</a></li>
-                                        <li data-ng-show="verificarPermissoes('CARGO')"><a href="#/cargos">Cargo</a></li>
-                                        <li data-ng-show="verificarPermissoes('FUNCIONARIO')"><a href="#/funcionarios" data-ng-click="FuncionarioService.fechaForm();">Funcionário</a></li>
+                                        <li data-ng-show="verificarPermissoes('PESSOA')"><a class="submenu-style" href="#/pessoas" data-ng-click="PessoaService.fechaForm();">Pessoa</a></li>
+                                        <li data-ng-show="verificarPermissoes('CARGO')"><a class="submenu-style" href="#/cargos">Cargo</a></li>
+                                        <li data-ng-show="verificarPermissoes('FUNCIONARIO')"><a class="submenu-style" href="#/funcionarios" data-ng-click="FuncionarioService.fechaForm();">Funcionário</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold opacityInit">
-                                 <a class="collapsible-header">Avaliações</a>
-                                 <div class="collapsible-body">
+                                 <a class="collapsible-header menu-title-main">Avaliações</a>
+                                 <div class="collapsible-body no-padding">
                                      <ul class="menuLateral">
-                                         <li data-ng-show="verificarPermissoes('TIPOS_AVALIACAO')"><a href="#/tipos-avaliacoes">Tipo</a></li>
-                                         <li data-ng-show="verificarPermissoes('HABILIDADES')"><a href="#/habilidades">Habilidade</a></li>
-                                         <li data-ng-show="verificarPermissoes('AVALIACAO')"><a href="#/avaliacoes" data-ng-click="AvaliacaoService.fechaForm();">Avaliação</a></li>
+                                         <li data-ng-show="verificarPermissoes('TIPOS_AVALIACAO')"><a class="submenu-style" href="#/tipos-avaliacoes">Tipo</a></li>
+                                         <li data-ng-show="verificarPermissoes('HABILIDADES')"><a class="submenu-style" href="#/habilidades">Habilidade</a></li>
+                                         <li data-ng-show="verificarPermissoes('AVALIACAO')"><a class="submenu-style" href="#/avaliacoes" data-ng-click="AvaliacaoService.fechaForm();">Avaliação</a></li>
                                      </ul>
                                  </div>
                              </li>
                             <li class="bold opacityInit">
-                                 <a class="collapsible-header">Documentos</a>
-                                 <div class="collapsible-body">
+                                 <a class="collapsible-header menu-title-main">Documentos</a>
+                                 <div class="collapsible-body no-padding">
                                      <ul class="menuLateral">                                        
-                                        <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a href="#/boletim-escolar">Boletim Escolar</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a href="#/diario-frequencia">Diário de Frequência</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a href="#/historico-escolar">Historico Escolar</a></li>                                        
-                                        <li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a href="#/vagas">Solicitação de Vaga</a></li>
-                                        <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a href="#/registro-matriculas">Registro de Matriculas</a></li>
+                                        <!-- <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a class="submenu-style" href="#/boletim-escolar">Boletim Escolar</a></li> -->
+                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a class="submenu-style" href="#/diario-frequencia">Diário de Frequência</a></li>
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/diario-notas">Diário de Notas</a></li>
+                                        <!-- <li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a class="submenu-style" href="#/historico-escolar">Historico Escolar</a></li> -->
+                                        <!-- <li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a class="submenu-style" href="#/vagas">Solicitação de Vaga</a></li> -->
+                                        <!-- <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a class="submenu-style" href="#/registro-matriculas">Registro de Matriculas</a></li> -->
                                      </ul>
                                  </div>
-                             </li>
+                            </li>
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Relatórios</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Relatórios</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a href="#/alunos-defasados">Alunos Defasados</a></li>
-                                        <li data-ng-show="verificarPermissoes('ESPELHO_NOTA')"><a href="#/espelho-notas">Espelho de Nota</a></li>
+                                        <!-- <li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a class="submenu-style" href="#/alunos-defasados">Alunos Defasados</a></li>
+                                        <li data-ng-show="verificarPermissoes('ESPELHO_NOTA')"><a class="submenu-style" href="#/espelho-notas">Espelho de Nota</a></li> -->
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/relatorio-alunos-defasados">Alunos Defasados</a></li>
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/alunos-enturmados">Alunos Enturmados</a></li>
                                     </ul>
                                 </div>
                             </li>
                             <li class="bold opacityInit">
-                                <a class="collapsible-header">Administrador</a>
-                                <div class="collapsible-body">
+                                <a class="collapsible-header menu-title-main">Administrador</a>
+                                <div class="collapsible-body no-padding">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('USUARIOS')"><a href="#/usuarios">Usuário</a></li>
-                                        <li data-ng-show="verificarPermissoes('PERMISSOES')"><a href="#/permissoes">Permissão</a></li>
-                                        <li data-ng-show="verificarPermissoes('GRUPO_PERMISSOES')"><a href="#/grupo-permissoes">Grupo de Permissões</a></li>
+                                        <li data-ng-show="verificarPermissoes('USUARIOS')"><a class="submenu-style" href="#/usuarios">Usuário</a></li>
+                                        <li data-ng-show="verificarPermissoes('PERMISSOES')"><a class="submenu-style" href="#/permissoes">Permissão</a></li>
+                                        <li data-ng-show="verificarPermissoes('GRUPO_PERMISSOES')"><a class="submenu-style" href="#/grupo-permissoes">Grupo de Permissões</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -224,7 +218,9 @@
                     </div>
                 </div>
             </main>
-            <div class="menu_swap absolute" style="left: 250px; top: 10px; color: #fafafa; cursor: pointer;"><i class="material-icons">menu</div>
+            <div class="menu_swap absolute" style="left: 10px; top: 10px; color: #fafafa; cursor: pointer;">
+                <a href="#" data-activates="slide-out" style="color: #fafafa;" class="button-collapse"><i style="font-size: 25px;" class="mdi-navigation-menu"></i></a>
+            </div>
             
             <div id="remove-modal-turma" class="modal">
                 <div class="modal-dialog">
@@ -281,13 +277,19 @@
 
         <!-- Angular App -->
         <script type="text/javascript" src="app/modules/main/app/app.js"></script>
-
+        <script type="text/javascript" src="app/modules/teste/controllers/testeController.js"></script>
+        <script type="text/javascript" src="app/modules/teste/directives/testeDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/frequencia/controllers/frequenciaController.js"></script>
+        <script type="text/javascript" src="app/modules/frequencia/directives/frequenciaDirectives.js"></script>
+        
         <!-- Home e Main Controllers -->
         <script type="text/javascript" src="app/modules/main/controllers/mainController.js"></script>
         <script type="text/javascript" src="app/modules/main/controllers/homeController.js"></script>
         <script type="text/javascript" src="app/modules/main/services/erudioConfig.js"></script>
         
         <script type="text/javascript" src="app/modules/instituicoes/controllers/instituicaoController.js"></script>
+        <script type="text/javascript" src="app/modules/instituicoes/controllers/instituicaoFormController.js"></script>
+        <script type="text/javascript" src="app/modules/instituicoes/directives/instituicaoDirectives.js"></script>
         
         <!-- Cursos -->
         <script type="text/javascript" src="app/modules/cursos/controllers/cursoController.js"></script>
@@ -314,13 +316,29 @@
         <script type="text/javascript" src="app/modules/turmas/controllers/turmaAlunoPresencaController.js"></script>
         <script type="text/javascript" src="app/modules/turmas/controllers/turmaProfessoresController.js"></script>
         <script type="text/javascript" src="app/modules/turmas/controllers/turmaAlunosEnturmarController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaPresencasController.js"></script>
+        <script type="text/javascript" src="app/modules/turmas/controllers/turmaQuadroHorarioController.js"></script>
         <script type="text/javascript" src="app/modules/turmas/directives/turmaDirectives.js"></script>
         
         <script type="text/javascript" src="app/modules/calendarios/controllers/calendarioController.js"></script>
         <script type="text/javascript" src="app/modules/eventos/controllers/eventoController.js"></script>
         <script type="text/javascript" src="app/modules/quadroHorarios/controllers/quadroHorarioController.js"></script>
         <script type="text/javascript" src="app/modules/modeloQuadroHorarios/controllers/modeloQuadroHorarioController.js"></script>
+        
+        <!-- Matrículas -->
         <script type="text/javascript" src="app/modules/matriculas/controllers/matriculaController.js"></script>
+        <script type="text/javascript" src="app/modules/matriculas/controllers/matriculaFormController.js"></script>
+        <script type="text/javascript" src="app/modules/matriculas/controllers/matriculaEtapaController.js"></script>
+        <script type="text/javascript" src="app/modules/matriculas/controllers/matriculaEnturmacaoController.js"></script>
+        <script type="text/javascript" src="app/modules/matriculas/directives/matriculaDirectives.js"></script>
+        
+        <!-- Relatorios  -->
+        <script type="text/javascript" src="app/modules/relatorios/controllers/relatorioController.js"></script>
+        <script type="text/javascript" src="app/modules/relatorios/directives/relatorioDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/diarioNotas/controllers/diarioNotasController.js"></script>
+        <script type="text/javascript" src="app/modules/relatorioAlunosDefasados/controllers/relatoriosDefasadosController.js"></script>
+        <script type="text/javascript" src="app/modules/relatorioAlunosDefasados/directives/relatoriosDefasadosDirectives.js"></script>
+        
         <script type="text/javascript" src="app/modules/pessoas/controllers/pessoaController.js"></script>
         <script type="text/javascript" src="app/modules/funcionarios/controllers/funcionarioController.js" ></script>
         <script type="text/javascript" src="app/modules/cargos/controllers/cargosController.js" ></script>  
@@ -344,7 +362,6 @@
 
         <!-- Angular Directives -->
         <script type="text/javascript" src="app/modules/main/directives/mainDirectives.js"></script>
-        <script type="text/javascript" src="app/modules/instituicoes/directives/instituicaoDirectives.js"></script>
         
         <script type="text/javascript" src="app/modules/disciplinas/directives/disciplinaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/regimes/directives/regimeDirectives.js"></script>
@@ -353,7 +370,6 @@
         <script type="text/javascript" src="app/modules/unidades/directives/unidadeDirectives.js"></script>
         <script type="text/javascript" src="app/modules/tipos/directives/tipoDirectives.js"></script>
         
-        <script type="text/javascript" src="app/modules/matriculas/directives/matriculaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/calendarios/directives/calendarioDirectives.js" ></script>
         <script type="text/javascript" src="app/modules/eventos/directives/eventoDirectives.js" ></script>
         <script type="text/javascript" src="app/modules/quadroHorarios/directives/quadroHorarioDirectives.js" ></script>        
@@ -380,6 +396,7 @@
         
         <!-- Angular Services & Other Stuffs -->        
         <script type="text/javascript" src="app/modules/util/services/servidor.js"></script>
+        <script type="text/javascript" src="app/modules/util/services/elements.js"></script>
         <script type="text/javascript" src="app/modules/util/services/dateTime.js"></script>
         <script type="text/javascript" src="app/modules/util/services/makePdf.js"></script>
 

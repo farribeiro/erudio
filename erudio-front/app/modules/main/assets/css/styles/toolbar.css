@@ -50,7 +50,7 @@ ul.side-nav.fixed li a {
 .side-nav.fixed a {
     color: #444;
     display: block;
-    padding: 0 15px;
+    //padding: 0px !important;
 }
 
 .side-nav .collapsible-body li a {
@@ -58,7 +58,7 @@ ul.side-nav.fixed li a {
 }
 
 .side-nav li:hover, .side-nav li.active {
-    background: transparent !important;
+    //background: transparent !important;
 }
 
 .side-nav .no-padding ul li:hover, .side-nav .no-padding li.active {
@@ -70,14 +70,15 @@ ul.side-nav.fixed li.logo {
     /*margin-bottom: 16px;*/
     text-align: center;
     //background: rgba(0, 0, 0, 0) url("../../images/userSidebar.jpg") repeat scroll 0 0 / auto 100% !important;
-    //background-size: auto 100%;
-    background: #212121;
+    //background-size: auto 100%; background: #212121;
+    background: #0d47a1;
 }
 ul.side-nav.fixed li.logo:hover { background: #212121; }
 
 #logo-container {
     height: 150px;
-    background: #212121;
+    //background: #212121;
+    background: #1d9bda;
 }
 
 nav {

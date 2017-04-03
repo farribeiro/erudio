@@ -118,7 +118,7 @@
         $scope.progresso = false;
 
         //PREPARA REMOÇÃO DO VINCULO
-        $scope.prepararRemover = function (vinculo) { $('#remove-modal-vinculo').openModal(); $scope.vinculoDeletar = vinculo; };
+        $scope.prepararRemover = function (vinculo) { $('#remove-modal-vinculo').modal(); $scope.vinculoDeletar = vinculo; };
         
         //REMOVE O VINCULO
         $scope.remover = function () {
@@ -171,7 +171,7 @@
         /* Verifica se o usuario deseja descartar os dados preenchidos */
         $scope.prepararVoltar = function(objeto) {
             if (objeto.funcionario.id && !objeto.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -592,7 +592,7 @@
                 $('.remove-content').html('O vínculo d'+artigo+' <strong>' + vinculo.funcionario.nome.split(' ')[0].toUpperCase() + '</strong> atualmente está <strong>'+vinculo.status +'</strong>, deseja realmente desligar este vinculo?');
                 var nome = $scope.vinculoRemover.funcionario.nome.split(' ');
                 $scope.nomeRemover = nome[0] + ' ' + nome[1];
-                $('#removerVinculo').openModal();
+                $('#removerVinculo').modal();
             } else {
                 Materialize.toast('Este vínculo já está desligado.');
             }
@@ -728,7 +728,7 @@
                 );
                 $('.cpfMask').mask('000.000.000-09');
                 $('.counter').each(function () { $(this).characterCounter(); });                
-                $('.modal-trigger').leanModal({
+                $('.modal-trigger').modal({
                     dismissible: true, // Modal can be dismissed by clicking outside of the modal
                     opacity: .5, // Opacity of modal background
                     in_duration: 300, // Transition in duration

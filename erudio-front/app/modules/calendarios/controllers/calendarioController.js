@@ -571,7 +571,7 @@
             $('.tooltipped').tooltip('remove');
             $timeout(function() {
                 Servidor.verificaLabels();
-                $('#dia-evento-modal').openModal();
+                $('#dia-evento-modal').modal();
                 $scope.fecharCortina();
                 $('.tooltipped').tooltip({delay: 50});
                 $('#tipo').material_select('');
@@ -851,7 +851,7 @@
         /* Verifica se o usuário deseja descartar os dados preenchidos */
         $scope.prepararRemover = function (calendario) {
             $scope.calendario = calendario;
-            $('#remove-modal-calendario').openModal();
+            $('#remove-modal-calendario').modal();
         };
 
         /* Exclui um calendário */
@@ -867,7 +867,7 @@
         $scope.prepararRemoverEvento = function(evento, dia) {
             $scope.evento = evento;
             $scope.evento.dia = dia;            
-            $('#remove-modal-evento-dia').openModal();
+            $('#remove-modal-evento-dia').modal();
         };
 
         /* Desvincula um evento à um dia */
@@ -944,7 +944,7 @@
         /* Abre o modal de exclusão */
         $scope.prepararVoltar = function(calendario) {
             if (calendario.nome && !calendario.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }

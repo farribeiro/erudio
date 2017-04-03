@@ -29,7 +29,7 @@
     //DEFINIÇÃO DO CONTROLADOR
     turmaProfessoresModule.controller('TurmaProfessoresController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$routeParams', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $routeParams) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig;
+        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('TURMA') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateCustom('turmas','professores');
@@ -40,18 +40,18 @@
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
         //PREPARA VOLTAR
-        $scope.prepararVoltar = function (objeto) { window.location = '/#/turmas/' + $routeParams.id; };
+        $scope.prepararVoltar = function (objeto) { window.location = $scope.config.dominio+'/#/turmas/' + $routeParams.id; };
         //MOSTRA LABELS MENU FAB
         $scope.mostrarLabels = function () { $('.toolchip').fadeToggle(250); };
         //GUARDA ALOCAÇÃO PARA REMOVER
-        $scope.prepararRemoverProfessor = function (alocacao, disciplina) { $scope.disciplinaRemover = disciplina; $scope.alocacaoRemover = alocacao; $('#remove-modal-professor').openModal(); };
+        $scope.prepararRemoverProfessor = function (alocacao, disciplina) { $scope.disciplinaRemover = disciplina; $scope.alocacaoRemover = alocacao; $('#remove-modal-professor').modal('open'); };
         
         //ADICIONAR PROFESSOR
         $scope.adicionarProfessor = function (fromModal) {
             $scope.disciplinaProfessor.id = null; $scope.nomeProfessor = '';
             $timeout(function () {
                 if(!fromModal) {
-                    $('#modal-adicionar-professor').openModal();
+                    $('#modal-adicionar-professor').modal('open');
                     $timeout(function () { $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' }); }, 200);
                 }
                 $('#disciplinaProfessor').material_select('destroy'); $('#disciplinaProfessor').material_select();
@@ -162,7 +162,7 @@
                         if(++count > aulas) { count = 1; }
                     });
                 });                    
-                $('#horarios-disciplina').openModal();
+                $('#horarios-disciplina').modal('open');
             });
         };
         
@@ -177,7 +177,7 @@
             promise.then(function (response) {
                 $scope.funcionario = response.data;
                 var promise = Servidor.buscar('telefones', {'pessoa': $scope.funcionario.id});
-                promise.then(function (response) { $scope.telefones = response.data; $('#info-professor').openModal(); $scope.fechaProgresso(); });
+                promise.then(function (response) { $scope.telefones = response.data; $('#info-professor').modal('open'); $scope.fechaProgresso(); });
             });
         };
         
@@ -208,7 +208,7 @@
                         });
                     }
                 });
-                $timeout(function () { $('#remove-modal-professor').closeModal(); }, 300);
+                $timeout(function () { $('#remove-modal-professor').modal('close'); }, 300);
             });
         };
         
@@ -247,7 +247,7 @@
                                 });
                             }
                         });
-                        $timeout(function () { $scope.fechaLoader(); $scope.adicionarProfessor(true); }, 300);
+                        $timeout(function () { $scope.fechaProgresso(); $scope.adicionarProfessor(true); }, 300);
                     });
                 }
             });
@@ -277,7 +277,7 @@
         $scope.inicializar = function () {
             $('.material-tooltip').remove(); var promise = Servidor.buscarUm('turmas',$routeParams.id); $('.title-module').html($scope.titulo);
             promise.then(function(response){
-                $scope.turma = response.data; $scope.professoresDisciplinas($scope.turma);
+                $scope.turma = response.data; $scope.professoresDisciplinas($scope.turma); $('#modal-adicionar-professor').modal();
                 var promise = Servidor.buscarUm('quadro-horarios', $scope.turma.quadroHorario.id);
                 promise.then(function(response) { $scope.quadroHorario = response.data; });
                 $timeout(function () { $('.tooltipped').tooltip({delay: 50}); Servidor.entradaPagina();}, 1000);

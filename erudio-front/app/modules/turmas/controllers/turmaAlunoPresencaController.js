@@ -29,7 +29,7 @@
     //DEFINIÇÃO DO CONTROLADOR
     turmaAlunoPresencaModule.controller('TurmaAlunoPresencaController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$routeParams', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $routeParams) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig;
+        $templateCache.removeAll(); $scope.isAdmin = Servidor.verificaAdmin(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('TURMA') || Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateCustom('turmas','frequencias-aluno');
@@ -41,11 +41,11 @@
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
         //PREPARA VOLTAR
-        $scope.prepararVoltar = function (objeto) { window.location = '/#/turmas/' + $routeParams.id + '/alunos'; };
+        $scope.prepararVoltar = function (objeto) { window.location = $scope.config.dominio+'/#/turmas/' + $routeParams.id + '/alunos'; };
         //MOSTRA LABELS MENU FAB
         $scope.mostrarLabels = function () { $('.toolchip').fadeToggle(250); };
         //FECHAR MODAL JUSTIFICATIVA
-        $scope.fecharModal = function () { $('.lean-overlay').hide(); $('.modal').closeModal(); $('#FALTA')[0].checked = false; };
+        $scope.fecharModal = function () { $('.lean-overlay').hide(); $('.modal').modal('close'); $('#FALTA')[0].checked = false; };
         
         //SELECAO DE ETAPA
         /*$scope.selecionarEtapa = function(etapaId) {
@@ -91,7 +91,7 @@
             $scope.frequencia = frequencia;
             $timeout(function () {
                 $scope.desabilitarBotao = true;
-                $('#modal-justificativa').openModal();
+                $('#modal-justificativa').modal('open');
             }, 100);
         };
         
@@ -103,7 +103,7 @@
             var promise = Servidor.finalizar($scope.frequencia, 'frequencias', 'Status');
             promise.then(function (response) {
                 $scope.frequenciasDoAluno.forEach(function(freq) { if (freq === response.data.id) { freq = response.data; } }); $scope.frequencia = {};
-                $('#modal-justificativa-diarios').closeModal();
+                $('#modal-justificativa-diarios').modal('close');
             });
         };
             
@@ -174,7 +174,7 @@
             $scope.mostraProgresso(); $scope.matricula = enturmacao.matricula;
             var promise = Servidor.buscarUm('pessoas', enturmacao.matricula.aluno.id);
             promise.then(function (response) {
-                $scope.aluno = response.data; $('#info-aluno').openModal();
+                $scope.aluno = response.data; $('#info-aluno').modal('open');
                 var promise = Servidor.buscar('telefones', {'pessoa': $scope.aluno.id});
                 promise.then(function (response) { $scope.telefones = response.data; });
             });
@@ -238,8 +238,8 @@
             $scope.alunoPresenca = true;
             $scope.matriculaPresenca = matricula;
             $timeout(function () {
-                $scope.fechaLoader();
-                $('#info-aluno').closeModal();
+                $scope.fechaProgresso();
+                $('#info-aluno').modal('close');
                 for (var i = 0; i < 2; i++) {
                     $('select').material_select('destroy');
                     $('select').material_select();

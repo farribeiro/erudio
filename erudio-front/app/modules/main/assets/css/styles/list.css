@@ -107,7 +107,8 @@
 }
 
 .table-pattern td {
-    padding: 1.7rem;
+    //padding: 1.7rem;
+    font-size: 14px;
 }
 
 .celula-link:hover {
