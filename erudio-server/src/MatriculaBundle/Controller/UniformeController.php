@@ -31,90 +31,70 @@ namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Uniforme;
 
-class UniformeController extends AbstractEntityResource {
+/**
+* @FOS\RouteResource("uniformes")
+*/
+class UniformeController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'MatriculaBundle:Uniforme';
-    }
-    
-    function queryAlias() {
-        return 'u';
-    }
-    
-    function parameterMap() {
-        return array (
-            'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->join('u.matricula', 'matricula')
-                   ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
-            },
-            'uniformeNumero' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.uniformeNumero = :uniformeNumero')->setParameter('uniformeNumero', $value);
-            },
-            'calcadoNumero' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.calcadoNumero = :calcadoNumero')->setParameter('calcadoNumero', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.matricula.uniformes');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("uniformes/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        *   @QueryParam(name = "matricula", requirements="\d+", nullable = true) 
-        *   @QueryParam(name = "uniformeNumero", nullable = true) 
-        *   @QueryParam(name = "calcadoNumero", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("uniformes")
+    *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "uniformeNumero", nullable = true) 
+    *   @FOS\QueryParam(name = "calcadoNumero", nullable = true) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        *  @ApiDoc()
-        * '
-        *  @Post("uniformes")
-        *  @ParamConverter("uniforme", converter="fos_rest.request_body")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Post("uniformes")
+    *  @ParamConverter("uniforme", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, Uniforme $uniforme, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($uniforme);
+        return $this->post($request, $uniforme, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @Put("uniformes/{id}")
-        *  @ParamConverter("uniforme", converter="fos_rest.request_body")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("uniformes/{id}")
+    *  @ParamConverter("uniforme", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, Uniforme $uniforme, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $uniforme);
+        return $this->put($request, $id, $uniforme, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *  @FOS\Delete("uniformes/{id}")
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

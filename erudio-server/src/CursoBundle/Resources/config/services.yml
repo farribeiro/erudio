@@ -1,6 +1,26 @@
 services:
+    facade.curso.cursos:
+      class: CursoBundle\Service\CursoFacade
+      arguments: ["@doctrine"]
+    
     facade.curso.cursos_ofertados:
       class: CursoBundle\Service\CursoOfertadoFacade
+      arguments: ["@doctrine"]
+    
+    facade.curso.modulos:
+      class: CursoBundle\Service\ModuloFacade
+      arguments: ["@doctrine"]
+    
+    facade.curso.etapas:
+      class: CursoBundle\Service\EtapaFacade
+      arguments: ["@doctrine"]
+        
+    facade.curso.disciplinas:
+      class: CursoBundle\Service\DisciplinaFacade
+      arguments: ["@doctrine"]
+        
+    facade.curso.disciplinas_ofertadas:
+      class: CursoBundle\Service\DisciplinaOfertadaFacade
       arguments: ["@doctrine"]
     
     facade.curso.turmas:
@@ -8,15 +28,19 @@ services:
       arguments: ["@doctrine"]
       calls:
           - [setVagaFacade, ["@facade.curso.vagas"]]
-    
-    facade.curso.disciplinas_ofertadas:
-      class: CursoBundle\Service\DisciplinaOfertadaFacade
-      arguments: ["@doctrine"]
+          
+    facade.curso.agrupamentos_turma:
+        class: CursoBundle\Service\AgrupamentoTurmaFacade
+        arguments: ["@doctrine"]
 
     facade.curso.vagas:
       class: CursoBundle\Service\VagaFacade
       arguments: ["@doctrine"]
       
-    facade.curso.solicitacaoVagas:
-      class: CursoBundle\Service\SolicitacaoVagaFacade
+    facade.curso.modalidades_ensino:
+      class: CursoBundle\Service\ModalidadeEnsinoFacade
+      arguments: ["@doctrine"]
+        
+    facade.curso.turnos:
+      class: CursoBundle\Service\TurnoFacade
       arguments: ["@doctrine"]

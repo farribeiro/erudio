@@ -30,12 +30,11 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use Symfony\Component\HttpFoundation\Response;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 /**
@@ -43,7 +42,7 @@ use CoreBundle\ORM\Exception\IllegalUpdateException;
  */
 class AulaController extends AbstractEntityController {
     
-    public function getFacade() {
+    function getFacade() {
         return $this->get('facade.calendario.aulas');
     }
     
@@ -65,7 +64,7 @@ class AulaController extends AbstractEntityController {
     *  @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true) 
     */
-    function getListAction(Request $request, ParamFetcher $paramFetcher, $turma) { 
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher, $turma) { 
         $params = $paramFetcher->all();
         $params['turma'] = $turma;
         return $this->getList($request, $params);
@@ -83,18 +82,6 @@ class AulaController extends AbstractEntityController {
         } catch (IllegalUpdateException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         }
-        return $this->handleView($view);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("turmas/{turma}/aulas")
-    */
-    function putBatchAction(Request $request, $turma) {
-        $dataInicio = $request->query->get('dataInicio');
-        $this->getFacade()->gerarNovasAulas($turma, $dataInicio);
-        $view = View::create(null, Codes::HTTP_CREATED);
         return $this->handleView($view);
     }
     

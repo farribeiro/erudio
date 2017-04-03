@@ -26,10 +26,11 @@ api_avaliacao:
 api_auth:
     resource: "@AuthBundle/Resources/config/routing.yml"
     prefix: /api
-
-api_asset:
-    resource: "@AssetsBundle/Resources/config/routing.yml"
-    prefix: /api
+    
+api_reports:
+    resource: "@ReportBundle/Controller/"
+    type: annotation
+    prefix: /api/report
     
 # Docs    
 NelmioApiDocBundle:

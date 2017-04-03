@@ -30,86 +30,66 @@ namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Curso;
 
-/**
- * @RouteResource("cursos")
- */
-class CursoController extends AbstractEntityResource {
+class CursoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CursoBundle:Curso';
-    }
-    
-    function queryAlias() {
-        return 'c';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.curso.cursos');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Get("cursos/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        *   @QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @QueryParam(name = "nome", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *  @ApiDoc()
+    * 
+    * @FOS\Get("cursos")
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "nome", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        *  @ApiDoc()
-        * '
-        *  @Post("cursos")
-        *  @ParamConverter("curso", converter="fos_rest.request_body")
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Post("cursos")
+    * @ParamConverter("curso", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, Curso $curso, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($curso);
+        return $this->post($request, $curso, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @Put("cursos/{id}")
-        *  @ParamConverter("curso", converter="fos_rest.request_body")
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Put("cursos/{id}")
+    * @ParamConverter("curso", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, Curso $curso, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $curso);
+        return $this->put($request, $id, $curso, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("cursos/{id}") 
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

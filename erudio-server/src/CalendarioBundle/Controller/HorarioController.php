@@ -29,40 +29,27 @@
 namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
-use JMS\Serializer\Annotation as JMS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 
-class HorarioController extends AbstractEntityResource {
+class HorarioController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:Horario';
-    }
-    
-    function queryAlias() {
-        return 'h';
+    function getFacade() {
+        return $this->get('facade.calendario.horarios');
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Get("quadros-horarios/{quadro}/horarios")
-        */
-    function getHorariosAction(Request $request, $quadro) {
-        $horarios = $this->getDoctrine()->getRepository('CalendarioBundle:Horario')->createQueryBuilder('h')
-                ->join('h.quadroHorario', 'q')
-                ->where('h.ativo = true ')
-                ->andWhere('q.id = :quadroHorario')->setParameter('quadroHorario', $quadro)
-                ->getQuery()->getResult();
-        $view = View::create($horarios, Codes::HTTP_OK);
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        return $this->handleView($view);
+    *  @ApiDoc()
+    * 
+    *  @FOS\Get("quadros-horarios/{quadroHorario}/horarios")
+     * @FOS\QueryParam(name = "diaSemana", requirements="\d+", nullable = true)
+    */
+    function getHorariosAction(Request $request, $quadroHorario, ParamFetcherInterface $paramFetcher) {
+        $params = $paramFetcher->all();
+        $params['quadroHorario'] = $quadroHorario;
+        return $this->getList($request, $params);
     }
     
 }

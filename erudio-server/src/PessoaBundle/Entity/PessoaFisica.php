@@ -51,9 +51,9 @@ class PessoaFisica extends Pessoa {
     private $orgaoExpedidorRg;
     
     /** 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "rg_data_expedicao", type="date") 
-        */
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "rg_data_expedicao", type="date") 
+    */
     private $dataExpedicaoRg;
     
     /** @ORM\Column() */
@@ -84,21 +84,21 @@ class PessoaFisica extends Pessoa {
     private $nomePai;
     
     /** 
-        * @ORM\ManyToOne(targetEntity = "Cidade") 
-        * @ORM\JoinColumn(name = "cidade_nascimento_id", referencedColumnName = "id") 
-        */
+    * @ORM\ManyToOne(targetEntity = "Cidade") 
+    * @ORM\JoinColumn(name = "cidade_nascimento_id", referencedColumnName = "id") 
+    */
     private $naturalidade;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "EstadoCivil")
-        * @ORM\JoinColumn(name = "estado_civil_id", referencedColumnName = "id") 
-        */
+    * @ORM\ManyToOne(targetEntity = "EstadoCivil")
+    * @ORM\JoinColumn(name = "estado_civil_id", referencedColumnName = "id") 
+    */
     private $estadoCivil;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "Raca")
-        * @ORM\JoinColumn(name = "raca_id", referencedColumnName = "id") 
-        */
+    * @ORM\ManyToOne(targetEntity = "Raca")
+    * @ORM\JoinColumn(name = "raca_id", referencedColumnName = "id") 
+    */
     private $raca;
     
     /** @ORM\Column(name = "carteira_trabalho_numero") */
@@ -111,10 +111,16 @@ class PessoaFisica extends Pessoa {
     private $carteiraTrabalhoDataExepdicao;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "Estado")
-        * @ORM\JoinColumn(name = "carteira_trabalho_estado_id", referencedColumnName = "id") 
-        */
+    * @ORM\ManyToOne(targetEntity = "Estado")
+    * @ORM\JoinColumn(name = "carteira_trabalho_estado_id", referencedColumnName = "id") 
+    */
     private $carteiraTrabalhoEstado;
+    
+    /**
+     * @JMS\Groups({"LIST"}) 
+     * @ORM\Column 
+     */
+    private $alfabetizado = false;
     
     /**
     * @ORM\ManyToMany(targetEntity="Particularidade")
@@ -150,6 +156,10 @@ class PessoaFisica extends Pessoa {
     
     public function __construct() {
         parent::__construct();
+    }
+    
+    function getIdade() {
+        return (new \DateTime())->diff($this->getDataNascimento());
     }
     
     function getNumeroRg() {
@@ -313,6 +323,12 @@ class PessoaFisica extends Pessoa {
         $this->necessidadesEspeciais = $necessidadesEspeciais;
     }
 
+    function getAlfabetizado() {
+        return $this->alfabetizado;
+    }
 
+    function setAlfabetizado($alfabetizado) {
+        $this->alfabetizado = $alfabetizado;
+    }
 
 }

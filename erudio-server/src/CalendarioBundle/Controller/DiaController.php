@@ -30,94 +30,61 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 
-class DiaController extends AbstractEntityResource {
+class DiaController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:Dia';
-    }
-    
-    function queryAlias() {
-        return 'd';
-    }
-    
-    function parameterMap() {
-        return array (
-            'data' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('d.data = :dia')->setParameter('dia', $value);
-            }
-        );
-    }
-    
-    protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('d.calendario', 'calendario')
-            ->andWhere('calendario.id = :calendario')->setParameter('calendario', $params['calendario']);
+    function getFacade() {
+        return $this->get('facade.calendario.dias');
     }
     
     /**
-        *   @ApiDoc()
-        *  
-        *   @FOS\Get("calendarios/{id}/dias")
-        * 
-        *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @FOS\QueryParam(name = "data", default = null) 
-        */
-    function cgetAction(Request $request, $id, ParamFetcher $paramFetcher) {
+    *   @ApiDoc()
+    *  
+    *   @FOS\Get("calendarios/{id}/dias")
+    * 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "data", nullable = true) 
+    *   @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
+    *   @FOS\QueryParam(name = "efetivo", nullable = true)
+    */
+    function getListAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
         $params = $paramFetcher->all();
         $params['calendario'] = $id;
-        return $this->getList($params);
+        return $this->getList($request, $params);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Get("calendarios/{id}/meses/{mes}")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Get("calendarios/{id}/meses/{mes}")
+    */
     function getByMesAction(Request $request, $id, $mes) {
-        $calendario = $this->loadEntity($id, 'CalendarioBundle:Calendario');
-        if(!$calendario) {
-            throw $this->createNotFoundException();
-        }
-        $mes = strlen($mes) < 2 ? '0' . $mes : $mes;
-        $qb = $this->getDoctrine()->getRepository('CalendarioBundle:Dia')->createQueryBuilder('d');
-        $dias = $qb->join('d.calendario', 'c')
-                   ->where('c.id = :calendario')->andWhere('d.data LIKE :mes')->andWhere('d.ativo = :ativo')
-                   ->setParameter('calendario', $id)
-                   ->setParameter('ativo',1)
-                   ->setParameter('mes', $calendario->getAno() . '-' . $mes . '%')
-                   ->getQuery()->getResult();
-        $view = View::create($dias, Codes::HTTP_OK);
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        return $this->handleView($view);
+        return $this->getList($request, ['calendario' => $id, 'mes' => $mes]);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Put("calendarios/{id}/dias")
-        *  @ParamConverter("dias", converter="fos_rest.request_body")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("calendarios/{id}/dias")
+    *  @ParamConverter("dias", converter="fos_rest.request_body")
+    */
     function putBatchAction(Request $request, $id, DiaCollection $dias, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->updateBatch($dias->dias);
+        return $this->putBatch($request, $dias->dias, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Get("dias/atual")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Get("dias/atual")
+    */
     function getDataAtualAction() {
         $dateTime = new \DateTime();
         $dataAtual = date_format($dateTime, 'Y-m-d');

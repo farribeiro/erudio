@@ -145,6 +145,63 @@ class Turma extends AbstractEditableEntity {
         }
     }
     
+    function getEnturmacoes() {
+        $enturmacoes = $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->toArray();
+        usort($enturmacoes, function($e1, $e2) {
+            return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
+                $e2->getMatricula()->getAluno()->getNome()); 
+        });
+        return new ArrayCollection($enturmacoes);
+    }
+    
+    function getProfessores() {
+        $aux = $this->disciplinas->map(
+            function($d) { return $d->getProfessores()->toArray(); }
+        )->toArray();
+        $professores = [];
+        array_walk_recursive($aux, function($p) use (&$professores) {
+            if (!in_array($p, $professores)) {
+                $professores[] = $p;
+            } 
+        });
+        return $professores;
+    }
+        
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getEncerrado() {
+        return $this->status === self::STATUS_ENCERRADO;
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getQuantidadeAlunos() {
+        return $this->getEnturmacoes()->count();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getNomeCompleto() {
+        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
+    }
+    
+    function getNomeExibicao() {
+        return $this->apelido 
+                ? "{$this->etapa->getNomeExibicao()} - {$this->apelido}" 
+                : "{$this->etapa->getNomeExibicao()} - {$this->nome}";
+    }
+    
     function getNome() {
         return $this->nome;
     }
@@ -187,39 +244,6 @@ class Turma extends AbstractEditableEntity {
     
     function getDataEncerramento() {
         return $this->dataEncerramento;
-    }
-
-    function getEnturmacoes() {
-        return $this->enturmacoes->matching(
-            Criteria::create()->where(Criteria::expr()->andX(              
-                Criteria::expr()->eq('ativo', true), 
-                Criteria::expr()->eq('encerrado', false)
-            ))
-        );
-    }
-        
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getEncerrado() {
-        return $this->status === self::STATUS_ENCERRADO;
-    }
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getQuantidadeAlunos() {
-        return $this->getEnturmacoes()->count();
-    }
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getNomeCompleto() {
-        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
     }
     
     function setNome($nome) {

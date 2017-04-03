@@ -6,6 +6,10 @@ cursos:
     resource: CursoBundle\Controller\CursoController
     type:     rest
     
+cursos-ofertados:
+    resource: CursoBundle\Controller\CursoOfertadoController
+    type:     rest
+    
 modalidades-ensino:
     resource: CursoBundle\Controller\ModalidadeEnsinoController
     type:     rest
@@ -36,8 +40,4 @@ turnos:
 
 vagas:
     resource: CursoBundle\Controller\VagaController
-    type:     rest
-
-solicitacao-vagas:
-    resource: CursoBundle\Controller\SolicitacaoVagaController
     type:     rest

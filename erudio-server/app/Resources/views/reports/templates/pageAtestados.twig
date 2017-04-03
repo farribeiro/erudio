@@ -1,0 +1,32 @@
+<dynamic-page encoding="UTF-8" page-size="{% block pageType %}a4{% endblock %}">
+    <placeholders>
+        <footer>
+            <div height="05px" width="100%" font-size="8px" breakable="false" position="relative">
+                <hr margin="0" padding="0" />
+                <div padding-top="3px" width="80%" left="50%" position="absolute" float="left" text-align="center" >
+                    <p padding="0">
+                        <strong>{{instituicao.nomeCompleto}}</strong>
+                    </p>
+                    <p padding="0">
+                        {{instituicao.endereco.enderecoCompleto}}
+                    </p>
+                    <p padding="0">
+                        E-mail: {{instituicao.email}}
+                    </p>
+                </div>
+                <div padding="0" font-size="8px" position="relative" float="right" width="20%">
+                    <p margin-top="17px" text-align="right">Impresso em: {{"now"|date("d/m/Y H:i")}}</p>
+                </div>
+            </div>
+        </footer>
+        <header>
+            <div height="{% block headerHeight %}60px{% endblock %}">
+                    <img position="relative" left="270px" width="250px" src="bundles/report/brasao.jpg" />
+                <div text-align="center" padding-top="180px">                   
+                    {% block title %}Relatório Erudio{% endblock %}
+                </div>
+            </div>
+        </header>
+    </placeholders>
+    {% block content %}{% endblock %}
+</dynamic-page>

@@ -28,6 +28,7 @@
 
 namespace CoreBundle\ORM;
 
+use Symfony\Bridge\Monolog\Logger;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
@@ -45,9 +46,11 @@ abstract class AbstractFacade {
     const PAGE_SIZE = 50;
     
     protected $orm;
+    protected $logger;
     
-    public function __construct (Registry $doctrine) {
+    function __construct (Registry $doctrine, Logger $logger = null) {
         $this->orm = $doctrine;
+        $this->logger = $logger;
     }
     
     abstract function getEntityClass();
@@ -80,7 +83,7 @@ abstract class AbstractFacade {
         return $entidade;
     }
 
-    function findAll($params, $page = null) {
+    function findAll($params = [], $page = null) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
@@ -188,7 +191,7 @@ abstract class AbstractFacade {
     
     private function checkUniqueness($entidade, $isUpdate = false) {
         foreach ($this->uniqueMap($entidade) as $constraint) {
-            if (count($this->findAll($constraint)) > $isUpdate ? 1 : 0) {
+            if (count($this->findAll($constraint)) > ($isUpdate ? 1 : 0)) {
                 throw new Exception\UniqueViolationException();
             }
         }
@@ -284,7 +287,7 @@ abstract class AbstractFacade {
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if($v != null && key_exists($k, $this->parameterMap())) {
+            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }

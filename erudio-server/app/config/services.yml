@@ -15,4 +15,5 @@ services:
         class: AuthBundle\Security\Firewall\WsseListener
         arguments: ["@security.token_storage", "@security.authentication.manager"]
         public: false
+
         

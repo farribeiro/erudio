@@ -51,29 +51,35 @@ class Curso extends AbstractEditableEntity {
     */
     private $alfabetizatorio = false;
     
-    /** 
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(type = "boolean", nullable = false) 
+    /**
+    * @ORM\Column(type = "integer") 
     */
-    private $especializado = false;
+    private $limiteDefasagem = 0;
+    
+    /**
+    * @JMS\MaxDepth(depth = 1)
+    * @JMS\Type("PessoaBundle\Entity\Instituicao")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
+    */
+    private $instituicao;
     
     /** 
-        * @JMS\Groups({"LIST"}) 
-        * @ORM\ManyToOne(targetEntity = "ModalidadeEnsino") 
-        * @ORM\JoinColumn(name = "modalidade_ensino_id")
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\ManyToOne(targetEntity = "ModalidadeEnsino") 
+    * @ORM\JoinColumn(name = "modalidade_ensino_id")
+    */
     private $modalidade;
     
     /** 
-        * @JMS\Exclude
-        * @ORM\OneToMany(targetEntity = "Etapa", mappedBy = "curso", cascade = {"all"}) 
-        */
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Etapa", mappedBy = "curso", cascade = {"all"}) 
+    */
     private $etapas;
     
     /** 
-        * @JMS\Exclude
-        *  @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "curso", cascade = {"all"}) 
-        */
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "curso", cascade = {"all"}) 
+    */
     private $disciplinas;
     
     function __construct() {
@@ -89,20 +95,16 @@ class Curso extends AbstractEditableEntity {
         $this->nome = $nome;
     }
     
+    function getInstituicao() {
+        return $this->instituicao;
+    }
+    
     function getAlfabetizatorio() {
         return $this->alfabetizatorio;
     }
 
     function setAlfabetizatorio($alfabetizatorio) {
         $this->alfabetizatorio = $alfabetizatorio;
-    }
-    
-    function getEspecializado() {
-        return $this->especializado;
-    }
-
-    function setEspecializado($especializado) {
-        $this->especializado = $especializado;
     }
     
     function getEtapas() {
@@ -119,6 +121,14 @@ class Curso extends AbstractEditableEntity {
 
     function setModalidade(ModalidadeEnsino $modalidade) {
         $this->modalidade = $modalidade;
+    }
+    
+    function getLimiteDefasagem() {
+        return $this->limiteDefasagem;
+    }
+
+    function setLimiteDefasagem($limiteDefasagem) {
+        $this->limiteDefasagem = $limiteDefasagem;
     }
     
 }

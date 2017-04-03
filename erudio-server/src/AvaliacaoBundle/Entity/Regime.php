@@ -44,12 +44,26 @@ class Regime extends AbstractEditableEntity {
     */
     private $nome;
     
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = false) 
+    */
+    private $unidade;
+    
     function getNome() {
         return $this->nome;
     }
 
     function setNome($nome) {
         $this->nome = $nome;
+    }
+    
+    function getUnidade() {
+        return $this->unidade;
+    }
+
+    function setUnidade($unidade) {
+        $this->unidade = $unidade;
     }
     
 }

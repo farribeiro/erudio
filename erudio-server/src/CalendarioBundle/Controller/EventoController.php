@@ -30,91 +30,71 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\Evento;
 
 /**
  * @FOS\RouteResource("eventos")
  */
-class EventoController extends AbstractEntityResource {
+class EventoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:Evento';
-    }
-    
-    function queryAlias() {
-        return 'e';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('e.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'descricao' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('e.descricao LIKE :descricao')->setParameter('descricao', '%' . $value . '%');
-            },
-            'tipo' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('e.tipo = :tipo')->setParameter('tipo', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.calendario.eventos');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("eventos/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc()
-        * 
-        * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-        * @FOS\QueryParam(name = "nome", nullable = true) 
-        * @FOS\QueryParam(name = "descricao", nullable = true) 
-        * @FOS\QueryParam(name = "tipo", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("eventos/{id}")
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "nome", nullable = true) 
+    *   @FOS\QueryParam(name = "descricao", nullable = true) 
+    *   @FOS\QueryParam(name = "tipo", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Post("eventos")
-        *  @ParamConverter("evento", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Post("eventos")
+    *   @ParamConverter("evento", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, Evento $evento, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($evento);
+        return $this->post($request, $evento, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Put("eventos/{id}")
-        *  @ParamConverter("evento", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Put("eventos/{id}")
+    *   @ParamConverter("evento", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, Evento $evento, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $evento);
+        return $this->put($request, $id, $evento, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    *   
+    *   @FOS\Delete("eventos/{id}")
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

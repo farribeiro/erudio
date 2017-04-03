@@ -32,7 +32,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
 * @ORM\Entity

@@ -1,7 +1,7 @@
 MatriculaBundle\Entity\Matricula:
     properties:
         status:
-            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "TRANCADO", "ABANDONO", "FALECIDO"]
+            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "CANCELADO", "TRANCADO", "ABANDONO", "FALECIDO"]
             
 MatriculaBundle\Entity\Transferencia:
     properties:

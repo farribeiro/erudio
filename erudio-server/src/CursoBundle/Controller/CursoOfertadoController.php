@@ -43,7 +43,7 @@ use CursoBundle\Entity\CursoOfertado;
 class CursoOfertadoController extends AbstractEntityController {
     
     public function getFacade() {
-        return $this->get('facade.curso.cursos-ofertados');
+        return $this->get('facade.curso.cursos_ofertados');
     }
 
     /**

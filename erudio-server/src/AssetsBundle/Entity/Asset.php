@@ -34,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
+* @deprecated
 * @ORM\Entity
 * @ORM\Table(name = "edu_arquivo")
 */

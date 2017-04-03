@@ -95,24 +95,12 @@ class Periodo extends AbstractEditableEntity {
         return $this->sistemaAvaliacao;
     }
 
-    function setMedia($media) {
-        $this->media = $media;
-    }
-
     function setDataInicio($dataInicio) {
         $this->dataInicio = $dataInicio;
     }
 
     function setDataTermino($dataTermino) {
         $this->dataTermino = $dataTermino;
-    }
-
-    function setCalendario($calendario) {
-        $this->calendario = $calendario;
-    }
-
-    function setSistemaAvaliacao($sistemaAvaliacao) {
-        $this->sistemaAvaliacao = $sistemaAvaliacao;
     }
 
 

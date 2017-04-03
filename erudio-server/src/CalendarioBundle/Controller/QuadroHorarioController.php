@@ -30,95 +30,70 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\QuadroHorario;
 
 /**
  * @FOS\RouteResource("quadro-horarios")
  */
-class QuadroHorarioController extends AbstractEntityResource {
+class QuadroHorarioController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:QuadroHorario';
-    }
-    
-    function queryAlias() {
-        return 'q';
-    }
-    
-    function parameterMap() {
-        return ['nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('q.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-                'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('q.unidadeEnsino = :ue')->setParameter('ue', $value);
-            }];
+    function getFacade() {
+        return $this->get('facade.calendario.quadros_horario');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("quadro-horarios/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @FOS\QueryParam(name = "nome", nullable = true)
-        *   @FOS\QueryParam(name = "unidadeEnsino", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc()
+    *  
+    *   @FOS\Get("quadro-horarios")
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "nome", nullable = true)
+    *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Post("quadro-horarios")
-        *  @ParamConverter("horario", converter="fos_rest.request_body")
-        */
-    function postAction(Request $request, QuadroHorario $horario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($horario);
+    * @ApiDoc()
+    * 
+    * @FOS\Post("quadro-horarios")
+    * @ParamConverter("quadroHorario", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, QuadroHorario $quadroHorario, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $quadroHorario, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Put("quadro-horarios/{id}")
-        *  @ParamConverter("horario", converter="fos_rest.request_body")
-        */
-    function putAction(Request $request, $id, QuadroHorario $horario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $horario);
+    * @ApiDoc()
+    * 
+    * @FOS\Put("quadro-horarios/{id}")
+    * @ParamConverter("quadroHorario", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, QuadroHorario $quadroHorario, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $quadroHorario, $errors);
     }
     
     /**
-        *  @FOS\Delete("quadro-horarios/{id}")
-        *   @ApiDoc()
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("quadro-horarios/{id}")
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
-    }
-    
-    protected function beforeUpdate($quadroHorario) {
-        foreach($quadroHorario->getDiasSemana() as $dia) {
-            $dia->setQuadroHorario($quadroHorario);
-        }
-        foreach($quadroHorario->getHorarios() as $horario) {
-            $horario->setQuadroHorario($quadroHorario);
-        }
+        return $this->delete($request, $id);
     }
 
 }

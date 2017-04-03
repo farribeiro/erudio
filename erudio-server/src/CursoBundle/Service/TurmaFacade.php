@@ -67,7 +67,8 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere('t.status = :status')->setParameter('status', $value);
             },                    
             'encerrado' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.encerrado = :encerrado')->setParameter('encerrado', $value);
+                $operator = $value ? '=' : '<>';
+                $qb->andWhere("t.status ${operator} :encerrado")->setParameter('encerrado', Turma::STATUS_ENCERRADO);
             },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->join('etapa.curso', 'curso')                   
@@ -92,8 +93,8 @@ class TurmaFacade extends AbstractFacade {
         );
     }    
     
-    protected function prepareQuery(QueryBuilder $qb, array $params){
-        $qb->join('t.etapa', 'etapa');
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('t.etapa', 'etapa')->orderBy('etapa.ordem');
     }
         
     protected function beforeRemove($turma) {

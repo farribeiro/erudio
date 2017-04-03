@@ -20,16 +20,18 @@ class AppKernel extends Kernel
             new FOS\RestBundle\FOSRestBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new Ps\PdfBundle\PsPdfBundle(),
+            
             new CoreBundle\CoreBundle(),
             new AuthBundle\AuthBundle(),
-            new PDFBundle\PDFBundle(),
             new PessoaBundle\PessoaBundle(),
             new CursoBundle\CursoBundle(),
             new CalendarioBundle\CalendarioBundle(),
             new AvaliacaoBundle\AvaliacaoBundle(),
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
-            new AssetsBundle\AssetsBundle()
+            new ReportBundle\ReportBundle(),
+            //new AssetsBundle\AssetsBundle()  //TODO: momentaneamente desativado, bundle será refatorado
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

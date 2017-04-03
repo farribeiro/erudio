@@ -49,6 +49,10 @@ class Instituicao extends PessoaJuridica {
     */
     private $instituicaoPai;
     
+    function getNomeCompleto() {
+        return $this->getNome();
+    }
+    
     function getInstituicaoPai() {
         return $this->instituicaoPai;
     }

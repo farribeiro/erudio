@@ -30,6 +30,8 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\Matricula;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
 
@@ -70,9 +72,6 @@ class MatriculaFacade extends AbstractFacade {
             'codigo' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.codigo LIKE :codigo')->setParameter('codigo', '%' . $value . '%');
             },
-            'alfabetizado' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('m.alfabetizado = :alfabetizado')->setParameter('alfabetizado', $value);
-            },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             }
@@ -80,6 +79,9 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($matricula) {
+        if ($this->jaExiste($matricula)) {
+            throw new IllegalOperationException('Pessoa já possui matrícula neste curso');
+        }
         $this->gerarCodigo($matricula);
     }
     
@@ -88,13 +90,23 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($matricula) {
-        if($matricula->getAlfabetizado() == "") {
-            $matricula->setAlfabetizado(null);
-        }
         $this->orm->getManager()->flush();
     }
     
-    private function gerarCodigo($matricula) {
+    private function jaExiste(Matricula $matricula) {
+        $qb = $this->orm->getManager()->createQueryBuilder();
+        return $qb->select('COUNT(m.id)')
+            ->from($this->getEntityClass(), 'm')
+            ->join('m.aluno', 'aluno')->join('m.curso', 'curso')
+            ->where('m.ativo = true')
+            ->andWhere('aluno.id = :aluno')->setParameter('aluno', $matricula->getAluno()->getId())
+            ->andWhere('curso.id = :curso')->setParameter('curso', $matricula->getCurso()->getId())
+            ->andWhere('m.status IN (:status)')
+            ->setParameter('status', [Matricula::STATUS_CURSANDO, Matricula::STATUS_TRANCADO])
+            ->getQuery()->getSingleScalarResult() > 0;
+    }
+    
+    private function gerarCodigo(Matricula $matricula) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()

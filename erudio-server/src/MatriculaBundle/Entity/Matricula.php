@@ -44,6 +44,7 @@ class Matricula extends AbstractEditableEntity {
     const STATUS_CURSANDO = "CURSANDO",
           STATUS_APROVADO = "APROVADO",
           STATUS_REPROVADO = "REPROVADO",
+          STATUS_CANCELADO = "CANCELADO",
           STATUS_TRANCADO = "TRANCADO",
           STATUS_ABANDONO = "ABANDONO",
           STATUS_FALECIDO = "FALECIDO";
@@ -53,12 +54,6 @@ class Matricula extends AbstractEditableEntity {
     * @ORM\Column
     */
     private $codigo;
-    
-    /**  
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(type = "string", nullable = true) 
-    */
-    private $alfabetizado;
     
     /**
     * @JMS\Groups({"LIST"})  
@@ -81,6 +76,12 @@ class Matricula extends AbstractEditableEntity {
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Curso") 
     */
     private $curso;
+    
+    /**
+    * @JMS\Exclude
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Etapa") 
+    */
+    private $etapa;
     
     /** 
     * @JMS\Groups({"LIST"}) 
@@ -116,10 +117,6 @@ class Matricula extends AbstractEditableEntity {
             $this->codigo = $codigo;
         }
     }
-    
-    function getAlfabetizado() {
-        return $this->alfabetizado;
-    }
 
     function getStatus() {
         return $this->status;
@@ -132,17 +129,29 @@ class Matricula extends AbstractEditableEntity {
     function getCurso() {
         return $this->curso;
     }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    * @JMS\MaxDepth(depth = 1)
+    */
+    function getEtapaAtual() {
+        return $this->etapa ? $this->etapa : $this->redefinirEtapa();
+    }
 
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
     }
-
-    function setAlfabetizado($alfabetizado) {
-        $this->alfabetizado = $alfabetizado;
-    }
     
     function setStatus($status) {
         $this->status = $status;
+    }
+    
+    function redefinirEtapa() {
+        if($this->getEnturmacoesAtivas()->count() > 0) {
+            $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
+        }
+        return $this->etapa;
     }
 
     function transferir(UnidadeEnsino $unidadeEnsino) {
@@ -157,7 +166,9 @@ class Matricula extends AbstractEditableEntity {
     }
 
     function getEnturmacoes() {
-        return $this->enturmacoes;
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     /**  

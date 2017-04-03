@@ -42,11 +42,9 @@ use CursoBundle\Entity\Turma;
 class AulaFacade extends AbstractFacade {
     
     private $horarioDisciplinaFacade;
-    private $logger;
     
     function __construct(Registry $doctrine, Logger $logger) {
-        parent::__construct($doctrine);
-        $this->logger = $logger;
+        parent::__construct($doctrine, $logger);
     }
     
     function setHorarioDisciplinaFacade(HorarioDisciplinaFacade $horarioDisciplinaFacade) {
@@ -67,11 +65,15 @@ class AulaFacade extends AbstractFacade {
                 $qb->andWhere('dia.id = :dia')->setParameter('dia', $value);
             },
             'mes' => function(QueryBuilder $qb, $value) {
+                $mes = $value < 10 ? '0' . $value : $value;
                 $qb->andWhere('dia.data LIKE :mes')
-                   ->setParameter('mes', '%-' . $value . '-%');
+                   ->setParameter('mes', '%-' . $mes . '-%');
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
+            },
+            'disciplinas' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplina.id IN (:disciplinas)')->setParameter('disciplinas', $value);
             },
             'horario' => function(QueryBuilder $qb, $value) {
                 $qb->join('a.horario', 'horario')
@@ -104,19 +106,18 @@ class AulaFacade extends AbstractFacade {
             ))
         );
         foreach($dias as $dia) {
-            $horarios
-                ->filter(function($h) use ($dia) {
-                    return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
-                })
-                ->map(function($h) use ($dia, $aulasCriadas) {
-                    $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
-                    $this->orm->getManager()->persist($aula);
-                    $aulasCriadas++;
-                });
+            $horariosAula = $horarios->filter(function($h) use ($dia) {
+                return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
+            });
+            foreach ($horariosAula as $h) {
+                $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
+                $this->orm->getManager()->persist($aula);
+                $aulasCriadas++;
+            }
             $this->orm->getManager()->flush();
             $this->orm->getManager()->clear('CalendarioBundle:Aula');
         }
-        if ($aulasCriadas) {
+        if ($aulasCriadas > 0) {
             $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
             $this->orm->getManager()->flush();
         }
