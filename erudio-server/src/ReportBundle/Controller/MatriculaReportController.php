@@ -29,7 +29,7 @@ class MatriculaReportController extends Controller {
     *   }
     * )
     * 
-    * @Route("atestados/atestado-matricula", defaults={ "_format" = "pdf" })
+    * @Route("atestados/matricula", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
     function atestadoAction(Request $request) {
