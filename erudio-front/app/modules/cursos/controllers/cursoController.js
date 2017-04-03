@@ -28,8 +28,8 @@
     var cursoModule = angular.module('cursoModule', ['cursoDirectives', 'etapaDirectives', 'servidorModule', 'erudioConfig']);
     cursoModule.controller('CursoController', ['$scope','$rootScope','$timeout', 'Servidor', '$templateCache', 'ErudioConfig', function ($scope,$rootScope,$timeout, Servidor, $templateCache, ErudioConfig) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll();
-        $scope.escrita = Servidor.verificaEscrita('CURSO') || Servidor.verificaAdmin();
+        $templateCache.removeAll(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
+        $scope.escrita = Servidor.verificaEscrita('CURSO'); $scope.isAdmin = Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateLista('cursos'); $scope.lista = true;
         //ATRIBUTOS
@@ -39,13 +39,13 @@
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
         //PREPARA REMOÇÃO DO CURSO
-        $scope.prepararRemover = function (curso) { $('#remove-modal-curso').openModal(); $scope.cursoRemover = curso; };
+        $scope.prepararRemover = function (curso) { $('#remove-modal-curso').modal(); $scope.cursoRemover = curso; };
         //PASSA ARGUMENTO PARA O MÓDULO DE ETAPAS
         $scope.intraForms = function (curso) { $rootScope.etapaCurso = curso; };
         //ABRE AJUDA
-        $scope.ajuda = function () { $('#modal-ajuda-curso').openModal(); };
+        $scope.ajuda = function () { $('#modal-ajuda-curso').modal(); };
         //INICIALIZAÇÃO BÁSICA
-        $scope.inicializar = function () { $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove(); };
+        $scope.inicializar = function () { $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').modal(); $('.material-tooltip').remove(); };
         
         //LISTANDO CURSOS
         $scope.buscarCursos = function () {

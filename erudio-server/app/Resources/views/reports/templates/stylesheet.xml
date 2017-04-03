@@ -18,5 +18,6 @@
     <p>
         <attribute name="margin" value="0" />
         <attribute name="padding" value="2px" />
+        <attribute name="line-height" value="20px" />
     </p>
 </stylesheet>

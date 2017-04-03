@@ -246,9 +246,14 @@
     
 }
 
+p{
+    font-size: 14px;
+}
+
+.mobile-divider { display: none; }
+
 .matricula-banner {
-    margin-top:2px;
-    height: 20rem;
+    height: 150px;
     background: url('../images/matriculas.jpg') no-repeat center center;
     background-size: 100% auto;
 }
@@ -288,6 +293,12 @@
     background-size: 100% auto;
     height: 220px;
     
-    position: relative;
-    
+    position: relative;    
 }
+
+.alunoNome {
+    font-size: 40px;
+    font-weight: 200;
+}
+
+.alunoInfo { border-right: 1px solid #eee; }

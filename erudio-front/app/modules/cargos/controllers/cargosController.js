@@ -66,7 +66,7 @@
         /* Verifica se o usuário deseja descartar os dados preenchidos*/
         $scope.prepararVoltar = function (objeto) {
             if (objeto.nome && !objeto.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -105,7 +105,7 @@
         /* Preparar remover */
         $scope.prepararRemover = function (cargo) {
             $scope.cargoRemover = cargo;
-            $('#remove-modal-cargo').openModal();
+            $('#remove-modal-cargo').modal();
         };
 
         /* Exclui um cargo */

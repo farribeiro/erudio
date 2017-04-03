@@ -46,12 +46,12 @@
         $scope.etapa = {'id': null};
         $scope.curso = {'id': null};
         $scope.transferencia = {
-            'justificativa': '',
-            'resposta': '',
+            'justificativa': null,
+            'resposta': null,
             'dataAgendamento': null,
             'matricula': {'id': null},
-            'unidadeEnsinoDestino': {'id': ''},
-            'unidadeEnsinoOrigem': {'id': ''}
+            'unidadeEnsinoDestino': {'id': null},
+            'unidadeEnsinoOrigem': {'id': null}
         };
 
         /* ------------- Movimentações --------------*/
@@ -83,7 +83,7 @@
         $scope.mostraEnturmacao = false;
         $scope.resposta = '';
         $scope.opcaoEnvio = '';
-        $scope.nomeUnidade = '';
+        $scope.nomeUnidade = null;
         $scope.paginaAtual = 1;
         $scope.quantidadePaginas = 0;
         $scope.nomeUnidadeBusca = '';
@@ -94,25 +94,25 @@
             'unidadeEnsino': {'id': null},
             'aluno': {},
             'codigo': null,
-            'status': ''
+            'status': null
         };
         $scope.transferencia = {
-            'justificativa': '',
-            'resposta': '',
+            'justificativa': null,
+            'resposta': null,
             'dataAgendamento': null,
             'matricula': {'id': null},
             'unidadeEnsinoDestino': {'id': null}
         };
         $scope.desligamento = {
             'matricula': {},
-            'justificativa': '',
-            'destino': '',
-            'motivo': ''
+            'justificativa': null,
+            'destino': null,
+            'motivo': null
         };
         $scope.movimentacao = {
             'matricula': {},
             'enturmacaoOrigem': {},
-            'justificativa': '',
+            'justificativa': null,
             'turmaDestino': {}
         };
 
@@ -120,8 +120,8 @@
         $scope.editando = false;
         $scope.limparTransferencia = function () {
             $scope.transferencia = {
-                'justificativa': '',
-                'resposta': '',
+                'justificativa': null,
+                'resposta': null,
                 'curso':null,
                 'dataAgendamento': null,
                 'matricula': {'id': null},
@@ -134,7 +134,7 @@
                 'matricula': null,
                 'justificativa': null,
                 'destino': null,
-                'motivo': ''
+                'motivo': null
             };
         };
 
@@ -144,7 +144,7 @@
                 'unidadeEnsino': {'id': null},
                 'aluno': {},
                 'codigo': null,
-                'status': ''
+                'status': null
             };
         };
 
@@ -343,6 +343,7 @@
                             });
                         });
                     });
+                    //$('#aceitar-transferencia').modal('open');
                     $('#aceitar-transferencia').openModal();
                     //$('#selectTurmaTransferencia').material_select();
                 });
@@ -410,6 +411,7 @@
         
         $scope.abrirModalTransferenciaLocal = function(matricula) {
             $scope.matricula = matricula;
+            //$('#transferencia-local-movimentacoes-modal').modal('open');
             $('#transferencia-local-movimentacoes-modal').openModal();
             $scope.limparTransferencia();
         };
@@ -426,6 +428,7 @@
                 $scope.progresso = true;
                 var promise = Servidor.finalizar(transferencia, 'transferencias', 'Transferência');
                 promise.then(function(response) {
+                    //$('#transferencia-local-movimentacoes-modal').modal('close');
                     $('#transferencia-local-movimentacoes-modal').closeModal();
                     $scope.progresso = false;
                 });
@@ -481,6 +484,7 @@
                                     t.status = response.data.status;
                                 }
                             });
+                            //$('#recusar-movimentacao').modal('close');
                             $('#recusar-movimentacao').closeModal();
                         });
                     }
@@ -566,6 +570,7 @@
         $scope.preparaRecusar = function(transferencia){
           $scope.transferencia = transferencia;
           $('#recusar-movimentacao').openModal();
+          //$('#recusar-movimentacao').modal();
         };
 
         $scope.abrirEnturmacao = function() {
@@ -585,14 +590,14 @@
                 'resposta': '',
                 'dataAgendamento': null,
                 'matricula': {'id': null},
-                'unidadeEnsinoDestino': {'id': ''},
-                'unidadeEnsinoOrigem': {'id': ''}
+                'unidadeEnsinoDestino': {'id': null},
+                'unidadeEnsinoOrigem': {'id': null}
             };
             if(!$scope.isAdmin) {
                 $scope.transferencia.unidadeEnsinoDestino = destino;                
             }
-            $scope.nomeUnidade = '';
-            $scope.buscaAluno = '';
+            $scope.nomeUnidade = null;
+            $scope.buscaAluno = null;
             $scope.reparaSelect('statusTransferencia');
             $scope.reparaSelect('unidadeDestino');
         };
@@ -644,23 +649,19 @@
 
         $scope.buscarTransferencias = function () {
             var params = {
-                'nome': $scope.buscaAluno,
+                'matricula_aluno_nome': $scope.buscaAluno,
                 'status': $scope.transferencia.status
             };
-            if(params.nome !== undefined && params.nome.length) {
-                var endereco = 'transferencias-pessoa';
-            } else {
-                endereco = 'transferencias';
-            }
-            if($scope.transferencia.unidadeEnsinoOrigem !== undefined){
+            var endereco = 'transferencias';
+            if($scope.transferencia.unidadeEnsinoOrigem !== undefined && $scope.transferencia.unidadeEnsinoOrigem !== null){
                 params.unidadeEnsinoOrigem = $scope.transferencia.unidadeEnsinoOrigem.id;
             }else{
-                params.unidadeEnsinoOrigem = '';
+                params.unidadeEnsinoOrigem = null;
             }
-            if($scope.transferencia.unidadeEnsinoDestino.id){
+            if($scope.transferencia.unidadeEnsinoDestino.id !== undefined && $scope.transferencia.unidadeEnsinoDestino.id !== null){
                 params.unidadeEnsinoDestino = $scope.transferencia.unidadeEnsinoDestino.id;
             }else{
-                params.unidadeEnsinoDestino = '';
+                params.unidadeEnsinoDestino = null;
             }
             if (!$scope.isAdmin) {
                 params.unidadeEnsinoDestino = sessionStorage.getItem('unidade');
@@ -1213,10 +1214,10 @@
         };
 
         $scope.matriculaMovimentacoes = {
-            'unidadeEnsino': '',
-            'aluno_nome': '',
-            'curso': '',
-            'codigo': '',
+            'unidadeEnsino': null,
+            'aluno_nome': null,
+            'curso': null,
+            'codigo': null,
             'status': 'CURSANDO'
         };
 
@@ -1231,8 +1232,8 @@
             $scope.matriculaMovimentacoes = {
                 'unidadeEnsino': null,
                 'curso': null,
-                'aluno_nome': '',
-                'codigo': ''
+                'aluno_nome': null,
+                'codigo': null
             };
             $scope.nomeUnidadeBusca = '';
             if(!$scope.isAdmin) {
@@ -1247,9 +1248,10 @@
             $scope.mostraListaMovimentacoes = true;            
             var unidade = ($scope.isAdmin) ? $scope.matriculaMovimentacoes.unidadeEnsino : $scope.unidade.id;
             $scope.progresso = true;
-            if(!$scope.isAdmin && (matricula.aluno_nome !== undefined && matricula.aluno_nome.length) || (matricula.codigo !== undefined && matricula.codigo.length)) {
+            if(!$scope.isAdmin && (matricula.aluno_nome !== undefined && matricula.aluno_nome !== null) || (matricula.codigo !== undefined && matricula.codigo !== null)) {
                 unidade = null;
             }
+            if (matricula.aluno_nome === '') { matricula.aluno_nome = null; }
             var promise = Servidor.buscar('matriculas', {
                 unidadeEnsino: unidade,
                 aluno_nome: matricula.aluno_nome,
@@ -1273,11 +1275,11 @@
                         });
                         $scope.matriculas = matriculas;
                         if(origem === 'botao') { $scope.quantidadePaginas = Math.ceil(response.data.length / 50); }
-                        $timeout(function() { $('.tooltipped').tooltip({delay: 50}); $scope.progresso = false; }, 150);
+                        $timeout(function() { $('.tooltipped').tooltip({delay: 50}); $scope.progresso = false; $scope.fecharProgresso(); }, 150);
                     });
                 } else {
                     $scope.progresso = false;
-                    Servidor.customToast('Nenhuma matrícula encontrada.');
+                    Servidor.customToast('Nenhuma matrícula encontrada.'); $scope.fecharProgresso();
                 }
             });
         };
@@ -1347,6 +1349,13 @@
                 Servidor.entradaPagina();
                 $('ul.tabs').tabs();
                 $timeout(function() {$('ul.tabs').tabs('select_tab', 'movimentacoesBusca');}, 50);                
+                $('#movimentacoesBusca').ready(function() {
+                    $('#buscaUnidadeMovimentar, #curso, #unidade, #motivo, #statusTransferencia, #unidadeDestino, #tipoFiltroHistorico, #statusMatriculaMovimentacoes').material_select('destroy');
+                    $('#buscaUnidadeMovimentar, #curso ,#unidade, #motivo, #statusTransferencia, #unidadeDestino, #tipoFiltroHistorico, #statusMatriculaMovimentacoes').material_select();
+                });
+            }, 500);
+            $timeout(function(){
+                $('#statusMatriculaMovimentacoes').material_select('destroy'); $('#statusMatriculaMovimentacoes').material_select();
                 $('#unidadeBuscaAutoComplete').dropdown({
                     inDuration: 300,
                     outDuration: 225,
@@ -1356,11 +1365,7 @@
                     belowOrigin: true,
                     alignment: 'left'
                 });
-                $('#movimentacoesBusca').ready(function() {
-                    $('#buscaUnidadeMovimentar, #curso, #unidade, #motivo, #statusTransferencia, #unidadeDestino, #tipoFiltroHistorico, #statusMatriculaMovimentacoes').material_select('destroy');
-                    $('#buscaUnidadeMovimentar, #curso ,#unidade, #motivo, #statusTransferencia, #unidadeDestino, #tipoFiltroHistorico, #statusMatriculaMovimentacoes').material_select();
-                });
-            }, 500);
+            },800);
         };
         $scope.buscarCursos();
         $scope.buscarUnidades();

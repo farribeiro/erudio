@@ -25,13 +25,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 (function () {
-    var mainModule = angular.module('mainModule', ['servidorModule', 'mainDirectives', 'instituicaoModule', 'cursoModule', 'cursoFormModule', 'etapaModule', 'etapaFormModule','regimeModule', 'moduloModule', 'turnoModule',
-        'unidadeModule', 'tipoModule', 'turmaModule', 'turmaFormModule', 'turmaAlunosModule', 'turmaAlunosEnturmarModule', 'turmaProfessoresModule', 'turmaAlunoPresencaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
-        'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
+    var mainModule = angular.module('mainModule', ['servidorModule', 'elementosModule', 'mainDirectives', 'instituicaoModule', 'instituicaoFormModule', 'cursoModule', 'cursoFormModule', 'etapaModule', 'etapaFormModule','regimeModule', 'moduloModule', 'turnoModule',
+        'unidadeModule', 'tipoModule', 'turmaModule', 'turmaPresencasModule', 'turmaQuadroHorarioModule', 'turmaFormModule', 'turmaAlunosModule', 'turmaAlunosEnturmarModule', 'turmaProfessoresModule', 'turmaAlunoPresencaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
+        'matriculaFormModule', 'matriculaEtapaModule', 'matriculaEnturmacaoModule', 'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
         'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','historicoEscolarModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
-        'grupoPermissaoModule', 'turmaMistaModule','homeModule']);
+        'grupoPermissaoModule', 'turmaMistaModule','homeModule','relatorioModule','diarioNotasModule','relatoriosDefasadosModule','testeModule','frequenciaModule']);
 
-    mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
+    mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, $templateCache) {
         $templateCache.removeAll();
         
         this.tab = 'home';
@@ -44,8 +44,6 @@
         $scope.AvaliacaoService = AvaliacaoService;
         $scope.PessoaService = PessoaService;
         $scope.FuncionarioService = FuncionarioService;
-        $scope.MatriculaService = MatriculaService;
-        $scope.TurmaService = TurmaService;
         $scope.isHome = true;
         //CARREGA MÓDULO
         this.carregarConteudo = function (modulo, options) { return "app/modules/" + modulo + "/partials/" + modulo + options + ".html"; };
@@ -71,7 +69,7 @@
         this.logout = function () { sessionStorage.clear(); window.location = 'http://educacao.itajai.sc.gov.br/'; };
 
         //ABRE MODAL DE FOTO
-        this.modalAvatar = function () { $('#modalAvatar').openModal(); $scope.labelUpload = 'INSERIR FOTO'; };
+        this.modalAvatar = function () { $('#modalAvatar').modal(); $scope.labelUpload = 'INSERIR FOTO'; };
 
         //EVENTO DE BOTAO
         this.uploadAction = function () { $('#upload-file').click(); };
@@ -138,12 +136,15 @@
         } else {
             this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
         }*/
+        //$scope.unidadeAtual = sessionStorage.getItem('unidade');
         var sessionId = sessionStorage.getItem('sessionId');
         if (sessionId) { $('body').css('opacity',1); }
         if (sessionStorage.getItem('show_menu')) { $("#slide-out").show(); $('main').css('padding-left',''); $(this).css('left','250px'); }
         else { $("#slide-out").hide(); $('main').css('padding-left','0'); $(this).css('left','10px'); }
         $timeout(function () {
-            $('.modal-trigger').leanModal(); Servidor.verificarMenu();
+            //$('.modal-trigger').leanModal();
+           $('.modal-trigger').modal();
+            Servidor.verificarMenu();
             $('.menu_swap').click(function(){
                 var visivel = $("#slide-out").css('display');
                 if (visivel !== 'none') { $("#slide-out").hide(); $('main').css('padding-left','0'); $(this).css('left','10px'); sessionStorage.setItem('show_menu',false);

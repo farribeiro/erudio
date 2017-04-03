@@ -163,7 +163,7 @@
         };
 
         $scope.abrirModalRemoverTodasPermissoes = function() {
-            $('#remove-modal-permissao-total').openModal();
+            $('#remove-modal-permissao-total').modal();
         };
 
         /* SALVAR GRUPO DE PERMISSOES */
@@ -241,7 +241,7 @@
 
         /* MODAL DE RETORNO */
         $scope.prepararVoltar = function(objeto) {
-            //if (objeto.nomeExibicao || objeto.username && !objeto.id) { $('#modal-certeza').openModal(); } else { $scope.fecharFormulario(); }
+            //if (objeto.nomeExibicao || objeto.username && !objeto.id) { $('#modal-certeza').modal(); } else { $scope.fecharFormulario(); }
             $scope.fecharFormulario();
         };
 
@@ -328,7 +328,7 @@
                 $scope.buscarEntidades();
                 $scope.buscarRoles();
                 $timeout(function(){
-                    for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].idEntidade, i); }
+                    //for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].idEntidade, i); }
                     if (!nova) { $('.opcoesUsuario' + usuario.id).hide(); }
                     if ($scope.editandoMobile) { $(".usuario-banner, .busca").hide(); }
                     $scope.fechaLoader();
@@ -357,7 +357,7 @@
         };
 
         //GUARDA OBJETO PERMISSAO PARA SER REMOVIDO
-        $scope.preRemover = function (permissao){ $scope.permissaoRemover = permissao; $("#remove-modal-permissao").openModal(); };
+        $scope.preRemover = function (permissao){ $scope.permissaoRemover = permissao; $("#remove-modal-permissao").modal(); };
 
         /* REMOVER PERMISSAO */
         $scope.remover = function (){
@@ -485,7 +485,7 @@
 
         $scope.verificarRemocaoPermissoes = function() {
             if($('#remove_all').prop('checked')) {
-                $('#remove-modal-permissao-total').openModal();
+                $('#remove-modal-permissao-total').modal();
             } else {
                 $scope.removerPermissoes();
             }

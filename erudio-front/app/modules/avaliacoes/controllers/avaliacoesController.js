@@ -114,7 +114,7 @@
                 if(mediaFechada) {
                     return Servidor.customToast('Não é possível remover. A média desta avaliação está fechada.');                    
                 } else {
-                    return $('#modal-remover-avaliacao').openModal();
+                    return $('#modal-remover-avaliacao').modal();
                 }
             });
 //            if(!avaliacao.fechamentoMedia){
@@ -124,7 +124,7 @@
 //                        Materialize.toast(avaliacao.nome + ' possui notas, portanto não pode excluí-la.', 5000);
 //                    } else {
 //                        $scope.avaliacaoRemover = avaliacao;
-//                        $('#modal-remover-avaliacao').openModal();
+//                        $('#modal-remover-avaliacao').modal();
 //                    }
 //                });
 //            } else{
@@ -175,7 +175,7 @@
         /* Verifica se o usuário desejar descartar os dados preenchidos */
         $scope.prepararVoltar = function (avaliacao) {
             if ($scope.avaliacao.nome && !$scope.avaliacao.id) {
-                $('#modal-certeza-avaliacoes').openModal();
+                $('#modal-certeza-avaliacoes').modal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -793,7 +793,7 @@
                     var promise = Servidor.buscarUm('turmas', $scope.avaliacao.disciplina.turma.id);
                     promise.then(function(response) {
                         $scope.avaliacao.disciplina.turma = response.data;
-                        $('#info-modal-avaliacao').openModal();
+                        $('#info-modal-avaliacao').modal();
                     });
                 } else if ($scope.escrita) {
                     $scope.verificaMediaFechada();                    
@@ -847,7 +847,7 @@
                                     if ($scope.avaliacao.id) {
                                         $scope.removerHabilidades();
                                     } else {
-                                        $('#modal-fechamento-media').openModal();
+                                        $('#modal-fechamento-media').modal();
                                         return false;
                                     }
                                 }
@@ -1064,7 +1064,7 @@
         /* Verifica se o usuário deseja descartar os dados preenchidos */
         $scope.prepararVoltar = function(objeto) {
             if ((objeto.nome || objeto.disciplina.id || objeto.media) && !objeto.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }

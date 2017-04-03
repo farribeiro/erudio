@@ -29,7 +29,7 @@
 }
 
 .instituicao-banner {
-    height: 20rem;
+    height: 150px;
     background: url('../images/instituicao.jpg') no-repeat center center;
     background-size: 100% auto;
 }
@@ -40,7 +40,7 @@
 }
 
 .input-telefone {
-    width: 30% !important;
+    //width: 30% !important;
 }
 
 .margin-card {
@@ -50,6 +50,6 @@
 .modal-title-info-aluno{
     background: url('../images/geography.jpg') center bottom;
     background-size: 100% auto;
-    height: 140px;
+    min-height: 140px;
     position: relative;
 }

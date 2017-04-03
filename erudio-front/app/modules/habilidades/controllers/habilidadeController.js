@@ -429,12 +429,12 @@
             /* Verifica se o usuário deseja descartar os dados preenchidos */
             $scope.prepararRemover = function (habilidade) {
                 $scope.habilidadeRemover = habilidade;
-                $('#remove-modal-habilidade').openModal();
+                $('#remove-modal-habilidade').modal();
             };
 
 //            $scope.prepararVoltar = function(objeto) {
 //                if (objeto.nome || objeto.media && !objeto.id ) {                
-//                    $('#modal-certeza').openModal();
+//                    $('#modal-certeza').modal();
 //                } else {
 //                    $scope.fecharFormulario();
 //                }
@@ -464,7 +464,7 @@
                 $timeout(function () {
                     $('.counter').each(function () {
                         $(this).characterCounter();
-                        $('.modal-trigger').leanModal();
+                        $('.modal-trigger').modal();
                     });
                     $('.tooltipped').tooltip('remove');
                     $('.tooltipped').tooltip({delay: 50});
@@ -478,7 +478,7 @@
                             $('.swipeable').removeClass('move-right');
                         });
                     }
-                    $('.modal-trigger').leanModal({
+                    $('.modal-trigger').modal({
                         dismissible: true, // Modal can be dismissed by clicking outside of the modal
                         opacity: .5, // Opacity of modal background
                         in_duration: 300, // Transition in duration

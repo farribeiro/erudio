@@ -230,7 +230,7 @@
 
             $scope.prepararVoltar = function (objeto) {
                 if (objeto.nome && !objeto.id) {
-                    $('#modal-certeza').openModal();
+                    $('#modal-certeza').modal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -370,7 +370,7 @@
 
             /* Abre modal Informacoes de pessoa */
             $scope.infoPessoa = function (pessoa) {
-                $('#modal-pessoa').openModal();
+                $('#modal-pessoa').modal();
                 var promise = Servidor.buscarUm('pessoas', pessoa.id);
                 promise.then(function (response) {
                     $scope.pessoa = response.data;
@@ -1088,7 +1088,7 @@
             /* Preparar remover */
             $scope.prepararRemover = function (pessoa) {
                 $scope.pessoaRemover = pessoa;
-                $('#remove-modal-pessoa').openModal();
+                $('#remove-modal-pessoa').modal();
             };
 
             /* Limpa pessoa */
@@ -1164,7 +1164,7 @@
     //                                var promiseT = Servidor.buscar('telefones', {'pessoa': $scope.cadastroExistente.id});
     //                                promiseT.then(function (responseT) {
     //                                    $scope.cadastroExistente.telefones = responseT.data;
-    //                                    $('#pessoa-cadastrada').openModal();
+    //                                    $('#pessoa-cadastrada').modal();
     //                                });
     //                            });
                             } else {
@@ -1364,7 +1364,7 @@
                     $scope.pessoa.dataNascimento = dateTime.converterDataForm(response.data.dataNascimento);
                     if ($scope.telaNumero === 5) {
                         if ($scope.novo) {
-                            $('#confirma-cadastro').openModal();
+                            $('#confirma-cadastro').modal();
                             $scope.fechaLoader();
                             $scope.novo = false;
                         } else {

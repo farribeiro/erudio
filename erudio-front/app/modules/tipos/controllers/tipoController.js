@@ -67,7 +67,7 @@
         
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id && objeto.sigla) {                
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -135,7 +135,7 @@
         $scope.validar = function (id) { var result = Servidor.validar(id); return result; };   
         
         /* Guarda o tipo para futura remoção e abre o modal de confirmação */
-        $scope.prepararRemover = function (tipo){ $('#remove-modal').openModal(); $scope.tipo = tipo; };
+        $scope.prepararRemover = function (tipo){ $('#remove-modal').modal(); $scope.tipo = tipo; };
             
         /* Remover o tipo */
         $scope.remover = function (){

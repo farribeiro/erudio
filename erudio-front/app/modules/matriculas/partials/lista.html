@@ -1,0 +1,64 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- LISTA 
+<div data-ng-show="matriculas.length" ng-bind-html="tabela" class="row"></div> -->
+
+<div data-ng-show="matriculas.length" class="row">
+    <div class="col s12 m12 mobile-full" style="padding: 0;">
+        <div class="card-panel" style="margin: 0;">
+            <div class="card-content mobile-full">
+                <table class='highlight striped table-pattern'>
+                    <thead>
+                        <tr>
+                            <th data-field='cod'>Código</th><th class="center" data-field='aluno'>Aluno</th><th class="center" data-field='curso'>Curso</th>
+                            <th class="center" data-field='status'>Status</th><th class="center" data-field='ue'>Unidade de Ensino</th>
+                            <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="matricula in matriculas">
+                            <td style="padding: 0;" class="celula-link relative mobile-full"><a style="text-decoration: none; color: #000;" href="{{config.dominio}}/#/matriculas/{{ matricula.id }}"><div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;">{{ matricula.codigo }}</div></a></td>
+                            <td style="padding: 0;" class='hide-on-small-only center'><a style="text-decoration: none; color: #000;" href="{{config.dominio}}/#/matriculas/{{ matricula.id }}"><div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;">{{ matricula.aluno.nome }}</div></a></td>
+                            <td style="padding: 0;" class='hide-on-small-only center'><a style="text-decoration: none; color: #000;" href="{{config.dominio}}/#/matriculas/{{ matricula.id }}"><div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;">{{ matricula.curso.nome }}</div></a></td>
+                            <td style="padding: 0;" class='hide-on-small-only center'><a style="text-decoration: none; color: #000;" href="{{config.dominio}}/#/matriculas/{{ matricula.id }}"><div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;">{{ matricula.status }}</div></a></td>
+                            <td style="padding: 0;" class='hide-on-small-only center'><a style="text-decoration: none; color: #000;" href="{{config.dominio}}/#/matriculas/{{ matricula.id }}"><div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;">{{ matricula.unidadeEnsino.nomeCompleto }}</div></a></td>
+                            <td style="padding: 0;" class='center-align hide-on-small-only'>
+                                <div style="padding-top: 20px; padding-bottom: 15px; padding-left: 20px;" data-ng-click="carregarTurma(turma)">                                    
+                                    <a href="{{config.dominio}}/#/matriculas/{{matricula.id}}/enturmacoes"><i data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Enturmações' class="material-icons info-icon tooltipped">people</i></a>
+                                    <a href="{{config.dominio}}/#/matriculas/{{matricula.id}}/etapas"><i data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">local_library</i></a>
+                                    <a href="{{config.dominio}}/#/matriculas/{{matricula.id}}/movimentacoes"><i data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Movimentações' class="material-icons info-icon tooltipped">swap_horiz</i></a>
+                                    <a href="{{config.dominio}}/#/matriculas/{{matricula.id}}/atestado"><i data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i></a>
+                                    <i data-ng-click="reativarMatricula(matricula)" data-ng-show="(matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO') && (escrita)" data-position="top" data-delay="50" data-tooltip="Reativar" class="material-icons info-icon tooltipped">arrow_upward</i>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>                   
+        </div>
+    </div>
+</div>

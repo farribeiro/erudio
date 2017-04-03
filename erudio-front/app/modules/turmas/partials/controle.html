@@ -24,6 +24,11 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
+<div data-ng-show="progresso" class="progress" style="top: -0.5rem">
+      <div class="indeterminate"></div>
+</div>
+<div data-ng-show="progresso" class="cortinaProgresso"></div>
+
 <!-- Botão Voltar -->
 <div data-ng-click="prepararVoltar(turma)" data-ng-hide="lista" id="voltar" class="btn-voltar hide-on-med-and-down">
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
@@ -32,7 +37,7 @@
 
 <!-- Botão Adicionar -->
 <div data-ng-show="lista === true" class="btn-add hide-on-small-only">
-    <a href="/#/turmas/novo" data-ng-show="escrita" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Turma"><i class="material-icons">add</i></a>
+    <a href="{{config.dominio}}/#/turmas/novo" data-ng-show="escrita" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Turma"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Botão Voltar (Enturmacoes) -->
@@ -47,8 +52,8 @@
 </div>
 
 <!-- Botão Adicionar Alunos -->
-<div id="enturmarAlunos" data-ng-show="turma.quantidadeAlunos < turma.limiteAlunos && mostraAlunos" class="btn-add hide-on-small-only">
-    <a data-ng-hide="mostraProfessores" href="/#/turmas/{{ turma.id }}/alunos/enturmar/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
+<div id="enturmarAlunos" data-ng-show="turma.quantidadeAlunos < turma.limiteAlunos && mostraAlunos && !presencaBtn && !quadroBtn" class="btn-add hide-on-small-only">
+    <a data-ng-hide="mostraProfessores" href="{{config.dominio}}/#/turmas/{{ turma.id }}/alunos/enturmar/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
 </div>
  
 <ul id='dropProfessores' class='dropdown-content'>
@@ -89,19 +94,19 @@
     <ul>
         <li>
             <div class="chip z-depth-2 toolchip">Alunos</div>
-            <a href="/#/turmas/{{ turma.id }}/alunos" class="btn-floating orange lighten-1 menu-turma"><i class="material-icons">group</i></a>
+            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/alunos" class="btn-floating orange lighten-1 menu-turma"><i class="material-icons">group</i></a>
         </li>
         <li>
             <div class="chip z-depth-2 toolchip">Professores</div>
-            <a href="/#/turmas/{{ turma.id }}/professores" class="btn-floating yellow lighten-1 menu-turma"><i class="material-icons">record_voice_over</i></a>
+            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/professores" class="btn-floating yellow lighten-1 menu-turma"><i class="material-icons">record_voice_over</i></a>
         </li>
         <li>
             <div class="chip z-depth-2 toolchip">Lista de Presença</div>
-            <a href="/#/turmas/{{ turma.id }}/presencas" class="btn-floating green menu-turma"><i class="material-icons">format_list_numbered</i></a>
+            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/presencas" class="btn-floating green menu-turma"><i class="material-icons">format_list_numbered</i></a>
         </li>
         <li>
             <div class="chip z-depth-2 toolchip">Grade de Horário</div>
-            <a href="/#/turmas/{{ turma.id }}/horarios" class="btn-floating blue menu-turma"><i class="material-icons">alarm</i></a>
+            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/horarios" class="btn-floating blue menu-turma"><i class="material-icons">alarm</i></a>
         </li>
     </ul>
 </div>

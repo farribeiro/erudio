@@ -4,7 +4,7 @@
     .mobile-full { padding: 0 !important; }
     
     .mobile-toolbar-ajuste {
-        margin-top: 56px;
+        //margin-top: 56px;
     }
     
     .form-geral {
@@ -264,11 +264,12 @@
     .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
     .mobile-pad-left { padding-left: 10px !important; }
     .mobile-padding { padding: 5px !important; }
+    .title-module { font-size: 2rem !important; margin-left: 10px; }
 }
 
 @media only screen and (max-width : 500px) {
     nav { height: 64px !important; }
-    .mobile-toolbar-ajuste { margin-top: 46px; }
+    //.mobile-toolbar-ajuste { margin-top: 46px; }
     .main-banner { height: 15rem !important; }
     .row .col { padding: 0 0rem !important; }
     .home-icons { font-size: 4rem; }
@@ -296,4 +297,6 @@
     .mobile-td-padding { padding-top: 5px !important; padding-bottom: 5px !important; }
     .mobile-pad-left { padding-left: 10px !important; }
     .mobile-padding { padding: 5px !important; }
+    .title-module { font-size: 2rem !important; margin-left: 15px; }
+    .avatar-img { width: 3.5rem; }
 }

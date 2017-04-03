@@ -2,4 +2,7 @@ parameters:
     
 
 services:
-    
+    twig.report_extension:
+        class: ReportBundle\Util\ReportTwigExtension
+        tags:
+            - { name: twig.extension }

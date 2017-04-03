@@ -57,7 +57,7 @@
         $scope.inicializar = function () {
             $('.tooltipped').tooltip('remove');
             $timeout(function (){            
-                $('.counter').each(function(){  $(this).characterCounter(); $('.modal-trigger').leanModal(); });
+                $('.counter').each(function(){  $(this).characterCounter(); $('.modal-trigger').modal(); });
                 $('.tooltipped').tooltip({delay: 50});
                 /*Inicializando controles via Jquery Mobile */
                 if ($(window).width() < 993) {
@@ -127,7 +127,7 @@
         /* Guarda o turno para futura remoção e abre o modal de confirmação */
         $scope.prepararRemover = function (turno){ 
             $scope.turnoRemover = turno;
-            $('#remove-modal-turno').openModal();
+            $('#remove-modal-turno').modal();
         };
         
         /* Remove o turno */
@@ -137,7 +137,7 @@
         }; 
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id) {             
-                $('#modal-certeza-turno').openModal();
+                $('#modal-certeza-turno').modal();
             } else {
                 $scope.fecharFormulario();
             }

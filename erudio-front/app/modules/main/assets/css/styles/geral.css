@@ -4,9 +4,15 @@ html, body {
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
+.no-bg { background: #1d9bda !important; }
+.no-bg:hover { background: #1d9bda !important; }
+.no-bg a:hover { background: #1d9bda !important; }
+.menu-title-main { padding-left: 15px !important; }
+.submenu-style { padding: 0 !important; margin: 0 !important; padding-left: 30px !important; font-weight: 300 !important; }
+
 body {
-      //background: #eee;
-      background: #212121;
+      //background: #eee; background: #212121;
+      background: #eceff1;
       font-family: Roboto !important;
       overflow-x: hidden;
       margin: 0 !important;
@@ -16,6 +22,21 @@ body {
 
 p {
     line-height: 150%;
+}
+
+[type="radio"]:checked+label:after, [type="radio"].with-gap:checked+label:before, [type="radio"].with-gap:checked+label:after {
+  border: 2px solid #40c4ff !important;
+}
+
+[type="radio"]:checked+label:after, [type="radio"].with-gap:checked+label:after {
+  background-color: #40c4ff !important;
+}
+
+.dropdown-content li>a { color: #40c4ff !important; }
+
+.select-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
 }
 
 .pagination {
@@ -304,6 +325,11 @@ header, main, footer {
 
 .mobile-icon-title { font-size: 4.5rem; }
 .mobile-font-title { font-size: 3rem; margin-left: -10px !important; }
+
+ul, menu, dir {
+    -webkit-margin-before: 0em !important;
+    -webkit-margin-after: 0em !important;
+}
 
 /* IE8- CSS hack */
 @media \0screen\,screen\9 { .gradient { filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00000000",endColorstr="#ff000000",GradientType=0); } }

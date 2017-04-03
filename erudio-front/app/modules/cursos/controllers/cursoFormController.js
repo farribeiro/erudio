@@ -28,8 +28,8 @@
     var cursoFormModule = angular.module('cursoFormModule', ['cursoDirectives', 'servidorModule', 'erudioConfig']);
     cursoFormModule.controller('CursoFormController', ['$scope', 'Servidor', '$templateCache', '$routeParams', '$timeout', 'ErudioConfig', function ($scope, Servidor, $templateCache, $routeParams, $timeout, ErudioConfig) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
-        $templateCache.removeAll();
-        $scope.escrita = Servidor.verificaEscrita('CURSO') || Servidor.verificaAdmin();                        
+        $templateCache.removeAll(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
+        $scope.escrita = Servidor.verificaEscrita('CURSO'); $scope.isAdmin = Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateForm('cursos');
         //ATRIBUTOS
@@ -49,11 +49,11 @@
         //SELECIONA MODALIDADE DO CURSO
         $scope.selecionaModalidade = function () { $scope.curso.modalidade.id = $scope.modalidadeId; };
         //MODAL DE CERTEZA PARA VOLTAR
-        $scope.prepararVoltar = function (objeto) { if (objeto.nome && !objeto.id) { $('#modal-certeza').openModal(); } else { window.location.href = "/#/cursos"; } };
+        $scope.prepararVoltar = function (objeto) { if (objeto.nome && !objeto.id) { $('#modal-certeza').modal(); } else { window.location.href = $scope.config.dominio+"/#/cursos"; } };
         
         //INICIALIZAÇÃO BÁSICA
         $scope.inicializar = function () { 
-            $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove();
+            $('#modal-ajuda-curso').modal(); $('.material-tooltip').remove();
             $('#cursoForm').keydown(function(event){
                 var keyCode = (event.keyCode ? event.keyCode : event.which);
                 if (keyCode === 13) { $('#salvarCurso').trigger('click'); }
@@ -83,13 +83,13 @@
                             if (i === response.data.length-1) {
                                 if (!$scope.curso.id) { $scope.pagina = 0; }
                                 var promise = Servidor.finalizar($scope.curso, 'cursos', 'Curso');
-                                promise.then(function (response) { if (response.status === 200) { $scope.fechaProgresso(); window.location.href = '/#/cursos'; } });
+                                promise.then(function (response) { if (response.status === 200) { $scope.fechaProgresso(); window.location.href = $scope.config.dominio+'/#/cursos'; } });
                             }
                         }
                     } else {
                         if (!$scope.curso.id) { $scope.pagina = 0; }
                         var promise = Servidor.finalizar($scope.curso, 'cursos', 'Curso');
-                        promise.then(function (response) { if (response.status === 200) { $scope.fechaProgresso(); window.location.href = '/#/cursos'; } });
+                        promise.then(function (response) { if (response.status === 200) { $scope.fechaProgresso(); window.location.href = $scope.config.dominio+'/#/cursos'; } });
                     }
                 });
             } else { $scope.fechaProgresso(); }

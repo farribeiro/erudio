@@ -42,9 +42,9 @@
         //CHAMANDO BUSCA DE ETAPA
         $scope.selecionaCurso = function(){ $scope.etapas = []; $scope.buscarEtapas(); $rootScope.etapaCurso = angular.copy($scope.curso); };
         //INICIALIZAR
-        $scope.inicializar = function () { $('.tooltipped').tooltip('remove'); Servidor.entradaPagina(); $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').leanModal(); $('.material-tooltip').remove(); };
+        $scope.inicializar = function () { $('.tooltipped').tooltip('remove'); Servidor.entradaPagina(); $('.title-module').html($scope.titulo); $('#modal-ajuda-curso').modal(); $('.material-tooltip').remove(); };
         //ABRE AJUDA
-        $scope.ajuda = function () { $('#modal-ajuda-etapa').openModal(); };
+        $scope.ajuda = function () { $('#modal-ajuda-etapa').modal(); };
         //PASSA ARGUMENTO PARA O MÓDULO DE DISCIPLINAS
         $scope.intraForms = function (etapa){ $rootScope.etapaDisciplina = etapa; };
         //REMOVER ETAPA
@@ -55,7 +55,7 @@
             var promise = Servidor.buscar('turmas', {'etapa': etapa.id, 'encerrado': false});
             promise.then(function(response) {
                 if (response.data) { $('.remove-content').html('Há turmas ativas em <strong>' + etapa.nomeExibicao + '</strong>, você realmente deseja remover esta etapa?' ); } else { $('.remove-content').text('Você realmente deseja remover esta etapa?'); }
-                $scope.etapaRemover = etapa; $('#remove-modal-etapa').openModal();
+                $scope.etapaRemover = etapa; $('#remove-modal-etapa').modal();
             });
         };
 
@@ -73,7 +73,7 @@
         //INFORMAÇÃO DA ETAPA
         $scope.carregarInfo = function (etapa) {
             $scope.mostraProgresso(); var promise = Servidor.buscarUm('etapas',etapa.id);
-            promise.then(function (response) { $scope.etapa = response.data; $('#info-modal-etapa').openModal(); });
+            promise.then(function (response) { $scope.etapa = response.data; $('#info-modal-etapa').modal(); });
             $timeout(function(){ $('.opcoesEtapa' + etapa.id).hide(); $scope.fechaProgresso(); }, 300);
         };
 

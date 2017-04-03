@@ -28,11 +28,11 @@
 <!-- Imagem do Módulo -->
 <div class="row"><div class="col s12 main-banner"></div></div>
 <div data-ng-controller="HomeController">
-    <div class="col s12 l12">
-        <div class="row" data-ng-show="isHome" style="margin-top: -105px;">
-            <div class="col s12 m12">
+    <div class="col s12 l12" style="padding: 0;">
+        <div class="row" data-ng-show="isHome">
+            <div class="col s12 m12" style="padding: 0;">
                 <!-- Card de Informações -->
-                <div class="card">
+                <div class="card" style="margin:0;">
                     <div class="card-content">
                         <h3 class='card-title-h3' data-ng-cloak>Olá, <span class="username-label" data-ng-bind="usuario.nome"></span>!</h3>
                         <p class="main-descricao">

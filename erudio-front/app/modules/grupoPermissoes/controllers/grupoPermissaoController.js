@@ -132,10 +132,10 @@
         };
         
         //GUARDA OBJETO PARA SER REMOVIDO
-        $scope.preRemover = function (grupo){ $scope.grupoRemover = grupo; $("#remove-modal-grupo").openModal(); };
+        $scope.preRemover = function (grupo){ $scope.grupoRemover = grupo; $("#remove-modal-grupo").modal(); };
         
         //GUARDA OBJETO PERMISSAO PARA SER REMOVIDO
-        $scope.prepararRemoverPermissao = function (perm){ $scope.permRemover = perm; $("#remove-modal-permissao-grupo").openModal(); };
+        $scope.prepararRemoverPermissao = function (perm){ $scope.permRemover = perm; $("#remove-modal-permissao-grupo").modal(); };
         
         /* REMOVER GRUPO */
         $scope.remover = function (){
@@ -163,7 +163,7 @@
 
         /* MODAL DE RETORNO */
         $scope.prepararVoltar = function(objeto) {
-            if (objeto.nome && !objeto.id) { $('#modal-certeza').openModal(); } else { $scope.fecharFormulario(); }
+            if (objeto.nome && !objeto.id) { $('#modal-certeza').modal(); } else { $scope.fecharFormulario(); }
         };
 
         /* BUSCA - LISTENER  */
@@ -345,7 +345,7 @@
         };
         
         $scope.abrirModalRemoverTodasPermissoes = function() {
-            $('#remove-modal-permissao-total').openModal();
+            $('#remove-modal-permissao-total').modal();
         };
         
         /* SALVAR GRUPO DE PERMISSOES */

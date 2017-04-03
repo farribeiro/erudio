@@ -25,150 +25,105 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <div class="row">
-    <div class="col s12 matricula-banner topo-pagina">
-    </div>
-</div>
-<div class="row">
-    <div class="col s1 l1"></div>
-    <div class="col s12 l12 mobile full">
-        <div class="row"style="margin-top: -64px;" >
-            <div class=" col s12 l12 mobile full">
-                <div class="card-panel">
-                    <div class="row">
-                        <h3 class='card-title' style="padding: 1.5rem 1.5rem 0rem; margin-bottom: 0rem;">
-                            Matricular e Enturmar
-                            <br/>
-                        </h3>
-                        <small class="obriga-campos"><em>Os campos marcados com * são obrigatórios</em></small>
-                        <!-- INFORMAÇÕES DO ALNO -->
-                        <div id="infoAluno" class="row" data-ng-show="matricula.aluno.id">
-                            <div class="col s12 m12 l2 center-mobile">
-                                <i class="material-icons prefix" style="font-size: 8rem !important">face</i>
+    <div class="col s12 l12 mobile full" style="padding: 0;">
+        <div class="card-panel" style="margin: 0;">
+            <div class="row">
+                <!-- INFORMAÇÕES DO ALUNO
+                <div id="infoAluno" class="row" data-ng-show="matricula.aluno.id">
+                    <div class="col s12 m12 l2 center-mobile">
+                        <i class="material-icons prefix" style="font-size: 8rem !important">face</i>
+                    </div>
+                    <div class="ajusta-mobile col s12 m12 l10" style="font-size: 1.3rem; padding-top: 1rem">
+                        <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                            <span class="sub-titulo"><b>NOME:</b></span> {{ matricula.aluno.nome | uppercase }}
+                        </div>
+                        <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                            <span class="sub-titulo"><b>DATA DE NASCIMENTO:</b></span> {{ matricula.aluno.dataNascimento | date: 'dd/MM/yyyy' }}
+                        </div>
+                        <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                            <span class="sub-titulo"><b>CPF:</b></span> {{ matricula.aluno.cpfCnpj }}
+                        </div>
+                        <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                            <span class="sub-titulo"><b>EMAIL:</b></span> {{ matricula.aluno.email }}
+                        </div>
+                    </div>
+                </div>  -->
+                <!-- MATRICULAR -->
+                <div id="divMatricula" style="padding-top: 10px;" class="row" data-ng-hide="matricula.id">
+                    <div>
+                        <!-- ESCONDE QUANDO ALUNO FOR ESCOLHIDO -->
+                        <div class="input-field col s12 m12 l12" data-ng-hide="matricula.aluno.id">
+                            <div class="col s11 m11 l11" style="padding:0px !important;">
+                                <i class="material-icons prefix">people</i>
+                                <span class="digitable-icon" style="right: 7.7rem"><i class="material-icons">border_color</i></span>
+                                <input id="pessoaMatricula" class="dropdown-button" type="text" data-ng-model="nomePessoa" data-ng-change="buscarPessoas(nomePessoa)" data-activates='dropdown-pessoas'>
+                                <label for="pessoaMatricula">Busque aqui uma Pessoa</label>
                             </div>
-                            <div class="ajusta-mobile col s12 m12 l10" style="font-size: 1.3rem; padding-top: 1rem">
-                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
-                                    <span class="sub-titulo"><b>NOME:</b></span> {{ matricula.aluno.nome | uppercase }}
-                                </div>
-                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
-                                    <span class="sub-titulo"><b>DATA DE NASCIMENTO:</b></span> {{ matricula.aluno.dataNascimento | date: 'dd/MM/yyyy' }}
-                                </div>
-                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
-                                    <span class="sub-titulo"><b>CPF:</b></span> {{ matricula.aluno.cpfCnpj }}
-                                </div>
-                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
-                                    <span class="sub-titulo"><b>EMAIL:</b></span> {{ matricula.aluno.email }}
-                                </div>
+                            <div class="col s1 m1 l1">
+                                <a href="#/pessoas" class="tooltipped btn-floating btn-personAdd btn waves-effect waves-light green right " data-position="top" data-delay="50" data-tooltip="Cadastrar Pessoa" data-ng-click="intraForms();"><i class="material-icons">person_add</i></a>
                             </div>
                         </div>
-                        <!-- MATRICULAR -->
-                        <div id="divMatricula" class="row" style="margin-top: 2rem"data-ng-hide="matricula.id">
-                            <div class="col s12" style="margin-bottom: 1rem" data-ng-class="{'cinza': matricula.id}">
-                                <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> MATRICULAR </h5>
-                            </div>
-                            <div>
-                                <!-- ESCONDE QUANDO ALUNO FOR ESCOLHIDO -->
-                                <div class="input-field col s12 m12 l12" data-ng-hide="matricula.aluno.id">
-                                    <div class="col s11 m11 l11" style="padding:0px !important;">
-                                        <i class="material-icons prefix">people</i>
-                                        <span class="digitable-icon" style="right: 7.7rem"><i class="material-icons">border_color</i></span>
-                                        <input id="pessoaMatricula" class="dropdown-button" type="text" data-ng-model="nomePessoa" data-ng-change="buscarPessoas()" data-activates='dropdown-pessoas'>
-                                        <label for="pessoaMatricula">Busque aqui uma Pessoa</label>
-                                    </div>
-                                    <ul id='dropdown-pessoas' class='dropdown-content' data-ng-show="nomePessoa.length > 3">
-                                        <li class="divider"></li>
-                                        <li data-ng-repeat="pessoa in pessoas | orderBy:'nome'" style="border-bottom: 1px solid #e0e0e0">
-                                            <a id="pessoa{{pessoa.id}}" data-ng-click="carregarPessoa(pessoa)">{{ pessoa.nome | uppercase }} <span class="right">{{ pessoa.dataNascimento | date:'dd/MM/yyyy' }}</span></a>
-                                        </li>
-                                    </ul>
-                                    <div class="col s1 m1 l1">
-                                        <a href="#/pessoas" class="tooltipped btn-floating btn-personAdd btn waves-effect waves-light green right " data-position="top" data-delay="50" data-tooltip="Cadastrar Pessoa" data-ng-click="intraForms();"><i class="material-icons">person_add</i></a>
-                                    </div>
-                                </div>
-                                <!-- MOSTRA QUANDO ALUNO FOR ESCOLHIDO -->
-                                <div data-ng-show="matricula.aluno.id">
-                                    <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
-                                        <i class="material-icons prefix" data-ng-class="{'cinza': matricula.id}">account_balance</i>
-                                        <select data-ng-model="matricula.unidadeEnsino.id" id="unidadeMatricula" data-ng-disabled="matricula.id" required>
-                                            <option value="" disabled selected></option>
-                                            <option value="{{ u.id}}" data-ng-repeat="u in unidades" data-ng-selected="u.id === matricula.unidadeEnsino.id">{{u.nomeCompleto | uppercase}}</option>
-                                        </select>
-                                        <label for="unidadeMatricula">Unidade de Ensino*</label>
-                                    </div>
-                                    <div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
-                                        <i class="material-icons prefix">account_balance</i>
-                                        <span class="digitable-icon"><i class="material-icons">border_color</i></span>
-                                        <input id="unidadeMatriculaFormAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesMatriculaForm">
-                                        <label for="unidadeMatriculaFormAutoComplete">Unidade de Ensino*</label>
-                                        <ul id='dropUnidadesMatriculaForm' class='dropdown-content' data-ng-show="unidades.length && nomeUnidade.length > 3">
-                                            <li class="divider"></li>
-                                            <li data-ng-repeat="unidade in unidades" data-ng-click="selecionaUnidade(unidade)">
-                                                <a>
-                                                    {{unidade.tipo.sigla | uppercase}} {{unidade.nome | uppercase}}
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="input-field col s12 m12 l6">
-                                        <i class="material-icons prefix" data-ng-class="{'cinza': matricula.id}">school</i>
-                                        <select data-ng-model="matricula.curso.id" id="cursoMatricula" data-ng-disabled="matricula.id" required>
-                                            <option value="" disabled selected></option>
-                                            <option value="{{ curso.id}}" data-ng-repeat="curso in cursos">{{ curso.nome | uppercase}}</option>
-                                        </select>
-                                        <label for="cursoMatricula">Curso*</label>
-                                    </div>
-                                    <div class="col s12 right-align end-card" style="margin-bottom:0px;">
-                                        <a data-ng-click="finalizarMatricula()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ALOCAR DISCIPLINAS -->
-                        <div id="alocarDisciplinas" class="row" data-ng-show="matricula.id && !matricula.disc">
-                            <div class="col s12" style="margin-bottom: 1rem">
-                                <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> ETAPA </h5>
-                            </div>
-                            <!-- MOSTRA QUANDO JÁ FOI MATRICULADO E ESCONDE SE JÁ FORAM ESCOLHIDAS AS DISCIPLINAS -->
-                            <div class="input-field col s12 m12 l12">
-                                <i class="material-icons prefix" data-ng-class="{'cinza': !matricula.id || matricula.disc}">layers</i>
-                                <select id="etapaTurmaMatricula" data-ng-model="etapa.id" data-ng-change="buscarTurmasDisciplinas(etapa.id)" data-ng-disabled="!matricula.id || matricula.disc">
+                        <!-- MOSTRA QUANDO ALUNO FOR ESCOLHIDO -->
+                        <div data-ng-show="matricula.aluno.id">
+                            <div class="input-field col s12 m12 l6" data-ng-hide="escrita">
+                                <i class="material-icons prefix" data-ng-class="{'cinza': matricula.id}">account_balance</i>
+                                <select data-ng-model="matricula.unidadeEnsino.id" id="unidadeMatricula" data-ng-disabled="matricula.id" required>
                                     <option value="" disabled selected></option>
-                                    <option value="{{ etapa.id}}" data-ng-repeat="etapa in etapas">{{ etapa.nomeExibicao | uppercase}}</option>
+                                    <option value="{{ u.id }}" data-ng-repeat="u in unidades" data-ng-selected="u.id === matricula.unidadeEnsino.id">{{u.nomeCompleto | uppercase}}</option>
                                 </select>
-                                <label for="etapaTurmaMatricula" class="ajuste-select-top-label">Etapa*</label>
+                                <label for="unidadeMatricula">Unidade de Ensino*</label>
                             </div>
-                            <div data-ng-show="disciplinasCursadas.length"><!--disciplinasOfertadas-->
-                                <small data-ng-show="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Etapa Integral, selecione as disciplinas optativas.</em></small>
-                                <small data-ng-hide="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Desmarque as disciplinas opcionais que não serão cursadas.</em></small>
-                                <p data-ng-repeat="disciplina in disciplinasCursadas" style="margin: 5px">
-                                    <input type="checkbox" class="filled-in" id="disc{{disciplina.disciplina.id}}" data-ng-click="selecionaDisciplina(disciplina)" checked="true"/><!--data-ng-checked="etapaCurso.integral"-->
-                                    <label for="disc{{disciplina.disciplina.id}}">{{disciplina.disciplina.nomeExibicao | uppercase}}</label><br/>
-                                </p>
+                            <div class="input-field col s12 m12 l6" data-ng-show="escrita">
+                                <i class="material-icons prefix">account_balance</i>
+                                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                <input id="unidadeMatriculaFormAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidadeMatricula" data-ng-change="buscarUnidades(nomeUnidadeMatricula)" data-activates="dropUnidadesMatriculaForm">
+                                <label for="unidadeMatriculaFormAutoComplete">Unidade de Ensino*</label>
+                                <ul id='dropUnidadesMatriculaForm' class='dropdown-content' data-ng-show="unidades.length && nomeUnidadeMatricula.length > 3">
+                                    <li class="divider"></li>
+                                    <li data-ng-repeat="unidade in unidades" data-ng-click="selecionaUnidade(unidade)">
+                                        <a>{{unidade.tipo.sigla | uppercase}} {{unidade.nome | uppercase}}</a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col s12 right-align end-card" data-ng-hide="matricula.disc">
-                                <a data-ng-click="salvarDisciplinasCursadas()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat" data-ng-class="{'cinza': !matricula.id || matricula.disc}"><i class="material-icons left">save</i>SALVAR</a>
-                            </div>
-                        </div>
-                        <!-- ENTURMAR -->
-                        <div id="enturmarAlunoMatriculado" class="row"data-ng-show="matricula.disc">
-                            <div class="col s12" style="margin-bottom: 1rem" data-ng-class="{'cinza': !matricula.disc}">
-                                <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> ENTURMAR </h5>
-                            </div>
-                            <!-- MOSTRA QUANDO JÁ FORAM ESCOLHIDAS AS DISCIPLINAS -->
-                            
-                            <div class="input-field col s12 m12 l12">
-                                <i class="material-icons prefix" data-ng-class="{'cinza': !matricula.disc}">group_add</i>
-                                <select id="turmaEnturmacaoDisciplinasMatricula"  data-ng-model="turmaMatricula.id" data-ng-disabled="!turmas.length" data-ng-disabled="!matricula.disc"><!--data-ng-change="buscarDisciplinas()"-->
-                                    <option selected></option>
-                                    <option value="{{ turma.id}}" data-ng-repeat="turma in turmas track by $index">{{turma.nomeCompleto | uppercase}} {{turma.turno.nome | uppercase }}</option>
+                            <div class="input-field col s12 m12 l6">
+                                <i class="material-icons prefix" data-ng-class="{'cinza': matricula.id}">school</i>
+                                <select data-ng-model="matricula.curso.id" id="cursoMatricula" data-ng-disabled="matricula.id" required>
+                                    <option value="" disabled selected></option>
+                                    <option value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome | uppercase }}</option>
                                 </select>
-                                <label for="turmaEnturmacaoDisciplinasMatricula" class="ajuste-select-top-label">Turma*</label>
+                                <label for="cursoMatricula">Curso*</label>
                             </div>
-                            <div class="col s12 end-card" data-ng-hide="enturmacao.id">
-                                <a data-ng-click="enturmar()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat right" data-ng-class="{'cinza':!matricula.disc}"><i class="material-icons left">save</i>SALVAR</a>
+                            <div class="col s12 right-align end-card" style="margin-bottom:0px;">
+                                <a data-ng-click="finalizarMatricula()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <ul id='dropdown-pessoas' class='dropdown z-depth-2'>
+                    <li class="divider"></li>
+                    <li data-ng-repeat="pessoa in pessoas | orderBy:'nome'" style="border-bottom: 1px solid #e0e0e0; padding: 10px; cursor: pointer;">
+                        <a id="pessoa{{pessoa.id}}" data-ng-click="carregarPessoa(pessoa)">{{ pessoa.nome | uppercase }} <span class="right">{{ pessoa.dataNascimento | date:'dd/MM/yyyy' }}</span></a>
+                    </li>
+                </ul>
+                <!-- ALOCAR DISCIPLINAS 
+                 -->
+                <!-- ENTURMAR
+                <div id="enturmarAlunoMatriculado" class="row"data-ng-show="matricula.disc">
+                    <div class="col s12" style="margin-bottom: 1rem" data-ng-class="{'cinza': !matricula.disc}">
+                        <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> ENTURMAR </h5>
+                    </div>
+                    <div class="input-field col s12 m12 l12">
+                        <i class="material-icons prefix" data-ng-class="{'cinza': !matricula.disc}">group_add</i>
+                        <select id="turmaEnturmacaoDisciplinasMatricula"  data-ng-model="turmaMatricula.id" data-ng-disabled="!turmas.length" data-ng-disabled="!matricula.disc">
+                            <option selected></option>
+                            <option value="{{ turma.id}}" data-ng-repeat="turma in turmas track by $index">{{turma.nomeCompleto | uppercase}} {{turma.turno.nome | uppercase }}</option>
+                        </select>
+                        <label for="turmaEnturmacaoDisciplinasMatricula" class="ajuste-select-top-label">Turma*</label>
+                    </div>
+                    <div class="col s12 end-card">
+                        <a data-ng-click="enturmar()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat right" data-ng-class="{'cinza':!matricula.disc}"><i class="material-icons left">save</i>SALVAR</a>
+                    </div>
+                </div>  -->
             </div>
         </div>
     </div>

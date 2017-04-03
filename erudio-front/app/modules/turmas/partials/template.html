@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <!-- CSS DO MODULO -->
-<link rel="stylesheet" type="text/css" href="{{ config.extraUrl }}/app/modules/turmas/assets/css/turma.css"/>
+<link rel="stylesheet" type="text/css" href="{{ cssUrl }}/app/modules/turmas/assets/css/turma.css"/>
 
 <div id="listaTurma" style="position: relative;" >
     
@@ -59,7 +59,7 @@
                 <i class="material-icons prefix">school</i>
                 <select id="curso" data-ng-change="buscarEtapas(turmaBusca.curso.id)" data-ng-model="turmaBusca.curso.id" required>
                     <option disabled selected></option> 
-                    <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.id }}" data-ng-repeat="curso in cursos">{{ curso.nome}}</option>
+                    <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
                 </select>
                 <label for="curso">Curso</label>
             </div>                            
@@ -72,8 +72,8 @@
                 <label for="etapa">Etapa</label>
             </div>
             <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px;">
-                <a data-ng-click="reiniciarBusca()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
-                <a data-ng-click="buscarTurmas('formBusca')" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                <a data-ng-click="reiniciarBusca()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                <a data-ng-click="buscarTurmas('formBusca')" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
             </div>
         </div>
     </div>

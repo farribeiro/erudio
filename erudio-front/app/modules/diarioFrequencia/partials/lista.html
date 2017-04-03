@@ -126,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="end-card col s12" style="padding-top: 1rem">                        
-                                <a data-ng-click="buscarDisciplinasOfertadas(busca.turma.id)" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                                <a target="_blank" href="{{ config.urlRelatorios }}/diarios-frequencia?mes={{ busca.mes.numero }}&turma={{ busca.turma.id }}&auto=0" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">print</i>IMPRIMIR</a>
                                 <a data-ng-click="limparBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
                             </div>
                         </div>

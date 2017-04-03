@@ -32,7 +32,13 @@
         
         //ROTAS
         $routeProvider.when('/',{ templateUrl: 'app/modules/main/partials/main.html', controller: 'MainController'
-        }).when('/instituicoes',{ templateUrl: 'app/modules/instituicoes/partials/instituicoes.html', controller: 'InstituicaoController'
+            
+        }).when('/testes',{ templateUrl: 'app/modules/teste/partials/template.html', controller: 'TesteController'
+        }).when('/frequencias',{ templateUrl: 'app/modules/frequencia/partials/template.html', controller: 'FrequenciaController'
+        
+        }).when('/instituicoes',{ templateUrl: 'app/modules/instituicoes/partials/template.html', controller: 'InstituicaoController'
+        }).when('/instituicoes/:id',{ templateUrl: 'app/modules/instituicoes/partials/template.html', controller: 'InstituicaoFormController'
+            
         }).when('/tipos-unidade',{ templateUrl: 'app/modules/tipos/partials/tipos.html', controller: 'TipoController'
         }).when('/unidades',{ templateUrl: 'app/modules/unidades/partials/unidades.html', controller: 'UnidadeController'
         }).when('/regimes',{ templateUrl: 'app/modules/regimes/partials/regimes.html', controller: 'RegimeController'
@@ -58,9 +64,17 @@
         }).when('/turmas/:id/alunos/enturmar/novo',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaAlunosEnturmarController'
         }).when('/turmas/:id/professores',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaProfessoresController'
         }).when('/turmas/:id/presencas',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaPresencasController'
-        }).when('/turmas/:id/horarios',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaHorariosController'
+        }).when('/turmas/:id/horarios',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaQuadroHorarioController'
             
-        }).when('/matriculas',{ templateUrl: 'app/modules/matriculas/partials/matriculas.html', controller: 'MatriculaController'
+        }).when('/matriculas',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaController'
+        }).when('/matriculas/:id',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaFormController'
+        }).when('/matriculas/:id/etapas',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaEtapaController'
+        }).when('/matriculas/:id/enturmacoes',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaEnturmacaoController'
+            
+        }).when('/alunos-enturmados',{ templateUrl: 'app/modules/relatorios/partials/template.html', controller: 'RelatoriosController'
+        }).when('/diario-notas',{ templateUrl: 'app/modules/diarioNotas/partials/template.html', controller: 'DiarioNotasController'
+        }).when('/relatorio-alunos-defasados',{ templateUrl: 'app/modules/relatorioAlunosDefasados/partials/template.html', controller: 'RelatorioDefasadosController'
+            
         }).when('/movimentacoes',{ templateUrl: 'app/modules/movimentacoes/partials/movimentacoes.html', controller: 'movimentacoesController'
         }).when('/pessoas',{ templateUrl: 'app/modules/pessoas/partials/pessoas.html', controller: 'pessoaController'
         }).when('/cargos',{ templateUrl: 'app/modules/cargos/partials/cargos.html', controller: 'cargoController'
@@ -78,6 +92,7 @@
         }).when('/usuarios',{ templateUrl: 'app/modules/usuarios/partials/usuarios.html', controller: 'UsuarioController'
         }).when('/permissoes',{ templateUrl: 'app/modules/permissoes/partials/permissoes.html', controller: 'PermissaoController'
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
+            
         }).when('/404',{ templateUrl: 'app/modules/util/partials/404.html'
         }).otherwise({ redirectTo: '/404'
         });
@@ -89,7 +104,7 @@
         sessionStorage.setItem('baseUrl',ErudioConfig.urlServidor); sessionStorage.setItem('baseUploadUrl',ErudioConfig.urlUpload);
         var sessionId = sessionStorage.getItem('sessionId'); var nome = sessionStorage.getItem('nome');
         if (!sessionId) { window.location = 'login.html'; } else { $timeout(function(){ $('.username').html(nome); },500); }
-        var width = $(window).width();
-        if (width < 992) { $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');}
+        //var width = $(window).width();
+        //if (width < 992) { $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');}
     }]);
 })();
