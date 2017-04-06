@@ -128,9 +128,7 @@ class NotasReportController extends Controller {
      */
     private function gerarDiario($disciplina, $media, $autoPreenchimento = true) {
         $avaliacoes = $autoPreenchimento ? [] : [];
-        $professor = $disciplina->getProfessores()->count() > 0 
-                ? $disciplina->getProfessores()->first()->getVinculo()->getFuncionario()->getNome() 
-                : '';
+        $professor = $disciplina->getProfessoresAsString();
         $diario = [
             'disciplina' => $disciplina->getNomeExibicao(),
             'avaliacoes' => $avaliacoes,
