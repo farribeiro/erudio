@@ -49,6 +49,10 @@ class Instituicao extends PessoaJuridica {
     */
     private $instituicaoPai;
     
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty()
+    */
     function getNomeCompleto() {
         return $this->getNome();
     }

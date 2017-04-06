@@ -132,13 +132,22 @@ class TurmaFacade extends AbstractFacade {
                 $vaga = new Vaga($turma);
                 $this->vagaFacade->create($vaga);
             }
-        } else if ($numeroVagas > $turma->getLimiteAlunos()) {
+        } else if ($turma->getTotalEnturmacoes() > $turma->getLimiteAlunos()) {
             throw new IllegalUpdateException(
                 IllegalUpdateException::FINAL_STATE, 
-                'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
+                'Operação não permitida, não é possível diminuir a quantidade '
+                    . 'de vagas abaixo da quantidade de enturmações atual'
             );
+        } else {
+            $vagasEliminadas = 0;
+            foreach ($turma->getVagasAbertas() as $vaga) {
+                if ($vagasEliminadas == $numeroVagas - $turma->getLimiteAlunos()) {
+                    break;
+                }
+                $this->vagaFacade->remove($vaga->getId());
+                $vagasEliminadas++;
+            }
         }
-        
     }
     
     private function encerrarDisciplinas(Turma $turma) {

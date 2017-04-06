@@ -28,87 +28,57 @@
 
 namespace MatriculaBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-use CursoBundle\Entity\Turma;
 
 /**
 * @ORM\Entity
-* @ORM\Table(name = "edu_enturmacao")
+* @ORM\Table(name = "edu_movimentacao_reclassificacao")
 */
-class Enturmacao extends AbstractEditableEntity {
+class Reclassificacao extends Movimentacao {
     
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(type = "boolean", nullable = false) 
+    /** 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\ManyToOne(targetEntity = "Enturmacao") 
+    * @ORM\JoinColumn(name = "enturmacao_origem_id") 
     */
-    private $encerrado = false;
+    private $enturmacaoOrigem;
     
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    /** 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\ManyToOne(targetEntity = "Enturmacao", cascade = {"persist"}) 
+    * @ORM\JoinColumn(name = "enturmacao_destino_id") 
     */
-    private $matricula;
-    
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turma", inversedBy = "enturmacoes") 
-    */
-    private $turma;
-    
-    /**  
-    * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "enturmacao", fetch = "EXTRA_LAZY")
-    */
-    private $disciplinasCursadas;
+    private $enturmacaoDestino;
     
     /**
-    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
+    * @ORM\OneToMany(targetEntity = "NotaReclassificacao", mappedBy = "reclassificacao", fetch="EXTRA_LAZY", cascade = {"persist"}) 
     */
-    private $vaga;
+    private $notas;
     
-    function __construct(Matricula $matricula, Turma $turma) {
-        $this->matricula = $matricula;
-        $this->turma = $turma;
-        $this->disciplinasCursadas = new ArrayCollection();
-    }
+    /** @JMS\Type("CursoBundle\Entity\Turma") */
+    private $turmaDestino;
     
-    function getAnosDefasagem(\DateTime $dataReferencia = null) {
-        $idadeEtapa = $this->turma->getEtapa()->getIdadeRecomendada();
-        $data = $dataReferencia 
-                ? $dataReferencia 
-                : \DateTime::createFromFormat('Y-m-d', date('Y') . '-03-31');
-        $idadeAluno = $this->matricula->getAluno()->getDataNascimento()->diff($data);
-        return $idadeEtapa ? $idadeAluno->y - $idadeEtapa : 0;
-    }
-    
-    function getEncerrado() {
-        return $this->encerrado;
-    }
-    
-    function setEncerrado($encerrado) {
-        $this->encerrado = $encerrado;
-    }
-    
-    function getMatricula() {
-        return $this->matricula;
+    function getEnturmacaoOrigem() {
+        return $this->enturmacaoOrigem;
     }
 
-    function getTurma() {
-        return $this->turma;
+    function getEnturmacaoDestino() {
+        return $this->enturmacaoDestino;
     }
     
-    function getVaga() {
-        return $this->vaga;
+    function getTurmaDestino() {
+        return $this->turmaDestino;
     }
     
-    function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+    function getNotas() {
+        return $this->notas;
     }
-
-    function encerrar() {
-        $this->encerrado = true;
-    }
+    
+    function aplicar() {
+        $enturmacao = new Enturmacao($this->getMatricula(), $this->turmaDestino);
+        $this->enturmacaoDestino = $enturmacao;
+        $this->enturmacaoOrigem->encerrar();
+    }       
+    
 }

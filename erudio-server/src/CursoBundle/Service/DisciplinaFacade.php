@@ -53,8 +53,28 @@ class DisciplinaFacade extends AbstractFacade {
             'etapa' => function(QueryBuilder $qb, $value) {
                 $qb->join('d.etapa', 'etapa')
                    ->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+            },
+            'opcional' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('d.opcional = :opcional')->setParameter('opcional', $value);
+            },
+            'ofertado' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('d.ofertado = :ofertado')->setParameter('ofertado', $value);
             }
         ];
+    }
+    
+    /**
+    * Por padrão, as disciplinas não ofertadas não são listadas, já que são utilizadas
+    * apenas em casos específicos como na geração de históricos. O parâmetro booleano
+    * "incluirNaoOfertadas" é usado para anular esta restrição e trazer todas as disciplinas.
+    * 
+    * @param QueryBuilder $qb
+    * @param array $params
+    */
+    function prepareQuery(QueryBuilder $qb, array $params) {
+        if (!array_key_exists('incluirNaoOfertadas', $params) || !$params['incluirNaoOfertadas']) {
+            $qb->andWhere('d.ofertado = true');
+        }
     }
     
 }

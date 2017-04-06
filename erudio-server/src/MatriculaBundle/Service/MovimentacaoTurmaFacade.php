@@ -30,18 +30,15 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\Enturmacao;
 
 class MovimentacaoTurmaFacade extends AbstractFacade {
     
     private $enturmacaoFacade;
-    private $disciplinaCursadaFacade;
     
     function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
         $this->enturmacaoFacade = $enturmacaoFacade;
-    }
-    
-    function setDisciplinaCursadaFacade($disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
     
     function getEntityClass() {
@@ -62,14 +59,20 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($movimentacao) {
-       $movimentacao->aplicar();
+        $turmaOrigem = $movimentacao->getEnturmacaoOrigem()->getTurma();
+        if ($movimentacao->getTurmaDestino()->getEtapa()->getId() != $turmaOrigem->getEtapa()->getId()) {
+            throw new IllegalOperationException(
+                'Uma movimentação de turma só pode ser realizada entre turmas da mesma etapa.'
+            );
+        }
+        $enturmacaoDestino = $this->enturmacaoFacade->create(
+            new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
+        );
+        $movimentacao->aplicar($enturmacaoDestino);
     }
     
     protected function afterCreate($movimentacao) {
-        $this->enturmacaoFacade->executarMovimentacaoTurma(
-            $movimentacao->getEnturmacaoOrigem(), 
-            $movimentacao->getEnturmacaoDestino()
-        );
+        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
     }
     
 }

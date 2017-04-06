@@ -29,6 +29,7 @@
 namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Disciplina;
@@ -65,17 +66,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $disciplina;
     
-    /** @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") */
-    private $enturmacao;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3) 
-    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
-    * @ORM\JoinColumn(name = "turma_disciplina_id")  
-    */
-    private $disciplinaOfertada;
-    
     /**
     * @JMS\Groups({"LIST"})  
     * @ORM\Column(name = "media_final")
@@ -94,14 +84,32 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     protected $dataEncerramento;
     
+    /** @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") */
+    private $enturmacao;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 3) 
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
+    * @ORM\JoinColumn(name = "turma_disciplina_id")  
+    */
+    private $disciplinaOfertada;
+    
+    /**  
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Media", mappedBy = "disciplinaCursada", fetch = "EXTRA_LAZY")
+    */
+    private $medias;
+    
     function __construct(Matricula $matricula, Disciplina $disciplina) {
         $this->matricula = $matricula;
         $this->disciplina = $disciplina;
         $this->init();
     }
     
-    public function init() {
-        if(is_null($this->status)) {
+    function init() {
+        $this->medias = new ArrayCollection();
+        if (is_null($this->status)) {
             $this->status = self::STATUS_CURSANDO;
         }
     }
@@ -122,9 +130,35 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
+    /**
+     * @JMS\VirtualProperty
+     */
+    function getAno() {
+        return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
+    }
+    
+    function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
+        if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
+            throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
+        }
+        $this->enturmacao = $enturmacao;
+        $this->disciplinaOfertada = $disciplinaOfertada;
+    }
+    
     function desvincularEnturmacao() {
         $this->enturmacao = null;
         $this->disciplinaOfertada = null;
+    }
+    
+    function encerrar($status) {
+        if ($status != self::STATUS_CURSANDO) {
+            $this->status = $status;
+            $this->dataEncerramento = new \DateTime();
+        }
+    }
+    
+    function getMedias() {
+        return $this->medias;
     }
     
     function getMatricula() {
@@ -157,18 +191,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     function getDataEncerramento() {
         return $this->dataEncerramento;
-    }
-
-    function setStatus($status) {
-        $this->status = $status;
-    }
-    
-    function setEnturmacao(Enturmacao $enturmacao = null) {
-        $this->enturmacao = $enturmacao;
-    }
-    
-    function setDisciplinaOfertada(DisciplinaOfertada $disciplinaOfertada = null) {
-        $this->disciplinaOfertada = $disciplinaOfertada;
     }
     
     function setMediaFinal($mediaFinal) {

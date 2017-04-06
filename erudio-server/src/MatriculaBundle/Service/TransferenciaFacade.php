@@ -107,8 +107,7 @@ class TransferenciaFacade extends AbstractFacade {
     
     function encerrar(Transferencia $transferencia) {
         if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
-            $matricula = $transferencia->getMatricula();
-            $this->encerrarEnturmacoes($matricula);
+            $this->encerrarEnturmacoes($transferencia->getMatricula());
             $transferencia->getMatricula()->transferir($transferencia->getUnidadeEnsinoDestino());
         }
         $transferencia->setDataEncerramento(new \DateTime());
@@ -119,7 +118,7 @@ class TransferenciaFacade extends AbstractFacade {
     private function encerrarEnturmacoes(Matricula $matricula) {
         $enturmacoes = $this->enturmacaoFacade->findAll(['matricula' => $matricula]);
         foreach ($enturmacoes as $enturmacao) {
-            $this->enturmacaoFacade->encerrarPorTransferencia($enturmacao);
+            $this->enturmacaoFacade->encerrarPorMovimentacao($enturmacao);
         }
         $this->orm->getManager()->flush();
     }

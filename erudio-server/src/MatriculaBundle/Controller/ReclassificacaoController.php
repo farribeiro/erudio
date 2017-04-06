@@ -26,81 +26,66 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CalendarioBundle\Entity;
+namespace MatriculaBundle\Controller;
 
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CoreBundle\REST\AbstractEntityController;
+use MatriculaBundle\Entity\Reclassificacao;
 
 /**
-* @ORM\Entity
-* @ORM\Table(name = "edu_calendario_periodo")
-*/
-class Periodo extends AbstractEditableEntity {
+ * @FOS\RouteResource("reclassificacoes")
+ */
+class ReclassificacaoController extends AbstractEntityController {
+    
+    public function getFacade() {
+        return $this->get('facade.matricula.reclassificacoes');
+    }
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
+    * @ApiDoc()
+    * 
+    * @FOS\Get("reclassificacoes/{id}")
     */
-    private $media;
+    function getAction(Request $request, $id) {
+        return $this->getOne($request, $id);
+    }
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @JMS\Type("DateTime<'Y-m-d'>")
-    * @ORM\Column(name = "data_inicio", type = "date") 
+    * @ApiDoc()
+    * 
+    * @FOS\Get("reclassificacoes") 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
     */
-    private $dataInicio;
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
-    private $dataTermino;
-    
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
-    private $calendario;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("reclassificacoes")
+    * @ParamConverter("reclassificacao", converter="fos_rest.request_body")
     */
-    private $sistemaAvaliacao;
+    function postAction(Request $request, Reclassificacao $reclassificacao, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $reclassificacao, $errors);
+    }
     
-    function getMedia() {
-        return $this->media;
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Put("reclassificacoes/{id}")
+    * @ParamConverter("reclassificacao", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, Reclassificacao $reclassificacao, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $reclassificacao, $errors);
     }
-
-    function getDataInicio() {
-        return $this->dataInicio;
-    }
-
-    function getDataTermino() {
-        return $this->dataTermino;
-    }
-
-    function getCalendario() {
-        return $this->calendario;
-    }
-
-    function getSistemaAvaliacao() {
-        return $this->sistemaAvaliacao;
-    }
-
-    function setDataInicio($dataInicio) {
-        $this->dataInicio = $dataInicio;
-    }
-
-    function setDataTermino($dataTermino) {
-        $this->dataTermino = $dataTermino;
-    }
-
-
+    
 }
+
+

@@ -107,14 +107,23 @@ class Vinculo extends AbstractEditableEntity {
         $this->status = self::STATUS_ATIVO;
     }
     
-    function getCodigo() {
-        return $this->codigo;
+    /**
+    * @JMS\VirtualProperty
+    */
+    function getAlocacoes() {
+        return $this->alocacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     function definirCodigo($codigo) {
         if($this->codigo == null) {
             $this->codigo = $codigo;
         }
+    }
+    
+    function getCodigo() {
+        return $this->codigo;
     }
 
     function getStatus() {
@@ -155,15 +164,6 @@ class Vinculo extends AbstractEditableEntity {
    
     function setCargaHoraria($cargaHoraria) {
         $this->cargaHoraria = $cargaHoraria;
-    }
-    
-    /**
-     * @JMS\VirtualProperty
-     */
-    function getAlocacoes() {
-        return $this->alocacoes->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        );
     }
      
 }

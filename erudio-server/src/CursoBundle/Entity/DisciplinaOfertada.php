@@ -74,6 +74,12 @@ class DisciplinaOfertada extends AbstractEditableEntity {
         $this->disciplina = $disciplina;
     }
     
+    function setTurma(Turma $turma) {
+        if (is_null($this->turma)) {
+            $this->turma = $turma;
+        }
+    }
+    
     /**
      * @JMS\Groups({"LIST"})
      * @JMS\VirtualProperty

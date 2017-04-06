@@ -18,6 +18,10 @@ desligamentos:
     resource: MatriculaBundle\Controller\DesligamentoController
     type:     rest
     
+reclassificacoes:
+    resource: MatriculaBundle\Controller\ReclassificacaoController
+    type:     rest
+    
 disciplinas-cursadas:
     resource: MatriculaBundle\Controller\DisciplinaCursadaController
     type: rest

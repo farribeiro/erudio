@@ -118,7 +118,7 @@ class PessoaFisica extends Pessoa {
     
     /**
      * @JMS\Groups({"LIST"}) 
-     * @ORM\Column 
+     * @ORM\Column(type = "boolean")
      */
     private $alfabetizado = false;
     

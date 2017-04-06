@@ -94,16 +94,6 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     
     /**
     * @ApiDoc()
-    * 
-    * @FOS\Put("disciplinas-ofertadas/{id}")
-    * @ParamConverter("disciplinaOfertada", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, DisciplinaOfertada $disciplinaOfertada, ConstraintViolationListInterface $errors) {
-        return $this->put($request, $id, $disciplinaOfertada, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
     *   
     * @FOS\Delete("disciplinas-ofertadas/{id}")
     */

@@ -115,7 +115,7 @@ class Turma extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude 
-    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", cascade = {"persist"}) 
+    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", fetch="EXTRA_LAZY", cascade = {"persist"}) 
     */
     private $disciplinas;
     
@@ -141,13 +141,26 @@ class Turma extends AbstractEditableEntity {
                 $disciplinaOfertada = new DisciplinaOfertada($this, $disciplina);
                 $this->disciplinas->add($disciplinaOfertada);
             }
+        } else if ($this->disciplinas) {
+            foreach($this->disciplinas as $disciplina) {
+                $disciplina->setTurma($this);
+            }
         }
     }
-    
+
     function getDisciplinas() {
         return $this->disciplinas->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
+    }
+    
+    function getTotalEnturmacoes() {
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->count();
     }
     
     function getEnturmacoes() {

@@ -43,7 +43,6 @@ services:
         arguments: ["@doctrine"]
         calls:
           - [setEnturmacaoFacade, [@facade.matricula.enturmacoes]]
-          - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
         
     facade.matricula.transferencias:
         class: MatriculaBundle\Service\TransferenciaFacade
@@ -55,6 +54,12 @@ services:
     facade.matricula.desligamentos:
         class: MatriculaBundle\Service\DesligamentoFacade
         arguments: ["@doctrine"]
+     
+    facade.matricula.reclassificacoes:
+        class: MatriculaBundle\Service\ReclassificacaoFacade
+        arguments: ["@doctrine"]
+        calls:
+          - [setEnturmacaoFacade, [@facade.matricula.enturmacoes]]
         
     facade.matricula.uniformes:
         class: MatriculaBundle\Service\UniformeFacade

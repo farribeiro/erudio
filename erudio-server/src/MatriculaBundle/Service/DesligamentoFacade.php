@@ -33,7 +33,6 @@ use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use MatriculaBundle\Entity\Enturmacao;
 use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
@@ -81,7 +80,7 @@ class DesligamentoFacade extends AbstractFacade {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('status', DisciplinaCursada::STATUS_CURSANDO));
         $disciplinas = $matricula->getDisciplinasCursadas()->matching($criteria);
         foreach ($disciplinas as $d) {
-            $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
+            $d->encerrar(DisciplinaCursada::STATUS_INCOMPLETO);
             $this->orm->getManager()->merge($d);
             $this->orm->getManager()->flush();
         }

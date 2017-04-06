@@ -26,81 +26,45 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CalendarioBundle\Entity;
+namespace MatriculaBundle\Service;
 
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
 
-
-/**
-* @ORM\Entity
-* @ORM\Table(name = "edu_calendario_periodo")
-*/
-class Periodo extends AbstractEditableEntity {
+class ReclassificacaoFacade extends AbstractFacade {
     
-    /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
-    */
-    private $media;
+    private $enturmacaoFacade;
     
-    /**
-    * @JMS\Groups({"LIST"}) 
-    * @JMS\Type("DateTime<'Y-m-d'>")
-    * @ORM\Column(name = "data_inicio", type = "date") 
-    */
-    private $dataInicio;
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
-    private $dataTermino;
+    function getEntityClass() {
+        return 'MatriculaBundle:Reclassificacao';
+    }
     
-    /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
-    private $calendario;
+    function queryAlias() {
+        return 'm';
+    }
     
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-    */
-    private $sistemaAvaliacao;
+    function parameterMap() {
+        return [
+            'matricula' => function(QueryBuilder $qb, $value) {
+                $qb->join('m.matricula', 'matricula')
+                   ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
+            }
+        ];
+    }
     
-    function getMedia() {
-        return $this->media;
+    protected function beforeCreate($movimentacao) {
+        $enturmacaoDestino = $this->enturmacaoFacade->create(
+            new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
+        );
+        $movimentacao->aplicar($enturmacaoDestino);
     }
-
-    function getDataInicio() {
-        return $this->dataInicio;
+    
+    protected function afterCreate($movimentacao) {
+        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
     }
-
-    function getDataTermino() {
-        return $this->dataTermino;
-    }
-
-    function getCalendario() {
-        return $this->calendario;
-    }
-
-    function getSistemaAvaliacao() {
-        return $this->sistemaAvaliacao;
-    }
-
-    function setDataInicio($dataInicio) {
-        $this->dataInicio = $dataInicio;
-    }
-
-    function setDataTermino($dataTermino) {
-        $this->dataTermino = $dataTermino;
-    }
-
-
+    
 }

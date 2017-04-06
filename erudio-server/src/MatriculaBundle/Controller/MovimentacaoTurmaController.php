@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\MovimentacaoTurma;
@@ -62,7 +62,7 @@ class MovimentacaoTurmaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
     */
-    function getListAction(Request $request, ParamFetcher $paramFetcher) {
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
     

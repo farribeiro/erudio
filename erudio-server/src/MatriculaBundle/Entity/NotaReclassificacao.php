@@ -28,87 +28,49 @@
 
 namespace MatriculaBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use CursoBundle\Entity\Turma;
 
 /**
 * @ORM\Entity
-* @ORM\Table(name = "edu_enturmacao")
+* @ORM\Table(name = "edu_movimentacao_reclassificacao_nota")
 */
-class Enturmacao extends AbstractEditableEntity {
+class NotaReclassificacao extends AbstractEditableEntity {
     
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(type = "boolean", nullable = false) 
+    /** 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\ManyToOne(targetEntity = "Reclassificacao", inversedBy = "notas")
     */
-    private $encerrado = false;
+    private $reclassificacao;
     
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("CursoBundle\Entity\Disciplina")
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Disciplina")
     */
-    private $matricula;
+    private $disciplina;
     
-    /**  
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turma", inversedBy = "enturmacoes") 
+    /** 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false)
     */
-    private $turma;
+    private $valor = 0;
     
-    /**  
-    * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "enturmacao", fetch = "EXTRA_LAZY")
-    */
-    private $disciplinasCursadas;
-    
-    /**
-    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
-    */
-    private $vaga;
-    
-    function __construct(Matricula $matricula, Turma $turma) {
-        $this->matricula = $matricula;
-        $this->turma = $turma;
-        $this->disciplinasCursadas = new ArrayCollection();
-    }
-    
-    function getAnosDefasagem(\DateTime $dataReferencia = null) {
-        $idadeEtapa = $this->turma->getEtapa()->getIdadeRecomendada();
-        $data = $dataReferencia 
-                ? $dataReferencia 
-                : \DateTime::createFromFormat('Y-m-d', date('Y') . '-03-31');
-        $idadeAluno = $this->matricula->getAluno()->getDataNascimento()->diff($data);
-        return $idadeEtapa ? $idadeAluno->y - $idadeEtapa : 0;
-    }
-    
-    function getEncerrado() {
-        return $this->encerrado;
-    }
-    
-    function setEncerrado($encerrado) {
-        $this->encerrado = $encerrado;
-    }
-    
-    function getMatricula() {
-        return $this->matricula;
+    function getReclassificacao() {
+        return $this->reclassificacao;
     }
 
-    function getTurma() {
-        return $this->turma;
-    }
-    
-    function getVaga() {
-        return $this->vaga;
-    }
-    
-    function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+    function getDisciplina() {
+        return $this->disciplina;
     }
 
-    function encerrar() {
-        $this->encerrado = true;
+    function getValor() {
+        return $this->valor;
     }
+
+    function setValor($valor) {
+        $this->valor = $valor;
+    }
+    
 }
