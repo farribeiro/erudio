@@ -119,6 +119,19 @@ class DisciplinaOfertada extends AbstractEditableEntity {
         return $this->professores;
     }
     
+    function getProfessoresAsString() {
+        $professores = $this->getProfessores();
+        $nomesProfessores = '';
+        $numeroProfessores = count($professores);
+        foreach ($professores as $i => $professor) {
+            $nomesProfessores .= $professor->getVinculo()->getFuncionario()->getNome();
+            if ($i + 1 < $numeroProfessores) {
+                $nomesProfessores .= ", ";
+            }
+        }
+        return $nomesProfessores;
+    }
+    
     function setProfessores(ArrayCollection $professores) {
         $this->professores = $professores;
     }
