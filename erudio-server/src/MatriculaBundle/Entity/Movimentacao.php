@@ -41,7 +41,8 @@ use CursoBundle\Entity\Turma;
 * @ORM\DiscriminatorMap({
 *   "MOVIMENTACAO_TURMA" = "MovimentacaoTurma", 
 *   "TRANSFERENCIA" = "Transferencia", 
-*   "DESLIGAMENTO" = "Desligamento"
+*   "DESLIGAMENTO" = "Desligamento",
+*   "RECLASSIFICACAO" = "Reclassificacao" 
 * })
 */
 abstract class Movimentacao extends AbstractEditableEntity {

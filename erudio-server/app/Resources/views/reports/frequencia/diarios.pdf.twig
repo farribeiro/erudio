@@ -101,17 +101,9 @@
                 <h1 margin="0" padding="0">Diário de Frequência</h1>
                 <h3 margin="0" padding="0">{{mes}} {{"now"|date('Y')}}</h3>
             {% endblock %}
-            
+                {% embed 'reports/templates/info.twig' %}{% endembed %}
             {% block info %}
-                <h3 margin="0" padding="0">
-                    {{turma.etapa.nome}} - Turma {{turma.nomeExibicao}}
-                </h3>
-                <h3 margin="0" padding="0">
-                    Disciplina: {{d.disciplina}}
-                </h3>
-                <h3 margin="0" padding="0">
-                    Prof. {{d.professor}}
-                </h3>
+      
             {% endblock %}
             
             {% block content %}

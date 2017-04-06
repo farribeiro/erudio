@@ -31,43 +31,40 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 
-class FrequenciaFacade extends AbstractFacade {
+class ReclassificacaoFacade extends AbstractFacade {
+    
+    private $enturmacaoFacade;
+    
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
     
     function getEntityClass() {
-        return 'MatriculaBundle:Frequencia';
+        return 'MatriculaBundle:Reclassificacao';
     }
     
     function queryAlias() {
-        return 'f';
+        return 'm';
     }
     
     function parameterMap() {
-        return array (
-            'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
-            },
+        return [
             'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->join('disciplina.matricula', 'matricula')
+                $qb->join('m.matricula', 'matricula')
                    ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
-            },
-            'aula' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('aula.id = :aula')->setParameter('aula', $value);
-            },
-            'mes' => function(QueryBuilder $qb, $value) {
-                $qb->join('aula.dia', 'dia')
-                   ->andWhere('dia.data LIKE :mes')->setParameter('mes', '%-' . $value . '-%');
-            },
-            'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('aula.disciplinaOfertada', 'ofertada')->join('ofertada.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value)->setMaxResults(1)->orderBy('f.id','DESC');
             }
-        );
+        ];
     }
     
-    protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('f.aula', 'aula')->join('f.disciplinaCursada', 'disciplina');
+    protected function beforeCreate($movimentacao) {
+        $enturmacaoDestino = $this->enturmacaoFacade->create(
+            new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
+        );
+        $movimentacao->aplicar($enturmacaoDestino);
+    }
+    
+    protected function afterCreate($movimentacao) {
+        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
     }
     
 }
-
-

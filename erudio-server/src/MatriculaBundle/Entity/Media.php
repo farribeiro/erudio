@@ -58,9 +58,21 @@ class Media extends AbstractEditableEntity {
     */
     private $valor;
     
+    /**
+     * @JMS\Groups({"LIST"})
+     * @ORM\Column
+     */
+    private $faltas = 0;
+    
+    /**
+     * @JMS\Groups({"LIST"})
+     * @ORM\Column 
+     */
+    private $frequencia = 100;
+    
     /**  
     *  @JMS\Groups({"LIST"}) 
-    *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}) 
+    *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}, inversedBy="medias") 
     *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
     */
     private $disciplinaCursada;
@@ -80,7 +92,33 @@ class Media extends AbstractEditableEntity {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
         $this->nome = 'M' . $numero;
-        $this->init();
+        $this->calculoAutomatico = true;
+        $this->notas = new ArrayCollection();
+    }
+    
+    /**  
+    * @JMS\VirtualProperty 
+    * @JMS\MaxDepth(depth = 3)
+    */
+    function getNotas() {
+        return $this->notas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );    
+    }
+    
+    /**
+     * Em médias de um sistema qualitativo, retorna as habilidades avaliadas na média
+     * com seus respectivos conceitos.
+     * 
+     * @return Traversable habilidades avaliadas
+     */
+    function getHabilidadesAvaliadas() {
+        $notasFechamento = $this->notas->filter(function($n) {
+           return $n instanceof NotaQualitativa && $n->getAvaliacao()->getFechamentoMedia();
+        });
+        return $notasFechamento->count()
+                ? $notasFechamento->first()->getHabilidadesAvaliadas()
+                : [];
     }
     
     function removeNota($nota) {
@@ -100,6 +138,14 @@ class Media extends AbstractEditableEntity {
     function getValor() {
         return $this->valor;
     }
+    
+    function getFaltas() {
+        return $this->faltas;
+    }
+
+    function getFrequencia() {
+        return $this->frequencia;
+    }
 
     function getDisciplinaCursada() {
         return $this->disciplinaCursada;
@@ -109,14 +155,12 @@ class Media extends AbstractEditableEntity {
         $this->valor = $valor;
     }
     
-    /**  
-    * @JMS\VirtualProperty 
-    * @JMS\MaxDepth(depth = 3)
-    */
-    function getNotas() {
-        return $this->notas->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        );    
+    function setFaltas($faltas) {
+        $this->faltas = $faltas;
+    }
+    
+    function setFrequencia($frequencia) {
+        $this->frequencia = $frequencia;
     }
     
     function getCalculoAutomatico() {

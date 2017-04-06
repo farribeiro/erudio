@@ -1,4 +1,4 @@
-<?php
+<?php //
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
@@ -33,53 +33,45 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use MatriculaBundle\Entity\Enturmacao;
 
-class NotasReportController extends Controller {
+class BoletimReportController extends Controller {
     
-    function getAulaFacade() {
-        return $this->get('facade.calendario.aulas');
-    }
-    
-    function getDisciplinaOfertadaFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
+    function getEnturmacaoFacade() {
+        return $this->get('facade.matricula.enturmacoes');
     }
     
     function getTurmaFacade() {
         return $this->get('facade.curso.turmas');
     }
     
-    function getHabilidadeFacade() {
-        return $this->get('facade.avaliacao.habilidades');
-    }
-    
-    function getConceitoFacade() {
-        return $this->get('facade.avaliacao.conceitos');
-    }
-    
     /**
-    * @Route("/diario-notas", defaults={ "_format" = "pdf" })
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Boletim individual",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("/boletim", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
-    function diarioAction(Request $request) {
+    function individualAction(Request $request) {
         try {
-            $auto = $request->query->get('auto', true);
-            $media = $request->query->getInt('media', 1);
-            $disciplina = $this->getDisciplinaOfertadaFacade()->find(
-                $request->query->getInt('disciplina')
-            );
-            $diarios = [ $this->gerarDiario($disciplina, $media, $auto) ];
+            $enturmacao = $this->getEnturmacaoFacade()->find($request->query->getInt('enturmacao'));
+            $turma = $enturmacao->getTurma();
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
-                ? 'reports/nota/notaQualitativo.pdf.twig' 
-                : 'reports/nota/notaQuantitativo.pdf.twig';
+                ? 'reports/boletim/qualitativo.pdf.twig'
+                : 'reports/boletim/quantitativo.pdf.twig';
             return $this->render($template, [
-                'instituicao' => $disciplina->getTurma()->getUnidadeEnsino(),
+                'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
-                'media' => $media,
-                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'enturmacoes' => $turma->getEnturmacoes(),
+                'boletins' => $this->gerarBoletim($enturmacao),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],
-                'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());
@@ -88,30 +80,35 @@ class NotasReportController extends Controller {
     }
     
     /**
-    * @Route("/diarios-notas", defaults={ "_format" = "pdf" })
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Boletins por turma",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("/boletins", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
-    function diariosAction(Request $request) {
+    function turmaAction(Request $request) {
         try {
-            $auto = $request->query->get('auto', true);
-            $media = $request->query->getInt('media', 1);
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
-            $diarios = [];
-            foreach ($turma->getDisciplinas() as $disciplina) {
-                $diarios[] = $this->gerarDiario($disciplina, $media, $auto);
+            $enturmacoes = $turma->getEnturmacoes();
+            $boletins = [];
+            foreach ($enturmacoes as $e) {
+                $boletins[] = $this->gerarBoletim($e);
             }
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
-                ? 'reports/nota/notaQualitativo.pdf.twig' 
-                : 'reports/nota/notaQuantitativo.pdf.twig';
+                ? 'reports/boletim/qualitativo.pdf.twig' 
+                : 'reports/boletim/quantitativo.pdf.twig';
             return $this->render($template, [
-                'instituicao' => $disciplina->getTurma()->getUnidadeEnsino(),
+                'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
-                'media' => $media,
-                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'enturmacoes' => $turma->getEnturmacoes(),
+                'boletins' => $boletins,
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],
-                'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());
@@ -119,28 +116,11 @@ class NotasReportController extends Controller {
         }
     }
     
-    /**
-     * Gera a estrutura de um diário de frequência, para determinada disciplina ofertada, 
-     * em determinado mês.
-     * 
-     * @param $disciplina
-     * @return array diário de notas
-     */
-    private function gerarDiario($disciplina, $media, $autoPreenchimento = true) {
-        $avaliacoes = $autoPreenchimento ? [] : [];
-        $professor = $disciplina->getProfessoresAsString();
-        $diario = [
-            'disciplina' => $disciplina->getNomeExibicao(),
-            'avaliacoes' => $avaliacoes,
-            'professor' => $professor
+    private function gerarBoletim(Enturmacao $enturmacao) {
+        return [
+            'matricula' => $enturmacao->getMatricula(), 
+            'disciplinas' => $enturmacao->getDisciplinasCursadas()
         ];
-        if ($this->isSistemaQualitativo($disciplina->getDisciplina()->getEtapa())) {
-            $diario['habilidades'] = $this->getHabilidadeFacade()->findAll([
-                'disciplina' => $disciplina->getDisciplina()->getId(),
-                'media' => $media
-            ]);
-        }
-        return $diario;
     }
     
     private function isSistemaQualitativo($etapa) {

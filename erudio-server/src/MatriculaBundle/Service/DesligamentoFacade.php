@@ -33,7 +33,6 @@ use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use MatriculaBundle\Entity\Enturmacao;
 use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
@@ -81,7 +80,7 @@ class DesligamentoFacade extends AbstractFacade {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('status', DisciplinaCursada::STATUS_CURSANDO));
         $disciplinas = $matricula->getDisciplinasCursadas()->matching($criteria);
         foreach ($disciplinas as $d) {
-            $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
+            $d->encerrar(DisciplinaCursada::STATUS_INCOMPLETO);
             $this->orm->getManager()->merge($d);
             $this->orm->getManager()->flush();
         }
@@ -92,17 +91,8 @@ class DesligamentoFacade extends AbstractFacade {
         $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
         foreach ($enturmacoes as $e) {
             $e->encerrar();
-            $this->liberarVagas($e);
             $this->orm->getManager()->merge($e);
             $this->orm->getManager()->flush();
-        }
-    }
-    
-    private function liberarVagas(Enturmacao $enturmacao) {
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
-        foreach ($vagas as $vaga) {
-            $vaga->setEnturmacao(null);
-            $this->orm->getManager()->merge($vaga);
         }
     }
     

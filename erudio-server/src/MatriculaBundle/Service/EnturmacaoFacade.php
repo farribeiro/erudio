@@ -122,34 +122,16 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     /**
-     * Realiza as operações para mover o aluno de uma turma para outra, na mesma
-     * unidade de ensino.
-     * 
-     * @param Enturmacao $origem Enturmação atual, que será encerrada
-     * @param Enturmacao $destino Enturmação que está sendo criada
-     */
-    function executarMovimentacaoTurma(Enturmacao $origem, Enturmacao $destino) {
-        $origem->encerrar();
-        $this->orm->getManager()->merge($origem);
-        $this->orm->getManager()->flush();
-        $this->transferirDisciplinas($origem, $destino);
-        if ($origem->getVaga()) {
-            $this->liberarVaga($origem);
-        }
-        $this->ocuparVaga($destino);
-    }
-    
-    /**
      * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
      * de ensino, bem como suas disciplinas cursadas.
      * 
      * @param Enturmacao $enturmacao
      */
-    function encerrarPorTransferencia(Enturmacao $enturmacao) {
+    function encerrarPorMovimentacao(Enturmacao $enturmacao) {
         $enturmacao->encerrar();
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
-        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        $this->desvincularDisciplinas($enturmacao);
         if ($enturmacao->getVaga()) {
            $this->liberarVaga($enturmacao);
 	}
@@ -190,9 +172,8 @@ class EnturmacaoFacade extends AbstractFacade {
         foreach ($disciplinasOfertadas as $disciplinaOfertada) {   
             $emAndamento = false;                     
             foreach ($disciplinasEmAndamento as $disciplinaCursada) {
-                if($disciplinaCursada->getDisciplina()->getId() === $disciplinaOfertada->getDisciplina()->getId()) {
-                    $disciplinaCursada->setEnturmacao($enturmacao);
-                    $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
+                if ($disciplinaCursada->getDisciplina()->getId() === $disciplinaOfertada->getDisciplina()->getId()) {
+                    $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
                     $this->orm->getManager()->merge($disciplinaCursada);
                     $emAndamento = true;
                     break;
@@ -200,8 +181,7 @@ class EnturmacaoFacade extends AbstractFacade {
             }
             if (!$emAndamento) {
                 $disciplinaCursada = new DisciplinaCursada($matricula, $disciplinaOfertada->getDisciplina());
-                $disciplinaCursada->setEnturmacao($enturmacao);
-                $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
+                $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
                 $this->disciplinaCursadaFacade->create($disciplinaCursada);
             }
         }
@@ -209,22 +189,17 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     /**
-     * Transfere disciplinas cursadas de uma enturmação para outra.
+     * Encerra disciplinas cursadas de uma enturmação, com o status informado.
      * 
-     * @param Enturmacao $origem
-     * @param Enturmacao $destino
+     * @param Enturmacao $enturmacao
+     * @param $status
      */
-    private function transferirDisciplinas(Enturmacao $origem, Enturmacao $destino) {
-        $disciplinasCursadas = $origem->getDisciplinasCursadas();
-        foreach($disciplinasCursadas as $disciplinaCursada) {
-            $disciplinaCursada->setEnturmacao($destino);
-            foreach($destino->getTurma()->getDisciplinas() as $disciplinaOfertada) {
-                if($disciplinaOfertada->getDisciplina()->getId() === $disciplinaCursada->getDisciplina()->getId()) {
-                    $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
-                    break;
-                }
-            }
+    private function desvincularDisciplinas(Enturmacao $enturmacao) {
+        foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
+            $disciplina->desvincularEnturmacao();
+            $this->orm->getManager()->merge($disciplina);
         }
+        $this->orm->getManager()->flush();
     }
     
     /**
@@ -235,7 +210,7 @@ class EnturmacaoFacade extends AbstractFacade {
      */
     private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
-            $disciplina->setStatus($status);
+            $disciplina->encerrar($status);
             $this->orm->getManager()->merge($disciplina);
         }
         $this->orm->getManager()->flush();

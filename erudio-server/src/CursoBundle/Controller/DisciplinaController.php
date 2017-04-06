@@ -62,7 +62,9 @@ class DisciplinaController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
-    *   @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
+    *   @FOS\QueryParam(name = "opcional", nullable = true)
+    *   @FOS\QueryParam(name = "incluirNaoOfertadas", default = 0)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

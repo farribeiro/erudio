@@ -51,7 +51,8 @@ class Atribuicao extends AbstractEditableEntity {
     private $grupo;
     
     /**
-    * @JMS\Groups({"LIST"})   
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("PessoaBundle\Entity\Instituicao")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
     */
     private $instituicao;

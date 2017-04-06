@@ -58,10 +58,13 @@ class TransferenciaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.matricula', 'matricula')
-                   ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
+                $qb->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
+            },
+            'matricula_aluno_nome' => function(QueryBuilder $qb, $value) {
+                $qb->join('matricula.aluno', 'aluno')
+                   ->andWhere('aluno.nome LIKE :aluno')->setParameter('aluno', '%' . $value . '%');
             },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('t.status = :status')->setParameter('status', $value);
@@ -74,7 +77,17 @@ class TransferenciaFacade extends AbstractFacade {
                 $qb->join('t.unidadeEnsinoDestino', 'unidadeDestino')
                    ->andWhere('unidadeDestino.id = :unidadeDestino')->setParameter('unidadeDestino', $value);
             }
-        );
+        ];
+    }
+    
+    function uniqueMap($transferencia) {
+        return [
+            ['matricula' => $transferencia->getMatricula(), 'status' => Transferencia::STATUS_PENDENTE]
+        ];
+    }
+    
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('t.matricula', 'matricula');
     }
     
     protected function beforeUpdate($transferencia) {
@@ -100,9 +113,7 @@ class TransferenciaFacade extends AbstractFacade {
     
     function encerrar(Transferencia $transferencia) {
         if($transferencia->getStatus() === Transferencia::STATUS_ACEITO) {
-            $matricula = $transferencia->getMatricula();
-            $this->encerrarEnturmacoes($matricula);
-            $this->transferirDisciplinas($matricula);
+            $this->encerrarEnturmacoes($transferencia->getMatricula());
             $transferencia->getMatricula()->transferir($transferencia->getUnidadeEnsinoDestino());
         }
         $transferencia->setDataEncerramento(new \DateTime());
@@ -113,52 +124,10 @@ class TransferenciaFacade extends AbstractFacade {
     private function encerrarEnturmacoes(Matricula $matricula) {
         $enturmacoes = $this->enturmacaoFacade->findAll(['matricula' => $matricula]);
         foreach ($enturmacoes as $enturmacao) {
-            $this->enturmacaoFacade->encerrarPorTransferencia($enturmacao);
+            $this->enturmacaoFacade->encerrarPorMovimentacao($enturmacao);
         }
         $this->orm->getManager()->flush();
     }
-    
-    private function transferirDisciplinas(Matricula $matricula) {
-         $matricula->getDisciplinasCursadas()
-            ->filter(function($t) {
-                return $t->getStatus() === DisciplinaCursada::STATUS_CURSANDO;
-            })->map(function($t) {
-                $t->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
-                $this->orm->getManager()->merge($t);
-                $novaDisciplina = new DisciplinaCursada($t->getMatricula(), $t->getDisciplina());
-                $numeroMedias = $novaDisciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();  
-                for($i = 1; $i <= $numeroMedias; $i++) {
-                    $media = new Media($novaDisciplina, $i);
-                    $this->mediaFacade->create($media);
-                }
-                $this->orm->getManager()->persist($novaDisciplina);
-            });
-    }
-    
-    function findAllByNome($params, $page = null) {
-        $nome = $params['nome'];
-        $qb = $this->orm->getRepository('PessoaBundle:PessoaFisica')->createQueryBuilder('p')->where('p.nome LIKE :nome')->setParameter('nome', '%'.$nome.'%');
-        if(is_numeric($page)) { $qb->setMaxResults(self::PAGE_SIZE)->setFirstResult(self::PAGE_SIZE * $page); }
-        $pessoas = $qb->getQuery()->getResult();
-        $matriculas = array();
-        $transferencias = array();
-        if (!empty($pessoas)) {
-            foreach ($pessoas as $pessoa) {
-                $matriculaArray = $this->orm->getRepository('MatriculaBundle:Matricula')->findBy(array('aluno'=>$pessoa));
-                if (!empty($matriculaArray)) { 
-                    foreach ($matriculaArray as $matArray) { $matriculas[] = $matArray; }
-                }
-            }
-            if (!empty($matriculas)) {
-                unset($params['nome']);
-                foreach ($matriculas as $matricula) {
-                    $params['matricula'] = $matricula->getId();
-                    $transferenciasArray = $this->findAll($params);
-                    foreach ($transferenciasArray as $transArray) { $transferencias[] = $transArray; }
-                }
-                if (!empty($transferencias)) { return $transferencias; } else { return array(); }
-            } else { return array(); }
-        } else { return array(); }
-    }
+
 }
 

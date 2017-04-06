@@ -68,33 +68,4 @@ class VagaController extends AbstractEntityController {
         return $this->getList($request, $paramFetcher->all());
     }
     
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Post("vagas")
-    * @ParamConverter("vaga", converter="fos_rest.request_body")
-    */
-    function postAction(Request $request, Vaga $vaga, ConstraintViolationListInterface $errors) {
-        return $this->post($request, $vaga, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Put("vagas/{id}")
-    * @ParamConverter("vaga", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, Vaga $vaga, ConstraintViolationListInterface $errors) {
-        return $this->put($request, $id, $vaga, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Delete("vagas/{id}") 
-    */
-    function deleteAction(Request $request, $id) {
-        return $this->delete($request, $id);
-    } 
-    
 }

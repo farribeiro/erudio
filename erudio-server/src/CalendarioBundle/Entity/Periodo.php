@@ -29,7 +29,6 @@
 namespace CalendarioBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -68,11 +67,11 @@ class Periodo extends AbstractEditableEntity {
     private $calendario;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-        * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-        * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-        */
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
+    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
+    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    */
     private $sistemaAvaliacao;
     
     function getMedia() {

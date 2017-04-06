@@ -29,7 +29,6 @@
 namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Common\Collections\ArrayCollection;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use AvaliacaoBundle\Entity\SistemaAvaliacao;
@@ -45,13 +44,13 @@ class MediaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'disciplinaCursada' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.disciplinaCursada', 'disciplinaCursada')
                     ->andWhere('disciplinaCursada.id = :disciplinaCursada')
                     ->setParameter('disciplinaCursada', $value);
             }
-        );
+        ];
     }
     
     function calcular($media) {
@@ -103,7 +102,7 @@ class MediaFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($media) {
-        if($media->getCalculoAutomatico()) {
+        if ($media->getCalculoAutomatico()) {
             $this->calcular($media);
         }
         $this->orm->getManager()->flush();

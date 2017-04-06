@@ -51,6 +51,10 @@ class Vaga extends AbstractEditableEntity {
     */
     private $enturmacao;
     
+    function __construct(Turma $turma) {
+        $this->turma = $turma;
+    }
+    
     function liberar() {
         $this->enturmacao = null;
     }
