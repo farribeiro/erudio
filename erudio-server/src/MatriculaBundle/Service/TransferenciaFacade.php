@@ -80,6 +80,12 @@ class TransferenciaFacade extends AbstractFacade {
         ];
     }
     
+    function uniqueMap($transferencia) {
+        return [
+            ['matricula' => $transferencia->getMatricula(), 'status' => Transferencia::STATUS_PENDENTE]
+        ];
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.matricula', 'matricula');
     }
