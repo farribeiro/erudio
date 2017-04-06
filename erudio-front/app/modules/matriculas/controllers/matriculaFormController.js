@@ -29,13 +29,13 @@
     matriculaFormModule.controller('MatriculaFormController', ['$scope', '$filter', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'PessoaService', 'MatriculaService', '$compile', 'dateTime', 'makePdf', 'ErudioConfig', '$routeParams', function ($scope, $filter, Servidor, Restangular, $timeout, $templateCache, PessoaService, MatriculaService, $compile, dateTime, makePdf, ErudioConfig, $routeParams) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
         $templateCache.removeAll(); $scope.config = ErudioConfig;
-        $scope.escrita = Servidor.verificaEscrita('MATRICULA') || Servidor.verificaAdmin();
+        $scope.escrita = Servidor.verificaEscrita('MATRICULA'); $scope.isAdmin = Servidor.verificaAdmin();
         //CARREGA TELA ATUAL
         if ($routeParams.id === 'novo') { $scope.tela = ErudioConfig.getTemplateForm('matriculas'); $scope.lista = false; } else { $scope.tela = ErudioConfig.getTemplateCustom('matriculas','informacoes'); $scope.lista = false; }
         //ATRIBUTOS
         if ($routeParams.id === 'novo') { $scope.titulo = 'Matricular'; $scope.matriculando = true; } else { $scope.titulo = "Matrícula - Informações"; $scope.matriculando = false; } $scope.buscaAvancada = false; $scope.frequentaStatus = 'frequenta'; $scope.etapa = {'id': null};
         $scope.nomePessoa = ''; $scope.nomeUnidadeMatricula = ''; $scope.unidades = [];
-        $scope.matriculaBusca = { 'aluno': null, 'status': null, 'codigo': null, 'curso': null, 'unidade': null }; 
+        $scope.matriculaBusca = { 'aluno': null, 'status': null, 'codigo': null, 'curso': null, 'unidade': null };
         $scope.matricula = {'codigo': null, 'aluno': {'id': null}, 'unidadeEnsino': {'id': null}, 'curso': {'id': null}};
         //ABRE AJUDA
         $scope.ajuda = function () { $('#modal-ajuda-turma').modal('open'); };
@@ -112,7 +112,7 @@
             var params = {nome: null}; var permissao = true; $scope.nomeUnidadeMatricula = nomeUnidade;
             if (nomeUnidade !== undefined && nomeUnidade) { params.nome = nomeUnidade; if (nomeUnidade.length > 4) { permissao = true; } else { permissao = false; } }
             if(permissao) {
-                var promise = null; if ($scope.escrita) { promise = Servidor.buscar('unidades-ensino', params); } else { promise = Servidor.buscarUm('unidades-ensino', $scope.unidadeAlocacao); }
+                var promise = null; if ($scope.isAdmin) { promise = Servidor.buscar('unidades-ensino', params); } else { promise = Servidor.buscarUm('unidades-ensino', $scope.unidadeAlocacao); }
                 promise.then(function (response) {
                     if ($scope.escrita) { $scope.unidades = response.data; } else { $scope.unidades.push(response.data); $scope.matriculaBusca.unidade = response.data.id; }
                     $timeout(function () { $('select').material_select('destroy'); $('select').material_select(); }, 250);
@@ -178,7 +178,7 @@
                 var promise = Servidor.buscarUm('matriculas', $routeParams.id);
                 promise.then(function (response){
                     $scope.matricula = response.data;
-                    if(!$scope.escrita && $scope.matricula.unidadeEnsino.id !== $scope.unidadeAlocacao) { $scope.fechaProgresso(); return Servidor.customToast('Este aluno não está matriculado em sua unidade.'); }
+                    if(!$scope.escrita && $scope.matricula.unidadeEnsino === undefined) { $scope.fechaProgresso(); return Servidor.customToast('Este aluno não está matriculado em sua unidade.'); }
                     else {
                         $scope.buscarUniforme($scope.matricula);
                         if($scope.matricula.status === 'FALECIDO' || $scope.matricula.status === 'TRANCADO' || $scope.matricula.status === 'ABANDONO'){ $scope.frequentaStatus = 'Não Frequenta'; }

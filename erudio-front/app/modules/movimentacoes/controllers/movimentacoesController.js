@@ -343,8 +343,8 @@
                             });
                         });
                     });
-                    //$('#aceitar-transferencia').modal('open');
-                    $('#aceitar-transferencia').openModal();
+                    $('#aceitar-transferencia').modal('open');
+                    //$('#aceitar-transferencia').openModal();
                     //$('#selectTurmaTransferencia').material_select();
                 });
             });
@@ -411,8 +411,8 @@
         
         $scope.abrirModalTransferenciaLocal = function(matricula) {
             $scope.matricula = matricula;
-            //$('#transferencia-local-movimentacoes-modal').modal('open');
-            $('#transferencia-local-movimentacoes-modal').openModal();
+            $('#transferencia-local-movimentacoes-modal').modal('open');
+            //$('#transferencia-local-movimentacoes-modal').openModal();
             $scope.limparTransferencia();
         };
         
@@ -428,8 +428,8 @@
                 $scope.progresso = true;
                 var promise = Servidor.finalizar(transferencia, 'transferencias', 'Transferência');
                 promise.then(function(response) {
-                    //$('#transferencia-local-movimentacoes-modal').modal('close');
-                    $('#transferencia-local-movimentacoes-modal').closeModal();
+                    $('#transferencia-local-movimentacoes-modal').modal('close');
+                    //$('#transferencia-local-movimentacoes-modal').closeModal();
                     $scope.progresso = false;
                 });
             } else {
@@ -484,8 +484,8 @@
                                     t.status = response.data.status;
                                 }
                             });
-                            //$('#recusar-movimentacao').modal('close');
-                            $('#recusar-movimentacao').closeModal();
+                            $('#recusar-movimentacao').modal('close');
+                            //$('#recusar-movimentacao').closeModal();
                         });
                     }
                 }
@@ -569,8 +569,8 @@
 
         $scope.preparaRecusar = function(transferencia){
           $scope.transferencia = transferencia;
-          $('#recusar-movimentacao').openModal();
-          //$('#recusar-movimentacao').modal();
+          //$('#recusar-movimentacao').openModal();
+          $('#recusar-movimentacao').modal();
         };
 
         $scope.abrirEnturmacao = function() {
@@ -757,7 +757,7 @@
             var unidade = parseInt(sessionStorage.getItem('unidade'));
             switch (tab) {
                 case 'historico':
-                    $scope.mostraListaMovimentacoes = false;
+                    $scope.mostraListaMovimentacoes = false; $('#aceitar-transferencia').modal();
                     $scope.transferencia.status = 'PENDENTE';
                     if(!$scope.isAdmin) {
                         $scope.tipoFiltroHistorico = 'RECEBIDAS';
@@ -1275,11 +1275,11 @@
                         });
                         $scope.matriculas = matriculas;
                         if(origem === 'botao') { $scope.quantidadePaginas = Math.ceil(response.data.length / 50); }
-                        $timeout(function() { $('.tooltipped').tooltip({delay: 50}); $scope.progresso = false; $scope.fecharProgresso(); }, 150);
+                        $timeout(function() { $('.tooltipped').tooltip({delay: 50}); $scope.progresso = false; }, 150);
                     });
                 } else {
                     $scope.progresso = false;
-                    Servidor.customToast('Nenhuma matrícula encontrada.'); $scope.fecharProgresso();
+                    Servidor.customToast('Nenhuma matrícula encontrada.');
                 }
             });
         };

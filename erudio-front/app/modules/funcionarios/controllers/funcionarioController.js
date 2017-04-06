@@ -197,7 +197,7 @@
         // Realiza a busca de unidades
         $scope.selecionarUnidade = function(unidade) {
             $scope.alocacao.instituicao = unidade;
-            $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome;
+            if (unidade.tipo === undefined) { $scope.nomeUnidade = unidade.nome; } else { $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome; }
         };
 
         $scope.alterarPagina = function (pagina) {
@@ -324,6 +324,12 @@
                 var promise = Servidor.buscar('unidades-ensino', {'nome': $scope.nomeUnidade});
                 promise.then(function(response) {
                     $scope.unidades = response.data;
+                    var promiseInstituicoes = Servidor.buscar('instituicoes', {'nome': $scope.nomeUnidade});
+                    promiseInstituicoes.then(function(response){
+                        if (response.data.length > 0) {
+                            for (var i=0; i<response.data.length; i++) { $scope.unidades.push(response.data[i]); }
+                        }
+                    });
                 });
             } else {
                 $scope.unidades = [];

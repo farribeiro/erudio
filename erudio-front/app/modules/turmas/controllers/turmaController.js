@@ -161,6 +161,7 @@
         
         //SELECIONA UNIDADE DE ENSINO
         $scope.selecionaUnidade = function(unidade) {
+            $('#dropUnidadesTurmaBusca').hide();
             if (unidade.tipo === undefined) { unidade.tipo = {sigla:''}; } $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome;
             $scope.unidade = unidade; $rootScope.ultimaUnidadeBuscaTurma = unidade; $timeout(function(){ Servidor.verificaLabels(); $scope.buscarCursos(); },100);
         };

@@ -34,7 +34,7 @@
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateCustom('turmas','quadro-horario');
         //ATRIBUTOS
-        $scope.enturmacoes = []; $scope.progresso = false; $scope.cortina = false; $scope.titulo = "Grade de horários da turma"; $scope.mostraAlunos = true; $scope.removerDisc = false;
+        $scope.enturmacoes = []; $scope.progresso = false; $scope.cortina = false; $scope.titulo = "Grade de horários"; $scope.mostraAlunos = true; $scope.removerDisc = false;
         $scope.aulasCriadas = false; $scope.segunda = []; $scope.terca = []; $scope.quarta = []; $scope.quinta = []; $scope.quadroBtn = true; $scope.selecionados = false; $scope.horariosATrocar = [];
         $scope.sexta = []; $scope.horariosDisciplina = []; $scope.horariosDisciplinaParaExcluir = []; $scope.mostraQuadroHorario = false; $scope.repeteVazio = ['','','',''];
         $scope.quadroHorario = { 'nome': null, 'inicio': null, 'modelo': {id: null}, 'unidadeEnsino': {id: null}, 'turno': {id: null}, 'diasSemana': [] };

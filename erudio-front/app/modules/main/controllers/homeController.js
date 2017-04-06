@@ -200,6 +200,7 @@
             $scope.pessoa.endereco.logradouro = null;
         };
 
+        $scope.unidades = []; $scope.unidade = {id:null};
         /* CARREGA O VINCULO SELECIONADO */
         $scope.carregarVinculo = function (vinculoId) {
             //se for vinculo diferente, zera alocação e disciplina
@@ -209,7 +210,6 @@
                 $scope.disciplinas = []; $scope.disciplina.id = '';
                 $timeout(function() { $('#disciplinas').material_select(); }, 10);
             }
-            //busca vinculo novo
             var promise = Servidor.buscarUm('vinculos', vinculoId);
             promise.then(function (response) {
                 if(sessionStorage.getItem('vinculo') !== vinculoId) {
@@ -237,7 +237,7 @@
             var promise = Servidor.buscarUm('alocacoes', alocacaoId);
             promise.then(function (response) {
                 $scope.alocacao = response.data;
-                sessionStorage.setItem('unidade', response.data.instituicao.id);
+                //sessionStorage.setItem('unidade', response.data.instituicao);
                 if(sessionStorage.getItem('alocacao') !== alocacaoId) { sessionStorage.setItem('alocacao', alocacaoId); }
                 $scope.alocacao.id = ''; $scope.alocacao.id = sessionStorage.getItem('alocacao');
                 $timeout(function() { $('#alocacoes').material_select(); }, 150);
@@ -873,8 +873,9 @@
         };
 
         /* Busca as alocacoes de um vinculo */
-        $scope.buscarAlocacoes = function (vinculoId) {
-            var promise = Servidor.buscar('alocacoes', {'vinculo': vinculoId});
+        $scope.buscarAlocacoes = function (unidade) {
+            var strPessoa = sessionStorage.getItem('pessoa'); var pessoa = JSON.parse(strPessoa); $scope.usuario = { nome: pessoa.nome };
+            var promise = Servidor.buscar('alocacoes', {'instituicao': unidade.id, 'funcionario_nome': $scope.usuario.nome});
             promise.then(function (response) {
                 $scope.alocacoes = response.data;
                 var alocacao = sessionStorage.getItem('alocacao');
@@ -1817,45 +1818,71 @@
 
         /* INICIALIZA A PAGINA */
         $scope.inicializar = function () {
+            //busca vinculo novo
             if (sessionStorage.getItem('module') === 'main') {
-                $scope.vinculos = []; $scope.limparVinculo();
-                var strPessoa = sessionStorage.getItem('pessoa');
-                var pessoa = JSON.parse(strPessoa);
-                $scope.usuario = { nome: pessoa.nome };
-                var promise = Servidor.buscar('vinculos', {funcionario: pessoa.id, status: 'ATIVO'});
-                promise.then(function (response) {
-                    if (response.data.length) {
-                        $scope.vinculos = response.data;
-                        $timeout(function () { $('#vinculos').material_select(); }, 15);
-                        if (sessionStorage.getItem('vinculo')) {
-                            $scope.carregarVinculo(sessionStorage.getItem('vinculo'));
-                            $scope.buscarAlocacoes(sessionStorage.getItem('vinculo'));
-                            if (sessionStorage.getItem('alocacao')) {
-                                $scope.carregarAlocacao(sessionStorage.getItem('alocacao'));
-                                if (sessionStorage.getItem('disciplina')) {
-                                    $scope.carregarDisciplina(sessionStorage.getItem('disciplina'));
-                                    $timeout(function(){ Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
-                                } else {
-                                    $timeout(function () { $('#disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                promise.then(function(response) {
+                    var user = response.data[0];
+                    $scope.atribuicoes = user.atribuicoes;
+                    $timeout(function () {
+                        for (var i=0; i<$scope.atribuicoes.length; i++) {
+                            if ($scope.atribuicoes[i] !== undefined) {
+                                if ($scope.atribuicoes[i].instituicao !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); }
+                                if (i === $scope.atribuicoes.length-1) {
+                                    if ($scope.unidades.length === 1) { 
+                                        $scope.unidade = $scope.unidades[0]; 
+                                        if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
+                                        sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); 
+                                        $scope.buscarAlocacoes($scope.unidade);
+                                    }
+                                    $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); }, 500);
+                                    $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
                                 }
-                            } else {
-                                $timeout(function () { $('#alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
-                            }
-                        } else {
-                            if (response.data.length === 1) {
-                                $scope.carregarVinculo(response.data[0].id);
-                                $scope.buscarAlocacoes(response.data[0].id);
-                            } else {
-                                $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
                             }
                         }
-                    } else {
-                        Servidor.entradaPagina();
-                        $scope.inicializando = false;
-                    }
+                    },500);
                 });
             }
         };
+        
+        /*$scope.buscarVinculodaUnidade = function () {
+            $scope.vinculos = []; $scope.limparVinculo();
+            var strPessoa = sessionStorage.getItem('pessoa');
+            var pessoa = JSON.parse(strPessoa);
+            $scope.usuario = { nome: pessoa.nome };
+            var promise = Servidor.buscar('vinculos', {funcionario: pessoa.id, instituicao: $scope.unidade.id, status: 'ATIVO'});
+            promise.then(function (response) {
+                if (response.data.length) {
+                    $scope.vinculos = response.data;
+                    $timeout(function () { $('#vinculos').material_select(); }, 15);
+                    if (sessionStorage.getItem('vinculo')) {
+                        $scope.carregarVinculo(sessionStorage.getItem('vinculo'));
+                        $scope.buscarAlocacoes(sessionStorage.getItem('vinculo'));
+                        if (sessionStorage.getItem('alocacao')) {
+                            $scope.carregarAlocacao(sessionStorage.getItem('alocacao'));
+                            if (sessionStorage.getItem('disciplina')) {
+                                $scope.carregarDisciplina(sessionStorage.getItem('disciplina'));
+                                $timeout(function(){ Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                            } else {
+                                $timeout(function () { $('#disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                            }
+                        } else {
+                            $timeout(function () { $('#alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                        }
+                    } else {
+                        if (response.data.length === 1) {
+                            $scope.carregarVinculo(response.data[0].id);
+                            $scope.buscarAlocacoes(response.data[0].id);
+                        } else {
+                            $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                        }
+                    }
+                } else {
+                    Servidor.entradaPagina();
+                    $scope.inicializando = false;
+                }
+            });
+        };*/
 
         $scope.mostrarFAB = function () {
             var retorno = false;
@@ -1899,7 +1926,7 @@
         } else {
             this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
         }*/
-        if ($scope.inicializando === false) { $scope.inicializar(); };
+        $scope.inicializar();
     }]);
 
 })();

@@ -58,7 +58,8 @@
     </thead>
     <tbody>
         <tr data-ng-repeat="alocacao in alocacoes">
-            <td>{{alocacao.instituicao.nomeCompleto | uppercase}}</td>
+            <td data-ng-if="alocacao.instituicao.nomeCompleto">{{alocacao.instituicao.nomeCompleto | uppercase}}</td>
+            <td data-ng-if="!alocacao.instituicao.nomeCompleto">{{alocacao.instituicao.nome | uppercase}}</td>
             <td>{{alocacao.cargaHoraria}}h</td>
             <td><i data-ng-show="isAdmin || (escrita && unidadeId === alocacao.instituicao.id)" id="btn-remover-alocacao" class="material-icons modal-trigger delete-icon tooltipped" data-position="left" data-delay="50" data-tooltip="Remover Alocação" data-ng-click="excluirAlocacao(alocacao)">delete</i></td>
         </tr>

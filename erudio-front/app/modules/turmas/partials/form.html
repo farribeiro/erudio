@@ -112,6 +112,12 @@
                             <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
                         </div>
                     </div>
+                    <div class="row" data-ng-show="disciplinas.length">
+                        <div class="col s12">
+                            <div class="subtitulo-typo">Disciplinas Ofertadas:</div>
+                            <div class="chip d{{ disciplina.id }}" id="{{ disciplina.id }}" style="cursor: pointer;" data-ng-repeat="disciplina in disciplinas" data-ng-click="situacaoDisciplina(disciplina)">{{ disciplina.nomeExibicao }}</div>
+                        </div>
+                    </div>
                     <div data-ng-show="escrita" class="row end-card">
                         <div class="col s12 right-align">
                             <a data-ng-click="finalizar()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>

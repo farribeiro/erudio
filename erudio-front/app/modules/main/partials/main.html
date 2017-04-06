@@ -44,16 +44,24 @@
                         </p>
                     </div>
                 </div>
-                <div data-ng-if="vinculos.length" style="background: #fafafa; padding: 1rem; margin-top: -1rem;" class="z-depth-1">
+                <div data-ng-if="unidades.length" style="background: #fafafa; padding: 1rem; margin-top: -1rem;" class="z-depth-1">
                     <div class="row">
-                        <!-- Selecionar Vínculo -->
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">account_balance</i>
+                            <select class="ng-valid initialized" id="unidade" data-ng-change="selecionaUnidade()" data-ng-model="unidade.id" required>
+                                <option disabled selected></option>
+                                <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                            </select>
+                            <label for="unidade">Unidade de Ensino*</label>
+                        </div>
+                        <!-- Selecionar Vínculo
                         <div class="input-field col s12 m12" data-ng-class="{'l4': vinculo.cargo.professor, 'l6': !vinculo.cargo.professor}">
-                            <select id="vinculos" class="select-busca" data-ng-model="vinculo.id" data-ng-change="carregarVinculo(vinculo.id);buscarAlocacoes(vinculo.id)">                            
+                            <select id="vinculosz" class="select-busca" data-ng-model="vinculo.id" data-ng-change="carregarVinculo(vinculo.id);buscarAlocacoes(vinculo.id)">                            
                                 <option disabled selected></option>
                                 <option value="{{vinculo.id}}" data-ng-repeat="vinculo in vinculos" data-ng-selected="verificaSelectVinculo(vinculo.id)">{{ vinculo.codigo }} - {{ vinculo.cargo.nome | uppercase }} - {{ vinculo.cargaHoraria }}hrs</option>
                             </select>
                             <label for="vinculos" class="ajuste-select-top-label">Seu vínculo:</label>
-                        </div>
+                        </div> -->
                         <!-- Selecionar Alocação -->
                         <div class="input-field col s12 m12" data-ng-class="{'l4': vinculo.cargo.professor, 'l6': !vinculo.cargo.professor}">
                             <select id="alocacoes" class="select-busca" data-ng-model="alocacao.id" data-ng-disabled="!alocacoes.length" data-ng-change="carregarAlocacao(alocacao.id)">                            

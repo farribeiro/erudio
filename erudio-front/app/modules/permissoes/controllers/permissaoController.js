@@ -45,13 +45,13 @@
         $scope.senha = ''; // VARIAVEL DO FORM DE SENHA.
         $scope.repeteSenha = ''; // VARIÁVEL QUE SERVE PARA VALIDAR A NOVA SENHA.
         $scope.usuario = { nomeExibicao:null, username:null, password:null }; // ESTRUTURA DE USUARIO
-        $scope.atribuicao = { usuario:{id:null}, tipoAcesso:null, idEntidade:null, permissao:{id:null}, ativo: true, dataExclusao: null }; // ESTRUTURA DE ATRIBUIÇÃO
+        $scope.atribuicao = { usuario:{id:null}, tipoAcesso:null, permissao:{id:null}, ativo: true, dataExclusao: null, instituicao: {id:null} }; // ESTRUTURA DE ATRIBUIÇÃO
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; }; // CONTROLE DA BARRA DE PROGRESSO
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; }; // CONTROLE DA BARRA DE PROGRESSO
         $scope.mostraLoader = function (cortina) { $scope.loader = true; if (cortina) { $scope.cortina = true; } }; // CONTROLE DO PROGRESSO CIRCULAR
         $scope.fechaLoader = function () { $scope.loader = false; $scope.cortina = false; }; // CONTROLE DO PROGRESSO CIRCULAR
         $scope.reiniciar = function (){ $scope.usuario = { nomeExibicao:null, username:null, password:null }; }; // REINICIANDO ESTRUTURA DE USUARIO
-        $scope.reiniciarAtribuicao = function (){ $scope.atribuicao = { usuario:{id:null}, tipoAcesso:null, idEntidade:null, permissao:{id:null}, ativo: true, dataExclusao: null }; }; // REINICIANDO ESTRUTURA DE ATRIBUIÇÃO
+        $scope.reiniciarAtribuicao = function (){ $scope.atribuicao = { usuario:{id:null}, tipoAcesso:null, permissao:{id:null}, ativo: true, dataExclusao: null, instituicao: {id:null} }; }; // REINICIANDO ESTRUTURA DE ATRIBUIÇÃO
         $scope.showError = false; // VARIAVEL QUE MOSTRA A MENSAGEM DE BUSCA SEM RESULTADO
         $scope.roles = []; // ARRAY DE PERMISSOES
         $scope.entidades = []; // ARRAY DE ESCOLAS
@@ -104,7 +104,7 @@
         };
 
         $scope.verificaPermissaoPrevia = function () {
-            var promise = Servidor.buscar('atribuicoes-removidas',{ usuario: $scope.atribuicao.usuario.id, permissao:$scope.atribuicao.permissao.id, entidade: $scope.atribuicao.idEntidade, tipoAcesso: $scope.atribuicao.tipoAcesso });
+            var promise = Servidor.buscar('atribuicoes-removidas',{ usuario: $scope.atribuicao.usuario.id, permissao:$scope.atribuicao.permissao.id, entidade: $scope.atribuicao.instituicao, tipoAcesso: $scope.atribuicao.tipoAcesso });
             promise.then(function (response) {
                 if (response.data.length > 0) {
                     var result = response.data[0]; result.ativo = true;
@@ -134,7 +134,7 @@
             $('#remove_all').prop('checked', false);
             $scope.mostraLoader(true);
             if ($scope.especifico) {
-                if ($scope.atribuicao.tipoAcesso && $scope.atribuicao.idEntidade && $scope.atribuicao.permissao.id) {
+                if ($scope.atribuicao.tipoAcesso && $scope.atribuicao.instituicao && $scope.atribuicao.permissao.id) {
                     $scope.verificaPermissaoPrevia();
                 } else {
                     $scope.fechaLoader();
@@ -155,7 +155,7 @@
             switch (item) {
                 case 'usuario': $scope.atribuicao.usuario.id = value; break;
                 case 'acesso': $scope.atribuicao.tipoAcesso = value; break;
-                case 'entidade': $scope.atribuicao.idEntidade = value; break;
+                case 'entidade': $scope.atribuicao.instituicao = value; break;
                 case 'permissao': $scope.atribuicao.permissao.id = value; break;
                 case 'reset': $scope.reiniciarAtribuicao(); break;
                 default: return $scope.atribuicao;
@@ -168,7 +168,7 @@
 
         /* SALVAR GRUPO DE PERMISSOES */
         $scope.salvarPermissoes = function () {
-            if ($scope.verificarPermissao()) { var entidade = $scope.atribuicao.idEntidade; $scope.reativarRoles($scope.permissao,entidade); } else { $scope.reativarRoles($scope.permissao,null); }
+            if ($scope.verificarPermissao()) { var entidade = $scope.atribuicao.instituicao; $scope.reativarRoles($scope.permissao,entidade); } else { $scope.reativarRoles($scope.permissao,null); }
         };
 
         /* PEGA LISTA DE PERMISSOES DO GRUPO DE PERMISSAO */
@@ -223,8 +223,8 @@
                                 promise.then(function (response) { $scope.carregar(response.data, false, false, false); $scope.fechaLoader(); });
                             },500);
                         } else {
-                            var atribuicao = { usuario:{id:null}, tipoAcesso:null, idEntidade:null, grupo:{id:null}, ativo: true, dataExclusao: null };
-                            atribuicao.usuario.id = usuario; atribuicao.idEntidade = $scope.entidade; atribuicao.grupo.id = $scope.permissao;
+                            var atribuicao = { usuario:{id:null}, tipoAcesso:null, grupo:{id:null}, ativo: true, dataExclusao: null, instituicao: {id:null} };
+                            atribuicao.usuario.id = usuario; atribuicao.grupo.id = $scope.permissao; atribuicao.instituicao.id = $scope.atribuicao.instituicao.id;
                             var result = Servidor.finalizar(atribuicao,'atribuicoes','Permissão');
                             result.then(function() {
                                 $('#tipoAcesso').material_select(); $scope.nomeUnidade = '';
@@ -264,7 +264,7 @@
             } else {
                 var result = $scope.verificarPermissao();
                 if (result) {
-                    if ($scope.permissao !== null || $scope.atribuicao.idEntidade !== null) { return true; } else { return false; }
+                    if ($scope.permissao !== null || $scope.atribuicao.instituicao !== null) { return true; } else { return false; }
                 } else {
                     if ($scope.permissao !== null) { return true; } else { return false; }
                 }
@@ -282,13 +282,19 @@
             var instituicoes = [];
             var unidades = [];
             var promise = Servidor.buscar('instituicoes',{});
-            promise.then(function (response) { instituicoes = response.data; });
-            var promise = Servidor.buscar('unidades-ensino',{});
-            promise.then(function (response) { unidades = response.data; });
-            $timeout(function(){
-                for (var i=0; i<instituicoes.length; i++) { instituicoes[i].instituicaoPai = true; $scope.entidades.push(instituicoes[i]); }
-                for (var i=0; i<unidades.length; i++) { $scope.entidades.push(unidades[i]); }
-            }, 800);
+            promise.then(function (response) { 
+                instituicoes = response.data;
+                for (var i=0; i<instituicoes.length; i++) { 
+                    instituicoes[i].instituicaoPai = true; $scope.entidades.push(instituicoes[i]);
+                    if (i === instituicoes.length-1) {
+                        var promise = Servidor.buscar('unidades-ensino',{});
+                        promise.then(function (response) { 
+                            unidades = response.data;
+                            for (var i=0; i<unidades.length; i++) { $scope.entidades.push(unidades[i]); }
+                        });
+                    }
+                }
+            });
         };
 
         /*CARREGAR TIPO DE ROLE*/
@@ -302,15 +308,15 @@
             $timeout(function(){
                 unidade.then(function(response){
                     var result = response.data;
-                    $scope.usuario.rolesAtribuidas[id].idEntidade = result.nomeCompleto;
+                    $scope.usuario.rolesAtribuidas[id].instituicao = result.nomeCompleto;
                 },function (error){
                     var instituicao = Servidor.buscarUm('instituicoes',entidadeId);
                     $timeout(function(){
                         instituicao.then(function(response2){
                             var resultado = response2.data;
-                            $scope.usuario.rolesAtribuidas[id].idEntidade = resultado.nome;
+                            $scope.usuario.rolesAtribuidas[id].instituicao = resultado.nome;
                         }, function (err){
-                            $scope.usuario.rolesAtribuidas[id].idEntidade = 'Entidade não encontrada.';
+                            $scope.usuario.rolesAtribuidas[id].instituicao = 'Entidade não encontrada.';
                         });
                     }, 200);
                 });
@@ -328,7 +334,7 @@
                 $scope.buscarEntidades();
                 $scope.buscarRoles();
                 $timeout(function(){
-                    //for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].idEntidade, i); }
+                    //for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].instituicao, i); }
                     if (!nova) { $('.opcoesUsuario' + usuario.id).hide(); }
                     if ($scope.editandoMobile) { $(".usuario-banner, .busca").hide(); }
                     $scope.fechaLoader();
@@ -414,7 +420,7 @@
         });
 
         $scope.selecionarUnidade = function(unidade) {
-            $scope.atribuicao.idEntidade = unidade.id;
+            $scope.atribuicao.instituicao.id = unidade.id;
             $scope.nomeUnidade = unidade.nomeCompleto;
         };
 

@@ -34,9 +34,9 @@
         //CARREGA TELA ATUAL
         $scope.tela = ErudioConfig.getTemplateForm('turmas');
         //ATRIBUTOS
-        $scope.progresso = false; $scope.cortina = false; $scope.unidades = []; $scope.cursos = []; $scope.etapas = [];
-        $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}}; $scope.nomeUnidadeForm = null; $scope.acao = 'Adicionar';
-        $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {id: null}, 'limiteAlunos': null, 'turno': {id: null}, 'etapa': {id: null}, 'unidadeEnsino': {id: null}, 'quadroHorario': {id: null} };
+        $scope.progresso = false; $scope.cortina = false; $scope.unidades = []; $scope.cursos = []; $scope.etapas = []; $scope.disciplinas = []; $scope.disciplina = {id:null}; $scope.disciplinasSalvas = [];
+        $scope.disciplinasOfertadas = []; $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}}; $scope.nomeUnidadeForm = null; $scope.acao = 'Adicionar'; $scope.recemRemovidas = []; $scope.recemAdicionadas = [];
+        $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {id: null}, 'limiteAlunos': null, 'turno': {id: null}, 'etapa': {id: null}, 'unidadeEnsino': {id: null}, 'quadroHorario': {id: null}, 'disciplinas': [] };
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
@@ -51,6 +51,72 @@
         $scope.prepararVoltar = function (objeto) { if (objeto.nome && !objeto.id) { $('#modal-certeza').modal('open'); } else { window.location = $scope.config.dominio+'/#/turmas'; } };
         //MOSTRA LABELS MENU FAB
         $scope.mostrarLabels = function () { $('.toolchip').fadeToggle(250); };
+        //MOSTRA DISCIPLINAS OFERTADAS
+        $scope.$watch("turma.etapa.id", function(query){ $scope.buscaDisciplinaOfertada(); });
+        
+        //BUSCA DISCIPLINA OFERTADA
+        $scope.buscaDisciplinaOfertada = function () {
+            var promise = Servidor.buscarUm('etapas',$scope.turma.etapa.id);
+            promise.then(function(response){
+                if (response.data.integral) {
+                    if ($routeParams.id !== 'novo') {
+                        var promiseDisciplinas = Servidor.buscar('disciplinas',{etapa: $scope.turma.etapa.id});
+                        promiseDisciplinas.then(function(response){
+                            $scope.disciplinas = response.data;
+                            var promiseDisciplinasOfertada = Servidor.buscar('disciplinas-ofertadas',{turma: $scope.turma.id});
+                            promiseDisciplinasOfertada.then(function(response){
+                                $scope.disciplinasOfertadas = response.data;
+                                $timeout(function(){ for (var i=0; i<$scope.disciplinasOfertadas.length; i++) { $('.d'+$scope.disciplinasOfertadas[i].disciplina.id).addClass('light-blue accent-2'); } },500);
+                            });
+                        });
+                        $timeout(function(){$('.chip').click(function(){ $scope.situacaoDisciplinaEdit($(this).attr('id')); });},500);
+                    } else {
+                        var promiseDisciplinas = Servidor.buscar('disciplinas',{etapa: $scope.turma.etapa.id});
+                        promiseDisciplinas.then(function(response){ $scope.disciplinas = response.data; });
+                    }
+                    
+                }
+            });
+        };
+        
+        //SELECIONA DISCIPLINA OFERTADA
+        $scope.situacaoDisciplina = function (disciplina) {
+            if ($routeParams.id === 'novo') {
+                if ($scope.disciplinasOfertadas.length === 0) {
+                    $('.d'+disciplina.id).addClass('light-blue accent-2'); $scope.disciplinasOfertadas.push(disciplina.id);
+                } else {
+                    var i = $scope.disciplinasOfertadas.indexOf(disciplina.id);
+                    if (i >= 0) { $('.d'+disciplina.id).removeClass('light-blue accent-2'); $scope.disciplinasOfertadas.splice(i,1);
+                    } else { $('.d'+disciplina.id).addClass('light-blue accent-2'); $scope.disciplinasOfertadas.push(disciplina.id); }
+                }
+            }
+        };
+        
+        //SELECIONA DISCIPLINA OFERTADA
+        $scope.situacaoDisciplinaEdit = function (id) {
+            id = parseInt(id);
+            if ($scope.disciplinasOfertadas.length === 0) {
+                $('.d'+id).addClass('light-blue accent-2'); $scope.disciplinasOfertadas.push(id);
+            } else {
+                $timeout(function(){
+                    var indexes = [];
+                    for (var i=0; i<$scope.disciplinasOfertadas.length; i++) { indexes.push($scope.disciplinasOfertadas[i].disciplina.id); }
+                    $timeout(function(){
+                        var ind = indexes.indexOf(id);
+                        if (ind >= 0) {
+                            $scope.mostraProgresso();
+                            var removePromise = Servidor.buscarUm('disciplinas-ofertadas',$scope.disciplinasOfertadas[ind].id);
+                            removePromise.then(function(response){ $('.d'+id).removeClass('light-blue accent-2'); Servidor.remover(response.data,'Disciplina'); $scope.fechaProgresso(); });
+                            $timeout(function(){ $scope.buscaDisciplinaOfertada(); },500);
+                        } else {
+                            $('.d'+id).addClass('light-blue accent-2');
+                            var promise = Servidor.finalizar({disciplina: {id:id}, turma: {id:$scope.turma.id}},'disciplinas-ofertadas','Disciplina');
+                            promise.then(function(response){ $scope.buscaDisciplinaOfertada(); });
+                        }
+                    },500);
+                },500);
+            }
+        };
         
         //CARREGA SELECT CURSOS
         $scope.buscarCursos = function (todos) {
@@ -139,7 +205,7 @@
         $scope.selecionaUnidade = function(unidade) {
             if (unidade.tipo === undefined) { unidade.tipo = {sigla:''}; }
             $scope.nomeUnidadeForm = unidade.tipo.sigla + ' ' + unidade.nome; $scope.unidade = unidade;
-            $("#unidadeTurmaAutoCompleteForm").val(unidade.tipo.sigla + ' ' + unidade.nome);
+            $("#unidadeTurmaAutoCompleteForm").val(unidade.tipo.sigla + ' ' + unidade.nome); $('#dropUnidadesTurmaForm').hide();
             $scope.turma.unidadeEnsino.id = unidade.id; $timeout(function(){ Servidor.verificaLabels(); $scope.buscarCursos(); },100);
         };
         
@@ -178,15 +244,25 @@
         $scope.finalizar = function () {
             $scope.mostraProgresso();
             if ($scope.validar('validate-turma')) {
-                var promise = Servidor.buscar('disciplinas', {etapa: $scope.turma.etapa.id});
+                if ($scope.disciplinasOfertadas.length > 0) {
+                    for (var i=0; i<$scope.disciplinasOfertadas.length; i++) {
+                        var ofertada = angular.copy($scope.disciplina); ofertada.id = $scope.disciplinasOfertadas[i];
+                        if (i === $scope.disciplinasOfertadas.length-1) {
+                            if ($routeParams.id === 'novo') { $scope.disciplinasOfertadas[i] = {disciplina: ofertada}; $scope.turma.disciplinas = $scope.disciplinasOfertadas; }
+                            var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
+                            promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); window.location = ErudioConfig.dominio + "/#/turmas/"+$scope.turma.id; });
+                        }
+                    }
+                } else { Servidor.customToast("A etapa desta turma não possui disciplinas."); $scope.fechaProgresso(); }
+                
+                /*var promise = Servidor.buscar('disciplinas', {etapa: $scope.turma.etapa.id});
                 promise.then(function(response) {
                     if(response.data.length) {
                         $scope.turma.unidadeEnsino = {id: $scope.turma.unidadeEnsino.id}; $scope.turma.calendario = {id: $scope.turma.calendario.id};
                         $scope.turma.etapa = {id: $scope.turma.etapa.id}; $scope.turma.turno = {id: $scope.turma.turno.id};
-                        var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
-                        promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); window.location = ErudioConfig.dominio + "/#/turmas/"+$scope.turma.id; });
+                        
                     } else { Servidor.customToast("A etapa desta turma não possui disciplinas."); $scope.fechaProgresso(); }
-                });
+                });*/
             }
         };
 
@@ -225,6 +301,6 @@
             }, 1000);
         };
         
-        $scope.inicializar(); $scope.carregarTurma($routeParams.id); 
+        $scope.inicializar(); $scope.carregarTurma($routeParams.id);
     }]);
 })();

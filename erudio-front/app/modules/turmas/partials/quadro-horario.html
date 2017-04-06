@@ -27,10 +27,16 @@
 <div class="cortina-disciplinas"></div>
 <a data-ng-show="selecionados" data-ng-click="preparaSwap()" class="btn-floating btn-large waves-effect waves-light rosa btn-add"><i class="material-icons">compare_arrows</i></a>
 
+<div class="row">
+    <div class="col s12">
+        <div class="titulo-typo" style="color: #000;">Turma {{ turma.nomeCompleto }}</div>
+    </div>
+</div>
+
 <div class="row form-geral">
     <div class="col s12 mobile-full" style="padding: 0rem">
         <div class="row form-box show-form card-panel" style="margin-top: 0;">
-            <div class="col s3 m3 l3 absolute card-panel disciplinas-list" style="background: #dff6f9; border-right: 1px solid #eee; right: 0px; margin: 0; border-radius: 0; display: none; width: 300px; opacity: 1; z-index: 501;">
+            <div class="col s3 m3 l3 absolute card-panel disciplinas-list" style="background: #dff6f9 !important; border-right: 1px solid #eee; right: 0px; margin: 0; border-radius: 0; display: none; width: 300px; opacity: 1; z-index: 501;">
                 <div class="row disciplina-wrapper">
                     <div class="col s12 m12 l12" style="padding: 0px;">
                         <small style="font-size: 0.9rem; padding-left: 1rem; display:block; margin-top: 0.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Arraste a disciplina para o dia desejado para montar o quadro de horários.</small>
@@ -89,12 +95,12 @@
                                 </div>
                                 <div class="horarios" id="{{buscaHelperId($index,horarioDisc)}}" data-ng-repeat="horarioDisc in semana track by $index">
                                     <div data-ng-show="aulaGerada" data-drag-helper="{{horarioDisc.id}}" data-ng-class="($index != 0)?'horario hoverable h'+horarioDisc.id:'semBorda'" style="font-size: 12px; cursor: pointer; z-index: 30 !important; background: #fff;" class="col s2 m2 l2 valign-wrapper table-label aula-trigger d{{ horarioDisc.horario.disciplina.id }}" id="{{horarioDisc.id}}" data-ng-click="abreDisciplinas(horarioDisc)" data-ng-if="horarioDisc.disciplina">
-                                        <div class="valign" style="width: 100%; z-index: 5 !important;" data-ng-if="$index === 0">{{horarioDisc.horario.inicio |date:HH:mm}} - {{horarioDisc.horario.termino}}</div>
-                                        <div class="valign" style="width: 100%; z-index: 5 !important;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
+                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index === 0">{{horarioDisc.horario.inicio |date:HH:mm}} - {{horarioDisc.horario.termino}}</div>
+                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
                                     </div>
                                     <div data-ng-if="!aulaGerada" data-ng-class="($index != 0)?'horario validate-aulas hoverable h'+horarioDisc.id:'semBorda'" style="font-size: 12px; cursor: pointer; background: #fff;" class="col s2 m2 l2 relative valign-wrapper table-label aula-trigger d{{ horarioDisc.horario.disciplina.id }}" id="{{idHorario($index,horarioDisc)}}" data-ng-click="abreDisciplinas(horarioDisc)">
-                                        <div class="valign" style="width: 100%; z-index: 5 !important;" data-ng-if="$index === 0">{{horarioDisc.inicio}} - {{horarioDisc.termino}}</div>
-                                        <div class="valign hd{{ horarioDisc.id }}" style="width: 100%; z-index: 5 !important;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
+                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index === 0">{{horarioDisc.inicio}} - {{horarioDisc.termino}}</div>
+                                        <div class="valign hd{{ horarioDisc.id }}" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
                                         <i style="right: 3px; top: 3px;" data-ng-if="$index !== 0" data-ng-show="horarioDisc.disciplina.disciplina.id" data-ng-click='removerDisciplina(horarioDisc)' class='material-icons absolute tiny disabled remove-disc remove-grid-disciplina{{ horarioDisc.id }}'>clear</i>
                                     </div>
                                 </div>

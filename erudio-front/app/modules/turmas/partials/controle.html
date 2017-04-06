@@ -63,7 +63,7 @@
 
 <ul id='dropUnidadesTurmaBusca' class='dropdown-content'>
     <li class="divider"></li>
-    <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+    <li data-ng-repeat="unidade in unidades"><a class="drop-item-busca" data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
 </ul>
 
 <ul id='dropUnidadesTurmaForm' class='dropdown-content'>
