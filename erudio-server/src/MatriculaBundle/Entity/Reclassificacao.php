@@ -52,6 +52,7 @@ class Reclassificacao extends Movimentacao {
     private $enturmacaoDestino;
     
     /**
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\OneToMany(targetEntity = "NotaReclassificacao", mappedBy = "reclassificacao", fetch="EXTRA_LAZY", cascade = {"persist"}) 
     */
     private $notas;

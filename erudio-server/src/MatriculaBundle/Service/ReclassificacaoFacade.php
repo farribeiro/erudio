@@ -22,7 +22,7 @@
  *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
  *    junto  com  este  programa. Se não, escreva para a Free Software     *
  *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
- *    02111-1307, USA.                                                     *
+ *    02111-1307, USA.                                               *
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -30,6 +30,8 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use MatriculaBundle\Entity\Reclassificacao;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class ReclassificacaoFacade extends AbstractFacade {
     
@@ -56,15 +58,36 @@ class ReclassificacaoFacade extends AbstractFacade {
         ];
     }
     
-    protected function beforeCreate($movimentacao) {
-        $enturmacaoDestino = $this->enturmacaoFacade->create(
-            new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
-        );
-        $movimentacao->aplicar($enturmacaoDestino);
+    protected function beforeCreate($reclassificacao) {
+        $this->validarReclassificacao($reclassificacao);
+        $this->gerarEnturmacaoDestino($reclassificacao);
     }
     
-    protected function afterCreate($movimentacao) {
-        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
+    protected function afterCreate($reclassificacao) {
+        $this->encerrarEnturmacaoOrigem($reclassificacao);
+    }
+    
+    private function validarReclassificacao(Reclassificacao $reclassificacao) {
+        $etapaOrigem = $reclassificacao->getEnturmacaoOrigem()->getTurma()->getEtapa();
+        $etapaDestino = $reclassificacao->getTurmaDestino()->getEtapa();
+        if ($etapaOrigem->getOrdem() >= $etapaDestino->getOrdem()) {
+            throw new IllegalOperationException('A etapa de destino de uma reclassificação deve ser superior à de origem.');
+        }
+        if ($etapaOrigem->getOrdem() + 2 < $etapaDestino->getOrdem()) {
+            throw new IllegalOperationException('A etapa de destino de uma reclassificação não pode ser mais de dois níveis acima da origem');
+        }
+        return true;
+    }
+    
+    private function encerrarEnturmacaoOrigem(Reclassificacao $reclassificacao) {
+        $this->enturmacaoFacade->encerrarPorMovimentacao($reclassificacao->getEnturmacaoOrigem());
+    }
+    
+    private function gerarEnturmacaoDestino(Reclassificacao $reclassificacao) {
+        $enturmacaoDestino = $this->enturmacaoFacade->create(
+            new Enturmacao($reclassificacao->getMatricula(), $reclassificacao->getTurmaDestino())
+        );
+        $reclassificacao->aplicar($enturmacaoDestino);
     }
     
 }

@@ -151,7 +151,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     function encerrar($status) {
-        if ($status != self::STATUS_CURSANDO) {
+        if ($this->status == self::STATUS_CURSANDO && $status != self::STATUS_CURSANDO) {
             $this->status = $status;
             $this->dataEncerramento = new \DateTime();
         }

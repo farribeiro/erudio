@@ -103,10 +103,31 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($disciplinaCursada) {
+        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_CURSANDO) {
+            $this->gerarMedias($disciplinaCursada);
+        }
+    }
+    
+    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
         $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
         for($i = 1; $i <= $numeroMedias; $i++) {
             $media = new Media($disciplinaCursada, $i);
             $this->mediaFacade->create($media);
+        }
+    }
+    
+    private function encerrar(DisciplinaCursada $disciplinaCursada, $status) {
+        $disciplinaCursada->encerrar($status);
+        $this->orm->flush();
+        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_APROVADO 
+            || $disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_REPROVADO) {
+            $this->fecharMedias($disciplinaCursada);
+        }
+    }
+    
+    private function fecharMedias(DisciplinaCursada $disciplinaCursada) {
+        foreach ($disciplinaCursada->getMedias() as $media) {
+            //...
         }
     }
     

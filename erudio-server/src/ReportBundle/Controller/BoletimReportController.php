@@ -46,6 +46,10 @@ class BoletimReportController extends Controller {
         return $this->get('facade.curso.turmas');
     }
     
+    function getConceitoFacade() {
+        return $this->get('facade.avaliacao.conceitos');
+    }
+    
     /**
     * @ApiDoc(
     *   resource = true,
@@ -69,6 +73,8 @@ class BoletimReportController extends Controller {
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
+                'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
+                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'boletins' => $this->gerarBoletim($enturmacao),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],
@@ -106,6 +112,8 @@ class BoletimReportController extends Controller {
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
+                'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
+                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'boletins' => $boletins,
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],

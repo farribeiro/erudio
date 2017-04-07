@@ -112,6 +112,7 @@ class TurmaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($turma) {
+        $this->criarDisciplinas($turma);
         $this->gerarVagas($turma);
     }
     
@@ -122,6 +123,15 @@ class TurmaFacade extends AbstractFacade {
     protected function afterRemove($turma) {
         $this->encerrarDisciplinas($turma);
         $this->encerrarVagas($turma);
+    }
+    
+    private function criarDisciplinas(Turma $turma) {
+         if($turma->getEtapa()->getIntegral()) {
+            foreach ($turma->getEtapa()->getDisciplinas() as $disciplina) {
+                $disciplinaOfertada = new DisciplinaOfertada($turma, $disciplina);
+                $this->disciplinaOfertadaFacade->create($disciplinaOfertada);
+            }
+        }
     }
     
     private function gerarVagas(Turma $turma) {
