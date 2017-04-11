@@ -22,6 +22,8 @@ services:
     facade.curso.disciplinas_ofertadas:
       class: CursoBundle\Service\DisciplinaOfertadaFacade
       arguments: ["@doctrine"]
+      calls:
+          - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
     
     facade.curso.turmas:
       class: CursoBundle\Service\TurmaFacade
