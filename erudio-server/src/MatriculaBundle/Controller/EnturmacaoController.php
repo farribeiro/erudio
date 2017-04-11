@@ -60,7 +60,7 @@ class EnturmacaoController extends AbstractEntityController {
     *   @FOS\Get("enturmacoes")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
-    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     *   @FOS\QueryParam(name = "encerrado", nullable = false) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
@@ -94,16 +94,5 @@ class EnturmacaoController extends AbstractEntityController {
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
     }
-    
-    /**
-    * @ApiDoc()
-    * @FOS\Get("enturmacoes-duplicadas")
-    */
-    /*function removerEnturmacoesDuplicadasAction(Request $request) {
-        $matriculas = $this->getDoctrine()->getRepository('MatriculaBundle:Matricula')->findAll();
-        foreach ($matriculas as $matricula) {
-            
-        }
-    }*/
 
 }
