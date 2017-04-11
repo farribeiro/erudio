@@ -1,52 +1,70 @@
 <pdf>
     {% for b in boletins %}
-        {% embed 'reports/templates/page.twig' %}
-            {% block pageType %}A4{% endblock %}
+        {% for i in 0..quantidadeMedias-1 %}
+            {% embed 'reports/templates/page.twig' %}
+                {% block pageType %}A4{% endblock %}
 
-            {% block title %}
-                <h1>Boletim Escolar - {{"now"|date('Y')}}</h1>
-            {% endblock %}
-            
-            {% block headerHeight %}100px{% endblock %}
-            
-            {% block info %}
-                <p>Aluno: {{b.matricula.aluno.nome}}</p>
-                <p>Matrícula: {{b.matricula.codigo}}</p>
-                <p>Turma: {{turma.nomeExibicao}}</p>
-                <p>Curso: {{turma.etapa.curso.nome}}</p>
-                <p>Etapa: {{turma.etapa.nomeExibicao}}</p>
-            {% endblock %}
+                {% block title %}
+                    <h1>Boletim Escolar - {{"now"|date('Y')}}</h1>
+                    <h3> {{i+1}}º {{unidadeRegime}}</h3>
+                {% endblock %}
 
-            {% block content %}
-                <div margin="0" padding="0" font-size="8px">
-                    <table>
-                        <tr>
-                          <td width="120px">
-                            <strong>Disciplina</strong>
-                          </td>
-                          <td>
-                            <strong>Habilidade</strong>
-                          </td>
-                          <td width="60px">
-                            <strong>Resultado Final</strong>
-                          </td>
-                        </tr>
-                        {% for disciplina in b.disciplinas %}
-                            <tr line-height="15px">
-                                <td text-align="left">
-                                    {{disciplina.nomeExibicao}}
-                                </td>
-                                <td>
-                                    {{disciplina.habilidade.nome}}
-                                </td>
-                                <td>
-                                    {{disciplina.}}
-                        {% endfor %}
-                    </table>    
-                    
-                </div>
-            {% endblock %}
-        {% endembed %}
+                {% block headerHeight %}90px{% endblock %}
+
+                {% block info %}
+                    <p><strong>Aluno: {{b.matricula.aluno.nome}}</strong></p>
+                    <p>Matrícula: {{b.matricula.codigo}}</p>
+                    <p>Turma: {{turma.nomeExibicao}}</p>
+                    <p>Curso: {{turma.etapa.curso.nome}}</p>
+                {% endblock %}
+
+                {% block content %}
+                    <div margin="0" padding="0" font-size="10px">
+                        <table>
+                            {% for disciplina in b.disciplinas %}
+                                <tr>
+                                    <td colspan="2" text-align="left" border.type="none">
+                                        <strong>DISCIPLINA: {{disciplina.nomeExibicao|upper}} </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Habilidade</strong>
+                                    </td>
+                                    <td width="100px">
+                                        <strong>Resultado Final</strong>
+                                    </td>
+                                </tr>
+
+                                {% for habilidade in disciplina.medias[i].habilidadesAvaliadas %}
+                                    <tr>
+                                        <td>
+                                            {{habilidade.habilidade.nome}}
+                                        </td>
+                                        <td>
+                                            {{habilidade.conceito.sigla}}
+                                        </td>
+                                    </tr>
+                                    <tr margin-bottom="10px">
+                                        <td text-align="right" border.type="none">
+                                            <strong>Aproveitamento:</strong>
+                                        </td>
+                                        <td border.type="none">
+                                            <strong>{{disciplina.medias[i].valor * 10}}%</strong>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+
+                        </table>    
+                        <div>
+                            <strong>Total de Faltas: {{b.disciplinas[3].medias[i].faltas}}</strong>
+                        </div>
+                    </div>
+
+                {% endblock %}
+            {% endembed %}
+        {% endfor %} 
     {% endfor %}
 </pdf>
 
