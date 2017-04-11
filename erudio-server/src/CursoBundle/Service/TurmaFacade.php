@@ -82,6 +82,9 @@ class TurmaFacade extends AbstractFacade {
             'etapa' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
             },
+            'etapa_ordem' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
+            },
             'quadroHorario' => function(QueryBuilder $qb, $value) {
                 $qb->join('t.quadroHorario', 'quadroHorario')
                     ->andWhere('quadroHorario.id = :quadroHorario')->setParameter('quadroHorario', $value);

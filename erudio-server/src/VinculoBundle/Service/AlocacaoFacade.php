@@ -122,8 +122,10 @@ class AlocacaoFacade extends AbstractFacade {
                     $alocacao->getInstituicao()
                 );
                 $this->atribuicaoFacade->create($atribuicao, false);
-            } catch (UniqueViolationException $ex) {
-                //ignorar se já existe
+            } catch (\Exception $ex) {
+                if ($ex instanceof UniqueViolationException == false) {
+                    throw $ex;
+                }
             }
         }
     }

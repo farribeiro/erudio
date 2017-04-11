@@ -103,19 +103,19 @@ abstract class AbstractFacade {
         return $this->buildReverseQuery($params)->getQuery()->getResult();
     }
 
-    function create($entidade, $rollbackOnFailure = true) {
+    function create($entidade, $isTransaction = true) {
         try {
-            $this->orm->getManager()->beginTransaction();
+            if ($isTransaction) {$this->orm->getManager()->beginTransaction(); }
             $entidade->init();
             $this->beforeCreate($entidade);
             $this->checkUniqueness($entidade);
             $this->orm->getManager()->persist($entidade);
             $this->orm->getManager()->flush();
             $this->afterCreate($entidade);
-            $this->orm->getManager()->commit();
+            if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
         } catch(\Exception $ex) {
-            if ($rollbackOnFailure) { $this->orm->getManager()->rollback(); }
+            if ($isTransaction) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
     }
