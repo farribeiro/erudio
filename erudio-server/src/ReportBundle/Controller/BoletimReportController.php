@@ -108,7 +108,7 @@ class BoletimReportController extends Controller {
             }
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
                 ? 'reports/boletim/qualitativo.pdf.twig' 
-                : 'reports/boletim/quantitativo.pdf.twig';
+                : 'reports/boletim/quantitativo2porPagina.pdf.twig';
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,

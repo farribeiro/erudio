@@ -1,0 +1,96 @@
+<pdf>
+    {% for i, b in boletins %}
+        {%if i is divisible by(2) %}
+            <page encoding="UTF-8" >
+        {% endif %}
+        <!-- header -->
+        <table margin-bottom="10px">
+            <tr>
+            <td border.type="none">
+                <img width="65%" src="bundles/report/brasao.jpg" />
+            </td>
+            <td border.type="none" text-align="center">
+                <h1>Boletim Escolar - {{"now"|date('Y')}}</h1>
+                <h3>{{instituicao.nomeCompleto}}</h3>
+            </td>
+            <td border.type="none" font-size="9px" text-align="right">
+                <p><strong>Aluno: {{b.matricula.aluno.nome}}</strong></p>
+                <p>Matrícula: {{b.matricula.codigo}}</p>
+                <p>Turma: {{turma.nomeExibicao}}</p>
+                <p>Curso: {{turma.etapa.curso.nome}}</p>
+            </td>
+        </tr>
+        </table>
+        <!--endheader-->
+        <!-- content -->
+            <table font-size="10px" border-type="none">
+                <tr>
+                    <td>
+                        <strong>Disciplina</strong>
+                    </td>
+                    {% for i in 1..quantidadeMedias %}
+                        <td width="70px" colspan="2">
+                            <strong>{{i}}º {{unidadeRegime}}</strong>
+                        </td>
+                    {% endfor %}
+                    <td width="40px">
+                        <strong>Exame Final</strong>
+                    </td>
+                    <td width="70px" colspan="2">
+                        <strong>Resultado Final</strong>
+                    </td>
+                    <td width="90px">
+                        <strong>Situação</strong>
+                    </td>
+                </tr>
+                {% for disciplina in b.disciplinas %}
+                    <tr line-height="15px">
+                        <td text-align="left">
+                            {{disciplina.nomeExibicao}}
+                        </td>
+                        {% for media in disciplina.medias %}
+                            <td>{{media.valor}}</td>
+                            <td>{{media.faltas}}</td>
+                        {% endfor %}
+                        <td>-</td>
+                        <td>{{disciplina.mediaFinal}}</td>
+                        <td></td>
+                        <td>{{disciplina.status}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <p margin-top="17px" font-size="10px">
+                Estou ciente do aproveitamento de {{b.matricula.aluno.nome}}, matrícula nº: {{b.matricula.codigo}}.
+            </p>
+            <p text-align="center" margin-top="70px">
+                ____________________________________________
+            </p>
+            <p text-align="center" font-size="10px">
+                Assinatura do responsável
+            </p>
+            <div margin-top="25px" height="05px" width="100%" font-size="8px" breakable="false" position="relative">
+                <hr margin="0" padding="0" />
+                <div padding-top="3px" width="80%" left="50%" position="absolute" float="left" text-align="center" >
+                    <p padding="0">
+                        <strong>{{instituicao.nomeCompleto}}</strong>
+                    </p>
+                    <p padding="0">
+                        {{instituicao.endereco.enderecoCompleto}}
+                    </p>
+                    <p padding="0">
+                        E-mail: {{instituicao.email}}
+                    </p>
+                </div>
+                <div padding="0" font-size="8px" position="relative" float="right" width="20%">
+                    <p margin-top="17px" text-align="right">Impresso em: {{"now"|date("d/m/Y H:i")}}</p>
+                </div>
+            </div>
+        {%if i is not divisible by(2) %}
+            </page>
+        {% else %}
+            <hr background-color="white" border.color="grey" border.style="dotted" margin-top="40px" margin-bottom="54px"/>
+        {% endif %}
+    {% endfor %}
+</pdf>
+
+
