@@ -32,6 +32,7 @@ use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
+use CursoBundle\Entity\DisciplinaOfertada;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class TurmaFacade extends AbstractFacade {
