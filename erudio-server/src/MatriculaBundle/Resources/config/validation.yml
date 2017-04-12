@@ -21,4 +21,4 @@ MatriculaBundle\Entity\DisciplinaCursada:
 MatriculaBundle\Entity\Desligamento:
     properties:
         motivo:
-            - Choice: ["TRANSFERENCIA_EXTERNA", "ABANDONO", "FALECIMENTO"]
+            - Choice: ["TRANSFERENCIA_EXTERNA", "ABANDONO", "FALECIMENTO", "CANCELAMENTO"]

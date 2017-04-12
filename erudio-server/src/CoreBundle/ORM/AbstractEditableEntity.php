@@ -45,7 +45,7 @@ abstract class AbstractEditableEntity extends AbstractEntity {
     
     /**
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
-    * @ORM\Column(name="data_modificacao", type="datetime", nullable=false) 
+    * @ORM\Column(name="data_modificacao", type="datetime", nullable=true) 
     */
     protected $dataModificacao;
     

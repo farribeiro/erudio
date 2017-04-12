@@ -71,6 +71,9 @@ class DesligamentoFacade extends AbstractFacade {
                 break;
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
+                break;
+            case Desligamento::CANCELAMENTO:
+                $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
         $this->orm->getManager()->merge($matricula);
         $this->orm->getManager()->flush();

@@ -67,11 +67,13 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
         foreach ($enturmacoes as $enturmacao) {
             $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll([
                 'matricula' => $enturmacao->getMatricula()->getId(),
-                'disciplina' => $disciplinaOfertada->getDisciplina()->getId()
+                'disciplina' => $disciplinaOfertada->getDisciplina()->getId(),
+                'encerrado' => false
             ]);
             if (count($disciplinasCursadas) > 0) {
                 $disciplinaCursada = $disciplinasCursadas[0];
                 $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
+                $this->orm->getManager()->flush();
             } else {
                 $disciplinaCursada = new DisciplinaCursada($enturmacao->getMatricula(), $disciplinaOfertada->getDisciplina());
                 $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);

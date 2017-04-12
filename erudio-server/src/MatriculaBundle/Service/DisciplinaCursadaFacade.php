@@ -81,7 +81,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                 $qb->join('d.disciplinaOfertada', 'disciplinaOfertada')
                    ->andWhere('disciplinaOfertada.id = :disciplinaOfertada')
                    ->setParameter('disciplinaOfertada', $value);
-            },
+            }
         );
     }
     
@@ -110,7 +110,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     
     private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
         $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
-        for($i = 1; $i <= $numeroMedias; $i++) {
+        for ($i = 1; $i <= $numeroMedias; $i++) {
             $media = new Media($disciplinaCursada, $i);
             $this->mediaFacade->create($media);
         }

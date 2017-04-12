@@ -127,11 +127,15 @@ class EnturmacaoFacade extends AbstractFacade {
      * 
      * @param Enturmacao $enturmacao
      */
-    function encerrarPorMovimentacao(Enturmacao $enturmacao) {
+    function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
         $enturmacao->encerrar();
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
-        $this->desvincularDisciplinas($enturmacao);
+        if ($manterDisciplinas) {
+            $this->desvincularDisciplinas($enturmacao);
+        } else {
+            $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        }
         if ($enturmacao->getVaga()) {
            $this->liberarVaga($enturmacao);
 	}

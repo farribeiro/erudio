@@ -31,6 +31,7 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Reclassificacao;
+use MatriculaBundle\Entity\Enturmacao;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class ReclassificacaoFacade extends AbstractFacade {
@@ -59,6 +60,12 @@ class ReclassificacaoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($reclassificacao) {
+        if ($reclassificacao->getNotas()->count() == 0) {
+            throw new IllegalOperationException('É necessário registrar ao menos uma nota em uma reclassificação');
+        }
+        foreach ($reclassificacao->getNotas() as $nota) {
+            $nota->setReclassificacao($reclassificacao);
+        }
         $this->validarReclassificacao($reclassificacao);
         $this->gerarEnturmacaoDestino($reclassificacao);
     }
@@ -71,7 +78,7 @@ class ReclassificacaoFacade extends AbstractFacade {
         $etapaOrigem = $reclassificacao->getEnturmacaoOrigem()->getTurma()->getEtapa();
         $etapaDestino = $reclassificacao->getTurmaDestino()->getEtapa();
         if ($etapaOrigem->getOrdem() >= $etapaDestino->getOrdem()) {
-            throw new IllegalOperationException('A etapa de destino de uma reclassificação deve ser superior à de origem.');
+            throw new IllegalOperationException('A etapa de destino de uma reclassificação deve ser superior à de origem');
         }
         if ($etapaOrigem->getOrdem() + 2 < $etapaDestino->getOrdem()) {
             throw new IllegalOperationException('A etapa de destino de uma reclassificação não pode ser mais de dois níveis acima da origem');
@@ -80,7 +87,7 @@ class ReclassificacaoFacade extends AbstractFacade {
     }
     
     private function encerrarEnturmacaoOrigem(Reclassificacao $reclassificacao) {
-        $this->enturmacaoFacade->encerrarPorMovimentacao($reclassificacao->getEnturmacaoOrigem());
+        $this->enturmacaoFacade->encerrarPorMovimentacao($reclassificacao->getEnturmacaoOrigem(), false);
     }
     
     private function gerarEnturmacaoDestino(Reclassificacao $reclassificacao) {
