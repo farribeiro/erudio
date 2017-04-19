@@ -28,12 +28,17 @@
 
 namespace PessoaBundle\Service;
 
+use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 
 class EnderecoFacade extends AbstractFacade {
     
     function getEntityClass() {
         return 'PessoaBundle:Endereco';
+    }
+    
+    function queryAlias() {
+        return 'e';
     }
     
 }

@@ -54,6 +54,8 @@ services:
     facade.matricula.desligamentos:
         class: MatriculaBundle\Service\DesligamentoFacade
         arguments: ["@doctrine"]
+        calls:
+          - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
      
     facade.matricula.reclassificacoes:
         class: MatriculaBundle\Service\ReclassificacaoFacade

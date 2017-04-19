@@ -83,7 +83,7 @@ class Pessoa extends AbstractEditableEntity {
     private $genero;
     
     /**
-    * @ORM\OneToOne(targetEntity = "Endereco", cascade = {"all"}, orphanRemoval = true)
+    * @ORM\OneToOne(targetEntity = "Endereco")
     */
     private $endereco;
     
@@ -154,12 +154,12 @@ class Pessoa extends AbstractEditableEntity {
         $this->genero = $genero;
     }
     
-   public function getEndereco() {
+    function getEndereco() {
         return $this->endereco;
     }
     
-    public function setEndereco($endereco) {
-        $this->endereco = $endereco;
+    function setEndereco($endereco) {
+        return $this->endereco = $endereco;
     }
     
     public function getTelefones() {

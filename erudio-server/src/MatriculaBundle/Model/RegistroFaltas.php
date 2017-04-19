@@ -26,37 +26,39 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace PessoaBundle\Entity;
+namespace MatriculaBundle\Model;
 
-use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
-/**
-* @ORM\Entity
-* @ORM\Table(name = "edu_unidade_ensino")
+/**  
+* Classe para encapsular número de faltas em etapas de frequência unificada 
+* (contadas por dia ao invés de aula).
 */
-class UnidadeEnsino extends Instituicao {
+class RegistroFaltas {
     
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "TipoUnidadeEnsino") 
-    */
-    private $tipo;
-        
     /**
     * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty()
+    * @JMS\MaxDepth(depth = 3) 
+    * @JMS\Type("MatriculaBundle\Entity\Enturmacao") 
     */
-    function getNomeCompleto() {
-        return $this->tipo != null ? "{$this->tipo->getSigla()} {$this->getNome()}" : $this->getNome();
-    }    
+    public $enturmacao;
     
-    function getTipo() {
-        return $this->tipo;
-    }
-
-    function setTipo(TipoUnidadeEnsino $tipo) {
-        $this->tipo = $tipo;
+    /** 
+     * @JMS\Groups({"LIST"})
+     * @JMS\Type("integer") 
+     */
+    public $media;
+    
+    /** 
+     * @JMS\Groups({"LIST"})
+     * @JMS\Type("integer") 
+     */
+    public $faltas;
+    
+    function __construct($enturmacao = null, $media = 1, $faltas = 0) {
+        $this->enturmacao = $enturmacao;
+        $this->media = $media;
+        $this->faltas = $faltas;
     }
     
 }

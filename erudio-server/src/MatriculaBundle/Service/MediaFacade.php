@@ -32,6 +32,7 @@ use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use MatriculaBundle\Entity\Enturmacao;
 
 class MediaFacade extends AbstractFacade {
     
@@ -45,15 +46,52 @@ class MediaFacade extends AbstractFacade {
     
     function parameterMap() {
         return [
+            'numero' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('m.numero = :numero')->setParameter('numero', $value);
+            },
             'disciplinaCursada' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.disciplinaCursada', 'disciplinaCursada')
-                    ->andWhere('disciplinaCursada.id = :disciplinaCursada')
+                $qb->andWhere('disciplinaCursada = :disciplinaCursada')
                     ->setParameter('disciplinaCursada', $value);
+            },
+            'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplinaCursada.disciplinaOfertada = :disciplinaOfertada')
+                    ->setParameter('disciplinaOfertada', $value);
+            },
+            'enturmacao' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplinaCursada.enturmacao = :enturmacao')
+                   ->setParameter('enturmacao', $value);
+            },
+            'turma' => function(QueryBuilder $qb, $value) {
+                $qb->join('disciplinaCursada.disciplinaOfertada', 'disciplinaOfertada')
+                    ->andWhere('disciplinaOfertada.turma = :turma')
+                    ->setParameter('turma', $value);
             }
         ];
     }
     
-    function calcular($media) {
+    function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('m.disciplinaCursada', 'disciplinaCursada')
+           ->join('disciplinaCursada.matricula', 'matricula')
+           ->join('matricula.aluno', 'aluno')
+           ->orderBy('aluno.nome');
+    }
+    
+    function inserirFaltasPorMedia($faltas, $numeroMedia, Enturmacao $enturmacao) {
+        $medias = $this->findAll(['numero' => $numeroMedia, 'enturmacao' => $enturmacao->getId()]);
+        foreach ($medias as $media) {
+            $media->setFaltas($faltas);
+            $this->orm->getManager()->flush();
+        }
+    }
+
+    protected function afterUpdate($media) {
+        if ($media->getValor() === null && $media->getCalculoAutomatico()) {
+            $this->calcular($media);
+            $this->orm->getManager()->flush();
+        }
+    }
+    
+    private function calcular($media) {
         $sistemaAvaliacao = $media->getDisciplinaCursada()->getDisciplina()->getEtapa()->getSistemaAvaliacao();
         $valor = null;
         switch($sistemaAvaliacao->getTipo()) {
@@ -67,8 +105,8 @@ class MediaFacade extends AbstractFacade {
         $media->setValor($valor);
         return $media;
     }
-
-    function calcularMediaPonderada($notas) {
+    
+    private function calcularMediaPonderada($notas) {
         $valor = $peso = 0.00;
         foreach($notas as $nota) {
             $peso += $nota->getAvaliacao()->getPeso();
@@ -77,7 +115,7 @@ class MediaFacade extends AbstractFacade {
         return $valor / (float) $peso;
     }
     
-    function calcularMediaConceitual($notas) {
+    private function calcularMediaConceitual($notas) {
         $valor = 0.00;
         $notaFechamento = $notas->filter(function($n) { return $n->getFechamentoMedia(); })->first();
         if(!$notaFechamento) {
@@ -99,13 +137,6 @@ class MediaFacade extends AbstractFacade {
                 : $habilidade->getConceito()->getValorMinimo();
         }        
         return ($numHabilidades > 0) ? $valor / $numHabilidades : 0.00;
-    }
-    
-    protected function afterUpdate($media) {
-        if ($media->getCalculoAutomatico()) {
-            $this->calcular($media);
-        }
-        $this->orm->getManager()->flush();
     }
 
 }

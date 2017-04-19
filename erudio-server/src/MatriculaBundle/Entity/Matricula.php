@@ -133,6 +133,14 @@ class Matricula extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
+    */
+    function getNomeAluno() {
+        return $this->aluno->getNome();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
     * @JMS\MaxDepth(depth = 1)
     */
     function getEtapaAtual() {

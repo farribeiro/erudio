@@ -53,7 +53,7 @@ class Endereco extends AbstractEditableEntity {
     /** @ORM\Column() */
     private $bairro;
     
-    /** @ORM\OneToOne(targetEntity="Cidade") */
+    /** @ORM\ManyToOne(targetEntity="Cidade") */
     private $cidade;
     
     /** @ORM\Column() */
@@ -61,7 +61,7 @@ class Endereco extends AbstractEditableEntity {
     
     /** @ORM\Column() */
     private $longitude;
-
+    
     function getLogradouro() {
         return $this->logradouro;
     }

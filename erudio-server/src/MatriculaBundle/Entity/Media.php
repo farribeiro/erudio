@@ -48,30 +48,35 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column(type = "integer")
     */
     private $numero;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float") 
     * @ORM\Column
     */
     private $valor;
     
     /**
      * @JMS\Groups({"LIST"})
+     * @JMS\Type("integer")
      * @ORM\Column
      */
     private $faltas = 0;
     
     /**
      * @JMS\Groups({"LIST"})
+     * @JMS\Type("float")
      * @ORM\Column 
      */
     private $frequencia = 100;
     
     /**  
-    *  @JMS\Groups({"LIST"}) 
+    *  @JMS\Groups({"LIST"})
+    *  @JMS\MaxDepth(depth = 3)
     *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}, inversedBy="medias") 
     *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
     */
@@ -104,6 +109,12 @@ class Media extends AbstractEditableEntity {
         return $this->notas->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );    
+    }
+    
+    function init() {
+        if ($this->calculoAutomatico === null) {
+            $this->calculoAutomatico = true;
+        }
     }
     
     /**
@@ -150,6 +161,10 @@ class Media extends AbstractEditableEntity {
     function getDisciplinaCursada() {
         return $this->disciplinaCursada;
     }
+        
+    function getCalculoAutomatico() {
+        return $this->calculoAutomatico;
+    }
 
     function setValor($valor) {
         $this->valor = $valor;
@@ -161,10 +176,6 @@ class Media extends AbstractEditableEntity {
     
     function setFrequencia($frequencia) {
         $this->frequencia = $frequencia;
-    }
-    
-    function getCalculoAutomatico() {
-        return $this->calculoAutomatico;
     }
 
     function setCalculoAutomatico($calculoAutomatico = true) {

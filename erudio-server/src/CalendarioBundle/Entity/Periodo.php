@@ -53,17 +53,17 @@ class Periodo extends AbstractEditableEntity {
     private $dataInicio;
     
     /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_termino", type = "date") 
+    */
     private $dataTermino;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "Calendario") 
+    * @ORM\JoinColumn(name = "calendario_id") 
+    */
     private $calendario;
     
     /** 
