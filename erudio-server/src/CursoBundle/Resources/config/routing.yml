@@ -1,3 +1,7 @@
+agrupamentos-disciplina:
+    resource: CursoBundle\Controller\AgrupamentoDisciplinaController
+    type:     rest
+
 agrupamentos-turma:
     resource: CursoBundle\Controller\AgrupamentoTurmaController
     type:     rest

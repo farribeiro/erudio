@@ -18,6 +18,10 @@ services:
     facade.curso.disciplinas:
       class: CursoBundle\Service\DisciplinaFacade
       arguments: ["@doctrine"]
+      
+    facade.curso.agrupamentos_disciplina:
+        class: CursoBundle\Service\AgrupamentoDisciplinaFacade
+        arguments: ["@doctrine"]
         
     facade.curso.disciplinas_ofertadas:
       class: CursoBundle\Service\DisciplinaOfertadaFacade

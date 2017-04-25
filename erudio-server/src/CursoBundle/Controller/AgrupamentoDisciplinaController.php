@@ -35,21 +35,21 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use CursoBundle\Entity\AgrupamentoTurma;
+use CursoBundle\Entity\AgrupamentoDisciplina;
 
 /**
- * @FOS\RouteResource("turmas/agrupamentos")
+ * @FOS\RouteResource("agrupamentos-disciplinas")
  */
-class AgrupamentoTurmaController extends AbstractEntityController {
+class AgrupamentoDisciplinaController extends AbstractEntityController {
     
     function getFacade() {
-        return $this->get('facade.curso.agrupamentos_turma');
+        return $this->get('facade.curso.agrupamentos_disciplina');
     }
     
     /**
     *   @ApiDoc()
     *    
-    *   @FOS\Get("turmas/agrupamentos/{id}", requirements={"id" = "\d+"})
+    *   @FOS\Get("agrupamentos-disciplinas/{id}", requirements={"id" = "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -58,38 +58,39 @@ class AgrupamentoTurmaController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("turmas/agrupamentos") 
+    *   @FOS\Get("agrupamentos-disciplinas")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
-    
+
+        
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Post("turmas/agrupamentos")
+    *  @FOS\Post("agrupamentos-disciplinas")
     *  @ParamConverter("agrupamento", converter="fos_rest.request_body")
     */
-    function postAction(Request $request, AgrupamentoTurma $agrupamento, ConstraintViolationListInterface $errors) {
+    function postAction(Request $request, AgrupamentoDisciplina $agrupamento, ConstraintViolationListInterface $errors) {
         return $this->post($request, $agrupamento, $errors);
     }
     
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Put("turmas/agrupamentos/{id}")
+    *  @FOS\Put("agrupamentos-disciplinas/{id}", requirements={"id" = "\d+"})
     *  @ParamConverter("agrupamento", converter="fos_rest.request_body")
     */
-    function putAction(Request $request, $id, AgrupamentoTurma $agrupamento, ConstraintViolationListInterface $errors) {
+    function putAction(Request $request, $id, AgrupamentoDisciplina $agrupamento, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $agrupamento, $errors);
     }
     
     /**
     *   @ApiDoc()
     * 
-    *  @FOS\Delete("turmas/agrupamentos/{id}")
+    *  @FOS\Delete("agrupamentos-disciplinas/{id}", requirements={"id" = "\d+"})
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

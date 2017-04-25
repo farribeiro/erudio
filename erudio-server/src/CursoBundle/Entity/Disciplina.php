@@ -80,6 +80,12 @@ class Disciplina extends AbstractEditableEntity {
     */
     private $curso;
     
+    /** 
+    * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina")
+    * @ORM\JoinColumn(name = "disciplina_agrupamento_id") 
+    */
+    private $agrupamento;
+    
     function getNome() {
         return $this->nome;
     }
@@ -107,6 +113,10 @@ class Disciplina extends AbstractEditableEntity {
     function getOfertado() {
         return $this->ofertado;
     }
+    
+    function getAgrupamento() {
+        return $this->agrupamento;
+    }
 
     function setNome($nome) {
         $this->nome = $nome;
@@ -130,6 +140,10 @@ class Disciplina extends AbstractEditableEntity {
     
     function setOfertado($ofertado) {
         $this->ofertado = $ofertado;
+    }
+    
+    function setAgrupamento($agrupamento) {
+        $this->agrupamento = $agrupamento;
     }
     
 }

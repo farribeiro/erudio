@@ -9,7 +9,6 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\NonceExpiredException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use AuthBundle\Security\Authentication\Token\WsseUserToken;
-use Symfony\Component\Security\Core\Util\StringUtils;
 
 class WsseProvider implements AuthenticationProviderInterface
 {

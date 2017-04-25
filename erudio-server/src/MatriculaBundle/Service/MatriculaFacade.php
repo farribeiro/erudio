@@ -82,6 +82,16 @@ class MatriculaFacade extends AbstractFacade {
         );
     }
     
+    function uniqueMap($matricula) {
+        return [
+            [
+                'curso' => $matricula->getCurso()->getId(), 
+                'aluno' => $matricula->getAluno()->getId(), 
+                'status' => Matricula::STATUS_CURSANDO
+            ]
+        ];
+    }
+    
     protected function beforeCreate($matricula) {
         if ($this->jaExiste($matricula)) {
             throw new IllegalOperationException('Pessoa já possui matrícula neste curso');
