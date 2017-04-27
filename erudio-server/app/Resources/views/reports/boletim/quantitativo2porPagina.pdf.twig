@@ -85,6 +85,8 @@
                         <td colspan="2">{{totalFaltas}}</td>
                         <td>-</td>
                     </tr>
+                {% else %}
+                    <tr><td alpha="0" colspan="13" padding="9px"></td></tr>
                 {% endif %}
             </table>
             <p margin-top="10px" font-size="10px">
@@ -116,7 +118,7 @@
         {%if i is not divisible by(2) %}
             </page>
         {% else %}
-            <hr background-color="white" border.color="grey" border.style="dotted" margin-top="30px" margin-bottom="74px"/>
+            <hr background-color="white" border.color="grey" border.style="dotted" margin-top="42px" margin-bottom="66px"/>
             {% if boletins|length -1 == i %}
                 </page>
             {% endif %}
