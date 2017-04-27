@@ -61,7 +61,7 @@
                         </td>
                         {% for media in disciplina.medias %}
                             <td>{{media.valor}}</td>
-                            {% if turma.etapa.integral %}
+                            {% if turma.etapa.frequenciaUnificada %}
                                 <td>-</td>
                             {% else %}
                                 <td>{{media.faltas}}</td>
@@ -73,7 +73,7 @@
                         <td>{{disciplina.status}}</td>
                     </tr>
                 {% endfor %}
-                 {% if turma.etapa.integral %}
+                 {% if turma.etapa.frequenciaUnificada %}
                     <tr>
                         <td><strong>Total de Faltas</strong></td>
                         {% set totalFaltas = 0 %}
