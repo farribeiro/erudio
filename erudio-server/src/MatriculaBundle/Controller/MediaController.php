@@ -81,6 +81,9 @@ class MediaController extends AbstractEntityController {
     * @ParamConverter("media", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Media $media, ConstraintViolationListInterface $errors) {
+        if ($request->query->has('calcular')) {
+            $this->getFacade()->resetar($media);
+        }
         return $this->put($request, $id, $media, $errors);
     }
     
@@ -104,16 +107,9 @@ class MediaController extends AbstractEntityController {
     function getFaltasAction(Request $request, ParamFetcherInterface $params) {
         try {
             $turma = $this->get('facade.curso.turmas')->find($params->get('turma'));
-            $faltas = $turma->getEnturmacoes()->map(function($e) use ($params) {
-                $primeiraDisciplina = $e->getDisciplinasCursadas()->first();
-                if (!$primeiraDisciplina) {
-                    throw new \Exception("O aluno com a matrícula {$e->getMatricula()->getCodigo()} não possui disciplinas em sua enturmação");
-                }
-                $media = $this->getFacade()->findAll([
-                    'numero' => $params->get('numero'), 
-                    'disciplinaCursada' => $primeiraDisciplina->getId()
-                ])[0];
-                return new RegistroFaltas($e, $media->getNumero(), $media->getFaltas());
+            $numero = $params->get('numero');
+            $faltas = $turma->getEnturmacoes()->map(function($e) use ($numero) {
+                return $this->getFacade()->getFaltasUnificadas($e, $numero);
             }); 
             $view = View::create($faltas, Codes::HTTP_OK);
             $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
@@ -136,7 +132,7 @@ class MediaController extends AbstractEntityController {
         }
         try {
             foreach ($faltas->faltas as $registroFaltas) {
-                $this->getFacade()->inserirFaltasPorMedia(
+                $this->getFacade()->inserirFaltasUnificadas(
                         $registroFaltas->faltas, $registroFaltas->media, $registroFaltas->enturmacao);
             }
             $view = View::create(null, Codes::HTTP_NO_CONTENT);

@@ -31,7 +31,6 @@ namespace AvaliacaoBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use CalendarioBundle\Entity\Aula;
 
 /**
 * @ORM\Entity
@@ -59,23 +58,10 @@ abstract class Avaliacao extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "TipoAvaliacao")
-    */
-    private $tipo;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada") 
     * @ORM\JoinColumn(name = "turma_disciplina_id")
     */
     private $disciplina;
-    
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Aula") 
-    * @ORM\JoinColumn(name = "aula_id")
-    */
-    private $aulaEntrega;
     
     function getNome() {
         return $this->nome;
@@ -85,16 +71,8 @@ abstract class Avaliacao extends AbstractEditableEntity {
         return $this->media;
     }
     
-    function getTipo() {
-        return $this->tipo;
-    }
-    
     function getDisciplina() {
         return $this->disciplina;
-    }
-
-    function getAulaEntrega() {
-        return $this->aulaEntrega;
     }
 
     function setNome($nome) {
@@ -103,14 +81,6 @@ abstract class Avaliacao extends AbstractEditableEntity {
 
     function setMedia($media) {
         $this->media = $media;
-    }
-
-    function setAulaEntrega(Aula $aulaEntrega = null) {
-        $this->aulaEntrega = $aulaEntrega;
-    }
-    
-    function setTipo(TipoAvaliacao $tipo = null) {
-        $this->tipo = $tipo;
     }
     
 }

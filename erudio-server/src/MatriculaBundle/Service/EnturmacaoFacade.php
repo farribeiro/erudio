@@ -136,9 +136,7 @@ class EnturmacaoFacade extends AbstractFacade {
         } else {
             $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
         }
-        if ($enturmacao->getVaga()) {
-           $this->liberarVaga($enturmacao);
-	}
+        $this->liberarVaga($enturmacao);
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -259,7 +257,9 @@ class EnturmacaoFacade extends AbstractFacade {
      * @param Enturmacao $enturmacao
      */
     private function liberarVaga(Enturmacao $enturmacao) {
-        $this->vagaFacade->liberar($enturmacao->getVaga());
+        if ($enturmacao->getVaga()) {
+            $this->vagaFacade->liberar($enturmacao->getVaga());
+        }
     }
     
 }

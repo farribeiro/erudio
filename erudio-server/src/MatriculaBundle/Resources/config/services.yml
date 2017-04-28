@@ -20,7 +20,7 @@ services:
     
     facade.matricula.medias:
       class: MatriculaBundle\Service\MediaFacade
-      arguments: ["@doctrine"]
+      arguments: ["@doctrine", "@logger"]
       
     facade.matricula.notas_quantitativas:
       class: MatriculaBundle\Service\NotaQuantitativaFacade

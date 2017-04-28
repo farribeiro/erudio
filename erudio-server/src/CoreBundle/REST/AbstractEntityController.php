@@ -50,31 +50,9 @@ abstract class AbstractEntityController extends FOSRestController {
     
     abstract function getFacade();
     
-    //exemplo
-    function checkPermission($user, $entity, $accessType = 'R') {
-        
-    }
-    
-    function filterByPermission($user, $params) {
-        
-    }
-    
     function getOne(Request $request, $id) {
         try {
             $entidade = $this->getFacade()->find($id);
-            $this->checkPermission($request->getUser(), $entidade, 'R');
-            $view = View::create($entidade, Codes::HTTP_OK);
-            $view->getSerializationContext()->enableMaxDepthChecks();
-        } catch(\Exception $ex) {
-            $view = View::create(null, Codes::HTTP_NOT_FOUND);
-        }
-        return $this->handleView($view);
-    }
-    
-    function getOneDeleted(Request $request, $id) {
-        try {
-            $entidade = $this->getFacade()->findDeleted($id);
-            $this->checkPermission($request->getUser(), $entidade, 'R');
             $view = View::create($entidade, Codes::HTTP_OK);
             $view->getSerializationContext()->enableMaxDepthChecks();
         } catch(\Exception $ex) {
@@ -85,7 +63,6 @@ abstract class AbstractEntityController extends FOSRestController {
 
     function getList(Request $request, $queryParams) {
         $params = $queryParams instanceof ParamFetcherInterface ? $queryParams->all() : $queryParams;
-        $this->filterByPermission($request->getUser(), $params);
         $resultados = $this->getFacade()->findAll(
             $params,
             key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null
@@ -98,21 +75,7 @@ abstract class AbstractEntityController extends FOSRestController {
     
     function getListByNome(Request $request, $queryParams) {
         $params = $queryParams instanceof ParamFetcherInterface ? $queryParams->all() : $queryParams;
-        $this->filterByPermission($request->getUser(), $params);
         $resultados = $this->getFacade()->findAllByNome(
-            $params,
-            key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null
-        );
-        $view = View::create($resultados, Codes::HTTP_OK);
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        return $this->handleView($view);
-    }
-    
-    function getDeletedList(Request $request, $queryParams) {
-        $params = $queryParams instanceof ParamFetcherInterface ? $queryParams->all() : $queryParams;
-        $this->filterByPermission($request->getUser(), $params);
-        $resultados = $this->getFacade()->findAllDeleted(
             $params,
             key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null
         );

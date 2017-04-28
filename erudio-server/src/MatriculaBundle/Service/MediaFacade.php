@@ -33,6 +33,9 @@ use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use AvaliacaoBundle\Entity\SistemaAvaliacao;
 use MatriculaBundle\Entity\Enturmacao;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Model\RegistroFaltas;
+use MatriculaBundle\Entity\Media;
 
 class MediaFacade extends AbstractFacade {
     
@@ -55,7 +58,9 @@ class MediaFacade extends AbstractFacade {
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplinaCursada.disciplinaOfertada = :disciplinaOfertada')
-                    ->setParameter('disciplinaOfertada', $value);
+                   ->andWhere('disciplinaCursada.status <> :incompleto')
+                   ->setParameter('incompleto', DisciplinaCursada::STATUS_INCOMPLETO)
+                   ->setParameter('disciplinaOfertada', $value);
             },
             'enturmacao' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplinaCursada.enturmacao = :enturmacao')
@@ -69,14 +74,31 @@ class MediaFacade extends AbstractFacade {
         ];
     }
     
-    function prepareQuery(QueryBuilder $qb, array $params) {
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('m.disciplinaCursada', 'disciplinaCursada')
            ->join('disciplinaCursada.matricula', 'matricula')
            ->join('matricula.aluno', 'aluno')
            ->orderBy('aluno.nome');
     }
     
-    function inserirFaltasPorMedia($faltas, $numeroMedia, Enturmacao $enturmacao) {
+    function resetar(Media $media) {
+        $media->resetar();
+    }
+    
+    function getFaltasUnificadas(Enturmacao $enturmacao, $numeroMedia) {
+        $primeiraDisciplina = $enturmacao->getDisciplinasCursadas()->first();
+        if (!$primeiraDisciplina) {
+            throw new \Exception("O aluno com a matrícula {$enturmacao->getMatricula()->getCodigo()} "
+                . "não possui disciplinas em sua enturmação");
+        }
+        $media = $this->getFacade()->findAll([
+            'numero' => $numeroMedia, 
+            'disciplinaCursada' => $primeiraDisciplina->getId()
+        ])[0];
+        return new RegistroFaltas($enturmacao, $media->getNumero(), $media->getFaltas());
+    }
+    
+    function inserirFaltasUnificadas($faltas, $numeroMedia, Enturmacao $enturmacao) {
         $medias = $this->findAll(['numero' => $numeroMedia, 'enturmacao' => $enturmacao->getId()]);
         foreach ($medias as $media) {
             $media->setFaltas($faltas);
@@ -85,7 +107,7 @@ class MediaFacade extends AbstractFacade {
     }
 
     protected function afterUpdate($media) {
-        if ($media->getValor() === null && $media->getCalculoAutomatico()) {
+        if ($media->getValor() === null || $media->getValor() === 0) {
             $this->calcular($media);
             $this->orm->getManager()->flush();
         }
@@ -112,31 +134,29 @@ class MediaFacade extends AbstractFacade {
             $peso += $nota->getAvaliacao()->getPeso();
             $valor += $nota->getValor() * (float)$nota->getAvaliacao()->getPeso();
         }        
-        return $valor / (float) $peso;
+        return round($valor / $peso, 2);
     }
     
     private function calcularMediaConceitual($notas) {
         $valor = 0.00;
         $notaFechamento = $notas->filter(function($n) { return $n->getFechamentoMedia(); })->first();
-        if(!$notaFechamento) {
+        if (!$notaFechamento) {
             throw new IllegalOperationException('Não existem notas de fechamento para a média');
         }
-        $habilidades = $notaFechamento->getHabilidadesAvaliadas();
-        $numHabilidades = count($habilidades);
-        foreach($habilidades as $habilidade) {            
-            $conceito = $habilidade->getConceito();
-            $conceitos[] = $conceito->getId();
-            if($conceito->getValorMaximo() == 0 && $conceito->getValorMinimo() == 0) {
-                $numHabilidades--;
-            }
+        $habilidades = $notaFechamento->getHabilidadesAvaliadas()
+                ->filter(function($h) { return $h->getConceito()->getValorMaximo() > 0; });
+        $numHabilidades = $habilidades->count();
+        $conceitos = [];
+        foreach($habilidades as $habilidade) {
+            $conceitos[] = $habilidade->getConceito()->getId();
         }
         $countConceitos = array_count_values($conceitos);        
         foreach($habilidades as $habilidade) {            
-            $valor += ($countConceitos[$conceito->getId()] >= $numHabilidades / 2)
+            $valor += ($countConceitos[$habilidade->getConceito()->getId()] >= $numHabilidades / 2)
                 ? $habilidade->getConceito()->getValorMaximo() 
                 : $habilidade->getConceito()->getValorMinimo();
         }        
-        return ($numHabilidades > 0) ? $valor / $numHabilidades : 0.00;
+        return $numHabilidades > 0 ? round($valor / $numHabilidades, 2) : 0.00;
     }
 
 }

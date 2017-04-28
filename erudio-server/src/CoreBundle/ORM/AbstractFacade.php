@@ -34,9 +34,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\UniqueViolationException;
 
 /**
-* Classe que especifica um serviço CRUD de uma entidade, usado como uma interface única de operações sobre ela. 
+* Classe que especifica um serviço de operações sobre uma entidade. Estão inclusas
+* as operações CRUD básicas, com métodos de extensão para realizar operações antes
+* e após uma inclusão, atualização ou remoção.
+* 
 */
 abstract class AbstractFacade {
     
@@ -55,18 +59,49 @@ abstract class AbstractFacade {
     
     abstract function getEntityClass();
     
+    /**
+    * Retorna o alias usado nas queries das funções de consulta nesta classe.
+    * 
+    * @return string alias usado na query de consulta
+    */
     function queryAlias() {
         return self::DEFAULT_QUERY_ALIAS;
     }
     
+    /**
+    * Define um mapa de possíveis parâmetros de busca da entidade, onda as chaves são
+    * os nomes dos parâmetros e os valores são funções para adicioná-los na query. 
+    * 
+    * Cada função deve receber como parâmetros um queryBuilder e o valor de busca
+    * passado como argumento.
+    * 
+    * @return array mapa de parâmetros de busca
+    */
     function parameterMap() {
         return [];
     }
     
+    /**
+    * Define um mapa de regras de unicidade, checado nas operações de inserção e atualização
+    * para garantir que não sejam criados objetos conflitantes. A estrutura do mapa é
+    * basicamente um array de arrays, onde cada array interno contém como chaves os nomes dos 
+    * atributos a serem checados na regra, e os valores dos mesmos na entidade passada como
+    * parâmetro. 
+    * 
+    * @param AbstractEntity $entidade
+    * @return array mapa de regras de unicidade
+    */
     function uniqueMap($entidade) {
         return [];
     }
     
+    /**
+     * Recupera uma entidade por seu id numérico.
+     * 
+     * @param int $id
+     * @return AbstractEntity entidade encontrada
+     * @throws EntityNotFoundException caso não exista entidade ativa com este id
+     */
     function find($id) {
         $entidade = $this->loadEntity($id);
         if(!$entidade) {
@@ -75,14 +110,24 @@ abstract class AbstractFacade {
         return $entidade;
     }
     
-    function findDeleted($id) {
-        $entidade = $this->loadDeletedEntity($id);
-        if(!$entidade) {
-            throw new EntityNotFoundException();
-        }
-        return $entidade;
+    /**
+    * Recupera uma entidade, e apenas uma, de acordo com os parâmetros de busca informados,
+    * ou null, caso nenhuma seja encontrada.
+    * 
+    * @param array $params
+    * @return AbstractEntity entidade encontrada
+    */
+    function findOne($params = []) {
+        return $this->buildQuery($params)->setMaxResults(1)->getQuery()->getOneOrNullResult();
     }
 
+    /**
+    * Recupera uma entidade, e apenas uma, de acordo com os parâmetros de busca informados,
+    * ou um array vazio, caso nenhuma seja encontrada.
+    * 
+    * @param array $params
+    * @return array entidades encontradas, ou um array vazio
+    */
     function findAll($params = [], $page = null) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
@@ -92,20 +137,17 @@ abstract class AbstractFacade {
         }
         return $this->buildQuery($params)->getQuery()->getResult();
     }
-    
-    function findAllDeleted($params, $page = null) {
-        if(is_numeric($page)) {
-            return $this->buildReverseQuery($params)
-                ->setMaxResults(self::PAGE_SIZE)
-                ->setFirstResult(self::PAGE_SIZE * $page)
-                ->getQuery()->getResult();
-        }
-        return $this->buildReverseQuery($params)->getQuery()->getResult();
-    }
 
+    /**
+     * 
+     * @param type $entidade
+     * @param type $isTransaction
+     * @return type
+     * @throws \Exception
+     */
     function create($entidade, $isTransaction = true) {
         try {
-            if ($isTransaction) {$this->orm->getManager()->beginTransaction(); }
+            if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $entidade->init();
             $this->beforeCreate($entidade);
             $this->checkUniqueness($entidade);
@@ -120,26 +162,36 @@ abstract class AbstractFacade {
         }
     }
     
+    /**
+     * 
+     * @param ArrayCollection $entidades
+     * @return boolean
+     * @throws \Exception
+     */
     function createBatch(ArrayCollection $entidades) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($entidades as $entidade) {
-                $entidade->init();
-                $this->beforeCreate($entidade);
-                $this->checkUniqueness($entidade);
-                $this->orm->getManager()->persist($entidade);
-                $this->orm->getManager()->flush();
-                $this->afterCreate($entidade);
+                $this->create($entidade, false);
             }
-            $this->orm->getManager()->commit();
-            return true;
+           $this->orm->getManager()->commit();
+           return true;
         } catch(\Exception $ex) {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
     }
 
-    function update($id, $mergeObject) {
+    /**
+    * 
+    * @param type $id
+    * @param type $mergeObject
+    * @param type $isTransaction
+    * @return \CoreBundle\ORM\AbstractEditableEntity
+    * @throws \Exception
+    * @throws IllegalUpdateException
+    */
+    function update($id, $mergeObject, $isTransaction = true) {
         try {
             $this->orm->getManager()->detach($mergeObject);
             $entidade = $this->loadEntity($id);
@@ -149,37 +201,31 @@ abstract class AbstractFacade {
             if (!$entidade instanceof AbstractEditableEntity) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
-            $this->orm->getManager()->beginTransaction();
+            if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeUpdate($entidade);
             $entidade->merge($mergeObject);
             $this->orm->getManager()->flush();
             $this->checkUniqueness($entidade, true);
             $this->afterUpdate($entidade);
-            $this->orm->getManager()->commit();
+            if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
         } catch(\Exception $ex) {
-            $this->orm->getManager()->rollback();
+            if ($isTransaction) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
     }
     
+    /**
+    * 
+    * @param ArrayCollection $mergeObjects
+    * @return boolean
+    * @throws \Exception
+    */
     function updateBatch(ArrayCollection $mergeObjects) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($mergeObjects as $mergeObject) {
-                $this->orm->getManager()->detach($mergeObject);
-                $entidade = $this->loadEntity($mergeObject->getId());
-                if ($entidade === null) {
-                    throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
-                }
-                if (!$entidade instanceof AbstractEditableEntity) {
-                    throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
-                }
-                $this->beforeUpdate($entidade);
-                $entidade->merge($mergeObject);
-                $this->orm->getManager()->flush();
-                $this->checkUniqueness($entidade, true);
-                $this->afterUpdate($entidade);
+                $this->update($mergeObject->getId(), $mergeObject, false);
             }
             $this->orm->getManager()->commit();
             return true;
@@ -189,69 +235,45 @@ abstract class AbstractFacade {
         }
     }
     
-    private function checkUniqueness($entidade, $isUpdate = false) {
-        foreach ($this->uniqueMap($entidade) as $constraint) {
-            if (count($this->findAll($constraint)) > ($isUpdate ? 1 : 0)) {
-                throw new Exception\UniqueViolationException();
-            }
+    /**
+    * 
+    * @param type $id
+    * @param type $isTransaction
+    * @return boolean
+    * @throws EntityNotFoundException
+    * @throws \Exception
+    */
+    function remove($id, $isTransaction = true) {
+        $entidade = $this->loadEntity($id);
+        if ($entidade === null) {
+            throw new EntityNotFoundException();
         }
-    }
-    
-    function updateDeleted($id, $mergeObject) {
         try {
-            $this->orm->getManager()->detach($mergeObject);
-            $entidade = $this->loadDeletedEntity($id);
-            if ($entidade === null) {
-                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
-            }
-            if (!$entidade instanceof AbstractEditableEntity) {
-                throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
-            }
-            $this->orm->getManager()->beginTransaction();
-            $this->beforeUpdate($entidade);
-            $entidade->mergeDeleted($mergeObject);
+            if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
+            $this->beforeRemove($entidade);
+            $entidade->finalize();
+            $this->orm->getManager()->merge($entidade);
             $this->orm->getManager()->flush();
-            $this->afterUpdate($entidade);
-            $this->orm->getManager()->commit();
-            return $entidade;
-        } catch(\Exception $ex) {
-            $this->orm->getManager()->rollback();
+            $this->afterRemove($entidade);
+            if ($isTransaction) { $this->orm->getManager()->commit(); }
+            return true;
+        } catch (\Exception $ex) {
+            if ($isTransaction) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
     }
     
-    function remove($id) {
-        $entidade = $this->loadEntity($id);
-        if ($entidade != null) {
-            try {
-                $this->orm->getManager()->beginTransaction();
-                $this->beforeRemove($entidade);
-                $entidade->finalize();
-                $this->orm->getManager()->flush();
-                $this->afterRemove($entidade);
-                $this->orm->getManager()->commit();
-                return true;
-            } catch (\Exception $ex) {
-                $this->orm->getManager()->rollback();
-                throw $ex;
-            }
-        }
-    }
-    
+    /**
+    * 
+    * @param array $ids
+    * @return boolean
+    * @throws \Exception
+    */
     function removeBatch(array $ids) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($ids as $id) {
-                $entidade = $this->loadEntity($id);
-                if ($entidade != null) {
-                    $this->beforeRemove($entidade);
-                    $entidade->finalize();
-                    $this->orm->getManager()->merge($entidade);
-                    $this->orm->getManager()->flush();
-                    $this->afterRemove($entidade);
-                } else {
-                    throw new EntityNotFoundException();
-                }
+                $this->remove($id, false);
             }
             $this->orm->getManager()->commit();
             return true;
@@ -261,8 +283,14 @@ abstract class AbstractFacade {
         }
     }
     
+    /**
+    * 
+    * @param type $id
+    * @param type $entityClass
+    * @return type
+    */
     protected function loadEntity($id, $entityClass = null) {
-        $entityClass = $entityClass == null ? $this->getEntityClass() : $entityClass;
+        $entityClass = $entityClass === null ? $this->getEntityClass() : $entityClass;
         $qb = $this->orm->getRepository($entityClass)
             ->createQueryBuilder($this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true')
@@ -271,16 +299,11 @@ abstract class AbstractFacade {
         return $qb->getQuery()->getSingleResult();
     }
     
-    protected function loadDeletedEntity($id, $entityClass = null) {
-        $entityClass = $entityClass == null ? $this->getEntityClass() : $entityClass;
-        $qb = $this->orm->getRepository($entityClass)
-            ->createQueryBuilder($this->queryAlias())
-            ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = false')
-            ->andWhere($this->queryAlias() . '.' . self::ATTR_ID . ' = :id')
-            ->setParameter('id', $id);
-        return $qb->getQuery()->getSingleResult();
-    }
-    
+    /**
+    * 
+    * @param array $params
+    * @return type
+    */
     protected function buildQuery(array $params) {
         $qb = $this->orm->getRepository($this->getEntityClass())
             ->createQueryBuilder($this->queryAlias())
@@ -296,37 +319,66 @@ abstract class AbstractFacade {
         return $qb;
     }
     
-    protected function buildReverseQuery(array $params) {
-        $qb = $this->orm->getRepository($this->getEntityClass())
-            ->createQueryBuilder($this->queryAlias())
-            ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = false');
-        $this->prepareQuery($qb, $params);
-        foreach($params as $k => $v) {
-            if($v != null && key_exists($k, $this->parameterMap())) {
-                $f = $this->parameterMap()[$k];
-                $f($qb, $v);
+    /**
+    * 
+    * @param type $entidade
+    * @param type $isUpdate
+    * @throws UniqueViolationException
+    */
+    protected function checkUniqueness($entidade, $isUpdate = false) {
+        foreach ($this->uniqueMap($entidade) as $constraint) {
+            if (count($this->findAll($constraint)) > ($isUpdate ? 1 : 0)) {
+                throw new UniqueViolationException();
             }
         }
-        $this->beforeExecuteQuery($qb, $params);
-        return $qb;
     }
     
-    /* Métodos de extensão */
-    
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function prepareQuery(QueryBuilder $qb, array $params) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function beforeExecuteQuery(QueryBuilder $qb, array $params) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function beforeCreate($entidade) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function afterCreate($entidade) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function beforeUpdate($entidade) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function afterUpdate($entidade) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function beforeRemove($entidade) {}
     
+    /**
+    * 
+    * @param type $entidade
+    */
     protected function afterRemove($entidade) {}
     
 }

@@ -72,9 +72,9 @@ class PessoaFisica extends Pessoa {
     private $certidaoNascimento;
     
     /** 
-        * @JMS\Type("DateTime<'Y-m-d'>")  
-        * @ORM\Column(name = "certidao_nascimento_data_expedicao", type = "date") 
-        */
+    * @JMS\Type("DateTime<'Y-m-d'>")  
+    * @ORM\Column(name = "certidao_nascimento_data_expedicao", type = "date") 
+    */
     private $dataExpedicaoCertidaoNascimento;
     
     /** @ORM\Column(name = "mae_nome") */

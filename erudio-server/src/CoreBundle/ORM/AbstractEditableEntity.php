@@ -68,34 +68,7 @@ abstract class AbstractEditableEntity extends AbstractEntity {
         return $this->dataExclusao;
     }
     
-    function setDataExclusao($dataExclusao) {
-        $this->dataExclusao = $dataExclusao;
-    }
-            
-    function setAtivo($ativo) {
-        $this->ativo = $ativo;
-    }
-    
     function merge($entity) {
-        $this->dataModificacao = new \DateTime();
-        $class = new \ReflectionClass($entity);
-        $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
-        $size = count($methods);
-        for($i = 0; $i < $size; $i++) {
-            if(strpos($methods[$i]->name, 'set') === 0) {
-                $getter = $class->getMethod(str_replace('set', 'get', $methods[$i]->name));
-                $value = $getter ? $getter->invoke($entity) : null;
-                if(is_array($value)) {
-                    $value = new ArrayCollection($value);
-                }
-                if($value !== null) {
-                    $methods[$i]->invoke($this, $value);
-                }
-            }
-        }
-    }
-    
-    function mergeDeleted($entity) {
         $this->dataModificacao = new \DateTime();
         $class = new \ReflectionClass($entity);
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);

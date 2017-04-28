@@ -30,6 +30,7 @@ namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Turma;
@@ -105,7 +106,9 @@ class Enturmacao extends AbstractEditableEntity {
     }
     
     function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+        return $this->disciplinasCursadas->matching(
+            Criteria::create()->orderBy(['disciplina' => 'ASC'])
+        );
     }
 
     function encerrar() {

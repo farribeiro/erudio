@@ -76,7 +76,7 @@ class Media extends AbstractEditableEntity {
     
     /**  
     *  @JMS\Groups({"LIST"})
-    *  @JMS\MaxDepth(depth = 3)
+    *  @JMS\MaxDepth(depth = 2)
     *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}, inversedBy="medias") 
     *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
     */
@@ -88,16 +88,10 @@ class Media extends AbstractEditableEntity {
     */
     private $notas;
     
-    /** 
-    * @JMS\Type("boolean")
-    */
-    private $calculoAutomatico;
-    
     function __construct(DisciplinaCursada $disciplinaCursada, $numero) {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
         $this->nome = 'M' . $numero;
-        $this->calculoAutomatico = true;
         $this->notas = new ArrayCollection();
     }
     
@@ -109,12 +103,6 @@ class Media extends AbstractEditableEntity {
         return $this->notas->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );    
-    }
-    
-    function init() {
-        if ($this->calculoAutomatico === null) {
-            $this->calculoAutomatico = true;
-        }
     }
     
     /**
@@ -136,6 +124,10 @@ class Media extends AbstractEditableEntity {
         if($this->notas->contains($nota)) {  
             $this->notas->removeElement($nota);
         }        
+    }
+    
+    function resetar() {
+        $this->valor = 0;
     }
     
     function getNome() {
@@ -161,10 +153,6 @@ class Media extends AbstractEditableEntity {
     function getDisciplinaCursada() {
         return $this->disciplinaCursada;
     }
-        
-    function getCalculoAutomatico() {
-        return $this->calculoAutomatico;
-    }
 
     function setValor($valor) {
         $this->valor = $valor;
@@ -176,10 +164,6 @@ class Media extends AbstractEditableEntity {
     
     function setFrequencia($frequencia) {
         $this->frequencia = $frequencia;
-    }
-
-    function setCalculoAutomatico($calculoAutomatico = true) {
-        $this->calculoAutomatico = $calculoAutomatico;
-    }       
+    }     
     
 }
