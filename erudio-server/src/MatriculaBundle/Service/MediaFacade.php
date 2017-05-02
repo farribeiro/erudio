@@ -91,7 +91,7 @@ class MediaFacade extends AbstractFacade {
             throw new \Exception("O aluno com a matrícula {$enturmacao->getMatricula()->getCodigo()} "
                 . "não possui disciplinas em sua enturmação");
         }
-        $media = $this->getFacade()->findAll([
+        $media = $this->findAll([
             'numero' => $numeroMedia, 
             'disciplinaCursada' => $primeiraDisciplina->getId()
         ])[0];
@@ -130,11 +130,11 @@ class MediaFacade extends AbstractFacade {
     
     private function calcularMediaPonderada($notas) {
         $valor = $peso = 0.00;
-        foreach($notas as $nota) {
+        foreach ($notas as $nota) {
             $peso += $nota->getAvaliacao()->getPeso();
             $valor += $nota->getValor() * (float)$nota->getAvaliacao()->getPeso();
         }        
-        return round($valor / $peso, 2);
+        return count($notas) ? round($valor / $peso, 2) : 0;
     }
     
     private function calcularMediaConceitual($notas) {
