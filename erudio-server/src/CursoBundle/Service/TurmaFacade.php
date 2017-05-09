@@ -103,7 +103,9 @@ class TurmaFacade extends AbstractFacade {
     }    
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('t.etapa', 'etapa')->orderBy('etapa.ordem');
+        $qb->join('t.etapa', 'etapa')
+           ->addOrderBy('etapa.curso','ASC')
+           ->addOrderBy('etapa.ordem','ASC');
     }
         
     protected function beforeRemove($turma) {
