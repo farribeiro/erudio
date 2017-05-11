@@ -1,6 +1,6 @@
 <pdf>
-    {% for b in boletins %}
-        {% for i in 0..quantidadeMedias-1 %}
+    {% for i in 0..quantidadeMedias-1 %}
+        {% for b in boletins %}
             {% embed 'reports/templates/page.twig' %}
                 {% block pageType %}A4{% endblock %}
 
