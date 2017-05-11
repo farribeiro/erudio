@@ -59,6 +59,7 @@ class MediaFacade extends AbstractFacade {
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplinaCursada.disciplinaOfertada = :disciplinaOfertada')
                    ->andWhere('disciplinaCursada.status <> :incompleto')
+                   ->andWhere('disciplinaCursada.ativo = true')
                    ->setParameter('incompleto', DisciplinaCursada::STATUS_INCOMPLETO)
                    ->setParameter('disciplinaOfertada', $value);
             },
