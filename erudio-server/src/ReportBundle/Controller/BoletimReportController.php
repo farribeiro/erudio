@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use MatriculaBundle\Entity\Enturmacao;
+use MatriculaBundle\Entity\DisciplinaCursada;
 
 class BoletimReportController extends Controller {
     
@@ -103,6 +104,7 @@ class BoletimReportController extends Controller {
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
             $enturmacoes = $turma->getEnturmacoes();
             $boletins = [];
+            $this->gerarBoletim($enturmacoes[0]);
             foreach ($enturmacoes as $e) {
                 $boletins[] = $this->gerarBoletim($e);
             }
@@ -124,10 +126,16 @@ class BoletimReportController extends Controller {
         }
     }
     
-    private function gerarBoletim(Enturmacao $enturmacao) {
+    private function gerarBoletim(Enturmacao $enturmacao) { 
+        $disciplinas = $enturmacao->getDisciplinasCursadas();
+        $disciplinasCursadas = array();
+        foreach ($disciplinas as $disciplina) {
+            $status = $disciplina->getStatus();
+            if ($status == DisciplinaCursada::STATUS_CURSANDO) { array_push($disciplinasCursadas, $disciplina); }
+        }
         return [
             'matricula' => $enturmacao->getMatricula(), 
-            'disciplinas' => $enturmacao->getDisciplinasCursadas()
+            'disciplinas' => $disciplinasCursadas
         ];
     }
     
