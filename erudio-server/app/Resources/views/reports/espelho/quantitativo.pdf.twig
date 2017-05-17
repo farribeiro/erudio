@@ -1,0 +1,68 @@
+<pdf>
+    {% for i, disciplina in disciplinas %}
+        {% embed 'reports/templates/page.twig' %}
+            {% block pageType %}A4{% endblock %}
+
+            {% block title %}
+                <h1>Espelho de Notas {{"now"|date('Y')}}</h1>
+            {% endblock %}
+
+            {% block headerHeight %}70px{% endblock %}
+
+            {% block info %}
+                <p>
+                    <strong>Disciplina {{disciplina.nomeExibicao}}</strong>
+                </p>
+                <p>
+                    Turma: {{turma.nomeExibicao}}
+                </p>
+                <p>
+                    Curso: {{turma.etapa.curso.nome}}
+                </p>
+            {% endblock %}
+                  
+            {% block content %}    
+                <table font-size="10px" border-type="none">
+                    <tr>
+                        <td>
+                            <strong>Aluno</strong>
+                        </td>
+                        {% for i in 1..quantidadeMedias %}
+                            <td width="70px">
+                                <strong>{{i}}º {{unidadeRegime}}</strong>
+                            </td>
+                        {% endfor %}
+                        <td width="40px">
+                            <strong>Exame Final</strong>
+                        </td>
+                        <td width="70px">
+                            <strong>Resultado Final</strong>
+                        </td>
+                        <td width="90px">
+                            <strong>Faltas</strong>
+                        </td>
+                    </tr>
+                    {% for e in enturmacoes %}
+                        <tr line-height="15px">
+                            <td text-align="left">
+                                {{e.matricula.aluno.nome}}
+                            </td>
+                            {% for j in 0..quantidadeMedias - 1 %}
+                                <td>{{e.disciplinasCursadas[i].medias[j].valor}}</td>
+                            {% endfor %}
+                            <td>-</td>
+                            <td>{{disciplina.mediaFinal}}</td>
+                            {% set totalFaltas = 0 %}
+                            {% for j in 0..quantidadeMedias - 1 %}
+                                {% set totalFaltas = totalFaltas + e.disciplinasCursadas[i].medias[j].faltas %}
+                            {% endfor %}
+                            <td>{{totalFaltas}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endblock %}
+    {% endembed %}
+{% endfor %}
+</pdf>
+
+
