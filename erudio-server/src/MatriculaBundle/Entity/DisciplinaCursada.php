@@ -130,6 +130,14 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
+     /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\VirtualProperty
+     */
+    function getSigla() {
+        return $this->disciplina->getSigla();
+    }
+    
     /**
      * @JMS\VirtualProperty
      */

@@ -122,6 +122,56 @@ class EspelhoReportController extends Controller {
         }
     }
     
+    /**
+    * @Route("/espelho-media", defaults={ "_format" = "pdf" })
+    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
+    */
+    function mediaAction(Request $request) {
+        try {
+            $media = $request->query->getInt('media', 1);
+            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $disciplinasOfertadas = $turma->getDisciplinas();
+            $enturmacoes = $turma->getEnturmacoes();
+            $disciplinasCursadas = $enturmacoes[0]->getDisciplinasCursadas();
+            $disciplinas = $this->gerarMediaSimples($enturmacoes, $disciplinasCursadas, $media);
+            $template = $this->isSistemaQualitativo($turma->getEtapa()) 
+                ? 'reports/espelho/qualitativo.pdf.twig' 
+                : 'reports/espelho/quantitativoPorMedia.pdf.twig';
+            return $this->render($template, [
+                'instituicao' => $turma->getUnidadeEnsino(),
+                'turma' => $turma,
+                'media' => $media,
+                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
+                'nomeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getnome(),
+                'enturmacoes' => $turma->getEnturmacoes(),
+                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
+                    ? $this->getConceitoFacade()->findAll() : [],
+                'disciplinasOfertadas' => $disciplinasOfertadas,
+                'disciplinas' => $disciplinas
+            ]);
+        } catch (\Exception $ex) {
+            $this->get('logger')->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    private function gerarMediaSimples ($enturmacoes, $disciplinas, $media) {
+        foreach ($disciplinas as $d => $disciplina) {
+            $notasCount = 0;
+            $faltasCount = 0;
+            foreach ($enturmacoes as $enturmacao) {
+                $disciplinaCursada = $enturmacao->getDisciplinasCursadas();
+                $alunoMedias = $disciplinaCursada[$d]->getMedias();
+                $notasCount += $alunoMedias[$media-1]->getValor();
+                $faltasCount += $alunoMedias[$media-1]->getFaltas();
+            }
+            $disciplina->mediaTotal = $notasCount / count($enturmacoes);
+            $disciplina->faltasTotal = $faltasCount / count($enturmacoes);
+        }
+        return $disciplinas;
+    }
+
+
     private function isSistemaQualitativo($etapa) {
         return $etapa->getSistemaAvaliacao()->isQualitativo();
     }

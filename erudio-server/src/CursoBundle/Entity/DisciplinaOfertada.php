@@ -103,6 +103,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
+    /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\VirtualProperty
+     */
+    function getSigla() {
+        return $this->disciplina->getSigla();
+    }
+    
     function getTurma() {
         return $this->turma;
     }

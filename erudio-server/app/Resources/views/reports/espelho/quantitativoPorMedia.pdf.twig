@@ -1,0 +1,65 @@
+<pdf>
+        {% embed 'reports/templates/page.twig' %}
+            {% block pageType %}A4{% endblock %}
+            
+           {% block title %}
+                <h1>Espelho de Notas {{nomeRegime}}</h1>
+                <h3>{{media}}º {{unidadeRegime}} - {{"now"|date('Y')}}</h3>
+            {% endblock %}
+            
+            {% block headerHeight %}70px{% endblock %}
+            
+             {% block info %}
+                <p padding="0">
+                    Turma: {{turma.nomeExibicao}}
+                </p>
+                <p padding="0">
+                    Curso: {{turma.etapa.curso.nome}}
+                </p>
+            {% endblock %}
+            
+            {% block content %}
+                <div margin="0" padding="0" font-size="8px">
+                    <table>
+                        <tr>
+                            <td colspan="2" alpha="0"></td>
+                            {% for disciplinaOfertada in disciplinasOfertadas %}
+                                <td colspan="2"><strong>{{disciplinaOfertada.sigla}}</strong></td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td width="57px">
+                                <h4><strong>Código</strong></h4>
+                            </td>
+                            <td>
+                                <h4><strong>Aluno</strong></h4>
+                            </td>
+                                {% for disciplinaOfertada in disciplinasOfertadas %}
+                                    <td width="26px" padding-left="5px"><strong>N</strong></td>
+                                    <td width="18px" padding-left="5px"><strong>F</strong></td>
+                                {% endfor %}
+                        </tr>
+                        {% for i, enturmacao in enturmacoes %}
+                            <tr>
+                                <td>{{enturmacao.matricula.codigo}}</td>
+                                <td text-align="left">{{enturmacao.matricula.aluno.nome|upper}}</td>
+                                {% for disciplina in disciplinas %}
+                                    <td>{{enturmacao.disciplinasCursadas[loop.index0].medias[media-1].valor|number_format(1)}}</td>
+                                    <td>{{enturmacao.disciplinasCursadas[loop.index0].medias[media-1].faltas}}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="2" text-align="right"><strong>Médias</strong></td>
+                            {% for disciplina in disciplinas %}
+                                <td><strong>{{ attribute(disciplina, 'mediaTotal')|number_format(1) }}</strong></td>
+                                <td><strong>{{ attribute(disciplina, 'faltasTotal')|number_format(0) }}</strong></td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                </div>
+            {% endblock %}
+        {% endembed %}
+</pdf>
+
+

@@ -52,6 +52,12 @@ class Disciplina extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = true) 
+    */
+    private $sigla;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
     * @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
     */
     private $cargaHoraria;
@@ -94,6 +100,10 @@ class Disciplina extends AbstractEditableEntity {
         return $this->nomeExibicao;
     }
     
+    function getSigla() {
+        return $this->sigla;
+    }
+
     function getCargaHoraria() {
         return $this->cargaHoraria;
     }

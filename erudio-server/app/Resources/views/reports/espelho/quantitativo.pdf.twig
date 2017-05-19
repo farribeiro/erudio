@@ -27,9 +27,13 @@
                         <td>
                             <strong>Aluno</strong>
                         </td>
+                        {% set mediaNotas = [] %}
+                        {% set totalNotas = 0 %}
                         {% for i in 1..quantidadeMedias %}
                             <td width="70px">
                                 <strong>{{i}}º {{unidadeRegime}}</strong>
+                                
+                                {% set mediaNotas = mediaNotas|merge([totalNotas]) %}
                             </td>
                         {% endfor %}
                         <td width="40px">
@@ -48,7 +52,9 @@
                                 {{e.matricula.aluno.nome}}
                             </td>
                             {% for j in 0..quantidadeMedias - 1 %}
+                                {% set totalNotas = totalNotas + e.disciplinasCursadas[i].medias[j].valor %}
                                 <td>{{e.disciplinasCursadas[i].medias[j].valor}}</td>
+                                {% set mediaNotas = mediaNotas|merge({quantidadeMedias : totalNotas}) %}
                             {% endfor %}
                             <td>-</td>
                             <td>{{disciplina.mediaFinal}}</td>
@@ -59,6 +65,15 @@
                             <td>{{totalFaltas}}</td>
                         </tr>
                     {% endfor %}
+                    <tr>
+                        <td><strong>Médias</strong></td>
+                        {% for media in mediaNotas %}
+                            <td>{{media}}</td>
+                        {% endfor %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </table>
             {% endblock %}
     {% endembed %}
