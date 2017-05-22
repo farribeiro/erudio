@@ -22,12 +22,15 @@
                 <div margin="0" padding="0" font-size="8px">
                     <table>
                         <tr>
-                            <td colspan="2" alpha="0"></td>
+                            <td colspan="3" alpha="0"></td>
                             {% for disciplinaOfertada in disciplinasOfertadas %}
-                                <td colspan="2"><strong>{{disciplinaOfertada.sigla}}</strong></td>
+                                <td colspan="2"><h4><strong>{{disciplinaOfertada.sigla}}</strong></h4></td>
                             {% endfor %}
                         </tr>
                         <tr>
+                            <td width="20px">
+                                <h4><strong>Nº</strong></h4>
+                            </td>
                             <td width="57px">
                                 <h4><strong>Código</strong></h4>
                             </td>
@@ -41,6 +44,7 @@
                         </tr>
                         {% for i, enturmacao in enturmacoes %}
                             <tr>
+                                <td>{{i + 1}}</td>
                                 <td>{{enturmacao.matricula.codigo}}</td>
                                 <td text-align="left">{{enturmacao.matricula.aluno.nome|upper}}</td>
                                 {% for disciplina in disciplinas %}
@@ -50,7 +54,7 @@
                             </tr>
                         {% endfor %}
                         <tr>
-                            <td colspan="2" text-align="right"><strong>Médias</strong></td>
+                            <td colspan="3" text-align="right"><strong>Médias</strong></td>
                             {% for disciplina in disciplinas %}
                                 <td><strong>{{ attribute(disciplina, 'mediaTotal')|number_format(1) }}</strong></td>
                                 <td><strong>{{ attribute(disciplina, 'faltasTotal')|number_format(0) }}</strong></td>
