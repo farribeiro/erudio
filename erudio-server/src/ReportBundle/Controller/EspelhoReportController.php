@@ -34,7 +34,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Entity\Enturmacao;
 
 class EspelhoReportController extends Controller {
     
@@ -102,7 +101,7 @@ class EspelhoReportController extends Controller {
         try {
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
             $enturmacoes = $turma->getEnturmacoes();
-            $disciplinas = $enturmacoes[0]->getDisciplinasCursadas();
+            $disciplinas = $turma->getDisciplinas();
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
                 ? 'reports/espelho/qualitativo.pdf.twig' 
                 : 'reports/espelho/quantitativo.pdf.twig';

@@ -24,12 +24,15 @@
             {% block content %}    
                 <table font-size="10px" border-type="none">
                     <tr>
+                        <td width="18">
+                            <strong>Nº</strong>
+                        </td>
                         <td>
                             <strong>Aluno</strong>
                         </td>
-                        {% for i in 1..quantidadeMedias %}
+                        {% for q in 1..quantidadeMedias %}
                             <td width="70px">
-                                <strong>{{i}}º {{unidadeRegime}}</strong>
+                                <strong>{{q}}º {{unidadeRegime}}</strong>
                             </td>
                         {% endfor %}
                         <td width="40px">
@@ -42,19 +45,20 @@
                             <strong>Faltas</strong>
                         </td>
                     </tr>
-                    {% for e in enturmacoes %}
+                    {% for e, enturmacao in enturmacoes %}
                         <tr line-height="15px">
+                            <td>{{e + 1}}</td>
                             <td text-align="left">
-                                {{e.matricula.aluno.nome}}
+                                {{enturmacao.matricula.aluno.nome}}
                             </td>
                             {% for j in 0..quantidadeMedias - 1 %}
-                                <td>{{e.disciplinasCursadas[i].medias[j].valor}}</td>
+                                <td>{{enturmacao.disciplinasCursadas[i].medias[j].valor}}</td>
                             {% endfor %}
                             <td>-</td>
-                            <td>{{disciplina.mediaFinal}}</td>
+                            <td></td>
                             {% set totalFaltas = 0 %}
                             {% for j in 0..quantidadeMedias - 1 %}
-                                {% set totalFaltas = totalFaltas + e.disciplinasCursadas[i].medias[j].faltas %}
+                                {% set totalFaltas = totalFaltas + enturmacao.disciplinasCursadas[i].medias[j].faltas %}
                             {% endfor %}
                             <td>{{totalFaltas}}</td>
                         </tr>

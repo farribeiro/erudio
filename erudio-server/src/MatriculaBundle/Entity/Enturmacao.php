@@ -107,7 +107,9 @@ class Enturmacao extends AbstractEditableEntity {
     
     function getDisciplinasCursadas() {
         return $this->disciplinasCursadas->matching(
-            Criteria::create()->orderBy(['disciplina' => 'ASC'])
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['disciplina' => 'ASC'])
         );
     }
 

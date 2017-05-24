@@ -41,7 +41,7 @@ class Curso extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
+    * @ORM\Column(nullable = false)
     */
     private $nome;
     

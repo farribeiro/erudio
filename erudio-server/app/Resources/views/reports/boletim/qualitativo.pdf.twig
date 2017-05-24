@@ -47,10 +47,10 @@
                                 {% endfor %}
                                 <tr margin-bottom="10px">
                                     <td text-align="right">
-                                        <strong>Aproveitamento:</strong>
+                                        <strong>Nota:</strong>
                                     </td>
                                     <td>
-                                        <strong>{{disciplina.medias[i].valor * 10}}%</strong>
+                                        <strong>{{disciplina.medias[i].valor|number_format(1) }}</strong>
                                     </td>
                                 </tr>
                             {% endfor %}
