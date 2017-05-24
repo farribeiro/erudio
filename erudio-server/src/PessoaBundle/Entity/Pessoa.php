@@ -30,10 +30,10 @@ namespace PessoaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use AuthBundle\Entity\Usuario;
-use AssetsBundle\Entity\Asset;
 
 
 /**
@@ -91,6 +91,7 @@ class Pessoa extends AbstractEditableEntity {
     private $codigoInep;
     
     /** 
+    * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Telefone", mappedBy = "pessoa", fetch = "EXTRA_LAZY", cascade = {"all"}) 
     */
     private $telefones;
@@ -100,9 +101,8 @@ class Pessoa extends AbstractEditableEntity {
     * @ORM\JoinColumn(name="usuario_id")
     */
     private $usuario;
-
-    public function __construct() {
-        $this->endereco = new Endereco();
+    
+    function init() {
         $this->telefones = new ArrayCollection();
     }
     
@@ -162,8 +162,14 @@ class Pessoa extends AbstractEditableEntity {
         return $this->endereco = $endereco;
     }
     
-    public function getTelefones() {
-        return $this->telefones;
+    /**
+    * 
+    * @JMS\VirtualProperty
+    */
+    function getTelefones() {
+        return $this->telefones->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     function getUsuario() {
