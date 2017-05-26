@@ -49,7 +49,7 @@ class ModuloController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("modulos") 
+    *   @FOS\Get("modulos/{id}") 
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);

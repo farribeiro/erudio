@@ -139,6 +139,18 @@ abstract class AbstractFacade {
     }
 
     /**
+     * Retorna a contagem de entidades que satisfazem os parâmetros de busca informados.
+     * 
+     * @param array $params
+     * @return int quantidade de entidades
+     */
+    function count($params = []) {
+        return $this->buildQuery($params)
+            ->select("COUNT({$this->queryAlias()}.id)")
+            ->getQuery()->getSingleScalarResult();
+    }
+    
+    /**
      * 
      * @param type $entidade
      * @param type $isTransaction
