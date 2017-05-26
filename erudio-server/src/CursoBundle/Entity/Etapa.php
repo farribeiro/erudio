@@ -113,6 +113,14 @@ class Etapa extends AbstractEditableEntity {
         $this->disciplinas = new ArrayCollection();
     }
     
+    function isSistemaQuantitativo() {
+        return $this->getSistemaAvaliacao()->isQuantitativo();
+    }
+    
+    function isSistemaQualitativo() {
+        return $this->getSistemaAvaliacao()->isQualitativo();
+    }
+    
     function getDisciplinas() {
         return $this->disciplinas->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))

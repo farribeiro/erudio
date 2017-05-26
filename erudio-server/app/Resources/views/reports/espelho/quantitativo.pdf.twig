@@ -1,5 +1,5 @@
 <pdf>
-    {% for i, disciplina in disciplinas %}
+    {% for disciplina, alunos in folhas %}
         {% embed 'reports/templates/page.twig' %}
             {% block pageType %}A4{% endblock %}
 
@@ -11,7 +11,7 @@
 
             {% block info %}
                 <p>
-                    <strong>Disciplina {{disciplina.nomeExibicao}}</strong>
+                    <strong>Disciplina: {{disciplina}}</strong>
                 </p>
                 <p>
                     Turma: {{turma.nomeExibicao}}
@@ -45,20 +45,20 @@
                             <strong>Faltas</strong>
                         </td>
                     </tr>
-                    {% for e, enturmacao in enturmacoes %}
+                    {% for i, aluno in alunos %}
                         <tr line-height="15px">
-                            <td>{{e + 1}}</td>
+                            <td>{{i + 1}}</td>
                             <td text-align="left">
-                                {{enturmacao.matricula.aluno.nome}}
+                                {{aluno.nomeAluno}}
                             </td>
-                            {% for j in 0..quantidadeMedias - 1 %}
-                                <td>{{enturmacao.disciplinasCursadas[i].medias[j].valor}}</td>
+                            {% for media in aluno.medias %}
+                                <td>{{media.valor}}</td>
                             {% endfor %}
                             <td>-</td>
                             <td></td>
                             {% set totalFaltas = 0 %}
-                            {% for j in 0..quantidadeMedias - 1 %}
-                                {% set totalFaltas = totalFaltas + enturmacao.disciplinasCursadas[i].medias[j].faltas %}
+                            {% for media in aluno.medias %}
+                                {% set totalFaltas = totalFaltas + media.faltas %}
                             {% endfor %}
                             <td>{{totalFaltas}}</td>
                         </tr>

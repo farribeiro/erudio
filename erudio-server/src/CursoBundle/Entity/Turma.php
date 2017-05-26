@@ -139,7 +139,9 @@ class Turma extends AbstractEditableEntity {
 
     function getDisciplinas() {
         return $this->disciplinas->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+            Criteria::create()
+                ->where(Criteria::expr()->eq('ativo', true))
+                ->orderBy(['disciplina' => 'ASC'])
         );
     }
     

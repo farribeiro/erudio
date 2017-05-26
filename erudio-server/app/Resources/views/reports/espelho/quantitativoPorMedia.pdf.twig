@@ -23,8 +23,8 @@
                     <table>
                         <tr>
                             <td colspan="3" alpha="0"></td>
-                            {% for disciplinaOfertada in disciplinasOfertadas %}
-                                <td colspan="2"><strong>{{disciplinaOfertada.sigla}}</strong></td>
+                            {% for disciplina in disciplinas %}
+                                <td colspan="2"><strong>{{disciplina.sigla}}</strong></td>
                             {% endfor %}
                         </tr>
                         <tr>
@@ -37,28 +37,30 @@
                             <td>
                                 <strong>Aluno</strong>
                             </td>
-                                {% for disciplinaOfertada in disciplinasOfertadas %}
-                                    <td width="26px" padding-left="5px"><strong>N</strong></td>
-                                    <td width="18px" padding-left="5px"><strong>F</strong></td>
-                                {% endfor %}
+                            {% for disciplina in disciplinas %}
+                                <td width="26px" padding-left="5px"><strong>N</strong></td>
+                                <td width="18px" padding-left="5px"><strong>F</strong></td>
+                            {% endfor %}
                         </tr>
-                        {% for i, enturmacao in enturmacoes %}
+                        {% set totalNotas = [] %}
+                        {% set totalFaltas = [] %}
+                        {% for i, e in enturmacoes %}
                             <tr>
                                 <td>{{i + 1}}</td>
-                                <td>{{enturmacao.matricula.codigo}}</td>
-                                <td text-align="left">{{enturmacao.matricula.aluno.nome|upper}}</td>
-                                {% for disciplina in disciplinas %}
-                                    <td>{{enturmacao.disciplinasCursadas[loop.index0].medias[media-1].valor|number_format(1)}}</td>
-                                    <td>{{enturmacao.disciplinasCursadas[loop.index0].medias[media-1].faltas}}</td>
-                                {% endfor %}
+                                <td>{{e.matricula.codigo}}</td>
+                                <td text-align="left">{{e.matricula.nomeAluno|upper}}</td>
+                                {% for m in e.medias %}
+                                    <td>{{0 + m.valor}}</td>
+                                    <td>{{m.faltas}}</td>
+                                {% endfor %}    
                             </tr>
                         {% endfor %}
                         <tr>
                             <td colspan="3" text-align="right"><strong>Médias</strong></td>
-                            {% for disciplina in disciplinas %}
-                                <td><strong>{{ attribute(disciplina, 'mediaTotal')|number_format(1) }}</strong></td>
-                                <td><strong>{{ attribute(disciplina, 'faltasTotal')|number_format(0) }}</strong></td>
-                            {% endfor %}
+                            {% for m in mediasTurma %}
+                                <td>{{0 + m.valor|number_format(2)}}</td>
+                                <td>{{m.faltas|number_format(0)}}</td>
+                            {% endfor %}    
                         </tr>
                     </table>
                 </div>

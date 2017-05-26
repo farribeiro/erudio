@@ -34,6 +34,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CursoBundle\Entity\Turma;
+use ReportBundle\Util\StringUtil;
 
 class EspelhoReportController extends Controller {
     
@@ -53,41 +55,6 @@ class EspelhoReportController extends Controller {
     * @ApiDoc(
     *   resource = true,
     *   section = "Módulo Relatórios",
-    *   description = "Boletim individual",
-    *   statusCodes = {
-    *       200 = "Documento PDF"
-    *   }
-    * )
-    * 
-    * @Route("/boletim", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function individualAction(Request $request) {
-        try {
-            $enturmacao = $this->getEnturmacaoFacade()->find($request->query->getInt('enturmacao'));
-            $turma = $enturmacao->getTurma();
-            $template = $this->isSistemaQualitativo($turma->getEtapa()) 
-                ? 'reports/boletim/qualitativo.pdf.twig'
-                : 'reports/boletim/quantitativo.pdf.twig';
-            return $this->render($template, [
-                'instituicao' => $turma->getUnidadeEnsino(),
-                'turma' => $turma,
-                'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
-                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'boletins' => $this->gerarBoletim($enturmacao),
-                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->getConceitoFacade()->findAll() : [],
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
-        }
-    }
-    
-    /**
-    * @ApiDoc(
-    *   resource = true,
-    *   section = "Módulo Relatórios",
     *   description = "Boletins por turma",
     *   statusCodes = {
     *       200 = "Documento PDF"
@@ -100,9 +67,7 @@ class EspelhoReportController extends Controller {
     function turmaAction(Request $request) {
         try {
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
-            $enturmacoes = $turma->getEnturmacoes();
-            $disciplinas = $turma->getDisciplinas();
-            $template = $this->isSistemaQualitativo($turma->getEtapa()) 
+            $template = $turma->getEtapa()->isSistemaQualitativo()
                 ? 'reports/espelho/qualitativo.pdf.twig' 
                 : 'reports/espelho/quantitativo.pdf.twig';
             return $this->render($template, [
@@ -110,9 +75,8 @@ class EspelhoReportController extends Controller {
                 'turma' => $turma,
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'enturmacoes' => $enturmacoes,
-                'disciplinas' => $disciplinas,
-                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
+                'folhas' => $this->gerarEspelhoCompleto($turma),
+                'conceitos' => $turma->getEtapa()->isSistemaQualitativo() 
                     ? $this->getConceitoFacade()->findAll() : [],
             ]);
         } catch (\Exception $ex) {
@@ -129,24 +93,21 @@ class EspelhoReportController extends Controller {
         try {
             $media = $request->query->getInt('media', 1);
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
-            $disciplinasOfertadas = $turma->getDisciplinas();
-            $enturmacoes = $turma->getEnturmacoes();
-            $disciplinasCursadas = $enturmacoes[0]->getDisciplinasCursadas();
-            $disciplinas = $this->gerarMediaSimples($enturmacoes, $disciplinasCursadas, $media);
-            $template = $this->isSistemaQualitativo($turma->getEtapa()) 
+            $template = $turma->getEtapa()->isSistemaQualitativo()
                 ? 'reports/espelho/qualitativo.pdf.twig' 
                 : 'reports/espelho/quantitativoPorMedia.pdf.twig';
+            $consolidado = $this->gerarEspelhoConsolidado($turma, $media);
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
                 'media' => $media,
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'nomeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getnome(),
-                'enturmacoes' => $turma->getEnturmacoes(),
-                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
+                'disciplinas' => $turma->getDisciplinas(),
+                'enturmacoes' => $consolidado['enturmacoes'],
+                'mediasTurma' => $consolidado['mediasTurma'],
+                'conceitos' => $turma->getEtapa()->isSistemaQualitativo() 
                     ? $this->getConceitoFacade()->findAll() : [],
-                'disciplinasOfertadas' => $disciplinasOfertadas,
-                'disciplinas' => $disciplinas
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());
@@ -154,25 +115,57 @@ class EspelhoReportController extends Controller {
         }
     }
     
-    private function gerarMediaSimples ($enturmacoes, $disciplinas, $media) {
-        foreach ($disciplinas as $d => $disciplina) {
-            $notasCount = 0;
-            $faltasCount = 0;
-            foreach ($enturmacoes as $enturmacao) {
-                $disciplinaCursada = $enturmacao->getDisciplinasCursadas();
-                $alunoMedias = $disciplinaCursada[$d]->getMedias();
-                $notasCount += $alunoMedias[$media-1]->getValor();
-                $faltasCount += $alunoMedias[$media-1]->getFaltas();
+    private function gerarEspelhoCompleto(Turma $turma) {
+        $disciplinasOfertadas = $turma->getDisciplinas();
+        $folhas = [];
+        foreach ($disciplinasOfertadas as $disciplinaOfertada) {
+            $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
+                'disciplinaOfertada' => $disciplinaOfertada
+            ]);
+            usort($disciplinasCursadas, function($a, $b) {
+                return strcasecmp(
+                    StringUtil::removerAcentos($a->getMatricula()->getAluno()->getNome()), 
+                    StringUtil::removerAcentos($b->getMatricula()->getAluno()->getNome())
+                );
+            });
+            foreach ($disciplinasCursadas as $disciplinaCursada) {
+                $folhas[$disciplinaOfertada->getNomeExibicao()][] = [
+                    'nomeAluno' => $disciplinaCursada->getMatricula()->getAluno()->getNome(),
+                    'medias' => $disciplinaCursada->getMedias()
+                ];
             }
-            $disciplina->mediaTotal = $notasCount / count($enturmacoes);
-            $disciplina->faltasTotal = $faltasCount / count($enturmacoes);
         }
-        return $disciplinas;
-    }
-
-
-    private function isSistemaQualitativo($etapa) {
-        return $etapa->getSistemaAvaliacao()->isQualitativo();
+        return $folhas;
     }
     
+    private function gerarEspelhoConsolidado(Turma $turma, $media) {
+        $enturmacoes = [];
+        $mediasTurma = [];
+        foreach ($turma->getDisciplinas() as $d) {
+            $mediasTurma[$d->getDisciplina()->getId()] = ['valor' => 0.0, 'faltas' => 0];
+        }
+        foreach($turma->getEnturmacoes() as $enturmacao) {
+            $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
+                'enturmacao' => $enturmacao
+            ]);
+            $medias = array_map(function($d) use ($media, &$mediasTurma) {
+                $media = $this->get('facade.matricula.medias')->findOne([
+                    'disciplinaCursada' => $d,
+                    'numero' => $media
+                ]);
+                $mediasTurma[$d->getDisciplina()->getId()]['valor'] += $media->getValor();
+                $mediasTurma[$d->getDisciplina()->getId()]['faltas'] += $media->getFaltas();
+                return $media;
+            }, $disciplinasCursadas);
+            $enturmacoes[] = [
+                'matricula' => $enturmacao->getMatricula(),
+                'medias' => $medias
+            ];
+        }
+        foreach ($turma->getDisciplinas() as $d) {
+            $mediasTurma[$d->getDisciplina()->getId()]['valor'] /= count($enturmacoes);
+            $mediasTurma[$d->getDisciplina()->getId()]['faltas'] /= count($enturmacoes);
+        }
+        return ['enturmacoes' => $enturmacoes, 'mediasTurma' => $mediasTurma];
+    }
 }
