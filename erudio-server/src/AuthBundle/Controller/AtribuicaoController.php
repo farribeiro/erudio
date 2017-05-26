@@ -135,19 +135,6 @@ class AtribuicaoController extends AbstractEntityController {
     
     /**
     * @ApiDoc()
-    * 
-    * @FOS\Put("atribuicoes-removidas/{id}")
-    * @ParamConverter("atribuicao", converter="fos_rest.request_body")
-    */
-    function putDeletedAction(Request $request, $id, Atribuicao $atribuicao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->putDeleted($request, $id, $atribuicao, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

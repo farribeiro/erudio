@@ -31,13 +31,13 @@ namespace CoreBundle\REST;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Doctrine\ORM\NoResultException;
-use CoreBundle\ORM\Exception\IllegalOperationException;
-use CoreBundle\ORM\Exception\UniqueViolationException;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\ORM\Exception\UniqueViolationException;
+use CoreBundle\ORM\AbstractFacade;
 
 /**
 * Controlador REST que serve como base aos demais.
@@ -61,25 +61,13 @@ abstract class AbstractEntityController extends FOSRestController {
         return $this->handleView($view);
     }
 
-    function getList(Request $request, $queryParams) {
-        $params = $queryParams instanceof ParamFetcherInterface ? $queryParams->all() : $queryParams;
-        $resultados = $this->getFacade()->findAll(
-            $params,
-            key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null
-        );
+    function getList(Request $request, array $params) {
+        $page = key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null;
+        $resultados = $this->getFacade()->findAll($params, $page);
         $view = View::create($resultados, Codes::HTTP_OK);
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        return $this->handleView($view);
-    }
-    
-    function getListByNome(Request $request, $queryParams) {
-        $params = $queryParams instanceof ParamFetcherInterface ? $queryParams->all() : $queryParams;
-        $resultados = $this->getFacade()->findAllByNome(
-            $params,
-            key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null
-        );
-        $view = View::create($resultados, Codes::HTTP_OK);
+        if (!is_null($page)) {
+            $this->addPageLinks($request, $view, $params, $page);
+        }
         $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
         $view->getSerializationContext()->enableMaxDepthChecks();
         return $this->handleView($view);
@@ -129,16 +117,6 @@ abstract class AbstractEntityController extends FOSRestController {
         return $this->handleView($view);
     }
     
-    function putDeleted(Request $request, $id, $entidade, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        $entidadeAtualizada = $this->getFacade()->updateDeleted($id, $entidade);
-        $view = View::create($entidadeAtualizada, Codes::HTTP_OK);
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        return $this->handleView($view);
-    }
-    
     function putBatch(Request $request, $entidades, ConstraintViolationListInterface $errors) {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
@@ -163,6 +141,19 @@ abstract class AbstractEntityController extends FOSRestController {
             $view = View::create($ex->getMessage(), Codes::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);
+    }
+    
+    protected function addPageLinks(Request $request, View $view, array $params, $page) {
+        $links = [];
+        if ($this->getFacade()->count($params) / (($page + 1) * AbstractFacade::PAGE_SIZE) > 1) {
+            $next = $page + 1;
+            $links[] = "<{$request->getPathInfo()}?page={$next}>; rel=\"next\"";
+        }
+        if ($page > 0) {
+            $prev = $page - 1;
+            $links[] = "<{$request->getPathInfo()}?page={$prev}>; rel=\"previous\"";
+        }
+        $view->setHeader('Link', $links);
     }
     
     protected function handleValidationErrors(ConstraintViolationListInterface $errors) {
