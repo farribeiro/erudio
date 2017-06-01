@@ -36,6 +36,7 @@ use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CursoBundle\Entity\Turma;
 use ReportBundle\Util\StringUtil;
+use MatriculaBundle\Entity\DisciplinaCursada;
 
 class EspelhoReportController extends Controller {
     
@@ -120,7 +121,8 @@ class EspelhoReportController extends Controller {
         $folhas = [];
         foreach ($disciplinasOfertadas as $disciplinaOfertada) {
             $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
-                'disciplinaOfertada' => $disciplinaOfertada
+                'disciplinaOfertada' => $disciplinaOfertada,
+                'status' => DisciplinaCursada::STATUS_CURSANDO
             ]);
             usort($disciplinasCursadas, function($a, $b) {
                 return strcasecmp(
@@ -146,7 +148,8 @@ class EspelhoReportController extends Controller {
         }
         foreach($turma->getEnturmacoes() as $enturmacao) {
             $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
-                'enturmacao' => $enturmacao
+                'enturmacao' => $enturmacao,
+                'status' => DisciplinaCursada::STATUS_CURSANDO
             ]);
             $medias = array_map(function($d) use ($media, &$mediasTurma) {
                 $media = $this->get('facade.matricula.medias')->findOne([
