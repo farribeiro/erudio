@@ -94,10 +94,10 @@ class Media extends AbstractEditableEntity {
     */
     private $notas;
     
-    function __construct(DisciplinaCursada $disciplinaCursada, $numero, $peso = 1) {
+    function __construct(DisciplinaCursada $disciplinaCursada, $numero, $peso = 1, $nome = null) {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
-        $this->nome = 'M' . $numero;
+        $this->nome = is_null($nome) ? 'M' . $numero : $nome;
         $this->peso = $peso;
         $this->notas = new ArrayCollection();
     }

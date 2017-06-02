@@ -16,7 +16,7 @@ MatriculaBundle\Entity\Frequencia:
 MatriculaBundle\Entity\DisciplinaCursada:
     properties:
         status:
-            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "DISPENSADO"]
+            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "DISPENSADO", "INCOMPLETO", "EM_EXAME"]
             
 MatriculaBundle\Entity\Desligamento:
     properties:

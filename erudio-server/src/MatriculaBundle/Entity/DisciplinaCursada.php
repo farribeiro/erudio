@@ -45,7 +45,8 @@ class DisciplinaCursada extends AbstractEditableEntity {
           STATUS_APROVADO = "APROVADO",
           STATUS_REPROVADO = "REPROVADO",
           STATUS_DISPENSADO = "DISPENSADO",
-          STATUS_INCOMPLETO = 'INCOMPLETO';
+          STATUS_INCOMPLETO = 'INCOMPLETO',
+          STATUS_EXAME = 'EM_EXAME';
     
     /**
     * @JMS\Groups({"LIST"})  
@@ -149,6 +150,33 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
     }
     
+    function emAberto() {
+        return $this->status === self::STATUS_CURSANDO 
+                || $this->status === self::STATUS_EXAME 
+                || is_null($this->mediaFinal);
+    }
+    
+    function encerrar($status = null) {
+        $statusFinal = $status ? $status : $this->status;
+        if ($statusFinal != self::STATUS_CURSANDO && $statusFinal != self::STATUS_EXAME) {
+            $this->status = $statusFinal;
+            $this->dataEncerramento = new \DateTime();
+        }
+    }
+    
+    function atualizarStatus() {
+        $sistemaAvaliacao = $this->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        if ($this->status === self::STATUS_EXAME) {
+            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else if ($sistemaAvaliacao->getExame() === false) {
+            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else {
+            $this->status = self::STATUS_EXAME;
+        }
+    }
+    
     function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
         if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
             throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
@@ -160,13 +188,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     function desvincularEnturmacao() {
         $this->enturmacao = null;
         $this->disciplinaOfertada = null;
-    }
-    
-    function encerrar($status) {
-        if ($this->status == self::STATUS_CURSANDO && $status != self::STATUS_CURSANDO) {
-            $this->status = $status;
-            $this->dataEncerramento = new \DateTime();
-        }
     }
     
     function getMedias() {

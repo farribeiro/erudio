@@ -192,13 +192,11 @@ class TurmaFacade extends AbstractFacade {
         foreach($turma->getDisciplinas() as $ofertada) {
             $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
             foreach ($cursadas as $cursada) {
-                if (is_null($cursada->getMediaFinal()) || is_null($cursada->getFrequenciaTotal())) {
+                if ($cursada->emAberto()) {
                     throw new IllegalUpdateException(
                         'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
                             . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
                     );
-                } else {
-                    //calcular media final da disciplina, aprovar ou reprovar
                 }
             }
         }
