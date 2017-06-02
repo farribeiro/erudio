@@ -52,36 +52,41 @@ class QuadroHorario extends AbstractEditableEntity {
     */
     private $inicio;
     
-    /** 
+    /**
     * @JMS\Type("DateTime<'H:i:s'>")
     * @JMS\Groups({"LIST"})
     * @ORM\Column(name = "turno_termino", type = "time", nullable = false) 
     */
     private $termino;
     
-    /**        
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "ModeloQuadroHorario") 
     */
     private $modelo;
     
-    /**        
+    /**
+    * @JMS\Groups({"DETAILS"})       
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\JoinColumn(name = "unidade_ensino_id") 
     */
     private $unidadeEnsino;
     
-    /**        
+    /**
+    * @JMS\Groups({"DETAILS"})       
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turno") 
     */
     private $turno;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\OneToMany(targetEntity = "DiaSemana", mappedBy = "quadroHorario", cascade = {"persist"}) 
     */
     private $diasSemana;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"}) 
     * @ORM\OneToMany(targetEntity = "Horario", mappedBy = "quadroHorario", cascade = {"persist"}) 
     */
     private $horarios;

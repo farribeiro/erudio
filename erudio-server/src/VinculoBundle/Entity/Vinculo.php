@@ -50,7 +50,7 @@ class Vinculo extends AbstractEditableEntity {
           CONTRATO_COMISSIONADO = 'COMISSIONADO';
     
     /**
-    * @JMS\Groups({"LIST"})   
+    * @JMS\Groups({"LIST"})
     * @ORM\Column
     */
     private $codigo;

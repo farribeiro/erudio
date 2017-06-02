@@ -74,11 +74,8 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     */
     private $atribuicoes;
     
-    public function __construct() {
-        
-    }
-    
     public function eraseCredentials() {
+        
     }
 
     public function init() {

@@ -1,5 +1,4 @@
 parameters:
-    
 
 services:
     twig.report_extension:

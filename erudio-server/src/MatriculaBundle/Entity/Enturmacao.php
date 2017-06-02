@@ -66,6 +66,7 @@ class Enturmacao extends AbstractEditableEntity {
     private $disciplinasCursadas;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
     */
     private $vaga;

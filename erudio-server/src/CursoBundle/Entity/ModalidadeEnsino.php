@@ -39,9 +39,9 @@ use CoreBundle\ORM\AbstractEntity;
 class ModalidadeEnsino extends AbstractEntity {
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     function getNome() {

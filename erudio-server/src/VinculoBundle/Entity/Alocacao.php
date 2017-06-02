@@ -61,6 +61,7 @@ class Alocacao extends AbstractEditableEntity {
     private $instituicao;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToMany(targetEntity = "CursoBundle\Entity\DisciplinaOfertada", mappedBy = "professores")
     */ 
     private $disciplinasMinistradas;

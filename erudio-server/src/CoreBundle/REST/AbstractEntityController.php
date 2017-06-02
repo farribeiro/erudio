@@ -46,6 +46,7 @@ use CoreBundle\ORM\AbstractFacade;
 abstract class AbstractEntityController extends FOSRestController {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
+    const SERIALIZER_GROUP_DETAILS = 'DETAILS';
     const PAGE_PARAM = 'page';
     
     abstract function getFacade();
@@ -54,7 +55,7 @@ abstract class AbstractEntityController extends FOSRestController {
         try {
             $entidade = $this->getFacade()->find($id);
             $view = View::create($entidade, Codes::HTTP_OK);
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $this->configureSerializationContext($view->getSerializationContext());
         } catch(\Exception $ex) {
             $view = View::create(null, Codes::HTTP_NOT_FOUND);
         }
@@ -68,8 +69,7 @@ abstract class AbstractEntityController extends FOSRestController {
         if (!is_null($page)) {
             $this->addPageLinks($request, $view, $params, $page);
         }
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        $view->getSerializationContext()->enableMaxDepthChecks();
+        $this->configureSerializationContext($view->getSerializationContext(), [self::SERIALIZER_GROUP_LIST]);
         return $this->handleView($view);
     }
     
@@ -80,7 +80,7 @@ abstract class AbstractEntityController extends FOSRestController {
         try {
             $entidadeCriada = $this->getFacade()->create($entidade);
             $view = View::create($entidadeCriada, Codes::HTTP_OK);
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $this->configureSerializationContext($view->getSerializationContext());
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         } catch (IllegalOperationException $ex) {
@@ -96,7 +96,7 @@ abstract class AbstractEntityController extends FOSRestController {
         try {
             $this->getFacade()->createBatch($entidades);
             $view = View::create(null, Codes::HTTP_NO_CONTENT);
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $this->configureSerializationContext($view->getSerializationContext());
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         }
@@ -110,7 +110,7 @@ abstract class AbstractEntityController extends FOSRestController {
         try {
             $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
             $view = View::create($entidadeAtualizada, Codes::HTTP_OK);
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $this->configureSerializationContext($view->getSerializationContext());
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         }
@@ -124,7 +124,7 @@ abstract class AbstractEntityController extends FOSRestController {
         try {
             $this->getFacade()->updateBatch($entidades);
             $view = View::create(null, Codes::HTTP_NO_CONTENT);
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $this->configureSerializationContext($view->getSerializationContext());
         } catch (UniqueViolationException $ex) {
             $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
         } 
@@ -158,6 +158,13 @@ abstract class AbstractEntityController extends FOSRestController {
     
     protected function handleValidationErrors(ConstraintViolationListInterface $errors) {
         return $this->handleView(View::create($errors, Codes::HTTP_BAD_REQUEST));
+    }
+    
+    protected function configureSerializationContext($context, array $groups = 
+            [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]) {
+        $context->setGroups($groups);
+        $context->enableMaxDepthChecks();
+        return $context;
     }
     
 }

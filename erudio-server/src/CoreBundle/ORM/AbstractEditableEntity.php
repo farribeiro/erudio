@@ -38,12 +38,14 @@ use JMS\Serializer\Annotation as JMS;
 abstract class AbstractEditableEntity extends AbstractEntity {
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_cadastro", type="datetime", nullable=false) 
     */
     protected $dataCadastro;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_modificacao", type="datetime", nullable=true) 
     */

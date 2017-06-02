@@ -39,21 +39,27 @@ use CoreBundle\ORM\AbstractEntity;
 class Cidade extends AbstractEntity {
 
     /** 
-        *   @JMS\Groups({"LIST"})   
-        *   @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
 
-    /** @ORM\Column(nullable = false) */
+    /** 
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $sigla;
     
-    /** @ORM\Column(nullable = true) */
+    /**
+    * @JMS\Groups({"DETAILS"})  
+    * @ORM\Column(nullable = true) 
+    */
     private $ibge;
 
     /** 
-        * @JMS\Groups({"LIST"})    
-        * @ORM\ManyToOne(targetEntity = "Estado") 
-        */
+    * @JMS\Groups({"LIST"})    
+    * @ORM\ManyToOne(targetEntity = "Estado") 
+    */
     private $estado;
 
     public function getNome() {

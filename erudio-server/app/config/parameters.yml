@@ -11,4 +11,3 @@ parameters:
     mailer_password: warningeducacao
     secret: 'W!a@r#n$i%n&g'
     jms_serializer.camel_case_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
-

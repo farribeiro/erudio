@@ -53,7 +53,8 @@ class DiaEvento extends AbstractEditableEntity {
     */
     private $termino;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "Dia", inversedBy = "eventos") 
     */
     private $dia;

@@ -38,28 +38,52 @@ use CoreBundle\ORM\AbstractEditableEntity;
 */
 class Endereco extends AbstractEditableEntity {
     
-    /** @ORM\Column(nullable = false) */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $logradouro;
     
-    /** @ORM\Column(nullable = false) */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $numero;
     
-    /** @ORM\Column() */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column
+    */
     private $complemento;
     
-    /** @ORM\Column(nullable=false) */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(nullable = false) 
+    */
     private $cep;
     
-    /** @ORM\Column() */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column
+    */
     private $bairro;
     
-    /** @ORM\ManyToOne(targetEntity="Cidade") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity="Cidade") 
+    */
     private $cidade;
     
-    /** @ORM\Column() */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column 
+    */
     private $latitude;
     
-    /** @ORM\Column() */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column
+    */
     private $longitude;
     
     function getLogradouro() {

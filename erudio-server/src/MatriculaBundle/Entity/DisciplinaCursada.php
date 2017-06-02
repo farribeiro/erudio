@@ -79,17 +79,21 @@ class DisciplinaCursada extends AbstractEditableEntity {
     private $frequenciaTotal;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_encerramento", type="datetime", nullable=false) 
     */
     protected $dataEncerramento;
     
-    /** @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") 
+    */
     private $enturmacao;
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3) 
+    * @JMS\MaxDepth(depth = 3)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
     * @ORM\JoinColumn(name = "turma_disciplina_id")  
     */

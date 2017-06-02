@@ -60,6 +60,12 @@ class Media extends AbstractEditableEntity {
     */
     private $valor;
     
+    /**  
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column
+    */
+    private $peso;
+    
     /**
      * @JMS\Groups({"LIST"})
      * @JMS\Type("integer")
@@ -88,10 +94,11 @@ class Media extends AbstractEditableEntity {
     */
     private $notas;
     
-    function __construct(DisciplinaCursada $disciplinaCursada, $numero) {
+    function __construct(DisciplinaCursada $disciplinaCursada, $numero, $peso = 1) {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
         $this->nome = 'M' . $numero;
+        $this->peso = $peso;
         $this->notas = new ArrayCollection();
     }
     

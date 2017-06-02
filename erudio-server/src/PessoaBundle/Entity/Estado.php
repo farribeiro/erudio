@@ -39,18 +39,21 @@ use CoreBundle\ORM\AbstractEntity;
 class Estado extends AbstractEntity {
     
     /** 
-        *   @JMS\Groups({"LIST"})   
-        *   @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     /** 
-        *   @JMS\Groups({"LIST"})   
-        *   @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
+    */
     private $sigla;
     
-    /** @ORM\ManyToOne(targetEntity = "Pais") */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\ManyToOne(targetEntity = "Pais") 
+    */
     private $pais;
     
     public function getNome() {

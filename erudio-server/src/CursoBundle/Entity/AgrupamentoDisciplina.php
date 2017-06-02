@@ -45,6 +45,7 @@ class AgrupamentoDisciplina extends AbstractEditableEntity {
     private $nome;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Etapa") 
     */

@@ -39,8 +39,8 @@ use CoreBundle\ORM\AbstractEntity;
 class Raca extends AbstractEntity {
     
     /** 
-    *   @jms\Groups({"LIST"})   
-    *   @ORM\Column(unique = true, nullable = false) 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(unique = true, nullable = false) 
     */
     private $nome;
     

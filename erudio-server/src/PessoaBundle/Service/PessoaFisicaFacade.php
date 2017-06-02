@@ -80,7 +80,7 @@ class PessoaFisicaFacade extends AbstractFacade {
             $checagem = ['certidaoNascimento' => $pessoa->getCertidaoNascimento()];
         } else {
             $checagem = [
-                'nome' => $pessoa->getNome(), 
+                'nome' => trim($pessoa->getNome()), 
                 'dataNascimento' => $pessoa->getDataNascimento()->format('Y-m-d')
             ];
         }

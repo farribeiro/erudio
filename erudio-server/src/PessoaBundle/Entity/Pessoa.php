@@ -83,11 +83,15 @@ class Pessoa extends AbstractEditableEntity {
     private $genero;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\OneToOne(targetEntity = "Endereco")
     */
     private $endereco;
     
-    /** @ORM\Column(name = "inep") */
+    /** 
+     * @JMS\Groups({"DETAILS"})
+     * @ORM\Column(name = "inep") 
+     */
     private $codigoInep;
     
     /** 
@@ -96,7 +100,8 @@ class Pessoa extends AbstractEditableEntity {
     */
     private $telefones;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\OneToOne(targetEntity="AuthBundle\Entity\Usuario", inversedBy="pessoa")
     * @ORM\JoinColumn(name="usuario_id")
     */

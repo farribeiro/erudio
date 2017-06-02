@@ -30,20 +30,17 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
 use CursoBundle\Entity\DisciplinaOfertada;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 class TurmaFacade extends AbstractFacade {
     
     private $disciplinaOfertadaFacade;
+    private $disciplinaCursadaFacade;
     private $vagaFacade;
-    
-    function removerAgrupamento(Turma $turma) {
-        $turma->setAgrupamento(null);
-        $this->orm->getManager()->flush();
-    }
     
     function getEntityClass() {
         return 'CursoBundle:Turma';
@@ -53,8 +50,17 @@ class TurmaFacade extends AbstractFacade {
         $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
     }
     
+    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    }
+    
     function setVagaFacade(VagaFacade $vagaFacade) {
         $this->vagaFacade = $vagaFacade;
+    }
+    
+    function removerAgrupamento(Turma $turma) {
+        $turma->setAgrupamento(null);
+        $this->orm->getManager()->flush();
     }
     
     function queryAlias() {
@@ -105,7 +111,8 @@ class TurmaFacade extends AbstractFacade {
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.etapa', 'etapa')
            ->addOrderBy('etapa.curso','ASC')
-           ->addOrderBy('etapa.ordem','ASC');
+           ->addOrderBy('etapa.ordem','ASC')
+           ->addOrderBy('t.nome', 'ASC');
     }
         
     protected function beforeRemove($turma) {
@@ -124,6 +131,9 @@ class TurmaFacade extends AbstractFacade {
     
     protected function afterUpdate($turma) {
         $this->gerarVagas($turma);
+        if ($turma->getEncerrado()) {
+            $this->finalizar($turma);
+        }
     }
     
     protected function afterRemove($turma) {
@@ -177,5 +187,21 @@ class TurmaFacade extends AbstractFacade {
             $this->vagaFacade->remove($vaga);
         } 
     }
-
+ 
+    private function finalizar(Turma $turma) {
+        foreach($turma->getDisciplinas() as $ofertada) {
+            $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
+            foreach ($cursadas as $cursada) {
+                if (is_null($cursada->getMediaFinal()) || is_null($cursada->getFrequenciaTotal())) {
+                    throw new IllegalUpdateException(
+                        'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
+                            . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
+                    );
+                } else {
+                    //calcular media final da disciplina, aprovar ou reprovar
+                }
+            }
+        }
+    }
+    
 }

@@ -52,11 +52,13 @@ class Curso extends AbstractEditableEntity {
     private $alfabetizatorio = false;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\Column(type = "integer") 
     */
     private $limiteDefasagem = 0;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @JMS\Type("PessoaBundle\Entity\Instituicao")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")

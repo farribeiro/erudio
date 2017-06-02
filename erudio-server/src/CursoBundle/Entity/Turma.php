@@ -69,6 +69,7 @@ class Turma extends AbstractEditableEntity {
     private $limiteAlunos;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_encerramento", type="datetime", nullable=false) 
     */
@@ -94,12 +95,14 @@ class Turma extends AbstractEditableEntity {
     */
     private $turno;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Calendario")
     */
     private $calendario;
     
     /** 
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\QuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_id") 
