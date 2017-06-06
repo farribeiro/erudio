@@ -230,7 +230,7 @@
 
             $scope.prepararVoltar = function (objeto) {
                 if (objeto.nome && !objeto.id) {
-                    $('#modal-certeza').modal();
+                    $('#modal-certeza').openModal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -370,7 +370,7 @@
 
             /* Abre modal Informacoes de pessoa */
             $scope.infoPessoa = function (pessoa) {
-                $('#modal-pessoa').modal();
+                $('#modal-pessoa').openModal();
                 var promise = Servidor.buscarUm('pessoas', pessoa.id);
                 promise.then(function (response) {
                     $scope.pessoa = response.data;
@@ -381,7 +381,7 @@
                 });
                 $timeout(function () {
                     $timeout(function () {
-                        $scope.initMap(false, "info-map");
+                        //$scope.initMap(false, "info-map");
                     }, 500);
                 }, 300);
             };
@@ -776,12 +776,14 @@
             /*Separa a certiao em livro,folha e termo*/
             $scope.desmontaCertidao = function () {
                 if ($scope.pessoa.certidaoNascimento) {
-                    var temp = parseInt($scope.pessoa.certidaoNascimento);
-                    if(temp.toString().length === 15) {
-                        $scope.cadDocumento = 'certidao-antiga';
+                    var temp = $scope.pessoa.certidaoNascimento;
+                    if (temp.indexOf("00000000000000000") !== -1) {
+                        temp = temp.replace("00000000000000000","");
+                        $scope.cadDocumento = 'certidao-antiga'; $scope.certidaoAntigaPessoa = ''; $scope.certidaoPessoa = "none"; $scope.certidaoAntiga = true;
                         $scope.livroCad = temp.toString().slice(0, 5);
                         $scope.folhaCad = temp.toString().slice(5, 8);
                         $scope.termoCad = temp.toString().slice(8, 15);
+                        $timeout(function(){ $('#documento').material_select('destroy'); $('#documento').material_select(); },500);
                     }
                 } else {
                     return $scope.pessoa.certidaoNascimento;
@@ -791,18 +793,36 @@
             $scope.verificaCertidaoAntiga = function() {
                 if($scope.cadDocumento === 'certidao-antiga') {
                     if($scope.livroCad !== undefined) {
-                        if($scope.livroCad.length !== 5) { Servidor.customToast('O número do livro deve ter 5 caracteres.'); return false; }
+                        if($scope.livroCad.length > 5 || $scope.livroCad.length === 0) { Servidor.customToast('Número do livro incorreto.'); return false; }
+                        else {
+                            var liv = 5-$scope.livroCad.length; var zeros = "";
+                            if (liv !== 0) {
+                                for (var i=0; i<liv; i++) { zeros += "0"; if (i === liv-1) { $scope.livroCad = zeros+$scope.livroCad; } }
+                            }
+                        }
                     }
                     if($scope.folhaCad !== undefined) {
-                        if(!$scope.folhaCad.length) { Servidor.customToast('Preencha o número da folha.'); return false; }
-                        $scope.folhaCad = $scope.completaDigitos($scope.folhaCad, 3);
+                        if($scope.folhaCad.length > 3 || $scope.folhaCad.length === 0) { Servidor.customToast('Preencha o número da folha.'); return false; }
+                        else {
+                            var liv = 3-$scope.folhaCad.length; var zeros = "";
+                            if (liv !== 0) {
+                                for (var i=0; i<liv; i++) { zeros += "0"; if (i === liv-1) { $scope.folhaCad = zeros+$scope.folhaCad; } }
+                            }
+                        }
+                        //$scope.folhaCad = $scope.completaDigitos($scope.folhaCad, 3);
                     }
                     if($scope.termoCad !== undefined) {
-                        if($scope.termoCad.length !== 7) { Servidor.customToast('O número do termo deve ter 7 caracteres.'); return false; }
+                        if($scope.termoCad.length > 7 || $scope.termoCad.length === 0) { Servidor.customToast('Número do termo incorreto.'); return false; }
+                        else {
+                            var liv = 7-$scope.termoCad.length; var zeros = "";
+                            if (liv !== 0) {
+                                for (var i=0; i<liv; i++) { zeros += "0"; if (i === liv-1) { $scope.termoCad = zeros+$scope.termoCad; } }
+                            }
+                        }
                     }
                     return true;
                 } else {
-                    return true;
+                    return false;
                 }
             };
             
@@ -906,16 +926,23 @@
 
             /*Carrega um cadastro para o formulario*/
             $scope.carregarFormulario = function (pessoa, salvo, novo) {
-                Servidor.removeTooltipp();
+                Servidor.removeTooltipp(); 
 //                $scope.inicializar(false);
                 $scope.mostraLoader();
                 var promise = Servidor.buscarUm('pessoas', pessoa.id);
                 promise.then(function(response){
                     $timeout(function () {
-                        var persona = response.data;
-                        if (persona.telefones !== undefined) { $scope.telefones = persona.telefones; }
+                        var persona = response.data; $scope.pessoa = response.data; $scope.resetaTelefone();
+                        $scope.pessoa.dataNascimento = dateTime.converterDataForm($scope.pessoa.dataNascimento);
+                        if (persona.telefones !== undefined) { $timeout(function(){ $scope.buscaTelefones(); },800); }
+                        if (response.data.certidaoNascimento !== undefined) {
+                            if (response.data.certidaoNascimento.indexOf("00000000000000000") !== -1) { $scope.desmontaCertidao(); }
+                        }
+                        $scope.buscarDadosPessoa(pessoa, salvo, novo);
                     }, 500);
                 });
+                //var promise = Servidor.buscar('enderecos',{pessoa: pessoa.id});
+                //promise.then(function(response){ $timeout(function () { $scope.pessoa.endereco = response.data; }, 500); });
                 var promise = Servidor.buscar('vinculos', {funcionario: pessoa.id});
                 promise.then(function(response) {
                     if($scope.isAdmin) {
@@ -923,30 +950,26 @@
                     } else {
                         var vinculos = response.data;
                         if(vinculos.length) {
-                            var encontrou = false;
+                            //var encontrou = false;
                             var requisicoes = vinculos.length;
                             vinculos.forEach(function(vinculo) {
                                 var promise = Servidor.buscar('alocacoes', {vinculo: vinculo.id});
                                 promise.then(function(response) {
-                                    if(!encontrou) {
+                                    if(response.data.length > 0) {
                                         var alocacoes = response.data;
                                         requisicoes += alocacoes.length;
                                         alocacoes.forEach(function(alocacao) {
-                                            if (alocacao.instituicao.id === parseInt(sessionStorage.getItem('unidade'))) {
-                                                if(!encontrou) {
-                                                    encontrou = true;
-                                                    $scope.buscarDadosPessoa(pessoa, salvo, novo);
-                                                }
-                                            }
-                                            if(--requisicoes === 0) {
+                                            var unidade = JSON.parse(sessionStorage.getItem('unidade'));
+                                            if (alocacao.instituicao.id === unidade.id) {
+                                                $scope.buscarDadosPessoa(pessoa, salvo, novo);
+                                            } else {
                                                 $scope.fechaLoader();
                                                 Servidor.customToast('Não é possível ver os dados de pessoas de unidade diferente.');
                                             }
                                         });
-                                    }
-                                    if(--requisicoes === 0) {
+                                    } else {
                                         $scope.fechaLoader();
-                                        Servidor.customToast('Não é possível ver os dados de pessoas de unidade diferente.');
+                                        Servidor.customToast('Nenhum dado para ser exibido.');
                                     }
                                 });
                             });
@@ -969,7 +992,9 @@
                     $scope.pessoa.dataNascimento = dateTime.converterDataForm($scope.pessoa.dataNascimento);
                     $scope.pessoa.dataExpedicaoRg = dateTime.converterDataForm($scope.pessoa.dataExpedicaoRg);
                     $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataForm($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                    $scope.pessoa.certidaoNascimento = $scope.desmontaCertidao();
+                    if ($scope.pessoa.certidaoNascimento !== undefined) {
+                        if ($scope.pessoa.certidaoNascimento.indexOf("00000000000000000") !== -1) { $scope.desmontaCertidao(); }
+                    }
                     if ($scope.pessoa.endereco !== undefined && $scope.pessoa.endereco.id !== undefined && !$scope.pessoa.endereco) {
                         if ($scope.pessoa.endereco.cidade !== undefined) {
                             if ($scope.pessoa.endereco.cidade.id !== undefined && $scope.pessoa.endereco.cidade.id) {
@@ -1046,7 +1071,7 @@
                         }, 50);
                     }, 50);
                     $timeout(function () {
-                        $scope.initMap(false, "mapa");
+                        //$scope.initMap(false, "mapa");
                     }, 500);
                     if (!salvo) {
                         $scope.mostraLoader();
@@ -1075,6 +1100,8 @@
                     telefone.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
                 }
                 if (telefone.numero && telefone.descricao) {
+                    telefone.pessoa.tipo_pessoa = "PessoaFisica";
+                    var pessoa = {id:$scope.telefone.pessoa.id, 'tipo_pessoa': 'PessoaFisica' }; $scope.telefone.pessoa = pessoa;
                     var promise = Servidor.finalizar(telefone, 'telefones', 'Telefone');
                     promise.then(function (response) {
                         $scope.telefones.unshift(response.data);
@@ -1088,7 +1115,7 @@
             /* Preparar remover */
             $scope.prepararRemover = function (pessoa) {
                 $scope.pessoaRemover = pessoa;
-                $('#remove-modal-pessoa').modal();
+                $('#remove-modal-pessoa').openModal();
             };
 
             /* Limpa pessoa */
@@ -1121,11 +1148,14 @@
             $scope.removerTelefone = function (telefone) {
                 if (telefone.id) {
                     $scope.mostraProgresso();
-                    Servidor.remover(telefone, 'Telefone');
-                    $timeout(function () {
-                        $scope.buscaTelefones();
-                        $scope.fechaProgresso();
-                    }, 300);
+                    var promise = Servidor.buscarUm('telefones',telefone.id);
+                    promise.then(function(response){
+                        Servidor.remover(response.data, 'Telefone');
+                        $timeout(function () {
+                            $scope.buscaTelefones();
+                            $scope.fechaProgresso();
+                        }, 300);
+                    });
                 } else {
                     for (var i = 0; i < $scope.telefones.length; i++) {
                         if (telefone.numero === $scope.telefones[i].numero) {
@@ -1164,7 +1194,7 @@
     //                                var promiseT = Servidor.buscar('telefones', {'pessoa': $scope.cadastroExistente.id});
     //                                promiseT.then(function (responseT) {
     //                                    $scope.cadastroExistente.telefones = responseT.data;
-    //                                    $('#pessoa-cadastrada').modal();
+    //                                    $('#pessoa-cadastrada').openModal();
     //                                });
     //                            });
                             } else {
@@ -1242,7 +1272,7 @@
 //            };
 
             $scope.verificarEnderecoPreenchido = function(endereco) {
-                if(endereco === undefined) {
+                if(endereco === undefined || endereco === null) {
                     return false;
                 } else if(endereco.bairro === undefined || !endereco.bairro) {
                     return false;
@@ -1262,7 +1292,12 @@
             $scope.salvarPessoa = function () {
                 if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 3) {
                     $scope.mostraLoader();
-                    if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); } else { return $scope.fechaLoader(); }
+                    if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3 && ($scope.pessoa.certidaoNascimento !== "" && $scope.pessoa.certidaoNascimento !== null && $scope.pessoa.certidaoNascimento !== undefined)) {
+                        if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
+                        else {
+                            if ($scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); }
+                        }
+                    }
                     if ($scope.pessoa.dataNascimento && $scope.pessoa.dataNascimento !== undefined) {
                         $scope.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
                     }
@@ -1278,19 +1313,10 @@
                     }
                     if ($scope.pessoa.dataExpedicaoCertidaoNascimento) {
                         $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                    }                    
+                    }
                     if ($scope.telaNumero === 1) {
-                        if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                            var endereco = angular.copy($scope.pessoa.endereco);
-                            if (Servidor.validar('validate-endereco')) {
-//                                endereco.route = 'enderecos';
-                                var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
-                                promise.then(function (response) {
-                                    $scope.pessoa.endereco.id = response.data.id;
-                                    $scope.endereco.id = response.data.id;
-                                    $scope.finalizarPessoa();
-                                });
-                            } else {
+                        if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
+                            if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                                 var endereco = Restangular.copy($scope.pessoa.endereco);
                                 if (Servidor.validar('validate-endereco')) {
                                     endereco.route = 'enderecos';
@@ -1303,19 +1329,31 @@
                                 } else {
                                     return Servidor.customToast("Há campos obrigatórios não preenchidos.");
                                 }
+                            } else {
+                                delete $scope.pessoa.endereco;
+                                $scope.finalizarPessoa();
                             }
                         } else {
-                            delete $scope.pessoa.endereco;
-                            $scope.finalizarPessoa();
+                            if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
+                                var endereco = Restangular.copy($scope.pessoa.endereco);
+                                if (Servidor.validar('validate-endereco')) {
+                                    endereco.route = 'enderecos';
+                                    var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
+                                    promise.then(function (response) {
+                                        $scope.pessoa.endereco.id = response.data.id;
+                                        $scope.endereco.id = response.data.id;
+                                        $scope.finalizarPessoa();
+                                    });
+                                } else {
+                                    return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                }
+                            } else {
+                                $scope.finalizarPessoa();
+                            }
                         }
                     } else {
                         if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                             delete $scope.pessoa.endereco;
-//                            $scope.pessoa.endereco = {
-//                                'id': '', 'logradouro': '', 'numero': null, 'bairro': null, 'complemento': null, 'cep': null,
-//                                'cidade': {'id': null, 'nome': null, 'estado': {'id': null, 'nome': null, 'sigla': null}},
-//                                'latitude': null, 'longitude': null
-//                            };
                         }
                         $scope.finalizarPessoa();
                     }
@@ -1331,40 +1369,29 @@
                         $scope.pessoa.responsavelNome = $scope.pessoa.nomePai;
                         break;
                 };
-                if($scope.pessoa.endereco === undefined) {
-                    $scope.pessoa.endereco = null;
-                }
-                if($scope.pessoa.cpfCnpj === "") {
-                    delete $scope.pessoa.cpfCnpj;
-                }
                 var promise = Servidor.finalizar($scope.pessoa, 'pessoas', 'Pessoa');
-                if($scope.pessoa.dataExpedicaoCertidaoNascimento !== undefined || !$scope.pessoa.dataExpedicaoCertidaoNascimento) {
-                    var dataExpedicaoCertidaoNascimento = dateTime.converterDataForm($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                }
-                if($scope.pessoa.dataExpedicaoRg !== undefined || !$scope.pessoa.dataExpedicaoRg) {
-                    var dataExpedicaoRg = dateTime.converterDataForm($scope.pessoa.dataExpedicaoRg);
-                }
+                
                 promise.then(function (response) {
                     $scope.pessoa = response.data;
-                    $scope.pessoa.dataExpedicaoCertidaoNascimento = dataExpedicaoCertidaoNascimento;
-                    $scope.pessoa.dataExpedicaoRg = dataExpedicaoRg;
-                    if ($scope.pessoa.endereco === {}) {
-                        $scope.pessoa.endereco = {
-                            logradouro: '',
-                            bairro: '',
-                            cidade: {
-                                id: '',
-                                estado: {
-                                    id: ''
-                                }
-                            },
-                            id: ''
-                        };
+                    
+                    if ($scope.telefone.numero !== null && $scope.telefone.descricao !== null){
+                        $scope.salvarTelefone($scope.telefone);
                     }
+                    
                     $scope.pessoa.dataNascimento = dateTime.converterDataForm(response.data.dataNascimento);
+                    if($scope.pessoa.dataExpedicaoCertidaoNascimento !== undefined || !$scope.pessoa.dataExpedicaoCertidaoNascimento) {
+                        var dataExpedicaoCertidaoNascimento = dateTime.converterDataForm($scope.pessoa.dataExpedicaoCertidaoNascimento);
+                        $scope.pessoa.dataExpedicaoCertidaoNascimento = dataExpedicaoCertidaoNascimento;
+                        $('.data').mask('00/00/0000');
+                    }
+                    if($scope.pessoa.dataExpedicaoRg !== undefined || !$scope.pessoa.dataExpedicaoRg) {
+                        var dataExpedicaoRg = dateTime.converterDataForm($scope.pessoa.dataExpedicaoRg);
+                        $scope.pessoa.dataExpedicaoRg = dataExpedicaoRg;
+                        $('.data').mask('00/00/0000');
+                    }
                     if ($scope.telaNumero === 5) {
                         if ($scope.novo) {
-                            $('#confirma-cadastro').modal();
+                            $('#confirma-cadastro').openModal();
                             $scope.fechaLoader();
                             $scope.novo = false;
                         } else {
@@ -1396,6 +1423,7 @@
                     $scope.dataCertidaoCad = '';
                     $scope.cpfPessoa = 'none';
                     $scope.certidaoAntigaPessoa = 'none';
+                    $scope.certidaoAntiga = false;
                 }
                 if ($scope.livroCad && $scope.folhaCad && $scope.termoCad) {
                     $scope.cadDocumento = 'certidao-antiga';
@@ -1403,6 +1431,7 @@
                     $scope.cpfPessoa = 'none';
                     $scope.certidaoPessoa = 'none';
                     $scope.dataCertidaoCad = 'none';
+                    $scope.certidaoAntiga = true;
                 }
             };
 
@@ -1415,12 +1444,14 @@
                     $scope.termoCad = "";
                     $scope.livroCad = "";
                     $scope.folhaCad = "";
+                    $scope.certidaoAntiga = false;
                 } else if ($scope.cadDocumento === 'certidao-antiga') {
                     $scope.certidaoAntigaPessoa = "";
                     $scope.cpfPessoa = 'none';
                     $scope.certidaoPessoa = 'none';
                     $scope.dataCertidaoCad = 'none';
                     $scope.pessoa.certidaoNascimento = null;
+                    $scope.certidaoAntiga = true;
                 }
             };
 
@@ -1587,6 +1618,7 @@
                 $('select').material_select('destroy');
                 $('select').material_select();
                 $timeout(function () {
+                    $scope.cadDocumento = 'certidao'; $scope.certidaoAntigaPessoa = 'none'; $scope.certidaoPessoa = ""; $scope.certidaoAntiga = false;
                     $scope.fechaProgresso();
                     $("#telefone").mask("(00) 0000-00009");
                 }, 500);

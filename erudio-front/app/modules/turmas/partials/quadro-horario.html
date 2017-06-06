@@ -24,34 +24,16 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<div class="cortina-disciplinas"></div>
-<a data-ng-show="selecionados" data-ng-click="preparaSwap()" class="btn-floating btn-large waves-effect waves-light rosa btn-add"><i class="material-icons">compare_arrows</i></a>
-
-<div class="row">
-    <div class="col s12">
-        <div class="titulo-typo" style="color: #000;">Turma {{ turma.nomeCompleto }}</div>
-    </div>
-</div>
-
-<div class="row form-geral">
-    <div class="col s12 mobile-full" style="padding: 0rem">
-        <div class="row form-box show-form card-panel" style="margin-top: 0;">
-            <div class="col s3 m3 l3 absolute card-panel disciplinas-list" style="background: #dff6f9 !important; border-right: 1px solid #eee; right: 0px; margin: 0; border-radius: 0; display: none; width: 300px; opacity: 1; z-index: 501;">
-                <div class="row disciplina-wrapper">
-                    <div class="col s12 m12 l12" style="padding: 0px;">
-                        <small style="font-size: 0.9rem; padding-left: 1rem; display:block; margin-top: 0.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Arraste a disciplina para o dia desejado para montar o quadro de horários.</small>
-                        <div>
-                            <div class="col s12 m12 l12 grabbable disciplina card-panel card-grab hoverable" id="{{disciplina.id}}" data-ng-repeat="disciplina in disciplinasOfertadas | orderBy: 'disciplina.nome'">
-                                {{disciplina.disciplina.nomeExibicao | uppercase}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m12 l12" id="quadroPage" style="padding: 0rem">
-                <div id="paginaQuadro" style="margin: 0;">
+<div class="row form-geral"> 
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div class="col s12" style="padding: 0rem">
+                <div id="paginaQuadro" class="card-panel">
                     <div class="row">
-                        <!--<div class="col s12 m12 l12" data-ng-if="avaliacoesPendentes.length">
+                        <h3 class='card-title-h3' style="padding: 20px; padding-top: 30px">Grade de horários da turma - {{turma.nome}}</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m12 l12" data-ng-if="avaliacoesPendentes.length">
                             <h4>Remarcar Avaliações</h4>
                             <table class="striped">
                                 <thead>
@@ -77,60 +59,111 @@
                                 </tbody>
                             </table>
                             <calendario-aulas data-ng-if="semanas.length"></calendario-aulas>
-                        </div> -->
-                        <div class="row">
-                            <div class="col s12 m12 l12">
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 table-head" style="height: 60px;"><p style="line-height: 4rem;"></p></div></div>
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 center-align" style="height: 60px;"><p style="line-height: 4rem; font-size: 25px;">SEG</p></div></div>
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 center-align" style="height: 60px;"><p style="line-height: 4rem; font-size: 25px;">TER</p></div></div>
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 center-align" style="height: 60px;"><p style="line-height: 4rem; font-size: 25px;">QUA</p></div></div>
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 center-align" style="height: 60px;"><p style="line-height: 4rem; font-size: 25px;">QUI</p></div></div>
-                                <div class="col s2 m2 l2"><div class="col s12 m12 l12 center-align" style="height: 60px;"><p style="line-height: 4rem; font-size: 25px;">SEX</p></div></div>
+                        </div>                        
+                        <div>
+                            <div style="padding: 10px;">
+                                <small style="font-size: 0.9rem; margin-left: 1rem; display:block;">Arraste a disciplina para o dia desejado para montar o quadro de horários.</small>
+                                <!--<div class="grabbable disciplina chip hoverable chips" id="{{disciplina.id}}" data-ng-repeat="disciplina in disciplinasOfertadas | orderBy: 'disciplina.nome'">
+                                    {{disciplina.disciplina.nomeExibicao | uppercase}}
+                                </div>-->
+                                <div style="margin-left: 1rem;">
+                                    <div class="grabbable disciplina card-panel card-grab hoverable" id="{{disciplina.id}}" data-ng-repeat="disciplina in disciplinasOfertadas | orderBy: 'disciplina.nome'">
+                                        {{disciplina.disciplina.nomeExibicao | uppercase}}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row" style="padding-bottom: 15px;">
-                            <div data-ng-repeat="semana in semanas track by $index" class="col s12 m12 l12">
-                                <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) === $index">
-                                    <div style="border: none;" class="col s12 m12 l12 valign-wrapper table-label"><div style="font-size: 12px; width: 100%;" class="table-label-title valign">INTERVALO {{quadroHorario.modelo.duracaoIntervalo}} MINUTOS</div></div>
+                        </div>     
+                        <div class="col s12" id="quadroHorarioTurma" style="padding: 0; padding-bottom: 1rem;">
+                            <div class="col s2 quadro" style="width: 170px !important;">
+                                <div class="dia collection-header">
+                                    <p><i class="material-icons">today</i></p>
                                 </div>
-                                <div class="horarios" id="{{buscaHelperId($index,horarioDisc)}}" data-ng-repeat="horarioDisc in semana track by $index">
-                                    <div data-ng-show="aulaGerada" data-drag-helper="{{horarioDisc.id}}" data-ng-class="($index != 0)?'horario hoverable h'+horarioDisc.id:'semBorda'" style="font-size: 12px; cursor: pointer; z-index: 30 !important; background: #fff;" class="col s2 m2 l2 valign-wrapper table-label aula-trigger d{{ horarioDisc.horario.disciplina.id }}" id="{{horarioDisc.id}}" data-ng-click="abreDisciplinas(horarioDisc)" data-ng-if="horarioDisc.disciplina">
-                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index === 0">{{horarioDisc.horario.inicio |date:HH:mm}} - {{horarioDisc.horario.termino}}</div>
-                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
+                                <div data-ng-repeat="horario in segunda">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p>INTERVALO {{quadroHorario.modelo.duracaoIntervalo}} MINUTOS</p>
                                     </div>
-                                    <div data-ng-if="!aulaGerada" data-ng-class="($index != 0)?'horario validate-aulas hoverable h'+horarioDisc.id:'semBorda'" style="font-size: 12px; cursor: pointer; background: #fff;" class="col s2 m2 l2 relative valign-wrapper table-label aula-trigger d{{ horarioDisc.horario.disciplina.id }}" id="{{idHorario($index,horarioDisc)}}" data-ng-click="abreDisciplinas(horarioDisc)">
-                                        <div class="valign" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index === 0">{{horarioDisc.inicio}} - {{horarioDisc.termino}}</div>
-                                        <div class="valign hd{{ horarioDisc.id }}" style="width: 100%; z-index: 5 !important; padding-top: 25px; padding-bottom: 25px;" data-ng-if="$index !== 0">{{horarioDisc.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}</div>
-                                        <i style="right: 3px; top: 3px;" data-ng-if="$index !== 0" data-ng-show="horarioDisc.disciplina.disciplina.id" data-ng-click='removerDisciplina(horarioDisc)' class='material-icons absolute tiny disabled remove-disc remove-grid-disciplina{{ horarioDisc.id }}'>clear</i>
+                                    <div class="table-label">{{horario.inicio}} - {{horario.termino}}</div>
+                                </div>
+                            </div>
+                            <div class="col s2 quadro">
+                                <div class="dia collection-header">SEG</div>
+                                <div data-ng-repeat="horario in segunda">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p><i style="font-weight: bold; margin-top: 1.4rem;" class="material-icons">alarm</i></p>
+                                    </div>
+                                    <div class="horario relative" id="{{horario.id}}">
+                                        <div data-ng-if="horario.disciplina" class="aula-preenchida d{{ horario.disciplina.id}}" id="disciplina{{horario.disciplina.id}}">
+                                            {{horario.disciplina.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}
+                                            <i data-ng-hide="aulaGerada" data-ng-click="removerDisciplina(horario.disciplina)" class="material-icons tiny disabled remove-grid-disciplina">clear</i>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col s2 quadro">
+                                <div class="dia">TER</div>
+                                <div data-ng-repeat="horario in terca">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p><i style="font-weight: bold; margin-top: 1.4rem;" class="material-icons">alarm</i></p>
+                                    </div>
+                                    <div class="horario relative" id="{{horario.id}}" >
+                                        <div data-ng-if="horario.disciplina" class="aula-preenchida d{{ horario.disciplina.id}}" id="disciplina{{horario.disciplina.id}}">
+                                            {{horario.disciplina.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}
+                                            <i data-ng-hide="aulaGerada" data-ng-click="removerDisciplina(horario.disciplina)" class="material-icons tiny disabled remove-grid-disciplina">clear</i>
+                                        </div>
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="col s2 quadro">
+                                <div class="dia">QUA</div>
+                                <div  data-ng-repeat="horario in quarta">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p><i style="font-weight: bold; margin-top: 1.4rem;" class="material-icons">alarm</i></p>
+                                    </div>
+                                    <div class="horario relative" id="{{horario.id}}">
+                                        <div data-ng-if="horario.disciplina" class="aula-preenchida d{{ horario.disciplina.id}}" id="disciplina{{horario.disciplina.id}}">
+                                            {{horario.disciplina.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}
+                                            <i data-ng-hide="aulaGerada" data-ng-click="removerDisciplina(horario.disciplina)" class="material-icons tiny disabled remove-grid-disciplina">clear</i>
+                                        </div>       
+                                    </div>
+                                </div>        
+                            </div>
+                            <div class="col s2 quadro">
+                                <div class="dia">QUI</div>
+                                <div data-ng-repeat="horario in quinta">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p><i style="font-weight: bold; margin-top: 1.4rem;" class="material-icons">alarm</i></p>
+                                    </div>
+                                    <div class="horario relative" id="{{horario.id}}">
+                                        <div data-ng-if="horario.disciplina" class="aula-preenchida d{{ horario.disciplina.id}}" id="disciplina{{horario.disciplina.id}}">
+                                            {{horario.disciplina.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}
+                                            <i data-ng-hide="aulaGerada" data-ng-click="removerDisciplina(horario.disciplina)" class="material-icons tiny disabled remove-grid-disciplina">clear</i>
+                                        </div>                
+                                    </div>
+                                </div>                            
+                            </div>
+                            <div class="col s2 quadro">
+                                <div class="dia">SEX</div>
+                                <div data-ng-repeat="horario in sexta">
+                                    <div data-ng-if="(quadroHorario.modelo.posicaoIntervalo - 1) == $index" class="table-label">
+                                        <p><i style="font-weight: bold; margin-top: 1.4rem;" class="material-icons">alarm</i></p>
+                                    </div>
+                                    <div class="horario relative d{{horario.disciplina.id}}" id="{{horario.id}}">
+                                        <div data-ng-if="horario.disciplina" class="aula-preenchida d{{ horario.disciplina.id}}" id="disciplina{{horario.disciplina.id}}">
+                                            {{horario.disciplina.disciplina.disciplina.nomeExibicao| uppercase | limitTo:20}}
+                                            <i data-ng-hide="aulaGerada" data-ng-click="removerDisciplina(horario.disciplina)" class="material-icons tiny disabled remove-grid-disciplina">clear</i>
+                                        </div>                        
+                                    </div>
+                                </div>                            
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div data-ng-hide="aulaGerada" class="col s12 right-align end-card" style="margin-bottom: 0rem">                            
-                            <span><a data-ng-click="verificarDataInicial()" class="waves-effect waves-blue btn-flat">GERAR AULAS</a></span>
+                    <div class="row" data-ng-show="escrita">
+                        <div class="col s12 right-align end-card" style="margin-bottom: 0rem">                            
+                            <span data-ng-hide="aulaGerada"><a data-ng-click="verificarDataInicial()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat">GERAR AULAS</a></span>
+                            <a data-ng-show="aulaGerada" data-ng-click="abrirModalExclusaoGradeHorario()" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat">LIMPAR GRADE DE HORÁRIOS</a>
                         </div>
                     </div>                
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Troca de Data - Quadro de Horário -->
-<div id="troca-data-modal" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="modal-title-banner-quadro"><h4 class="modal-alinha-texto" style="position: absolute; top: 6.5rem; color: white; z-index: 500;">Trocar disciplinas na grade.</h4><div style="width: 100%; top: 0;" class="gradient"></div></div>
-                <p>Dia de início da nova grade:</p>
-                <div class="row">
-                    <div class="input-field col s12 m12 l12"><i class="material-icons prefix">date_range</i><input id="dataNovaGrade" type="text" class="validate date" name="dataNovaGrade" /><label for="dataNovaGrade" class="labelDisabled">Data de Início</label></div>
-                </div>
-            </div>
-            <div class="end-card" style="margin-bottom: 0px; padding: 0 !important;">
-                <div class="right-align" style="padding: 7px;"><a href="" class="modal-action modal-close waves-effect waves-red btn-flat">Cancelar</a><a href="" data-ng-click="trocarDatas()" class="modal-action waves-effect waves-green btn-flat">Salvar</a></div>
             </div>
         </div>
     </div>

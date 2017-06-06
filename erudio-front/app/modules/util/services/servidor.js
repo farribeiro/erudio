@@ -169,7 +169,7 @@
         this.finalizar = function(objeto,endereco,label) {
             var result = [];
             if (objeto !== null && objeto.id) {
-                if (objeto.route === undefined || objeto.route === null) { objeto.route = endereco; }
+                if (objeto.route === undefined) { objeto.route = endereco; }
                 result = objeto.put();
                 result.then(function (data){
                     if (data.status >= 200 || data.status <= 204) {
@@ -192,13 +192,21 @@
             return result;
         };
         
-        /* Envia uma entidade ao servidor para modificar em um endereço específico - APENAS PUT */
-        this.customPutFinalizar = function(origem,destino,endereco,label) {
-            var result = []; result = origem.customPUT(destino,endereco);
-            result.then(function(data) {
-                if (data.status >= 200 || data.status <= 204) { if (label !== null && label !== '') { Toast.show(label, 'salvo(a)', data.status); } } else { result = false; }
+        this.customPut = function (objeto, endereco, label) {
+            resultado = $http({
+                method: "PUT",
+                url: Restangular.configuration.baseUrl + "/" + endereco,
+                data: objeto,
+                headers: {'X-WSSE': this.criarHeader()}
+            });
+            resultado.then(function(data){
+                if (data.status === 200 || data.status === 204) {
+                    if (label) { Toast.show(label, 'salvo(a)', data.status); }
+                } else {
+                    resultado = false;
+                }
             }, function(error) { Toast.show('','', error.status); });
-            return result;
+            return resultado;
         };
 
         this.salvarLote = function(objeto, endereco, label) {
@@ -209,7 +217,7 @@
                 headers: {'X-WSSE': this.criarHeader()}
             });
             resultado.then(function(data){
-                if (data.status === 200) {
+                if (data.status === 200 || data.status === 204) {
                     if (label) { Toast.show(label, 'salvo(a)', data.status); }
                 } else {
                     resultado = false;

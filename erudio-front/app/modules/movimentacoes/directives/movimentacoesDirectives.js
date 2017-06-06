@@ -63,6 +63,10 @@
         return { restrict: 'E', templateUrl: 'app/modules/movimentacoes/partials/form-movimentar.html' };
     });
     
+    movimentacoesDirectives.directive('historicoFormularioMovimentacoesReclassificar', function() {
+        return { restrict: 'E', templateUrl: 'app/modules/movimentacoes/partials/form-reclassificar.html' };
+    });
+    
     movimentacoesDirectives.directive('modal', function() {
         return { restrict: 'E', templateUrl: 'app/modules/movimentacoes/partials/modal.html' };
     });

@@ -26,8 +26,9 @@
 
 (function (){
     var regimeModule = angular.module('regimeModule', ['servidorModule','regimeDirectives']);
-    regimeModule.controller('RegimeController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'Elementos', '$compile', function($scope, Servidor, Restangular, $timeout, $templateCache, Elementos, $compile) {
-        $templateCache.removeAll(); $scope.elementos = Elementos; $scope.escopo = $scope;
+    regimeModule.controller('RegimeController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', function($scope, Servidor, Restangular, $timeout, $templateCache) {
+        $templateCache.removeAll();        
+
         $scope.escrita = Servidor.verificaEscrita('REGIME_ENSINO');
         /* Atributos Específicos */
         $scope.regimes = [];
@@ -46,8 +47,6 @@
 
         /* Reinciando estrutura de regime */
         $scope.reiniciar = function (){ $scope.regime = { nome: null }; };
-        
-        $scope.salvarBind = function (target) { var el = angular.element(target); el.bind('click',$scope.finalizar()); };
 
         /* Inicializando */
         $scope.inicializar = function(){
@@ -65,7 +64,7 @@
         
         $scope.prepararVoltar = function(objeto){
             if(objeto.nome && !objeto.id) {                
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else{
                 $scope.fecharFormulario();
             }
@@ -88,7 +87,7 @@
         //Abrir modal para remover Regime
          $scope.prepararRemover = function(regime) {
             $scope.regimeRemover = regime;
-            $('#remove-modal-regime').modal();
+            $('#remove-modal-regime').openModal();
             
         };                
                                     
@@ -124,33 +123,31 @@
         /* Salvando Regime */
         $scope.finalizar = function (nome) {
             $scope.mostraProgresso();
-            if ($scope.validar('validate')) {
-                if($scope.regimes.length) {
-                    for (var i = 0; i < $scope.regimes.length; i++) {
-                        if ($scope.regimes[i].nome.toUpperCase() === nome.toUpperCase() && $scope.regime.id !== $scope.regimes[i].id){
-                            console.log($scope.regimes[i].nome);
-                            Servidor.customToast("Já existe um regime de ensino com este nome.");
-                            $scope.fechaProgresso();
-                            return true;
-                        }
-                        if (i === $scope.regimes.length - 1) {
-                            var result = Servidor.finalizar($scope.regime, 'regimes', 'Regime');
-                            result.then(function (promise) {
-                                $scope.fecharFormulario();
-                            });
-                        }
-                    }
-                } else {
+            if($scope.regimes.length) {
+                for (var i = 0; i < $scope.regimes.length; i++) {
+                if ($scope.regimes[i].nome.toUpperCase() === nome.toUpperCase() && $scope.regime.id !== $scope.regimes[i].id){
+                    console.log($scope.regimes[i].nome);
+                    Servidor.customToast("Já existe um regime de ensino com este nome.");
+                    $scope.fechaProgresso();
+                    return true;
+                }
+                if (i === $scope.regimes.length - 1) {
                     var result = Servidor.finalizar($scope.regime, 'regimes', 'Regime');
                     result.then(function (promise) {
                         $scope.fecharFormulario();
                     });
-                }            
-    //              Servidor.customToast('Digite o nome do Regime de Ensino');
-                $timeout(function () {
-                    $('#nomeRegime').focus();
-                }, 150);
+                }
             }
+            } else {
+                var result = Servidor.finalizar($scope.regime, 'regimes', 'Regime');
+                result.then(function (promise) {
+                    $scope.fecharFormulario();
+                });
+            }            
+//              Servidor.customToast('Digite o nome do Regime de Ensino');
+            $timeout(function () {
+                $('#nomeRegime').focus();
+            }, 150);
         };
             
         /* Validando Formulário */

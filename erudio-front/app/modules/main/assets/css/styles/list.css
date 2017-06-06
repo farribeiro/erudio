@@ -1,8 +1,8 @@
 /* List */
 
 .collection .collection-item {
-    padding: 0 !important;
-    padding-top: 1px !important;
+    /*padding: 0 !important;
+    padding-top: 1px !important;*/
     padding-left: 20px !important;
     padding-bottom: 0 !important;
     line-height: 1.5em;
@@ -107,8 +107,7 @@
 }
 
 .table-pattern td {
-    //padding: 1.7rem;
-    font-size: 14px;
+    padding: 1.7rem;
 }
 
 .celula-link:hover {

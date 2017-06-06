@@ -59,9 +59,9 @@
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/turma-enturmar-alunos.html' };
     });    
     
-    /*turmaDirectives.directive('alunosEnturmados', function (){
+    turmaDirectives.directive('alunosEnturmados', function (){
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/alunos-enturmados.html' };
-    }); */ 
+    });  
             
     turmaDirectives.directive('turmaFrequencia', function (){
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/frequencia.html' };
@@ -69,6 +69,10 @@
     
     turmaDirectives.directive('informacoesTurma', function (){
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/informacoes-turma.html' };
+    });
+    
+    turmaDirectives.directive('fecharTurma', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/fechar-turma.html' };
     });
     
     turmaDirectives.directive('quadroHorario', function (){

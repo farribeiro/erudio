@@ -24,44 +24,87 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<!-- LISTA -->
+<!-- Listagem de Instituições -->
 <div id="listaInstituicao">
+    <div class="row"><div class="col s12 instituicao-banner"></div></div>
     <div class="row">
-        <div class="col s12 l12 mobile-full init-card" style="padding: 0;">
-            <div data-ng-show="instituicoes.length" class="row ripple-list list-card">
-                <div class="col s12 m12 mobile-full list-items" style="padding: 0;">
-                    <div class="card card-list" style="margin: 0;">
+        <div class="col s1 l1 hide-on-small-only"></div>
+        <div class="col s12 l12 mobile-full init-card">
+            <div class="row ripple-head title-card" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full title-fix-card">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Instituição</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Instituições são organizações ou mecanismos sociais que controlam o funcionamento da sociedade, no caso de Instituições Educacionais, 
+                                        são os órgãos responsáveis por promover o saber e formar agentes transformadores da sociedade.<br /><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc... 
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no botão + para cadastrar uma Instituição<br />
+                                        Clique sobre o nome de uma Institução para editá-la.<br />
+                                        Clique no balão correspondente na coluna 'opções' para ver todas as informações de uma Instituição sem precisar editá-la.<br />
+                                        Clique na lixeira para remover uma Instituição. 
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: Escolas, Universidades, Secretarias de Educação, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-busca" data-ng-hide="editando">
+                        <div class="row">
+                            <div class='input-field col s12'>
+                                <i class='material-icons prefix' data-ng-hide="filtro.nome.length">search</i>
+                                <i class='material-icons prefix pointer' data-ng-show="filtro.nome.length" data-ng-click="filtro.nome = ''">clear</i>
+                                <input type="text" data-ng-model="filtro.nome" id="filtroInstituicao">
+                                <label for="filtroInstituicao">Busque aqui</label>
+                            </div>
+                        </div>                            
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="instituicoes.length" class="row ripple-list list-card" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full list-items" data-ng-hide="editando">
+                    <div class="card card-list">
                         <div class="card-content mobile-full main-list">
                             <table class='highlight striped table-pattern'>
                                 <thead>
                                     <tr>
-                                        <th data-field='nome'>Nome da Instituição</th><th class="hide-on-small-only" style="text-align: left;" data-field='email'>E-mail</th><th class='center-align hide-on-small-only center' data-field='opcoes'>Opções</th>
+                                        <th data-field='nome'>Nome da Instituição</th>
+                                        <th class="hide-on-small-only center" data-field='email'>E-mail</th>
+                                        <th class='center-align hide-on-small-only center' data-field='opcoes'>Opções</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="instituicao in instituicoes | orderBy: 'nome' | filter: filtro">
-                                        <td style="padding-top: 15px; padding-bottom: 15px; text-align: left;" class="celula-link relative mobile-full">
-                                            <a style="color: #000; text-decoration: none !important;" href="{{ config.dominio }}/#/instituicoes/{{ instituicao.id }}">
-                                                <div class="hide-on-small-only" style="margin-left: 15px;">
-                                                    {{ instituicao.nome }}
-                                                    <i class="informacoes{{ instituicao.id }}" style="display: none;">
-                                                        <small>
-                                                            <br />{{ instituicaoObj.endereco.logradouro }}, {{ instituicaoObj.endereco.numero }} Bairro {{ instituicaoObj.endereco.bairro }}, 
-                                                            {{ instituicaoObj.endereco.cidade.nome }}, {{ instituicaoObj.endereco.cidade.estado.nome }}
-                                                            <span data-ng-show="{{ instituicaoObj.endereco.complemento }}">{{ instituicaoObj.endereco.complemento }}<br /></span>
-                                                        </small>
-                                                        <span data-ng-show="instituicao.telefones.length"  data-ng-repeat="telefone in instituicao.telefones">
-                                                            {{ telefone.numero }} - <b>Falar com:</b> {{ telefone.falarCom }}<br>
-                                                        </span>
-                                                    </i>                            
-                                                </div>
-                                            </a>
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(instituicao, false, false, $index)">{{ instituicao.nome }}</div>
+                                            <div class="hide-on-med-and-up" data-ng-click="carregar(instituicao, false, true, $index)">{{ instituicao.nome }}</div>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesInstituicao{{ instituicao.id }}">
+                                                <div style="height: 100%" data-ng-click="$scope.editandoMobile = true; carregar(instituicao, false, false, $index)" class="col s4 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                                <div style="height: 100%" data-ng-click="carregarInfo(instituicao)" data-target="info-modal-instituicao" class="col s4 blue lighten-1 white-text modal-trigger center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">speaker_notes</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">ver</div></div>
+                                                <div style="height: 100%" data-ng-click="prepararRemover(instituicao)" data-target="remove-modal-instituicao" class="col s4 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                            </div>
                                         </td>
-                                        <td style="padding-top: 15px; padding-bottom: 15px; text-align: left;" class="hide-on-small-only">{{ instituicao.email }}</td>
-                                        <td style="padding-top: 15px; padding-bottom: 15px;" class='center-align hide-on-small-only'>
-                                            <i data-ng-click="fecharInfo(instituicao)" data-position='top' data-delay='50' data-tooltip='Fechar Informações' class="material-icons modal-trigger info-icon-close info-icon tooltipped" style="display: none;">close</i>
-                                            <i data-ng-click="carregarInfo(instituicao)" data-position='top' data-delay='50' data-tooltip='Ver Informações' class="material-icons modal-trigger info-icon tooltipped">speaker_notes</i>
-                                            <i data-ng-click="prepararRemover(instituicao)" data-ng-show="escrita" data-target="remove-modal-instituicao" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                        <td class="hide-on-small-only center">{{ instituicao.email }}</td>
+                                        <td class='center-align hide-on-small-only'>
+                                            <i data-ng-click="carregarInfo(instituicao)" data-target="info-modal-instituicao" data-position='top' data-delay='50' data-tooltip='Ver Informações' class="material-icons modal-trigger info-icon tooltipped">speaker_notes</i>
+                                            <i data-ng-click="prepararRemover(instituicao, $index)" data-ng-show="escrita" data-target="remove-modal-instituicao" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -70,6 +113,9 @@
                     </div>
                 </div>
             </div>
+            <form-instituicao data-ng-show="editando"></form-instituicao>
         </div>
+        <div class="col s1 l1 hide-on-small-only"></div>
     </div>
+    <div data-ng-hide="editando"><erro-busca-instituicao data-ng-hide="instituicoes.length"></erro-busca-instituicao></div>
 </div>

@@ -29,26 +29,23 @@
     app.defaultHeaders = '"Content-type":"application/json"';
     app.config(['$routeProvider', 'RestangularProvider', '$logProvider', 'ErudioConfigProvider', function($routeProvider, RestangularProvider, $logProvider, ErudioConfigProvider){
         $logProvider.debugEnabled(true);
-        
-        //ROTAS
+        /* Definindo Rotas */
         $routeProvider.when('/',{ templateUrl: 'app/modules/main/partials/main.html', controller: 'MainController'
-            
-        }).when('/testes',{ templateUrl: 'app/modules/teste/partials/template.html', controller: 'TesteController'
-        }).when('/frequencias',{ templateUrl: 'app/modules/frequencia/partials/template.html', controller: 'FrequenciaController'
-        
-        }).when('/instituicoes',{ templateUrl: 'app/modules/instituicoes/partials/template.html', controller: 'InstituicaoController'
-        }).when('/instituicoes/:id',{ templateUrl: 'app/modules/instituicoes/partials/template.html', controller: 'InstituicaoFormController'
-            
+        }).when('/instituicoes',{ templateUrl: 'app/modules/instituicoes/partials/instituicoes.html', controller: 'InstituicaoController'
         }).when('/tipos-unidade',{ templateUrl: 'app/modules/tipos/partials/tipos.html', controller: 'TipoController'
         }).when('/unidades',{ templateUrl: 'app/modules/unidades/partials/unidades.html', controller: 'UnidadeController'
         }).when('/regimes',{ templateUrl: 'app/modules/regimes/partials/regimes.html', controller: 'RegimeController'
             
-        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
-        }).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
+        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
+        //}).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
+        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
             
-        }).when('/etapas',{ templateUrl: 'app/modules/etapas/partials/template.html', controller: 'EtapaController'
-        }).when('/etapas/:id',{ templateUrl: 'app/modules/etapas/partials/template.html', controller: 'EtapaFormController'
+        }).when('/reclassificacao',{ templateUrl: 'app/modules/reclassificacao/partials/reclassificacao.html', controller: 'ReclassificacaoController'
+        }).when('/medias',{ templateUrl: 'app/modules/medias/partials/template.html', controller: 'MediasController'
+        }).when('/boletins',{ templateUrl: 'app/modules/boletins/partials/template.html', controller: 'BoletinsController'
+	}).when('/espelhos',{ templateUrl: 'app/modules/espelho/partials/template.html', controller: 'EspelhoController'
             
+        }).when('/etapas',{ templateUrl: 'app/modules/etapas/partials/etapas.html', controller: 'EtapaController'
         }).when('/disciplinas',{ templateUrl: 'app/modules/disciplinas/partials/disciplinas.html', controller: 'DisciplinaController'
         }).when('/modulos',{ templateUrl: 'app/modules/modulos/partials/modulos.html', controller: 'moduloController'
         }).when('/turnos',{ templateUrl: 'app/modules/turnos/partials/turnos.html', controller: 'TurnoController'
@@ -56,25 +53,13 @@
         }).when('/quadro-horarios',{ templateUrl: 'app/modules/quadroHorarios/partials/quadroHorarios.html', controller: 'quadroHorarioController'
         }).when('/calendarios',{ templateUrl: 'app/modules/calendarios/partials/calendarios.html', controller: 'calendarioController'
         }).when('/eventos',{ templateUrl: 'app/modules/eventos/partials/eventos.html', controller: 'eventoController'
-        
-        }).when('/turmas',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaController'
-        }).when('/turmas/:id',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaFormController'
-        }).when('/turmas/:id/alunos',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaAlunosController'
-        }).when('/turmas/:id/alunos/:idAluno/presencas',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaAlunoPresencaController'
-        }).when('/turmas/:id/alunos/enturmar/novo',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaAlunosEnturmarController'
-        }).when('/turmas/:id/professores',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaProfessoresController'
-        }).when('/turmas/:id/presencas',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaPresencasController'
-        }).when('/turmas/:id/horarios',{ templateUrl: 'app/modules/turmas/partials/template.html', controller: 'TurmaQuadroHorarioController'
-            
-        }).when('/matriculas',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaController'
-        }).when('/matriculas/:id',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaFormController'
-        }).when('/matriculas/:id/etapas',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaEtapaController'
-        }).when('/matriculas/:id/enturmacoes',{ templateUrl: 'app/modules/matriculas/partials/template.html', controller: 'MatriculaEnturmacaoController'
-            
-        }).when('/alunos-enturmados',{ templateUrl: 'app/modules/relatorios/partials/template.html', controller: 'RelatoriosController'
-        }).when('/diario-notas',{ templateUrl: 'app/modules/diarioNotas/partials/template.html', controller: 'DiarioNotasController'
-        }).when('/relatorio-alunos-defasados',{ templateUrl: 'app/modules/relatorioAlunosDefasados/partials/template.html', controller: 'RelatorioDefasadosController'
-            
+        }).when('/turmas',{ templateUrl: 'app/modules/turmas/partials/turmas.html', controller: 'TurmaController'
+        }).when('/matriculas',{ templateUrl: 'app/modules/matriculas/partials/matriculas.html', controller: 'MatriculaController'
+
+	}).when('/alunos-enturmados',{ templateUrl: 'app/modules/relatorios/partials/template.html', controller: 'RelatoriosController'
+	}).when('/diario-notas',{ templateUrl: 'app/modules/diarioNotas/partials/template.html', controller: 'DiarioNotasController'
+	}).when('/relatorio-alunos-defasados',{ templateUrl: 'app/modules/relatorioAlunosDefasados/partials/template.html', controller: 'RelatorioDefasadosController'
+
         }).when('/movimentacoes',{ templateUrl: 'app/modules/movimentacoes/partials/movimentacoes.html', controller: 'movimentacoesController'
         }).when('/pessoas',{ templateUrl: 'app/modules/pessoas/partials/pessoas.html', controller: 'pessoaController'
         }).when('/cargos',{ templateUrl: 'app/modules/cargos/partials/cargos.html', controller: 'cargoController'
@@ -92,7 +77,6 @@
         }).when('/usuarios',{ templateUrl: 'app/modules/usuarios/partials/usuarios.html', controller: 'UsuarioController'
         }).when('/permissoes',{ templateUrl: 'app/modules/permissoes/partials/permissoes.html', controller: 'PermissaoController'
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
-            
         }).when('/404',{ templateUrl: 'app/modules/util/partials/404.html'
         }).otherwise({ redirectTo: '/404'
         });

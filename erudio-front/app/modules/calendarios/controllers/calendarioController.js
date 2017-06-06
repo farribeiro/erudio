@@ -264,7 +264,7 @@
                 Servidor.verificaLabels();
                 $scope.editando = true;
                 $scope.fecharCortina();
-            }, 1000);
+            }, 500);
         };
 
         $scope.selecionarTipoEvento = function() {
@@ -571,7 +571,7 @@
             $('.tooltipped').tooltip('remove');
             $timeout(function() {
                 Servidor.verificaLabels();
-                $('#dia-evento-modal').modal();
+                $('#dia-evento-modal').openModal();
                 $scope.fecharCortina();
                 $('.tooltipped').tooltip({delay: 50});
                 $('#tipo').material_select('');
@@ -677,7 +677,7 @@
             var result = Servidor.finalizar(evento, 'calendarios/' + calendario.id + '/dias/' + evento.dia.id + '/eventos', '');
             result.then(function (response) {                        
                 if(calendario.id === $scope.calendario.id) {
-                    $scope.eventos.push(response.data);
+                    $scope.eventos.push(response.data);                    
                     for (var i = 0; i < $scope.semanas.length; i++) {
                         switch (response.data.dia.id) {
                             case $scope.semanas[i].domingo.id:
@@ -825,8 +825,7 @@
                     $scope.carregarCalendario(response.data);
                 } else {
                     $scope.salvarPeriodosMedia(response.data);
-                }
-                $scope.fecharCortina();
+                }                    
             });
         };
 
@@ -851,7 +850,7 @@
         /* Verifica se o usuário deseja descartar os dados preenchidos */
         $scope.prepararRemover = function (calendario) {
             $scope.calendario = calendario;
-            $('#remove-modal-calendario').modal();
+            $('#remove-modal-calendario').openModal();
         };
 
         /* Exclui um calendário */
@@ -867,7 +866,7 @@
         $scope.prepararRemoverEvento = function(evento, dia) {
             $scope.evento = evento;
             $scope.evento.dia = dia;            
-            $('#remove-modal-evento-dia').modal();
+            $('#remove-modal-evento-dia').openModal();
         };
 
         /* Desvincula um evento à um dia */
@@ -944,7 +943,7 @@
         /* Abre o modal de exclusão */
         $scope.prepararVoltar = function(calendario) {
             if (calendario.nome && !calendario.id) {
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else {
                 $scope.fecharFormulario();
             }
