@@ -1,0 +1,23 @@
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="unidadeNome" label="'Nome da Unidade'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="unidade" campo="nome" erro="'unidadesForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <form-input grid="flex-gt-sm" identidade="unidadeSigla" label="'Sigla'" tipo="'text'" nome="'sigla'" model="unidade" campo="sigla"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="unidadeTipo" label="'Tipo'" nome="'tipo'" obrigatorio="required" erro="'unidadesForm.tipo.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-change="validaCampo()" ng-model="unidade.tipo.id" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="tipo in tipos" value="{{ tipo.id }}">{{ tipo.nome }}</md-option>
+        </md-select>
+    </form-select>
+    
+    <form-select grid="flex-gt-sm" identidade="unidadeInstituicao" label="'Instituição'" nome="'instituicao'" obrigatorio="required" erro="'unidadesForm.instituicao.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-change="validaCampo()" ng-model="unidade.instituicaoPai.id" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="instituicao in instituicoes" value="{{ instituicao.id }}">{{ instituicao.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="unidadeCNPJ" maximo="14" classe="'maskCNPJ'" dica="'Apenas Números'" label="'CNPJ'" tipo="'text'" nome="'cpfCnpj'" model="unidade" campo="cpfCnpj"></form-input>
+    <form-input grid="flex-gt-sm" identidade="unidadeEmail" maximo="100" minimo="10" padrao="'/^.+@.+\..+$/'" troca="validaCampo()" label="'E-Mail'" tipo="'email'" obrigatorio="required" nome="'email'" model="unidade" campo="email" erro="'instituicoesForm.email.$error'" mensagem="'required,Este campo é obrigatório|pattern,Formato de E-Mail inválido.'"></form-input>
+</div>

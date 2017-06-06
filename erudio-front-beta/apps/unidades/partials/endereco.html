@@ -1,0 +1,24 @@
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="unidadeEnderecoCep" label="'CEP'" dica="'Apenas Números'" classe="'maskCEP'" maximo="'8'" tipo="'text'" nome="'cep'" model="unidade.endereco" campo="cep"></form-input>
+    <form-input grid="flex-gt-sm" identidade="unidadeEnderecoLogradouro" label="'Logradrouro'" tipo="'text'" nome="'logradouro'" model="unidade.endereco" campo="logradouro"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="unidadeEnderecoNumero" dica="'Apenas Números'" classe="maskNumeroCasa" label="'Número'" tipo="'text'" nome="'numero'" model="unidade.endereco" campo="numero"></form-input>
+    <form-input grid="flex-gt-sm" identidade="unidadeEnderecoComplemento" label="'Complemento'" tipo="'text'" nome="'complemento'" model="unidade.endereco" campo="complemento"></form-input>
+    <form-input grid="flex-gt-sm" identidade="unidadeEnderecoBairro" label="'Bairro'" tipo="'text'" nome="'bairro'" model="unidade.endereco" campo="bairro"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="unidadeEnderecoEstado" label="'Estado'" nome="'estado'" obrigatorio="required">
+        <md-select ng-model="unidade.endereco.cidade.estado.id" ng-change="buscarCidades(unidade.endereco.cidade.estado.id)">
+            <md-option value=""></md-option>
+            <md-option ng-repeat="estado in estados" value="{{ estado.id }}">{{ estado.nome }}</md-option>
+        </md-select>
+    </form-select>
+    
+    <form-select grid="flex-gt-sm" identidade="unidadeEnderecoCidade" label="'Cidade'" nome="'cidade'" obrigatorio="required">
+        <md-select ng-model="unidade.endereco.cidade.id">
+            <md-option value=""></md-option>
+            <md-option ng-repeat="cidade in cidades" value="{{ cidade.id }}">{{ cidade.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>  
