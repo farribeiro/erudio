@@ -54,12 +54,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     private $disciplina;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
     * @ORM\OneToMany(targetEntity = "CalendarioBundle\Entity\HorarioDisciplina", mappedBy = "disciplina", fetch="EAGER")
     */
     private $horarios;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToMany(targetEntity="VinculoBundle\Entity\Alocacao", inversedBy = "disciplinasMinistradas")
     * @ORM\JoinTable(name="edu_turma_disciplina_alocacao",
@@ -101,6 +103,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
      */
     function getNomeExibicao() {
         return $this->disciplina->getNomeExibicao();
+    }
+    
+    /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\VirtualProperty
+     */
+    function getSigla() {
+        return $this->disciplina->getSigla();
     }
     
     function getTurma() {

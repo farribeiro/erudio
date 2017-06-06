@@ -127,14 +127,16 @@ class EnturmacaoFacade extends AbstractFacade {
      * 
      * @param Enturmacao $enturmacao
      */
-    function encerrarPorMovimentacao(Enturmacao $enturmacao) {
+    function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
         $enturmacao->encerrar();
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
-        $this->desvincularDisciplinas($enturmacao);
-        if ($enturmacao->getVaga()) {
-           $this->liberarVaga($enturmacao);
-	}
+        if ($manterDisciplinas) {
+            $this->desvincularDisciplinas($enturmacao);
+        } else {
+            $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        }
+        $this->liberarVaga($enturmacao);
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -154,7 +156,11 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function afterRemove($enturmacao) {
-        $this->excluirDisciplinas($enturmacao);
+        if ((new \DateTime())->diff($enturmacao->getDataCadastro())->days < 1) {
+            $this->excluirDisciplinas($enturmacao);
+        }
+        $enturmacao->getMatricula()->resetarEtapa();
+        $this->orm->getManager()->flush();
         $this->liberarVaga($enturmacao);
     }
     
@@ -255,7 +261,9 @@ class EnturmacaoFacade extends AbstractFacade {
      * @param Enturmacao $enturmacao
      */
     private function liberarVaga(Enturmacao $enturmacao) {
-        $this->vagaFacade->liberar($enturmacao->getVaga());
+        if ($enturmacao->getVaga()) {
+            $this->vagaFacade->liberar($enturmacao->getVaga());
+        }
     }
     
 }

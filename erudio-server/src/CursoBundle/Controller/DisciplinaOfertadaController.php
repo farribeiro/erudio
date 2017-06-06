@@ -33,12 +33,13 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\DisciplinaOfertada;
 
 /**
- * @FOS\RouteResource("disciplinas-ofertadas")
+ * @FOS\RouteResource
  */
 class DisciplinaOfertadaController extends AbstractEntityController {
     
@@ -93,6 +94,30 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     }
     
     /**
+    *  @ApiDoc()
+    * 
+    *  @FOS\Post("turmas/{turma}/disciplinas-ofertadas")
+    *  @ParamConverter("batch", converter="fos_rest.request_body")
+    */
+    function postBatchAction(Request $request, $turma, DisciplinaOfertadaCollection $batch, ConstraintViolationListInterface $errors) {
+        $turmaDisciplina = $this->get('facade.curso.turmas')->find($turma);
+        foreach ($batch->disciplinasOfertadas as $d) {
+            $d->setTurma($turmaDisciplina);
+        }
+        return $this->postBatch($request, $batch->disciplinasOfertadas, $errors);
+    }
+    
+    /**
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("disciplinas-ofertadas/{id}")
+    *  @ParamConverter("disciplinaOfertada", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, DisciplinaOfertada $disciplinaOfertada, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $disciplinaOfertada, $errors);
+    }
+    
+    /**
     * @ApiDoc()
     *   
     * @FOS\Delete("disciplinas-ofertadas/{id}")
@@ -101,4 +126,12 @@ class DisciplinaOfertadaController extends AbstractEntityController {
         return $this->delete($request, $id);
     }
 
+}
+
+/**  Wrapper class for batch operations*/
+class DisciplinaOfertadaCollection {
+    
+    /** @JMS\Type("ArrayCollection<CursoBundle\Entity\DisciplinaOfertada>") */
+    public $disciplinasOfertadas;
+    
 }

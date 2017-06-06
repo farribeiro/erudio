@@ -42,15 +42,7 @@ use CoreBundle\ORM\AbstractEditableEntity;
 *   "NOTA_QUALITATIVA" = "NotaQualitativa"
 * })
 */
-class Nota extends AbstractEditableEntity {
-    
-    /**  
-    * @JMS\Groups({"LIST"})
-    * @JMS\Type("AvaliacaoBundle\Entity\Avaliacao")
-    * @JMS\MaxDepth(2)
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\Avaliacao")
-    */
-    private $avaliacao;
+abstract class Nota extends AbstractEditableEntity {
     
     /**  
     *  @JMS\Groups({"LIST"}) 

@@ -54,17 +54,17 @@ class Horario extends AbstractEditableEntity {
     private $diaSemana;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time") 
+    */
     private $inicio;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time") 
+    */
     private $termino;
     
     /**  

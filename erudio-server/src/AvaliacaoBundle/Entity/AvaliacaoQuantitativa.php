@@ -30,6 +30,7 @@ namespace AvaliacaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use CalendarioBundle\Entity\Aula;
 
 /**
 * @ORM\Entity
@@ -43,12 +44,42 @@ class AvaliacaoQuantitativa extends Avaliacao {
     */
     private $peso = 1;
     
+        
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "TipoAvaliacao")
+    */
+    private $tipo;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Aula") 
+    * @ORM\JoinColumn(name = "aula_id")
+    */
+    private $aulaEntrega;
+    
     function getPeso() {
         return $this->peso;
     }
-
+   
+    function getTipo() {
+        return $this->tipo;
+    }
+    
+    function getAulaEntrega() {
+        return $this->aulaEntrega;
+    }
+    
     function setPeso($peso) {
         $this->peso = $peso;
+    }
+        
+    function setTipo(TipoAvaliacao $tipo) {
+        $this->tipo = $tipo;
+    }
+    
+    function setAulaEntrega(Aula $aulaEntrega = null) {
+        $this->aulaEntrega = $aulaEntrega;
     }
     
 }

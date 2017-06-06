@@ -51,7 +51,10 @@ class MovimentacaoTurma extends Movimentacao {
     */
     private $enturmacaoDestino;
     
-    /** @JMS\Type("CursoBundle\Entity\Turma") */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("CursoBundle\Entity\Turma") 
+    */
     private $turmaDestino;
     
     function getEnturmacaoOrigem() {

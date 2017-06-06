@@ -33,6 +33,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\DisciplinaCursada;
@@ -100,6 +101,16 @@ class DisciplinaCursadaController extends AbstractEntityController {
         return $this->post($request, $disciplina, $errors);
     }
 
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Put("disciplinas-cursadas")
+    * @ParamConverter("disciplinas", converter="fos_rest.request_body")
+    */
+    function putBatchAction(Request $request, DisciplinaCursadaCollection $disciplinas, ConstraintViolationListInterface $errors) {
+        return $this->putBatch($request, $disciplinas->disciplinas, $errors);
+    }
+    
     /**
     * @ApiDoc()
     * 

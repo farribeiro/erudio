@@ -49,7 +49,7 @@ class DisciplinaController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     *   
-    *   @FOS\Get("disciplinas/{id}") 
+    *   @FOS\Get("disciplinas/{id}", requirements={"id" = "\d+"}) 
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -58,10 +58,10 @@ class DisciplinaController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("disciplinas") 
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "nome", nullable = true) 
-    *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
+    *   @FOS\Get("disciplinas")
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    *   @FOS\QueryParam(name = "nome", nullable = true)
+    *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
     *   @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
     *   @FOS\QueryParam(name = "opcional", nullable = true)
     *   @FOS\QueryParam(name = "incluirNaoOfertadas", default = 0)
@@ -83,7 +83,7 @@ class DisciplinaController extends AbstractEntityController {
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Put("disciplinas/{id}")
+    *  @FOS\Put("disciplinas/{id}", requirements={"id" = "\d+"})
     *  @ParamConverter("disciplina", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Disciplina $disciplina, ConstraintViolationListInterface $errors) {
@@ -93,7 +93,7 @@ class DisciplinaController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Delete("disciplinas/{id}") 
+    *   @FOS\Delete("disciplinas/{id}", requirements={"id" = "\d+"}) 
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

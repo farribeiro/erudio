@@ -34,12 +34,15 @@ use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Media;
 use CursoBundle\Entity\Etapa;
+use MatriculaBundle\Traits\CalculosMedia;
 
 class DisciplinaCursadaFacade extends AbstractFacade {
     
+    use CalculosMedia;
+    
     private $mediaFacade;
     
-    function setMediaFacade($mediaFacade) {
+    function setMediaFacade(MediaFacade $mediaFacade) {
         $this->mediaFacade = $mediaFacade;
     }
     
@@ -81,7 +84,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                 $qb->join('d.disciplinaOfertada', 'disciplinaOfertada')
                    ->andWhere('disciplinaOfertada.id = :disciplinaOfertada')
                    ->setParameter('disciplinaOfertada', $value);
-            },
+            }
         );
     }
     
@@ -99,15 +102,48 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('d.disciplina', 'disciplina')->leftJoin('d.enturmacao', 'enturmacao');
+        $qb->join('d.disciplina', 'disciplina')->leftJoin('d.enturmacao', 'enturmacao')->orderBy('d.disciplina');
     }
     
     protected function afterCreate($disciplinaCursada) {
+        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_CURSANDO) {
+            $this->gerarMedias($disciplinaCursada);
+        }
+    }
+    
+    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
         $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
-        for($i = 1; $i <= $numeroMedias; $i++) {
+        for ($i = 1; $i <= $numeroMedias; $i++) {
             $media = new Media($disciplinaCursada, $i);
             $this->mediaFacade->create($media);
         }
+    }
+    
+    private function encerrar(DisciplinaCursada $disciplina, $status = null) {
+        if ($status) {
+            $disciplina->encerrar($status);
+        } else {
+            $disciplina->setMediaFinal($this->calcularMediaFinal($disciplina));
+            $disciplina->setFrequenciaTotal($this->calcularFrequenciaTotal($disciplina));
+            $disciplina->atualizarStatus();
+            if ($disciplina->getStatus() === DisciplinaCursada::STATUS_EXAME) {
+                $this->criarMediaExame($disciplina);
+            } else {
+                $disciplina->encerrar();
+            }
+        }
+        $this->orm->flush();
+    }
+    
+    private function criarMediaExame(DisciplinaCursada $disciplina) {
+        $sistemaAvaliacao = $disciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        $mediaExame = new Media(
+            $disciplina, 
+            $sistemaAvaliacao->getQuantidadeMedias() + 1, 
+            $sistemaAvaliacao->getPesoExame(),
+            'EXAME'
+        );
+        $this->mediaFacade->create($mediaExame);
     }
     
 }

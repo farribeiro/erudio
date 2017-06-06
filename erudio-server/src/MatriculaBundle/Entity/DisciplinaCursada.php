@@ -34,6 +34,7 @@ use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Disciplina;
 use CursoBundle\Entity\DisciplinaOfertada;
+use MatriculaBundle\Traits\CalculosMedia;
 
 /**
 * @ORM\Entity
@@ -41,11 +42,14 @@ use CursoBundle\Entity\DisciplinaOfertada;
 */
 class DisciplinaCursada extends AbstractEditableEntity {
     
+    use CalculosMedia;
+    
     const STATUS_CURSANDO = "CURSANDO",
           STATUS_APROVADO = "APROVADO",
           STATUS_REPROVADO = "REPROVADO",
           STATUS_DISPENSADO = "DISPENSADO",
-          STATUS_INCOMPLETO = 'INCOMPLETO';
+          STATUS_INCOMPLETO = 'INCOMPLETO',
+          STATUS_EXAME = 'EM_EXAME';
     
     /**
     * @JMS\Groups({"LIST"})  
@@ -79,17 +83,22 @@ class DisciplinaCursada extends AbstractEditableEntity {
     private $frequenciaTotal;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_encerramento", type="datetime", nullable=false) 
     */
     protected $dataEncerramento;
     
-    /** @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+     * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") 
+    */
     private $enturmacao;
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3) 
+    * @JMS\MaxDepth(depth = 3)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
     * @ORM\JoinColumn(name = "turma_disciplina_id")  
     */
@@ -130,11 +139,59 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
-    /**
+     /**
+     * @JMS\Groups({"LIST"})
      * @JMS\VirtualProperty
      */
+    function getSigla() {
+        return $this->disciplina->getSigla();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    */
+    function getMediaPreliminar() {
+        try {
+            return $this->calcularMediaFinal($this);
+        } catch (\Exception $ex) {
+            return null;
+        }
+    }
+    
+    function emAberto() {
+        return $this->status === self::STATUS_CURSANDO 
+                || $this->status === self::STATUS_EXAME 
+                || is_null($this->mediaFinal);
+    }
+    
+    function encerrar($status = null) {
+        $statusFinal = $status ? $status : $this->status;
+        if ($statusFinal != self::STATUS_CURSANDO && $statusFinal != self::STATUS_EXAME) {
+            $this->status = $statusFinal;
+            $this->dataEncerramento = new \DateTime();
+        }
+    }
+    
+    function atualizarStatus() {
+        $sistemaAvaliacao = $this->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        if ($this->status === self::STATUS_EXAME) {
+            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else if ($sistemaAvaliacao->getExame() === false) {
+            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else {
+            $this->status = self::STATUS_EXAME;
+        }
     }
     
     function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
@@ -148,13 +205,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     function desvincularEnturmacao() {
         $this->enturmacao = null;
         $this->disciplinaOfertada = null;
-    }
-    
-    function encerrar($status) {
-        if ($status != self::STATUS_CURSANDO) {
-            $this->status = $status;
-            $this->dataEncerramento = new \DateTime();
-        }
     }
     
     function getMedias() {

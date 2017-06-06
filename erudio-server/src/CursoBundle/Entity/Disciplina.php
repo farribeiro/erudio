@@ -52,6 +52,12 @@ class Disciplina extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = true) 
+    */
+    private $sigla;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
     * @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
     */
     private $cargaHoraria;
@@ -69,16 +75,25 @@ class Disciplina extends AbstractEditableEntity {
     private $ofertado = true;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Etapa", inversedBy = "disciplinas") 
     */
     private $etapa;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"}) 
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Curso", inversedBy = "disciplinas") 
     */
     private $curso;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina")
+    * @ORM\JoinColumn(name = "disciplina_agrupamento_id") 
+    */
+    private $agrupamento;
     
     function getNome() {
         return $this->nome;
@@ -88,6 +103,10 @@ class Disciplina extends AbstractEditableEntity {
         return $this->nomeExibicao;
     }
     
+    function getSigla() {
+        return $this->sigla;
+    }
+
     function getCargaHoraria() {
         return $this->cargaHoraria;
     }
@@ -106,6 +125,10 @@ class Disciplina extends AbstractEditableEntity {
     
     function getOfertado() {
         return $this->ofertado;
+    }
+    
+    function getAgrupamento() {
+        return $this->agrupamento;
     }
 
     function setNome($nome) {
@@ -130,6 +153,10 @@ class Disciplina extends AbstractEditableEntity {
     
     function setOfertado($ofertado) {
         $this->ofertado = $ofertado;
+    }
+    
+    function setAgrupamento($agrupamento) {
+        $this->agrupamento = $agrupamento;
     }
     
 }

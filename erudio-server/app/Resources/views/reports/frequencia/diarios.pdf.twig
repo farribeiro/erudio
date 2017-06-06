@@ -101,9 +101,9 @@
                 <h1 margin="0" padding="0">Diário de Frequência</h1>
                 <h3 margin="0" padding="0">{{mes}} {{"now"|date('Y')}}</h3>
             {% endblock %}
-                {% embed 'reports/templates/info.twig' %}{% endembed %}
+
             {% block info %}
-      
+                {% embed 'reports/templates/info.twig' %}{% endembed %}
             {% endblock %}
             
             {% block content %}

@@ -65,6 +65,10 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->join('m.curso', 'curso')
                    ->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },
+            'etapa' => function(QueryBuilder $qb, $value) {
+                $qb->leftJoin('m.etapa', 'etapa')
+                   ->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
+            },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.unidadeEnsino', 'unidadeEnsino')
                    ->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
@@ -76,6 +80,16 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             }
         );
+    }
+    
+    function uniqueMap($matricula) {
+        return [
+            [
+                'curso' => $matricula->getCurso()->getId(), 
+                'aluno' => $matricula->getAluno()->getId(), 
+                'status' => Matricula::STATUS_CURSANDO
+            ]
+        ];
     }
     
     protected function beforeCreate($matricula) {

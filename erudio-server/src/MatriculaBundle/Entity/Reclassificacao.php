@@ -52,11 +52,16 @@ class Reclassificacao extends Movimentacao {
     private $enturmacaoDestino;
     
     /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\OneToMany(targetEntity = "NotaReclassificacao", mappedBy = "reclassificacao", fetch="EXTRA_LAZY", cascade = {"persist"}) 
     */
     private $notas;
     
-    /** @JMS\Type("CursoBundle\Entity\Turma") */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\Type("CursoBundle\Entity\Turma") 
+    */
     private $turmaDestino;
     
     function getEnturmacaoOrigem() {
@@ -75,10 +80,10 @@ class Reclassificacao extends Movimentacao {
         return $this->notas;
     }
     
-    function aplicar() {
-        $enturmacao = new Enturmacao($this->getMatricula(), $this->turmaDestino);
-        $this->enturmacaoDestino = $enturmacao;
-        $this->enturmacaoOrigem->encerrar();
-    }       
+    function aplicar(Enturmacao $enturmacaoDestino) {
+        if (!$this->enturmacaoDestino) {
+            $this->enturmacaoDestino = $enturmacaoDestino;
+        }
+    }
     
 }

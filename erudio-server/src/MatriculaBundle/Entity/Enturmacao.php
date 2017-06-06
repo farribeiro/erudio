@@ -30,6 +30,7 @@ namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Turma;
@@ -65,6 +66,7 @@ class Enturmacao extends AbstractEditableEntity {
     private $disciplinasCursadas;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
     */
     private $vaga;
@@ -75,6 +77,10 @@ class Enturmacao extends AbstractEditableEntity {
         $this->disciplinasCursadas = new ArrayCollection();
     }
     
+    function getAluno() {
+        return $this->matricula->getAluno();
+    }
+     
     function getAnosDefasagem(\DateTime $dataReferencia = null) {
         $idadeEtapa = $this->turma->getEtapa()->getIdadeRecomendada();
         $data = $dataReferencia 
@@ -105,7 +111,11 @@ class Enturmacao extends AbstractEditableEntity {
     }
     
     function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+        return $this->disciplinasCursadas->matching(
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['disciplina' => 'ASC'])
+        );
     }
 
     function encerrar() {

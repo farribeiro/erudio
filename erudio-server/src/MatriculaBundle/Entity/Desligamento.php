@@ -40,6 +40,7 @@ class Desligamento extends Movimentacao {
     const TRANSFERENCIA_EXTERNA = 'TRANSFERENCIA_EXTERNA';
     const ABANDONO = 'ABANDONO';
     const FALECIMENTO = 'FALECIMENTO';
+    const CANCELAMENTO = 'CANCELAMENTO';
     
     /** 
     * @JMS\Groups({"LIST"}) 

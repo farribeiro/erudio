@@ -48,30 +48,41 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column(type = "integer")
     */
     private $numero;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float") 
     * @ORM\Column
     */
     private $valor;
     
+    /**  
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column
+    */
+    private $peso;
+    
     /**
      * @JMS\Groups({"LIST"})
+     * @JMS\Type("integer")
      * @ORM\Column
      */
     private $faltas = 0;
     
     /**
      * @JMS\Groups({"LIST"})
+     * @JMS\Type("float")
      * @ORM\Column 
      */
     private $frequencia = 100;
     
     /**  
-    *  @JMS\Groups({"LIST"}) 
+    *  @JMS\Groups({"LIST"})
+    *  @JMS\MaxDepth(depth = 2)
     *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}, inversedBy="medias") 
     *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
     */
@@ -83,16 +94,11 @@ class Media extends AbstractEditableEntity {
     */
     private $notas;
     
-    /** 
-    * @JMS\Type("boolean")
-    */
-    private $calculoAutomatico;
-    
-    function __construct(DisciplinaCursada $disciplinaCursada, $numero) {
+    function __construct(DisciplinaCursada $disciplinaCursada, $numero, $peso = 1, $nome = null) {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
-        $this->nome = 'M' . $numero;
-        $this->calculoAutomatico = true;
+        $this->nome = is_null($nome) ? 'M' . $numero : $nome;
+        $this->peso = $peso;
         $this->notas = new ArrayCollection();
     }
     
@@ -125,6 +131,10 @@ class Media extends AbstractEditableEntity {
         if($this->notas->contains($nota)) {  
             $this->notas->removeElement($nota);
         }        
+    }
+    
+    function resetar() {
+        $this->valor = 0;
     }
     
     function getNome() {
@@ -161,14 +171,10 @@ class Media extends AbstractEditableEntity {
     
     function setFrequencia($frequencia) {
         $this->frequencia = $frequencia;
-    }
+    }     
     
-    function getCalculoAutomatico() {
-        return $this->calculoAutomatico;
+    function getPeso() {
+        return $this->peso;
     }
-
-    function setCalculoAutomatico($calculoAutomatico = true) {
-        $this->calculoAutomatico = $calculoAutomatico;
-    }       
     
 }

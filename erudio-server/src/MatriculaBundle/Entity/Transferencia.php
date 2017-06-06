@@ -55,12 +55,16 @@ class Transferencia extends Movimentacao {
     private $dataAgendamento;
     
     /** 
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name = "data_encerramento", type = "datetime") 
     */
     private $dataEncerramento;
     
-    /** @ORM\Column() */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column 
+    */
     private $resposta;
     
     /** 

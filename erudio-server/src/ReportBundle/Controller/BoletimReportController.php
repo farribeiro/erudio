@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use MatriculaBundle\Entity\Enturmacao;
+use MatriculaBundle\Entity\DisciplinaCursada;
 
 class BoletimReportController extends Controller {
     
@@ -44,6 +45,10 @@ class BoletimReportController extends Controller {
     
     function getTurmaFacade() {
         return $this->get('facade.curso.turmas');
+    }
+    
+    function getConceitoFacade() {
+        return $this->get('facade.avaliacao.conceitos');
     }
     
     /**
@@ -65,10 +70,12 @@ class BoletimReportController extends Controller {
             $turma = $enturmacao->getTurma();
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
                 ? 'reports/boletim/qualitativo.pdf.twig'
-                : 'reports/boletim/quantitativo.pdf.twig';
+                : 'reports/boletim/quantitativo2porPagina.pdf.twig';
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
+                'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
+                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'boletins' => $this->gerarBoletim($enturmacao),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],
@@ -97,15 +104,18 @@ class BoletimReportController extends Controller {
             $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
             $enturmacoes = $turma->getEnturmacoes();
             $boletins = [];
+            $this->gerarBoletim($enturmacoes[0]);
             foreach ($enturmacoes as $e) {
                 $boletins[] = $this->gerarBoletim($e);
             }
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
                 ? 'reports/boletim/qualitativo.pdf.twig' 
-                : 'reports/boletim/quantitativo.pdf.twig';
+                : 'reports/boletim/quantitativo2porPagina.pdf.twig';
             return $this->render($template, [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
+                'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
+                'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'boletins' => $boletins,
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->getConceitoFacade()->findAll() : [],
@@ -116,10 +126,16 @@ class BoletimReportController extends Controller {
         }
     }
     
-    private function gerarBoletim(Enturmacao $enturmacao) {
+    private function gerarBoletim(Enturmacao $enturmacao) { 
+        $disciplinas = $enturmacao->getDisciplinasCursadas();
+        $disciplinasCursadas = array();
+        foreach ($disciplinas as $disciplina) {
+            $status = $disciplina->getStatus();
+            if ($status == DisciplinaCursada::STATUS_CURSANDO) { array_push($disciplinasCursadas, $disciplina); }
+        }
         return [
             'matricula' => $enturmacao->getMatricula(), 
-            'disciplinas' => $enturmacao->getDisciplinasCursadas()
+            'disciplinas' => $disciplinasCursadas
         ];
     }
     

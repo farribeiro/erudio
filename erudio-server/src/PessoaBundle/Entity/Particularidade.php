@@ -43,14 +43,14 @@ class Particularidade extends AbstractEntity {
           SUPERDOTACAO = 'SUPERDOTACAO';
     
     /** 
-    *   @JMS\Groups({"LIST"})   
-    *   @ORM\Column(nullable = false) 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
     */
     private $nome;
     
     /** 
-    *   @JMS\Groups({"LIST"})   
-    *   @ORM\Column(nullable = false) 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
     */
     private $tipo;
     

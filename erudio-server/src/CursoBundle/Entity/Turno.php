@@ -61,10 +61,6 @@ class Turno extends AbstractEditableEntity {
     function getNome() {
         return $this->nome;
     }
-
-    function setNome($nome) {
-        $this->nome = $nome;
-    }
     
     function getInicio() {
         return $this->inicio;
@@ -72,14 +68,6 @@ class Turno extends AbstractEditableEntity {
 
     function getTermino() {
         return $this->termino;
-    }
-
-    function setInicio(\DateTime $inicio) {
-        $this->inicio = $inicio;
-    }
-
-    function setTermino(\DateTime $termino) {
-        $this->termino = $termino;
     }
     
 }

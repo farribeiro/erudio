@@ -66,12 +66,12 @@ class Matricula extends AbstractEditableEntity {
     * @JMS\MaxDepth(depth = 1)
     * @JMS\Type("PessoaBundle\Entity\PessoaFisica")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\PessoaFisica")
-    * @ORM\JoinColumn(name = "pessoa_fisica_aluno_id") 
+    * @ORM\JoinColumn(name = "pessoa_fisica_aluno_id")
     */
     private $aluno;
     
     /**
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"}) @JMS\Groups({"DETAILS"}) 
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Curso") 
     */
@@ -84,10 +84,11 @@ class Matricula extends AbstractEditableEntity {
     private $etapa;
     
     /** 
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 2)
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
-    * @ORM\JoinColumn(name = "unidade_ensino_id") 
+    * @ORM\JoinColumn(name = "unidade_ensino_id")
     */
     private $unidadeEnsino;
     
@@ -103,7 +104,7 @@ class Matricula extends AbstractEditableEntity {
     */
     private $enturmacoes;
     
-    public function init() {
+    function init() {
         $this->enturmacoes = new ArrayCollection();
         $this->status = self::STATUS_CURSANDO;
     }
@@ -133,6 +134,14 @@ class Matricula extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
+    */
+    function getNomeAluno() {
+        return $this->aluno->getNome();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
     * @JMS\MaxDepth(depth = 1)
     */
     function getEtapaAtual() {
@@ -148,15 +157,19 @@ class Matricula extends AbstractEditableEntity {
     }
     
     function redefinirEtapa() {
-        if($this->getEnturmacoesAtivas()->count() > 0) {
+        if ($this->getEnturmacoesAtivas()->count() > 0) {
             $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
         }
         return $this->etapa;
     }
+    
+    function resetarEtapa() {
+        $this->etapa = null;
+    }
 
     function transferir(UnidadeEnsino $unidadeEnsino) {
         $this->unidadeEnsino = $unidadeEnsino;
-        foreach($this->enturmacoes as $enturmacao) {
+        foreach ($this->enturmacoes as $enturmacao) {
             $enturmacao->encerrar();
         }
     }
@@ -171,9 +184,11 @@ class Matricula extends AbstractEditableEntity {
         );
     }
     
-    /**  
-    * @JMS\VirtualProperty 
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
     * @JMS\MaxDepth(depth = 3)
+    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Enturmacao>")
     */
     function getEnturmacoesAtivas() {
         return $this->enturmacoes->matching(

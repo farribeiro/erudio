@@ -26,6 +26,41 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-class ExceptionHandler {
+namespace CursoBundle\Entity;
+
+use Doctrine\ORM\Mapping AS ORM;
+use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\AbstractEditableEntity;
+
+/**
+* @ORM\Entity
+* @ORM\Table(name = "edu_disciplina_agrupamento")
+*/
+class AgrupamentoDisciplina extends AbstractEditableEntity {
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = false) 
+    */
+    private $nome;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Etapa") 
+    */
+    private $etapa;
+    
+    function getNome() {
+        return $this->nome;
+    }
+
+    function getEtapa() {
+        return $this->etapa;
+    }
+
+    function setNome($nome) {
+        $this->nome = $nome;
+    }
     
 }

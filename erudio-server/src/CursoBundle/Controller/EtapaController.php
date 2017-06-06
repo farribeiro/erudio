@@ -104,11 +104,13 @@ class EtapaController extends AbstractEntityController {
     * 
     *   @FOS\Get("etapas-ofertadas")
     *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = false)
+    *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = false)
     */
     function getOfertadasAction(Request $request, ParamFetcherInterface $paramFetcher) {
         $unidadeEnsino = $paramFetcher->get('unidadeEnsino', true);
+        $curso = $paramFetcher->get('curso', true);
         $turmas = new ArrayCollection($this->get('facade.curso.turmas')->findAll(
-            ['unidadeEnsino' => $unidadeEnsino, 'encerrado' => false]
+            ['unidadeEnsino' => $unidadeEnsino, 'curso' => $curso, 'encerrado' => false]
         ));
         $resultados = array_unique($turmas->map(function($t) { return $t->getEtapa(); })->toArray());
         $view = View::create(array_values($resultados), Codes::HTTP_OK);

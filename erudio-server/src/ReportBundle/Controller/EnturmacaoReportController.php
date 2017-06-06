@@ -34,8 +34,34 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CursoBundle\Service\TurmaFacade;
+use MatriculaBundle\Service\MatriculaFacade;
+use MatriculaBundle\Service\EnturmacaoFacade;
 
 class EnturmacaoReportController extends Controller {
+    
+//      private $turmaFacade;
+//      private $matriculaFacade;
+//      private $enturmacaoFacade;
+//      
+//      function __construct(TurmaFacade $turmaFacade, MatriculaFacade $matriculaFacade, 
+//            EnturmacaoFacade $enturmacaoFacade) {
+//          $this->turmaFacade = $turmaFacade;
+//          $this->matriculaFacade = $matriculaFacade;
+//          $this->enturmacaoFacade = $enturmacaoFacade;
+//      }
+//
+//      function getTurmaFacade() {
+//          return $this->turmaFacade;
+//      }
+//
+//      function getMatriculaFacade() {
+//          return $this->matriculaFacade;
+//      }
+//
+//      function getEnturmacaoFacade() {
+//          return $this->enturmacaoFacade;
+//      }
     
     function getTurmaFacade() {
         return $this->get('facade.curso.turmas');
@@ -65,15 +91,35 @@ class EnturmacaoReportController extends Controller {
     function nominalPorTurmaAction(Request $request) {
         try {
             $turma = $this->getTurmaFacade()->find($request->query->get('turma'));
-            $enturmacoes = $turma->getEnturmacoes()->toArray();
-            usort($enturmacoes, function($e1, $e2) {
-                return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
-                        $e2->getMatricula()->getAluno()->getNome()); 
-            });
             return $this->render('reports/enturmacao/nominalPorTurma.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
-                'turma' => $turma,
-                'enturmados' => $enturmacoes
+                'turmas' => [$turma]
+            ]);
+        } catch (\Exception $ex) {
+            $this->get('logger')->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500, array('Content-type' => 'text/html'));
+        }
+    }
+    
+    /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Relação nominal de alunos enturmados por turma",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("/enturmacoes/nominal-unidade", defaults={ "_format" = "pdf" })
+    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
+    */
+    function nominalPorUnidadeAction(Request $request) {
+        try {
+            $turmas = $this->getTurmaFacade()->findAll(['unidadeEnsino' => $request->query->get('unidade')]);
+            return $this->render('reports/enturmacao/nominalPorTurma.pdf.twig', [
+                'instituicao' => $turmas[0]->getUnidadeEnsino(),
+                'turmas' => $turmas
             ]);
         } catch (\Exception $ex) {
             $this->get('logger')->error($ex->getMessage());

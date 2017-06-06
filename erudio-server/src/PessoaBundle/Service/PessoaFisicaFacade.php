@@ -73,4 +73,18 @@ class PessoaFisicaFacade extends AbstractFacade {
         ];
     }
     
+    function uniqueMap($pessoa) {
+        if ($pessoa->getCpfCnpj()) {
+             $checagem = ['cpf' => $pessoa->getCpfCnpj()];
+        } else if ($pessoa->getCertidaoNascimento()) {
+            $checagem = ['certidaoNascimento' => $pessoa->getCertidaoNascimento()];
+        } else {
+            $checagem = [
+                'nome' => trim($pessoa->getNome()), 
+                'dataNascimento' => $pessoa->getDataNascimento()->format('Y-m-d')
+            ];
+        }
+        return [$checagem];
+    }
+    
 }

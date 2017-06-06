@@ -68,7 +68,7 @@ abstract class AbstractEntity {
     }
     
     function __toString() {
-        return self::class . ':' . $this->id;
+        return get_class($this) . ':' . $this->id;
     }
     
 }

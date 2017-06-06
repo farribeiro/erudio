@@ -38,7 +38,7 @@ use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\TipoUnidadeEnsino;
 
 /**
- * @FOS\RouteResource
+ * @FOS\RouteResource("tipos-unidade-ensino")
  */
 class TipoUnidadeEnsinoController extends AbstractEntityController {
     
@@ -59,7 +59,7 @@ class TipoUnidadeEnsinoController extends AbstractEntityController {
     *       }
     *   )
     * 
-    *   @FOS\Get("unidades-ensino/tipos/{id}")
+    *   @FOS\Get("tipos-unidade-ensino/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -75,7 +75,7 @@ class TipoUnidadeEnsinoController extends AbstractEntityController {
     *       }
     *   ) 
     * 
-    *   @FOS\Get("unidades-ensino/tipos")
+    *   @FOS\Get("tipos-unidade-ensino")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     */
@@ -86,7 +86,7 @@ class TipoUnidadeEnsinoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Post("unidades-ensino/tipos")
+    *   @FOS\Post("tipos-unidade-ensino")
     *   @ParamConverter("tipo", converter="fos_rest.request_body")
     */
     function postAction(Request $request, TipoUnidadeEnsino $tipo, ConstraintViolationListInterface $errors) {
@@ -96,7 +96,7 @@ class TipoUnidadeEnsinoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Put("unidades-ensino/tipos/{id}")
+    *   @FOS\Put("tipos-unidade-ensino/{id}")
     *   @ParamConverter("tipo", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, TipoUnidadeEnsino $tipo, ConstraintViolationListInterface $errors) {
@@ -106,7 +106,7 @@ class TipoUnidadeEnsinoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Delete("unidades-ensino/tipos/{id}")
+    *   @FOS\Delete("tipos-unidade-ensino/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

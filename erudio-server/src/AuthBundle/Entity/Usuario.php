@@ -74,11 +74,8 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     */
     private $atribuicoes;
     
-    public function __construct() {
-        
-    }
-    
     public function eraseCredentials() {
+        
     }
 
     public function init() {
@@ -130,6 +127,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<AuthBundle\Entity\Atribuicao>")
     */
     public function getAtribuicoes() {
         return $this->atribuicoes->matching(

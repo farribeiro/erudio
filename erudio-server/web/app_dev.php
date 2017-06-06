@@ -10,13 +10,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ERROR);
 
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+/** @var \Composer\Autoload\ClassLoader $loader */
+$loader = require __DIR__.'/../vendor/autoload.php';
 Debug::enable();
 
-require_once __DIR__.'/../app/AppKernel.php';
-
 $kernel = new AppKernel('dev', true);
-$kernel->loadClassCache();
+if (PHP_VERSION_ID < 70000) {
+    $kernel->loadClassCache();
+}
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();

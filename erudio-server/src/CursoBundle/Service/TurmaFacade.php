@@ -30,19 +30,17 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CursoBundle\Entity\DisciplinaOfertada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 class TurmaFacade extends AbstractFacade {
     
     private $disciplinaOfertadaFacade;
+    private $disciplinaCursadaFacade;
     private $vagaFacade;
-    
-    function removerAgrupamento(Turma $turma) {
-        $turma->setAgrupamento(null);
-        $this->orm->getManager()->flush();
-    }
     
     function getEntityClass() {
         return 'CursoBundle:Turma';
@@ -52,8 +50,17 @@ class TurmaFacade extends AbstractFacade {
         $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
     }
     
+    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    }
+    
     function setVagaFacade(VagaFacade $vagaFacade) {
         $this->vagaFacade = $vagaFacade;
+    }
+    
+    function removerAgrupamento(Turma $turma) {
+        $turma->setAgrupamento(null);
+        $this->orm->getManager()->flush();
     }
     
     function queryAlias() {
@@ -82,6 +89,9 @@ class TurmaFacade extends AbstractFacade {
             'etapa' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
             },
+            'etapa_ordem' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
+            },
             'quadroHorario' => function(QueryBuilder $qb, $value) {
                 $qb->join('t.quadroHorario', 'quadroHorario')
                     ->andWhere('quadroHorario.id = :quadroHorario')->setParameter('quadroHorario', $value);
@@ -99,7 +109,10 @@ class TurmaFacade extends AbstractFacade {
     }    
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('t.etapa', 'etapa')->orderBy('etapa.ordem');
+        $qb->join('t.etapa', 'etapa')
+           ->addOrderBy('etapa.curso','ASC')
+           ->addOrderBy('etapa.ordem','ASC')
+           ->addOrderBy('t.nome', 'ASC');
     }
         
     protected function beforeRemove($turma) {
@@ -112,16 +125,29 @@ class TurmaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($turma) {
+        $this->criarDisciplinas($turma);
         $this->gerarVagas($turma);
     }
     
     protected function afterUpdate($turma) {
         $this->gerarVagas($turma);
+        if ($turma->getEncerrado()) {
+            $this->finalizar($turma);
+        }
     }
     
     protected function afterRemove($turma) {
         $this->encerrarDisciplinas($turma);
         $this->encerrarVagas($turma);
+    }
+    
+    private function criarDisciplinas(Turma $turma) {
+         if($turma->getEtapa()->getIntegral()) {
+            foreach ($turma->getEtapa()->getDisciplinas() as $disciplina) {
+                $disciplinaOfertada = new DisciplinaOfertada($turma, $disciplina);
+                $this->disciplinaOfertadaFacade->create($disciplinaOfertada);
+            }
+        }
     }
     
     private function gerarVagas(Turma $turma) {
@@ -161,5 +187,19 @@ class TurmaFacade extends AbstractFacade {
             $this->vagaFacade->remove($vaga);
         } 
     }
-
+ 
+    private function finalizar(Turma $turma) {
+        foreach($turma->getDisciplinas() as $ofertada) {
+            $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
+            foreach ($cursadas as $cursada) {
+                if ($cursada->emAberto()) {
+                    throw new IllegalUpdateException(
+                        'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
+                            . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
+                    );
+                }
+            }
+        }
+    }
+    
 }

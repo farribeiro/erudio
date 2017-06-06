@@ -49,7 +49,7 @@ class AgrupamentoTurmaController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     *    
-    *   @FOS\Get("turmas/agrupamentos/{id}")
+    *   @FOS\Get("turmas/agrupamentos/{id}", requirements={"id" = "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);

@@ -30,6 +30,7 @@ namespace AvaliacaoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use AvaliacaoBundle\Entity\AvaliacaoQualitativa;
 
 class AvaliacaoQualitativaFacade extends AbstractFacade {
     
@@ -42,7 +43,7 @@ class AvaliacaoQualitativaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('a.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
@@ -51,17 +52,28 @@ class AvaliacaoQualitativaFacade extends AbstractFacade {
                    ->andWhere('disciplina.turma = :turma')->setParameter('turma', $value);
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.disciplina', 'disciplina')
-                   ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
+                $qb->andWhere('a.disciplina = :disciplina')->setParameter('disciplina', $value);
             },
-            'dia' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.aulaEntrega', 'aula')
-                   ->andWhere('aula.dia = :dia')->setParameter('dia', $value);
+            'media' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('a.media = :media')->setParameter('media', $value);
+            },
+            'tipo' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('a.tipo = :tipo')->setParameter('tipo', $value);
             },
             'fechamentoMedia' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.fechamentoMedia = :fechamento')->setParameter('fechamento', $value);
-            },        
-        );
+                $operator = $value ? '=' : '<>';
+                $qb->andWhere("a.tipo $operator :fechamento")
+                   ->setParameter('fechamento', AvaliacaoQualitativa::TIPO_FINAL);
+            }
+        ];
+    }
+    
+    function uniqueMap($avaliacao) {
+        return [[
+            'media' => $avaliacao->getMedia(),
+            'disciplina' => $avaliacao->getDisciplina(), 
+            'tipo' => $avaliacao->getTipo()
+        ]];
     }
     
 }

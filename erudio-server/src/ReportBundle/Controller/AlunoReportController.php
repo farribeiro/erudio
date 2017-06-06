@@ -34,8 +34,34 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use CursoBundle\Service\CursoFacade;
+use CursoBundle\Service\CursoOfertadoFacade;
+use MatriculaBundle\Service\EnturmacaoFacade;
 
 class AlunoReportController extends Controller {
+    
+//    private $cursoFacade;
+//    private $cursoOfertadoFacade;
+//    private $enturmacaoFacade;
+//    
+//    function __construct(CursoFacade $cursoFacade, CursoOfertadoFacade $cursoOfertadoFacade, 
+//            EnturmacaoFacade $enturmacaoFacade) {
+//        $this->cursoFacade = $cursoFacade;
+//        $this->cursoOfertadoFacade = $cursoOfertadoFacade;
+//        $this->enturmacaoFacade = $enturmacaoFacade;
+//    }
+//    
+//    function getCursoFacade() {
+//        return $this->cursoFacade;
+//    }
+//
+//    function getCursoOfertadoFacade() {
+//        return $this->cursoOfertadoFacade;
+//    }
+//
+//    function getEnturmacaoFacade() {
+//        return $this->enturmacaoFacade;
+//    }
     
     function getCursoFacade() {
         return $this->get('facade.curso.cursos');

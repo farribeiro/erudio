@@ -50,7 +50,7 @@ class TurmaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("turmas/{id}")
+    * @FOS\Get("turmas/{id}", requirements={"id" = "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -64,7 +64,8 @@ class TurmaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "nome", nullable = true) 
     * @FOS\QueryParam(name = "apelido", nullable = true)  
     * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "etapa_ordem", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "agrupamento", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "quadroHorario", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
@@ -86,7 +87,7 @@ class TurmaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("turmas/{id}")
+    * @FOS\Put("turmas/{id}", requirements={"id" = "\d+"})
     * @ParamConverter("turma", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Turma $turma, ConstraintViolationListInterface $errors) {
@@ -96,7 +97,7 @@ class TurmaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("turmas/{id}") 
+    * @FOS\Delete("turmas/{id}", requirements={"id" = "\d+"}) 
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
@@ -105,7 +106,7 @@ class TurmaController extends AbstractEntityController {
    /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("turmas/{id}/agrupamento")
+    * @FOS\Delete("turmas/{id}/agrupamento", requirements={"id" = "\d+"})
     */
     function removeAgrupamentoAction($id) {
         try {
@@ -121,3 +122,4 @@ class TurmaController extends AbstractEntityController {
     } 
     
 }
+

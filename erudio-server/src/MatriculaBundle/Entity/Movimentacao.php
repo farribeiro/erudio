@@ -53,7 +53,10 @@ abstract class Movimentacao extends AbstractEditableEntity {
     */
     private $matricula;
     
-     /** @ORM\Column() */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column
+    */
     private $justificativa;
     
     function getMatricula() {

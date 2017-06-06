@@ -68,6 +68,12 @@ class NotaReclassificacao extends AbstractEditableEntity {
     function getValor() {
         return $this->valor;
     }
+    
+    function setReclassificacao($reclassificacao) {
+        if ($this->reclassificacao == null) {
+            $this->reclassificacao = $reclassificacao;
+        }
+    }
 
     function setValor($valor) {
         $this->valor = $valor;

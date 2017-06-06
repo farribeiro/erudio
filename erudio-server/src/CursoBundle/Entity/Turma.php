@@ -69,6 +69,7 @@ class Turma extends AbstractEditableEntity {
     private $limiteAlunos;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_encerramento", type="datetime", nullable=false) 
     */
@@ -94,12 +95,14 @@ class Turma extends AbstractEditableEntity {
     */
     private $turno;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Calendario")
     */
     private $calendario;
     
     /** 
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\QuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_id") 
@@ -115,7 +118,7 @@ class Turma extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude 
-    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", fetch="EXTRA_LAZY", cascade = {"persist"}) 
+    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", fetch="EXTRA_LAZY")
     */
     private $disciplinas;
     
@@ -135,22 +138,13 @@ class Turma extends AbstractEditableEntity {
         $this->status = self::STATUS_CRIADO;
         $this->enturmacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
-        if($this->etapa->getIntegral()) {
-            $this->disciplinas = new ArrayCollection();
-            foreach($this->etapa->getDisciplinas() as $disciplina) {
-                $disciplinaOfertada = new DisciplinaOfertada($this, $disciplina);
-                $this->disciplinas->add($disciplinaOfertada);
-            }
-        } else if ($this->disciplinas) {
-            foreach($this->disciplinas as $disciplina) {
-                $disciplina->setTurma($this);
-            }
-        }
     }
 
     function getDisciplinas() {
         return $this->disciplinas->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+            Criteria::create()
+                ->where(Criteria::expr()->eq('ativo', true))
+                ->orderBy(['disciplina' => 'ASC'])
         );
     }
     

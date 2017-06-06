@@ -38,10 +38,23 @@ use JMS\Serializer\Annotation as JMS;
 class NotaQuantitativa extends Nota {
     
     /**  
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("AvaliacaoBundle\Entity\AvaliacaoQuantitativa")
+    * @JMS\MaxDepth(2)
+    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\AvaliacaoQuantitativa")
+    * @ORM\JoinColumn(name = "avaliacao_quantitativa_id") 
+    */
+    private $avaliacao;
+    
+    /**  
     * @JMS\Groups({"LIST"}) 
     * @ORM\Column(type = "float")
     */
     private $valor;
+    
+    function getAvaliacao() {
+        return $this->avaliacao;
+    }
     
     function getValor() {
         return $this->valor;
