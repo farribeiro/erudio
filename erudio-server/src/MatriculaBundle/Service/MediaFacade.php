@@ -30,14 +30,15 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
 use MatriculaBundle\Entity\Enturmacao;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Model\RegistroFaltas;
 use MatriculaBundle\Entity\Media;
+use MatriculaBundle\Traits\CalculosMedia;
 
 class MediaFacade extends AbstractFacade {
+    
+    use CalculosMedia;
     
     public function getEntityClass() {
         return 'MatriculaBundle:Media';
@@ -109,55 +110,9 @@ class MediaFacade extends AbstractFacade {
 
     protected function afterUpdate($media) {
         if ($media->getValor() === null || $media->getValor() === 0) {
-            $this->calcular($media);
+            $media->setValor($this->calcularMedia($media));
             $this->orm->getManager()->flush();
         }
-    }
-    
-    private function calcular($media) {
-        $sistemaAvaliacao = $media->getDisciplinaCursada()->getDisciplina()->getEtapa()->getSistemaAvaliacao();
-        $valor = null;
-        switch($sistemaAvaliacao->getTipo()) {
-            case SistemaAvaliacao::TIPO_QUANTITATIVO:
-                $valor = $this->calcularMediaPonderada($media->getNotas());
-                break;
-            case SistemaAvaliacao::TIPO_QUALITATIVO:
-                $valor = $this->calcularMediaConceitual($media->getNotas());
-                break;
-        }
-        $media->setValor($valor);
-        return $media;
-    }
-    
-    private function calcularMediaPonderada($notas) {
-        $valor = $peso = 0.00;
-        foreach ($notas as $nota) {
-            $peso += $nota->getAvaliacao()->getPeso();
-            $valor += $nota->getValor() * (float)$nota->getAvaliacao()->getPeso();
-        }        
-        return count($notas) ? round($valor / $peso, 2) : 0;
-    }
-    
-    private function calcularMediaConceitual($notas) {
-        $valor = 0.00;
-        $notaFechamento = $notas->filter(function($n) { return $n->getFechamentoMedia(); })->first();
-        if (!$notaFechamento) {
-            throw new IllegalOperationException('Não existem notas de fechamento para a média');
-        }
-        $habilidades = $notaFechamento->getHabilidadesAvaliadas()
-                ->filter(function($h) { return $h->getConceito()->getValorMaximo() > 0; });
-        $numHabilidades = $habilidades->count();
-        $conceitos = [];
-        foreach($habilidades as $habilidade) {
-            $conceitos[] = $habilidade->getConceito()->getId();
-        }
-        $countConceitos = array_count_values($conceitos);        
-        foreach($habilidades as $habilidade) {            
-            $valor += ($countConceitos[$habilidade->getConceito()->getId()] >= $numHabilidades / 2)
-                ? $habilidade->getConceito()->getValorMaximo() 
-                : $habilidade->getConceito()->getValorMinimo();
-        }        
-        return $numHabilidades > 0 ? round($valor / $numHabilidades, 2) : 0.00;
     }
 
 }
