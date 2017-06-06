@@ -16,6 +16,11 @@
                 <p padding="0">
                     Curso: {{turma.etapa.curso.nome}}
                 </p>
+                {% if turma.etapa.frequenciaUnificada %}
+                    <p padding="0">
+                        Professor: {{professor}}
+                    </p>
+                {% endif %}
             {% endblock %}
             
             {% block content %}

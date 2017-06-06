@@ -52,7 +52,7 @@
                                 {{aluno.nomeAluno}}
                             </td>
                             {% for media in aluno.medias %}
-                                <td>{{media.valor}}</td>
+                                <td>{{media.valor ? 0 + media.valor}}</td>
                             {% endfor %}
                             <td>-</td>
                             <td></td>
