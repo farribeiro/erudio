@@ -69,6 +69,7 @@ class MediaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "disciplinaCursada", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "disciplinaOfertada", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
@@ -153,7 +154,7 @@ class MediaCollection {
 
 class FaltasCollection {
     
-     /** @JMS\Type("ArrayCollection<MatriculaBundle\Model\RegistroFaltas>") */
+    /** @JMS\Type("ArrayCollection<MatriculaBundle\Model\RegistroFaltas>") */
     public $faltas;
     
 }

@@ -173,4 +173,8 @@ class Media extends AbstractEditableEntity {
         $this->frequencia = $frequencia;
     }     
     
+    function getPeso() {
+        return $this->peso;
+    }
+    
 }

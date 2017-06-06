@@ -30,13 +30,15 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
 use MatriculaBundle\Entity\Matricula;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Media;
 use CursoBundle\Entity\Etapa;
+use MatriculaBundle\Traits\CalculosMedia;
 
 class DisciplinaCursadaFacade extends AbstractFacade {
+    
+    use CalculosMedia;
     
     private $mediaFacade;
     
@@ -121,8 +123,8 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         if ($status) {
             $disciplina->encerrar($status);
         } else {
-            $this->calcularMediaFinal($disciplina);
-            $this->calcularFrequenciaTotal($disciplina);
+            $disciplina->setMediaFinal($this->calcularMediaFinal($disciplina));
+            $disciplina->setFrequenciaTotal($this->calcularFrequenciaTotal($disciplina));
             $disciplina->atualizarStatus();
             if ($disciplina->getStatus() === DisciplinaCursada::STATUS_EXAME) {
                 $this->criarMediaExame($disciplina);
@@ -131,29 +133,6 @@ class DisciplinaCursadaFacade extends AbstractFacade {
             }
         }
         $this->orm->flush();
-    }
-    
-    private function calcularMediaFinal(DisciplinaCursada $disciplinaCursada) {
-        $somaNotas = 0;
-        $somaPesos = 0;
-        foreach ($disciplinaCursada->getMedias() as $media) {
-            if (is_null($media->getValor())) {
-                throw new IllegalOperationException(
-                        'Média final não pode ser calculada sem o preenchimento de todas as parciais e/ou exame');
-            }
-            $somaNotas += $media->getValor();
-            $somaPesos += $media->getPeso();
-        }
-        $disciplinaCursada->setMediaFinal($somaNotas / $somaPesos);
-    }
-    
-    private function calcularFrequenciaTotal(DisciplinaCursada $disciplinaCursada) {
-        $somaFaltas = 0;
-        foreach ($disciplinaCursada->getMedias() as $media) {
-            $somaFaltas += $media->getFaltas();
-        }
-        $numeroAulas = 200;
-        $disciplinaCursada->setFrequenciaTotal(100 - ($somaFaltas * 100 / $numeroAulas));
     }
     
     private function criarMediaExame(DisciplinaCursada $disciplina) {

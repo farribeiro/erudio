@@ -34,12 +34,15 @@ use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Disciplina;
 use CursoBundle\Entity\DisciplinaOfertada;
+use MatriculaBundle\Traits\CalculosMedia;
 
 /**
 * @ORM\Entity
 * @ORM\Table(name = "edu_matricula_disciplina")
 */
 class DisciplinaCursada extends AbstractEditableEntity {
+    
+    use CalculosMedia;
     
     const STATUS_CURSANDO = "CURSANDO",
           STATUS_APROVADO = "APROVADO",
@@ -88,6 +91,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
+     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Enturmacao", inversedBy="disciplinasCursadas") 
     */
     private $enturmacao;
@@ -144,10 +148,23 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     /**
-     * @JMS\VirtualProperty
-     */
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    */
+    function getMediaPreliminar() {
+        try {
+            return $this->calcularMediaFinal($this);
+        } catch (\Exception $ex) {
+            return null;
+        }
     }
     
     function emAberto() {
