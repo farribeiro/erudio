@@ -39,7 +39,6 @@ use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
-use MatriculaBundle\Model\RegistroFaltas;
 use MatriculaBundle\Entity\Media;
 
 /**

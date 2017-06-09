@@ -61,6 +61,12 @@ class Matricula extends AbstractEditableEntity {
     */
     private $status;
     
+    /**
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(type = "datetime", nullable = true)
+    */
+    private $dataEncerramento;
+    
     /** 
     * @JMS\Groups({"LIST"}) 
     * @JMS\MaxDepth(depth = 1)
@@ -122,6 +128,10 @@ class Matricula extends AbstractEditableEntity {
     function getStatus() {
         return $this->status;
     }
+    
+    function getDataEncerramento() {
+        return $this->dataEncerramento;
+    }
 
     function getAluno() {
         return $this->aluno;
@@ -154,6 +164,9 @@ class Matricula extends AbstractEditableEntity {
     
     function setStatus($status) {
         $this->status = $status;
+        if ($this->status != self::STATUS_CURSANDO) {
+            $this->dataEncerramento = new \DateTime();
+        }
     }
     
     function redefinirEtapa() {

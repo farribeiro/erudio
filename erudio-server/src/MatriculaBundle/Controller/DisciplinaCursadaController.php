@@ -30,9 +30,11 @@ namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\View\View;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
@@ -42,7 +44,7 @@ use MatriculaBundle\Entity\DisciplinaCursada;
  * @FOS\RouteResource("disciplinas-cursadas")
  */
 class DisciplinaCursadaController extends AbstractEntityController {
-    
+
     public function getFacade() {
         return $this->get('facade.matricula.disciplinas_cursadas');
     }
@@ -50,7 +52,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("disciplinas-cursadas/{id}")
+    * @FOS\Get("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -77,7 +79,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("matriculas/{id}/disciplinas-cursadas")
+    * @FOS\Get("matriculas/{id}/disciplinas-cursadas", requirements = {"id": "\d+"})
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true) 
@@ -100,6 +102,22 @@ class DisciplinaCursadaController extends AbstractEntityController {
     function postAction(Request $request, DisciplinaCursada $disciplina, ConstraintViolationListInterface $errors) {
         return $this->post($request, $disciplina, $errors);
     }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("disciplinas-cursadas/{id}/media-final", requirements = {"id": "\d+"})
+    */
+    function postMediaFinalAction($id) {
+        try {
+            $disciplina = $this->getFacade()->find($id);
+            $this->getFacade()->encerrar($disciplina);
+            $view = View::create($disciplina);
+        } catch (\Exception $ex) {
+            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $this->handleView($view);
+    }
 
     /**
     * @ApiDoc()
@@ -114,7 +132,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("disciplinas-cursadas/{id}")
+    * @FOS\Put("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("disciplina", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, DisciplinaCursada $disciplina, ConstraintViolationListInterface $errors) {
