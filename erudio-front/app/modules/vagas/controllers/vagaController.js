@@ -273,7 +273,7 @@
                         disciplina = response.data;
                         if (response.data.opcional) { $scope.temOpcional = true; }
                         if (i === $scope.disciplinas.length-1) {
-                            $timeout(function() { $('#modal-confirmar-solicitacao').modal(); $scope.fecharCortina(); }, 500);
+                            $timeout(function() { $('#modal-confirmar-solicitacao').openModal(); $scope.fecharCortina(); }, 500);
                         }
                     });
                 });

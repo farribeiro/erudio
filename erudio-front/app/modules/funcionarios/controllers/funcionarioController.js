@@ -54,7 +54,8 @@
         $scope.totalUnidadesEscolares = 0;
         $scope.FuncionarioService = FuncionarioService;
         $scope.PessoaService = PessoaService;        
-        $scope.unidadeId = parseInt(sessionStorage.getItem('unidade'));
+        var unidadeEnsino = JSON.parse(sessionStorage.getItem('unidade'));
+        $scope.unidade = {id: unidadeEnsino.id}; $scope.unidadeId = unidadeEnsino.id;
         $scope.nomeRemover = '';
         $scope.nomeUnidade = '';
 
@@ -77,7 +78,7 @@
         // Estruturas
         $scope.vinculo = {
             'codigo': null,
-            'status': '',
+            'status': null,
             'tipoContrato': '', // EFETIVO ou TEMPORARIO
             'cargaHoraria': '', // MAXIMO 40Hrs
             'funcionario': {}, // PESSOA
@@ -93,7 +94,7 @@
 
         $scope.vinculoBusca = {
             'funcionario': {'nome': null, 'cpfCnpj': null},
-            'status': '',
+            'status': null,
             'cargo': {'id':null, 'nome': null},
             'codigo': null
         };
@@ -118,7 +119,7 @@
         $scope.progresso = false;
 
         //PREPARA REMOÇÃO DO VINCULO
-        $scope.prepararRemover = function (vinculo) { $('#remove-modal-vinculo').modal(); $scope.vinculoDeletar = vinculo; };
+        $scope.prepararRemover = function (vinculo) { $('#remove-modal-vinculo').openModal(); $scope.vinculoDeletar = vinculo; };
         
         //REMOVE O VINCULO
         $scope.remover = function () {
@@ -171,7 +172,7 @@
         /* Verifica se o usuario deseja descartar os dados preenchidos */
         $scope.prepararVoltar = function(objeto) {
             if (objeto.funcionario.id && !objeto.id) {
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -321,6 +322,7 @@
         
         $scope.buscarUnidades = function() {
             if($scope.nomeUnidade !== undefined && $scope.nomeUnidade.length > 4) {
+                $scope.unidades = [];
                 var promise = Servidor.buscar('unidades-ensino', {'nome': $scope.nomeUnidade});
                 promise.then(function(response) {
                     $scope.unidades = response.data;
@@ -427,8 +429,12 @@
                 promise.then(function(response){
                     $scope.vinculo = response.data;
                     if(!$scope.isAdmin) {
-                        $scope.alocacao.instituicao = $scope.unidade;
-                        $scope.nomeUnidade = $scope.unidade.nomeCompleto;
+                        //$scope.alocacao.instituicao = $scope.vinculo.instituicao;
+                        var promise = Servidor.buscarUm('unidades-ensino',$scope.unidade.id);
+                        promise.then(function(response){
+                            $scope.alocacao.instituicao = response.data;
+                            ($scope.alocacao.instituicao.nomeCompleto === undefined)? $scope.nomeUnidade = $scope.alocacao.instituicao.nome : $scope.nomeUnidade = $scope.alocacao.instituicao.nomeCompleto ;
+                        });
                     }
                     if (vinculo.id) {
                         var promise = Servidor.buscar('alocacoes', {'vinculo': $scope.vinculo.id});
@@ -474,7 +480,7 @@
                         alignment: 'left'
                     }
                 );
-                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); console.log($scope.vinculo); }, 250);
+                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); }, 250);
             }, 500);
         };
 
@@ -598,7 +604,7 @@
                 $('.remove-content').html('O vínculo d'+artigo+' <strong>' + vinculo.funcionario.nome.split(' ')[0].toUpperCase() + '</strong> atualmente está <strong>'+vinculo.status +'</strong>, deseja realmente desligar este vinculo?');
                 var nome = $scope.vinculoRemover.funcionario.nome.split(' ');
                 $scope.nomeRemover = nome[0] + ' ' + nome[1];
-                $('#removerVinculo').modal();
+                $('#removerVinculo').openModal();
             } else {
                 Materialize.toast('Este vínculo já está desligado.');
             }
@@ -734,7 +740,7 @@
                 );
                 $('.cpfMask').mask('000.000.000-09');
                 $('.counter').each(function () { $(this).characterCounter(); });                
-                $('.modal-trigger').modal({
+                $('.modal-trigger').leanModal({
                     dismissible: true, // Modal can be dismissed by clicking outside of the modal
                     opacity: .5, // Opacity of modal background
                     in_duration: 300, // Transition in duration

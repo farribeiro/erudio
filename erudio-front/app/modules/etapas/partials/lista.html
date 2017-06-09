@@ -24,31 +24,107 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<!-- LISTA -->
-<div data-ng-show="etapas.length" class="row ripple-list list-card">
-    <div class="col s12 m12 mobile-full list-items" style="padding: 0;">
-        <div class="card card-list" style="margin: 0;">
-            <div class="card-content mobile-full main-list">
-                <table class='highlight striped table-pattern'>
-                    <thead>
-                        <tr><th data-field='nome'>Nome da Etapa</th><th class='hide-on-small-only' data-field='modulo'>Curso</th><th class='hide-on-small-only' data-field='modulo'>Módulo</th><th class='center-align' data-field='opcoes'>Opções</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr data-ng-repeat="etapa in etapas | orderBy:'etapa.modulo.nome'" >
-                            <td style="padding: 0;" class="celula-link relative mobile-full">
-                                <a style="color: #000 !important;" href="/#/etapas/{{ etapa.id }}"><div class="col s12 waves waves-effect" style="padding-top: 15px; padding-bottom: 15px; padding-left: 20px;">{{ etapa.nomeExibicao }}</div></a>
-                            </td>
-                            <td style="padding: 0;" class='hide-on-small-only'><a style="color: #000 !important;" href="/#/etapas/{{ etapa.id }}">{{ etapa.modulo.curso.nome }}</a></td>
-                            <td style="padding: 0;" class='hide-on-small-only'><a style="color: #000 !important;" href="/#/etapas/{{ etapa.id }}">{{ etapa.modulo.nome }}</a></td>
-                            <td style="padding: 0;" class='center-align hide-on-small-only'>
-                                <a href="/#/disciplinas"><i data-ng-click="intraForms(etapa, false);" data-position='top' data-delay='50' data-tooltip='Ver Disciplinas' class="material-icons info-icon tooltipped">import_contacts</i></a>
-                                <i data-ng-click="prepararRemover(etapa)" data-ng-show="escrita" data-target="remove-modal-etapa" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger-etapa delete-icon tooltipped">delete</i>
-                                <i data-ng-click="carregarInfo(etapa)" data-target="info-modal-etapa" data-position='top' data-delay='50' data-tooltip='Ver Informações' class="material-icons modal-trigger-etapa info-icon tooltipped" style="font-size: 22px;">speaker_notes</i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+<!-- Listagem de Etapas -->
+<div id="listaEtapas">
+    <div class="row"><div class="col s12 etapa-banner"></div></div>
+    <div class="row">
+        <div class="col s1 l1 hide-on-small-only"></div>
+        <div class="col s12 l12 mobile-full init-card">
+            <div class="row ripple-head title-card">
+                <div class="col s12 l12 mobile-full title-fix-card" style="margin-top: -64px;">
+                    <div class="card" data-ng-hide="editando">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Etapa</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Etapas são partes de um curso, na qual o discente deve ser aprovado para conclusão do mesmo.<br /><br />
+                                        ex: 1º ano, 2º ano, etc…
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no botão + para cadastrar uma Etapa.<br>
+                                        Clique no nome de uma Etapa para editá-la.<br>
+                                        Clique no balão correspondente na coluna 'opções' para ver todas as disciplinas de uma Etapa sem precisar editá-la.<br />
+                                        Clique na lixeira para remover uma Etapa.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: 1º ano, 2º ano, etc...<br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-hide="editando" style="background: #fafafa; padding: 1rem; margin-top: -1rem;" class="z-depth-1">
+                        <div class="input-field">
+                            <i class="material-icons prefix">school</i>
+                            <select id="curso" data-ng-change="selecionaCurso();" data-ng-model="curso" required>
+                                <option disabled selected></option>
+                                <option value="{{ curso.id }}" data-ng-selected="verificaSelectCurso(curso.id)" data-ng-repeat="curso in cursos">{{ curso.nome }}</option>
+                            </select>
+                            <label for="curso" class="ajuste-select-top-label" style="left: 0rem;">Ver etapas do curso: </label>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div data-ng-show="etapas.length" class="row ripple-list list-card" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full list-items" data-ng-hide="editando">
+                    <div class="card card-list" style="margin-top: 1.5rem">
+                        <div class="card-content mobile-full main-list">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome da Etapa</th>
+                                        <th data-field='modulo'>Curso</th>
+                                        <th data-field='modulo'>Módulo</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="etapa in etapas | orderBy:'etapa.modulo.nome'" >
+                                        <td class="celula-link relative mobile-full">
+                                            <div class="hide-on-small-only" data-ng-click="carregar(etapa, false, false, $index)">{{ etapa.nomeExibicao }}</div>
+                                            <div class="hide-on-med-and-up" data-ng-click="carregar(etapa, false, true, $index)">{{ etapa.nomeExibicao }}</div>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesEtapa{{ etapa.id }}">
+                                                <div style="height: 100%" data-ng-click="$scope.editandoMobile = true; carregar(etapa, false, false, $index)" class="col s4 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                                <div style="height: 100%" data-ng-click="carregarInfo(etapa)" data-target="info-modal-etapa" class="col s4 blue lighten-1 white-text modal-trigger-etapa center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">speaker_notes</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">ver</div></div>
+                                                <div style="height: 100%" data-ng-click="prepararRemover(etapa, $index)" data-target="remove-modal-etapa" class="col s4 red darken-1 white-text center-align waves-effect modal-trigger-etapa waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                            </div>
+                                        </td>
+                                        <td class='hide-on-small-only'>
+                                            {{ etapa.modulo.curso.nome }}
+                                        </td>
+                                        <td class='hide-on-small-only'>
+                                            {{ etapa.modulo.nome}}
+                                        </td>
+                                        <td class='center-align hide-on-small-only'>
+                                            <i data-ng-click="carregarInfo(etapa)" data-target="info-modal-etapa" data-position='top' data-delay='50' data-tooltip='Ver Informações' class="material-icons modal-trigger-etapa info-icon tooltipped" style="font-size: 22px;">speaker_notes</i>
+                                            <a href="/#/disciplinas"><i data-ng-click="intraForms(etapa, false);" data-position='top' data-delay='50' data-tooltip='Ver Disciplinas' class="material-icons info-icon tooltipped">import_contacts</i></a>
+                                            <i data-ng-click="prepararRemover(etapa, $index)" data-ng-show="escrita" data-target="remove-modal-etapa" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger-etapa delete-icon tooltipped">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form-etapa data-ng-show="editando"></form-etapa>
         </div>
+        <div class="col s1 l1 hide-on-small-only"></div>
     </div>
+    <div data-ng-show="curso">
+        <div data-ng-hide="editando"><erro-busca-etapa data-ng-hide="etapas.length"></erro-busca-etapa></div>
+    </div>
+    <div class="blue-light">&nbsp;</div>
 </div>

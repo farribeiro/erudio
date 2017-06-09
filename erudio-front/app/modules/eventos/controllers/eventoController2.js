@@ -104,7 +104,7 @@
             /* Verifica se o usuário deseja descartar os dados preenchidos */
             $scope.prepararVoltar = function(objeto) {
                 if (objeto.nome && !objeto.id) {
-                    $('#modal-certeza').modal();
+                    $('#modal-certeza').openModal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -170,7 +170,7 @@
             /* Guarda o modulo para futura remoção e abre o modal de confirmação */
             $scope.prepararRemover = function (evento) {
                 $scope.eventoRemover = evento;
-                $('#remove-modal-evento').modal();
+                $('#remove-modal-evento').openModal();
             };
 
             /* Remove o modulo */

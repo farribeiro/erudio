@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <link rel="stylesheet" type="text/css" href="app/modules/turmasMistas/assets/css/turmasMistas.css"/>
-<div class="inicio-modulo">
+<div data-ng-controller="turmasMistasController" class="inicio-modulo">
     <turma-mista-lista ></turma-mista-lista>
     <turma-mista-form data-ng-show="editando"></turma-mista-form>
     <turma-mista-controle></turma-mista-controle>

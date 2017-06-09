@@ -38,17 +38,13 @@ td, th {
     vertical-align: top !important;
 }
 
-.table-horarios-disciplina td {
+.table-horarios-disciplina td, .table-horarios-disciplina th:not(:first-child) {
     border: solid 1px #CFD8DC;
 }
 
 .texto-vermelho {
     color: #e74c3c;
 }
-
-//.horarios.ui-draggable-dragging{
-//    background: #000 !important;
-//}
 
 .toolchip {
     left: -9.5rem;
@@ -66,7 +62,6 @@ td, th {
     font-size: 11px;
     text-align: center;
     vertical-align: middle !important;
-    //z-index: 1000 !important;
 }
 
 .naoAlfabetizado{
@@ -93,7 +88,7 @@ td, th {
 }
 
 .turma-banner {
-    height: 150px;
+    height: 20rem;
     background: url('../images/turmas.jpg') no-repeat center center;
     background-size: 100% auto;
 }
@@ -230,29 +225,17 @@ td, th {
     min-height: 56px;
     width: 100%;*/
     /*height: 100%;*/
-    /*height: 25px;
-    width: 23px;*/
-    //border: 1px solid #cfd8dc;
-    /*top: 0;
-    right: 11px;
+    height: 70px;
+    width: 100%;
+    border: 1px solid #cfd8dc;
+    top: 0;
     -webkit-transition: .2s ease-out;
     transition: .2s ease-out;
-    border-collapse: collapse;*/
-}
-
-.semBorda {
-    border: 0 !important;
+    border-collapse: collapse;
 }
 
 .modal-title-info-aluno{
     background: url('../images/geography.jpg') center bottom;
-    background-size: 100% auto;
-    height: 140px;
-    position: relative;
-}
-
-.modal-title-banner-quadro{
-    background: url('../images/modal-quadro.jpg') center bottom;
     background-size: 100% auto;
     height: 140px;
     position: relative;
@@ -341,29 +324,23 @@ td, th {
     bottom: 18px !important;
     left: 30px;
     color: #fafafa;
-
 }
-.table-label-title { line-height: 5rem !important; }
 
 .table-label {
-    min-height: 75px;
+    height: 70px;
     width: 100%;
     -webkit-transition: .2s ease-out;
     transition: .2s ease-out;
-    line-height: 2rem;
+    line-height: 4.5rem;
     text-align: center;
     font-weight: bold;
-    border: 1px solid #eee;
-    margin-bottom: 5px;
 }
 
 .aula-preenchida {
     padding-top: 1.5rem;
     padding-bottom: 1.6rem;
     text-align: center;
-    top: 0;
-    right: 10px;
-    background: #fff;
+    background: #eceff1;
 }
 
 .horario {
@@ -396,11 +373,8 @@ td, th {
     margin-right: 1rem;
     box-shadow: none;
     padding: 1rem !important;
-    //border: 1px solid #eeeeee;
+    border: 1px solid #eeeeee;
 }
-
-.ui-droppable-hover { background: #b3e5fc !important; }
-.ui-droppable-active { background: #cfd8dc !important; }
 
 @media only screen and (min-width : 993px) {        
     .width-imagem {
@@ -452,18 +426,4 @@ td, th {
     width : auto;
     position : relative;
          
-}
-
-.table-head {
-    
-}
-
-.horario:hover { background: #eee !important; }
-
-.cortina-disciplinas {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 500;
-    display: none;
 }

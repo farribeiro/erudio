@@ -29,7 +29,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="modal-title-banner"><h4 class="modal-alinha-texto">Remover Instituição</h4></div>
+                <div class="modal-title-banner">
+                    <h4 class="modal-alinha-texto">Remover Instituição</h4>
+                </div>
                 <p style="padding-left: 1.4rem!important;">Você realmente deseja remover esta Instituição?</p>
             </div>
             <div class="row">
@@ -42,26 +44,32 @@
     </div>
 </div>
 
-<!-- Modal de informação -->
 <div id="info-modal-instituicao" class="modal" style="max-height: 80%;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="modal-title-info-aluno" style="height: 150px;"><h4 style="position: relative; top: 7rem; padding-left: 1rem; color: white;">{{ instituicao.nome }}</h4></div>
+                <div class="modal-title-info-aluno">
+                    <h4 style="position: relative; top: 6rem; padding-left: 1rem; color: white;">{{ instituicao.nome }}</h4>
+                </div>
                 <div class="row">
                     <div class="col s6" style="padding-top: 1rem;">
                         <strong>E-Mail</strong>: {{ instituicao.email }}<br />
-                        <strong data-ng-show="instituicao.telefones.length">Contatos:</strong>
+                        <strong>Contatos</strong>:
                         <span data-ng-show="instituicao.telefones.length"  data-ng-repeat="telefone in instituicao.telefones">
                             {{ telefone.numero }} - <b>Falar com:</b> {{ telefone.falarCom }}<br>
                         </span>
                     </div>
                     <div class="col s12" style="padding-bottom: 1rem;">
-                        <strong>Endereço:</strong><br />
-                        CEP: {{ instituicao.endereco.cep }}<br />
-                        {{ instituicao.endereco.logradouro }}, {{ instituicao.endereco.numero }}<br />
-                        Bairro {{ instituicao.endereco.bairro }}, {{ instituicao.endereco.cidade.nome }}, {{ instituicao.endereco.cidade.estado.nome }}<br />
+                        <strong>Endereço</strong>:
+                        CEP: {{ instituicao.endereco.cep }}
+                        {{ instituicao.endereco.logradouro }}, {{ instituicao.endereco.numero }}, Bairro {{ instituicao.endereco.bairro }}, 
+                        {{ instituicao.endereco.cidade.nome }}, {{ instituicao.endereco.cidade.estado.nome }}<br />
                         <span data-ng-show="{{ instituicao.endereco.complemento }}">{{ instituicao.endereco.complemento }}<br /></span>
+                    </div>
+                </div>
+                <div class="info-map row" style="margin-bottom: 1rem !important;">
+                    <div class="col s12">
+                        <div id="info-map" style="height: 250px;"></div>
                     </div>
                 </div>
             </div>
@@ -72,8 +80,12 @@
 <!-- Modal Certeza -->
 <div id="modal-certeza" class="modal">
     <div class="modal-body">
-        <div class="modal-title-banner"><h3 style='position: relative; top: 16rem; padding-left: 1rem; color: white;'>Deseja descartar os dados preenchidos?</h3></div>
-        <div class="modal-content"><p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p></div>
+        <div class="modal-title-banner">
+            <h3 style='position: relative; top: 16rem; padding-left: 1rem; color: white;'>Deseja descartar os dados preenchidos?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
     </div>
     <div class="row">
         <div class="modal-footer end-card" style="margin-bottom: 0rem;">
@@ -82,20 +94,4 @@
         </div>
     </div>
 </div>
-
-<!-- Modal de Ajuda -->
-<div id="modal-ajuda-instituicao" class="modal">
-    <div class="modal-body">
-        <div class="modal-title-ajuda"><h3 style='padding: 80px 0 0 10px; color: white; position: relative; top: 10rem;'>Sobre este módulo.</h3></div>
-        <div class="modal-content">
-            <p style='font-family: Roboto'>
-                <strong>Definição:</strong><br />
-                Instituições, no caso de Instituições Educacionais, são os órgãos responsáveis por promover o saber e formar agentes transformadores da sociedade.<br />
-                ex: Escolas, Universidades, Secretarias de Educação, etc... 
-                <br /><br />
-                <strong>Instruções Rápidas:</strong><br />
-                Cadastro: Botão +<br />Editar: Clique no nome<br />Ver Informações: Clique nos ícones ao lado<br />Remover Curso: Clique na lixeira<br />
-            </p>
-        </div>
-    </div>
-</div>
+    

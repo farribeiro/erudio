@@ -62,7 +62,7 @@
         /* Prepara objeto para remover */
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id) {                
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -71,7 +71,7 @@
         /* Preparar Remover */
         $scope.prepararRemover = function (tipo) {
             $scope.tipoRemover = tipo;
-            $('#remove-modal-atividades').modal();
+            $('#remove-modal-atividades').openModal();
         };
 
         /* Remover */

@@ -65,15 +65,37 @@
                 promise.then(function(response){
                     unidade = response.data; $scope.mostraProgresso(); if (unidade.tipo === undefined) { unidade.tipo = {sigla:''}; } 
                     $scope.unidade = unidade; $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome; $('#unidadeTurmaAutoComplete').val($scope.nomeUnidade);
-                    $timeout(function(){ $scope.buscarEtapas(unidade); Servidor.verificaLabels(); $scope.fechaProgresso(); },100);
+                    $timeout(function(){ $scope.buscarCursos(unidade); Servidor.verificaLabels(); $scope.fechaProgresso(); },100);
+                });
+            }
+        };
+        
+        //BUSCA CURSO
+        $scope.cursos = []; $scope.curso = {id: null};
+        $scope.buscarCursos = function (unidade){
+            $scope.mostraProgresso();
+            var promise = Servidor.buscar('cursos-ofertados',{unidadeEnsino: unidade.id});
+            promise.then(function(response){
+                $scope.cursos = response.data;
+                $timeout(function(){ $('#curso').material_select('destroy'); $('#curso').material_select(); },500);
+            });
+        };
+        
+        //SELECIONA CURSO
+        $scope.selecionaCurso = function(curso) {
+            if (curso !== null && curso !== undefined) {
+                var promise = Servidor.buscarUm('cursos',curso);
+                promise.then(function(response){
+                    curso = response.data; $scope.mostraProgresso(); $scope.curso = curso;
+                    $timeout(function(){ $scope.buscarEtapas($scope.unidade, curso); Servidor.verificaLabels(); $scope.fechaProgresso(); },100);
                 });
             }
         };
         
         //BUSCA DISCIPLINAS OFERTADAS
-        $scope.buscarEtapas = function (unidade){
+        $scope.buscarEtapas = function (unidade, curso){
             $scope.mostraProgresso();
-            var promise = Servidor.buscar('etapas-ofertadas',{'unidadeEnsino': unidade.id});
+            var promise = Servidor.buscar('etapas-ofertadas',{'unidadeEnsino': unidade.id, 'curso': curso.id});
             promise.then(function(response){ $scope.etapas = response.data; $timeout(function() { $('#etapa').material_select(); }, 500); $scope.fechaProgresso(); });
         };
         
@@ -103,10 +125,14 @@
                     promise.then(promise.then(function(response){
                         var user = response.data[0];
                         for (var i=0; i<user.atribuicoes.length; i++) {
-                            if (user.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(user.atribuicoes[i].instituicao); }
-                            if (i === user.atribuicoes.length-1) {                                
-                                if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidade); }
-                                $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                            if (user.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(user.atribuicoes[i].instituicao); }  else { $scope.isAdmin = true; }
+                            if (i === user.atribuicoes.length-1) {
+                                if ($scope.isAdmin) {
+                                    $scope.verificaAlocacao();
+                                } else {
+                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidade); }
+                                    $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                                }
                             }
                         }
                     }));

@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <link rel="stylesheet" type="text/css" href="app/modules/boletimEscolar/assets/css/boletim.css"/>
-<div class="inicio-modulo">
+<div data-ng-controller="boletimEscolarController" class="inicio-modulo">
     <controle-boletins-escolares></controle-boletins-escolares>
     <lista-boletins-escolares data-ng-hide="listaAlunos === true"></lista-boletins-escolares>
     <lista-alunos-boletins-escolares data-ng-show="listaAlunos === true"></lista-alunos-boletins-escolares>

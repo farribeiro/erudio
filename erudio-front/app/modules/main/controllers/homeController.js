@@ -26,23 +26,38 @@
 
 (function () {
     var homeModule = angular.module('homeModule', ['servidorModule']);
+
+
     homeModule.filter('telefone', function () {
         return function (telefone) {
-            if (!telefone) { return ''; }
+            if (!telefone) {
+                return '';
+            }
             var value = telefone.toString().trim().replace(/^\+/, '');
-            if (value.match(/[^0-9]/)) { return telefone; }
+
+            if (value.match(/[^0-9]/)) {
+                return telefone;
+            }
             if (value.length >= 10) {
-                var codigoPostal, numero; codigoPostal = value.slice(0, 2); numero = value.slice(2);
+                var codigoPostal, numero;
+                codigoPostal = value.slice(0, 2);
+                numero = value.slice(2);
                 numero = numero.slice(0, numero.length/2) + '-' + numero.slice(numero.length - numero.length/2);
                 return ("(" + codigoPostal + ") " + numero).trim();
-            } return telefone;
+            }
+            return telefone;
         };
     });
 
     homeModule.filter('horario', function () {
         return function (horario) {
-            if (!horario){ return ''; }
-            if (horario.length === 8) { var array = horario.split(':'); horario = array[0] + ':' + array[1]; }
+            if (!horario){
+                return '';
+            }
+            if (horario.length === 8) {
+                var array = horario.split(':');
+                horario = array[0] + ':' + array[1];
+            }
             return horario;
         };
     });
@@ -50,37 +65,57 @@
     homeModule.filter('cpf', function() {
         return function(cpf) {
             if (!cpf) { return ''; }
-            if (cpf.length === 11) { cpf = cpf.slice(0,3) + '.' + cpf.slice(3,6) + '.' + cpf.slice(6,9) + '-' + cpf.slice(9,12); }
+            if (cpf.length === 11) {
+                cpf = cpf.slice(0,3) + '.' + cpf.slice(3,6) + '.' + cpf.slice(6,9) + '-' + cpf.slice(9,12);
+            }
             return cpf;
         };
     });
 
     homeModule.filter('comecarEm', function() {
         return function(vetor, comecarEm) {
-            if(vetor === undefined) { return null; } if (comecarEm < 0) { comecarEm = 1; } if (comecarEm > vetor.length) { return null; }
+            if(vetor === undefined) { return null; }
+            if (comecarEm < 0) { comecarEm = 1; }
+            if (comecarEm > vetor.length) { return null; }
             if (vetor !== undefined && comecarEm-1 < vetor.length) {
                 var novoVetor = [];
-                for (var i = comecarEm-1; i < vetor.length; i++) { novoVetor.push(vetor[i]); }
+                for (var i = comecarEm-1; i < vetor.length; i++) {
+                    novoVetor.push(vetor[i]);
+                }
                 return novoVetor;
-            } return vetor;
+            }
+            return vetor;
         };
     });
 
     homeModule.filter('quantidade', function() {
         return function(quantidade) {
-            quantidade = parseInt(quantidade); var array = [];
-            for (var i = 0; i < quantidade; i++) { array.push(i+1); }
+            quantidade = parseInt(quantidade);
+            var array = [];
+            for (var i = 0; i < quantidade; i++) {
+                array.push(i+1);
+            }
             return array;
         };
     });
 
-    homeModule.controller('HomeController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, $templateCache) {
+    homeModule.controller('HomeController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
         $templateCache.removeAll();
         
-        this.tab = 'home'; this.tabAtual = ""; this.leftDropdown = ''; $scope.isHome = true;
-        this.profile = sessionStorage.getItem('profile'); $scope.avatar = sessionStorage.getItem('avatar'); this.baseUpload = sessionStorage.getItem('baseUploadUrl');
-        $scope.inicializando = false; $scope.AvaliacaoService = AvaliacaoService; $scope.PessoaService = PessoaService; $scope.FuncionarioService = FuncionarioService;
-        
+        this.tab = 'home';
+        this.tabAtual = "";
+        this.leftDropdown = '';
+        this.profile = sessionStorage.getItem('profile');
+        $scope.avatar = sessionStorage.getItem('avatar');
+        this.baseUpload = sessionStorage.getItem('baseUploadUrl');
+        $scope.inicializando = false;
+        $scope.AvaliacaoService = AvaliacaoService;
+        $scope.PessoaService = PessoaService;
+        $scope.FuncionarioService = FuncionarioService;
+        $scope.MatriculaService = MatriculaService;
+        $scope.TurmaService = TurmaService;
+        $scope.isHome = true;
+
         //ATRIBUTOS
         $scope.estadosCivis = []; $scope.racas = []; $scope.buscarParticularidades = []; $scope.vinculos = []; $scope.alocacoes = [];
         $scope.disciplinas = []; $scope.eventos = []; $scope.estados = []; $scope.cidade = {}; $scope.cidades = []; $scope.horarios = [];
@@ -92,9 +127,16 @@
         $scope.fazerChamada = false; $scope.imprimirChamada = false; $scope.fechandoMedia = false; $scope.aluno = {'nome': null}; $scope.alunos = [];
         $scope.letivos = 0; $scope.efetivos = 0; $scope.naoLetivos = 0; $scope.cidadeId = null; $scope.cortina = false; $scope.AvaliacaoService = AvaliacaoService;
         $scope.mostraCortina = function () { $scope.cortina = true; }; $scope.fechaCortina = function () { $scope.cortina = false; };
-        $scope.vinculo = { 'codigo': null, 'status': '', 'tipoContrato': '', 'cargaHoraria': '', 'funcionario': {}, 'cargo': { 'nome': '', 'professor': false }, 'instituicao': null, 'alocacao': [], 'id': null };
-        $scope.limparVinculo = function () { $scope.vinculo = { 'codigo': null, 'status': '', 'tipoContrato': '', 'cargaHoraria': '', 'funcionario': {}, 'cargo': { 'nome': '', 'professor': false }, 'instituicao': null, 'alocacao': [], 'id': null }; };
-        
+        $scope.vinculo = {
+            'codigo': null, 'status': '', 'tipoContrato': '', 'cargaHoraria': '', 'funcionario': {}, 'cargo': { 'nome': '', 'professor': false },
+            'instituicao': null, 'alocacao': [], 'id': null
+        };
+        $scope.limparVinculo = function () {
+            $scope.vinculo = {
+                'codigo': null, 'status': '', 'tipoContrato': '', 'cargaHoraria': '', 'funcionario': {}, 'cargo': { 'nome': '', 'professor': false },
+                'instituicao': null, 'alocacao': [], 'id': null
+            };
+        };
         $scope.semana = {
             'domingo': {'dia': {'data': null}, 'horario': {'id': null}},
             'segunda': {'dia': {'data': null}, 'horario': {'id': null}},
@@ -104,7 +146,6 @@
             'sexta': {'dia': {'data': null}, 'horario': {'id': null}},
             'sabado': {'dia': {'data': null}, 'horario': {'id': null}}
         };
-        
         $scope.limparSemana = function () {
             $scope.semana = {
                 'domingo': {'dia': {'data': null}, 'horario': {'id': null}},
@@ -117,6 +158,7 @@
             };
         };
 
+        // ESTRUTURA PESSOA FISICA
         $scope.pessoa = {
             'nome': null, 'dataNascimento': null, 'email': null, 'genero': null,
             'raca': null, 'estadoCivil': {'id': null}, 'particularidades': [], 'nomePai': null,
@@ -126,7 +168,9 @@
         };
 
         // VERIFICA RAÇA
-        $scope.verificaRaca = function (id) { if ($scope.pessoa.raca) { if (id === $scope.pessoa.raca.id) { return true; } } };
+        $scope.verificaRaca = function (id) {
+            if ($scope.pessoa.raca) { if (id === $scope.pessoa.raca.id) { return true; } }
+        };
 
         /* Recebe informacoes pessoa */
         $scope.recebePessoa = function () {
@@ -210,6 +254,7 @@
                 $scope.disciplinas = []; $scope.disciplina.id = '';
                 $timeout(function() { $('#disciplinas').material_select(); }, 10);
             }
+            //busca vinculo novo
             var promise = Servidor.buscarUm('vinculos', vinculoId);
             promise.then(function (response) {
                 if(sessionStorage.getItem('vinculo') !== vinculoId) {
@@ -237,10 +282,10 @@
             var promise = Servidor.buscarUm('alocacoes', alocacaoId);
             promise.then(function (response) {
                 $scope.alocacao = response.data;
-                //sessionStorage.setItem('unidade', response.data.instituicao);
+                //sessionStorage.setItem('unidade', response.data.instituicao.id);
                 if(sessionStorage.getItem('alocacao') !== alocacaoId) { sessionStorage.setItem('alocacao', alocacaoId); }
                 $scope.alocacao.id = ''; $scope.alocacao.id = sessionStorage.getItem('alocacao');
-                $timeout(function() { $('#alocacoes').material_select(); }, 150);
+                $timeout(function() { $('#alocacoes').material_select(); }, 500);
                 $scope.disciplinas = [];
                 $scope.alocacao.disciplinasMinistradas.forEach(function(d, $index){
                     var promise = Servidor.buscarUm('disciplinas-ofertadas', d.id);
@@ -866,22 +911,34 @@
             if (evento) { $scope.evento = evento; }
             $scope.dia = dia;
             $timeout(function() {
-                $('#info-evento-modal').modal();
+                $('#info-evento-modal').openModal();
                 if(evento) { $('#event'+evento.id).addClass('active'); }
                 $('.collapsible-event').collapsible({ accordion : false });
             }, 250);
         };
 
         /* Busca as alocacoes de um vinculo */
-        $scope.buscarAlocacoes = function (unidade) {
-            var strPessoa = sessionStorage.getItem('pessoa'); var pessoa = JSON.parse(strPessoa); $scope.usuario = { nome: pessoa.nome };
-            var promise = Servidor.buscar('alocacoes', {'instituicao': unidade.id, 'funcionario_nome': $scope.usuario.nome});
+        /*$scope.buscarAlocacoes = function (vinculoId) {
+            var promise = Servidor.buscar('alocacoes', {'vinculo': vinculoId});
             promise.then(function (response) {
                 $scope.alocacoes = response.data;
                 var alocacao = sessionStorage.getItem('alocacao');
                 if (alocacao === undefined || !alocacao && $scope.alocacoes.length === 1) { $scope.carregarAlocacao(response.data[0].id); }
                 $timeout(function () { $('#alocacoes').material_select(); }, 100);
             });
+        };*/
+        /* Busca as alocacoes de um vinculo */
+        $scope.buscarAlocacoes = function (unidade) {
+            var strPessoa = sessionStorage.getItem('pessoa'); var pessoa = JSON.parse(strPessoa); $scope.usuario = { nome: pessoa.nome };
+            if (unidade.id !== undefined || $scope.usuario.nome !== undefined) {
+                var promise = Servidor.buscar('alocacoes', {'instituicao': unidade.id, 'funcionario_nome': $scope.usuario.nome});
+                promise.then(function (response) {
+                    $scope.alocacoes = response.data;
+                    for (var i=0; i<$scope.alocacoes.length; i++) { if ($scope.alocacoes[i].instituicao.nomeCompleto === undefined) { $scope.alocacoes[i].instituicao.nomeCompleto = $scope.alocacoes[i].instituicao.nome; } }
+                    var alocacao = sessionStorage.getItem('alocacao'); console.log(alocacao);
+                    if (alocacao === undefined || alocacao === "" || alocacao === null) { $scope.carregarAlocacao(response.data[0].id); } else { $scope.carregarAlocacao(alocacao); }
+                });
+            }
         };
 
         $scope.verificaSelectVinculo = function (id) {
@@ -1229,7 +1286,7 @@
             $scope.aulas = [];
             $scope.mostraCampoJustificativa = false;
             $scope.escolheDiaChamada();
-            $('#frequencia-aluno').modal();
+            $('#frequencia-aluno').openModal();
         };
 
         /*Busca id do dia e as aulas*/
@@ -1590,7 +1647,7 @@
                                         }
                                     });
                                     $('.nota').mask('99.99', {reverse: true});
-                                    $('#info-aluno').modal();
+                                    $('#info-aluno').openModal();
                                     $scope.fechaCortina();
                                 }, 500);
                             }
@@ -1600,7 +1657,7 @@
                     Servidor.customToast(media.nome + ' não possui nenhuma nota.');
                     $timeout(function () {
                         $('.nota').mask('99.99', {reverse: true});
-                        $('#info-aluno').modal();
+                        $('#info-aluno').openModal();
                         $scope.fechaCortina();
                     }, 250);
                 }
@@ -1650,7 +1707,7 @@
             }
         };
 
-        $scope.abrirModalSobre = function() { $('#sobre-modal').modal(); };
+        $scope.abrirModalSobre = function() { $('#sobre-modal').openModal(); };
 
         $scope.abrirModalRemarcar = function(avaliacao) {
             $scope.avaliacao = avaliacao;
@@ -1658,13 +1715,13 @@
             $scope.mostraCortina();
             if ($scope.aulas.length) {
                 $scope.montaCalendario();
-                $timeout(function() { $('#modal-remarcar-avaliacao').modal(); $scope.fechaCortina(); }, 250);
+                $timeout(function() { $('#modal-remarcar-avaliacao').openModal(); $scope.fechaCortina(); }, 250);
             } else {
                 var promise = Servidor.buscar('turmas/'+$scope.disciplina.turma.id+'/aulas', {disciplina:$scope.disciplina.id});
                 promise.then(function(response) {
                    $scope.aulas = response.data;
                    $scope.montaCalendario();
-                   $timeout(function() { $('#modal-remarcar-avaliacao').modal(); $scope.fechaCortina(); }, 250);
+                   $timeout(function() { $('#modal-remarcar-avaliacao').openModal(); $scope.fechaCortina(); }, 250);
                 });
             }
         };
@@ -1816,9 +1873,15 @@
             Servidor.verificaLabels();
         };
 
+        //SELECIONA UNIDADE DE ENSINO
+        $scope.selecionaUnidade = function(unidade) {
+            $scope.unidade = unidade; $timeout(function(){ Servidor.verificaLabels(); $scope.buscarAlocacoes($scope.unidade); },100);
+            if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
+            sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); 
+        };
+
         /* INICIALIZA A PAGINA */
         $scope.inicializar = function () {
-            //busca vinculo novo
             if (sessionStorage.getItem('module') === 'main') {
                 var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
                 promise.then(function(response) {
@@ -1827,62 +1890,64 @@
                     $timeout(function () {
                         for (var i=0; i<$scope.atribuicoes.length; i++) {
                             if ($scope.atribuicoes[i] !== undefined) {
-                                if ($scope.atribuicoes[i].instituicao !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); }
+                                if ($scope.atribuicoes[i].instituicao !== undefined) { 
+                                    if ($scope.atribuicoes[i].instituicao.instituicaoPai === undefined) { $scope.atribuicoes[i].instituicao.nomeCompleto = $scope.atribuicoes[i].instituicao.nome; }
+                                    $scope.unidades.push($scope.atribuicoes[i].instituicao);
+                                }
                                 if (i === $scope.atribuicoes.length-1) {
-                                    if ($scope.unidades.length === 1) { 
-                                        $scope.unidade = $scope.unidades[0]; 
-                                        if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
-                                        sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); 
-                                        $scope.buscarAlocacoes($scope.unidade);
-                                    }
+                                    //if ($scope.unidades.length === 1) { 
+                                        $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidades[0]);
+                                        /*if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
+                                        sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); */
+                                        //$scope.buscarAlocacoes($scope.unidades[0]);
+                                    //}
                                     $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); }, 500);
-                                    $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                                    $timeout(function () { $('#vinculos, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
                                 }
                             }
                         }
                     },500);
                 });
             }
-        };
-        
-        /*$scope.buscarVinculodaUnidade = function () {
-            $scope.vinculos = []; $scope.limparVinculo();
-            var strPessoa = sessionStorage.getItem('pessoa');
-            var pessoa = JSON.parse(strPessoa);
-            $scope.usuario = { nome: pessoa.nome };
-            var promise = Servidor.buscar('vinculos', {funcionario: pessoa.id, instituicao: $scope.unidade.id, status: 'ATIVO'});
-            promise.then(function (response) {
-                if (response.data.length) {
-                    $scope.vinculos = response.data;
-                    $timeout(function () { $('#vinculos').material_select(); }, 15);
-                    if (sessionStorage.getItem('vinculo')) {
-                        $scope.carregarVinculo(sessionStorage.getItem('vinculo'));
-                        $scope.buscarAlocacoes(sessionStorage.getItem('vinculo'));
-                        if (sessionStorage.getItem('alocacao')) {
-                            $scope.carregarAlocacao(sessionStorage.getItem('alocacao'));
-                            if (sessionStorage.getItem('disciplina')) {
-                                $scope.carregarDisciplina(sessionStorage.getItem('disciplina'));
-                                $timeout(function(){ Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+            /*if (sessionStorage.getItem('module') === 'main') {
+                $scope.vinculos = []; $scope.limparVinculo();
+                var strPessoa = sessionStorage.getItem('pessoa');
+                var pessoa = JSON.parse(strPessoa);
+                $scope.usuario = { nome: pessoa.nome };
+                var promise = Servidor.buscar('vinculos', {funcionario: pessoa.id, status: 'ATIVO'});
+                promise.then(function (response) {
+                    if (response.data.length) {
+                        $scope.vinculos = response.data;
+                        $timeout(function () { $('#vinculos').material_select(); }, 15);
+                        if (sessionStorage.getItem('vinculo')) {
+                            $scope.carregarVinculo(sessionStorage.getItem('vinculo'));
+                            $scope.buscarAlocacoes(sessionStorage.getItem('vinculo'));
+                            if (sessionStorage.getItem('alocacao')) {
+                                $scope.carregarAlocacao(sessionStorage.getItem('alocacao'));
+                                if (sessionStorage.getItem('disciplina')) {
+                                    $scope.carregarDisciplina(sessionStorage.getItem('disciplina'));
+                                    $timeout(function(){ Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                                } else {
+                                    $timeout(function () { $('#disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                                }
                             } else {
-                                $timeout(function () { $('#disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                                $timeout(function () { $('#alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
                             }
                         } else {
-                            $timeout(function () { $('#alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                            if (response.data.length === 1) {
+                                $scope.carregarVinculo(response.data[0].id);
+                                $scope.buscarAlocacoes(response.data[0].id);
+                            } else {
+                                $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                            }
                         }
                     } else {
-                        if (response.data.length === 1) {
-                            $scope.carregarVinculo(response.data[0].id);
-                            $scope.buscarAlocacoes(response.data[0].id);
-                        } else {
-                            $timeout(function () { $('#vinculos, #alocacoes, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
-                        }
+                        Servidor.entradaPagina();
+                        $scope.inicializando = false;
                     }
-                } else {
-                    Servidor.entradaPagina();
-                    $scope.inicializando = false;
-                }
-            });
-        };*/
+                });
+            }*/
+        };
 
         $scope.mostrarFAB = function () {
             var retorno = false;

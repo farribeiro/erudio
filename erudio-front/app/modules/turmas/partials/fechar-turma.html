@@ -1,0 +1,48 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="card-panel col s12">
+    <div style="margin-top: 25px;" class="input-field col s12 m12 l12">
+        <i class="material-icons prefix">import_contacts</i>
+        <select id="disciplina" data-ng-model="disciplinaTurma.id" ng-change="buscarAlunos()">
+            <option selected></option> 
+            <option data-ng-selected="disciplinasTurma.id === disciplina.id" value="{{ disciplina.id }}" data-ng-repeat="disciplina in disciplinasTurma | orderBy: 'nome'">{{ disciplina.nomeExibicao }}</option>
+        </select>
+        <label for="disciplina">Disciplina</label>
+    </div>
+    <div class="row" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;"><strong>
+        <div class="col s2">Nome do Aluno</div>
+        <div data-ng-repeat="md in totalMedias track by $index" class="col s2">Média </div>
+        <div class="col s1" >Media Prevista</div>
+        <div class="col s1" >Status Previsto</div>
+    </strong></div>
+    <div class="row" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;" data-ng-repeat="enturmacao in enturmacoesNotas">
+        <div class="col s2">{{ enturmacao[1].disciplinaCursada.matricula.nomeAluno }}</div>
+        <div data-ng-repeat="md in totalMedias track by $index" class="col s2">{{enturmacao[md].valor}}</div>
+        <div class="col s1" >Ver</div>
+        <div class="col s1" >Ver</div>
+    </div>
+</div>

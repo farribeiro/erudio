@@ -67,7 +67,7 @@
         
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id && objeto.sigla) {                
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -75,7 +75,7 @@
 
       /* Buscando tipos - Lista */
         $scope.buscarTipos = function(){
-            var promise = Servidor.buscar('unidades-ensino/tipos', null);
+            var promise = Servidor.buscar('tipos-unidade-ensino', null);
             promise.then(function(response){
                 $scope.tipos = response.data;
                 $('.tooltipped').tooltip('remove');
@@ -103,7 +103,7 @@
                             }
                         }                        
                         if (i === $scope.tipos.length-1) {
-                            var result = Servidor.finalizar($scope.tipo, 'unidades-ensino/tipos', 'Tipo de Unidade');
+                            var result = Servidor.finalizar($scope.tipo, 'tipos-unidade-ensino', 'Tipo de Unidade');
                             result.then(function (response) {
                                 $scope.fecharFormulario();
                                 $scope.fechaProgresso();
@@ -115,7 +115,7 @@
                         }
                     });
                 } else {
-                    var result = Servidor.finalizar($scope.tipo, 'unidades-ensino/tipos', 'Tipo de Unidade');
+                    var result = Servidor.finalizar($scope.tipo, 'tipos-unidade-ensino', 'Tipo de Unidade');
                     result.then(function (response) {
                         $scope.fecharFormulario();
                         $scope.fechaProgresso();
@@ -135,7 +135,7 @@
         $scope.validar = function (id) { var result = Servidor.validar(id); return result; };   
         
         /* Guarda o tipo para futura remoção e abre o modal de confirmação */
-        $scope.prepararRemover = function (tipo){ $('#remove-modal').modal(); $scope.tipo = tipo; };
+        $scope.prepararRemover = function (tipo){ $('#remove-modal').openModal(); $scope.tipo = tipo; };
             
         /* Remover o tipo */
         $scope.remover = function (){

@@ -24,21 +24,21 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<div data-ng-show="progresso" class="progress" style="top: -0.5rem">
-      <div class="indeterminate"></div>
-</div>
-<div data-ng-show="progresso" class="cortinaProgresso"></div>
-
-<!-- Botão Voltar -->
-<div data-ng-click="prepararVoltar(turma)" data-ng-hide="lista" id="voltar" class="btn-voltar hide-on-med-and-down">
+<!-- Botão Voltar (Formulário) -->
+<div data-ng-click="prepararVoltar(turma)" id="voltar" data-ng-show="editando && mostraForm && origemBotao" class="btn-voltar hide-on-med-and-down">
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
-<a data-ng-click="prepararVoltar(turma)" data-ng-hide="lista"><i class="material-icons btn-voltar hide-on-large-only">arrow_back</i></a>
 
-<!-- Botão Adicionar -->
-<div data-ng-show="lista === true" class="btn-add hide-on-small-only">
-    <a href="{{config.dominio}}/#/turmas/novo" data-ng-show="escrita" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Turma"><i class="material-icons">add</i></a>
+<div data-ng-click="prepararVoltar(turma)" id="voltarOrigemLista" data-ng-show="editando && !origemBotao" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
+
+<!-- Botão Voltar às informações da turma -->
+<div data-ng-click="trocarTab('form')" data-ng-show="escrita && !mostraForm && origemBotao && !voltarAlunos" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para as informaçoes da Turma"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+
+<i data-ng-show="editando || !voltarAlunos" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
 
 <!-- Botão Voltar (Enturmacoes) -->
 <div data-ng-click="buscarEnturmacoes(turma, true)" data-ng-show="voltarAlunos" class="btn-voltar hide-on-med-and-down">
@@ -46,32 +46,58 @@
 </div> 
 <i data-ng-show="voltarAlunos" class="material-icons btn-voltar hide-on-large-only" data-ng-click="buscarEnturmacoes(turma, true)">arrow_back</i>
 
-<!-- Botão Adicionar Professor -->
-<div data-ng-show="mostraProfessores" class="btn-add">
-    <a data-ng-click="adicionarProfessor(false)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Professor"><i class="material-icons">add</i></a>
+<!-- Botão Adicionar -->
+<div data-ng-hide="editando" class="btn-add hide-on-small-only">
+    <a data-ng-show="verificarEscrita()" data-ng-click="carregarTurma(null,true,false,null)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Turma"><i class="material-icons">add</i></a>
 </div>
 
-<!-- Botão Adicionar Alunos -->
-<div id="enturmarAlunos" data-ng-show="turma.quantidadeAlunos < turma.limiteAlunos && mostraAlunos && !presencaBtn && !quadroBtn" class="btn-add hide-on-small-only">
-    <a data-ng-hide="mostraProfessores" href="{{config.dominio}}/#/turmas/{{ turma.id }}/alunos/enturmar/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
+<!-- Botão Adicionar Mobile-->
+<div data-ng-hide="editando" class="btn-add hide-on-med-and-up">
+    <a data-ng-hide="editando"  data-ng-click="carregarTurma(null,true,true,null)" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Etapa"><i class="material-icons">add</i></a>
+</div>
+
+<!-- Botão Adicionar Professor -->
+<div data-ng-show="escrita && mostraProfessores" class="btn-add">
+    <a data-ng-click="adicionarProfessor()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Professor"><i class="material-icons">add</i></a>
+</div>
+
+<!-- Botão Adicionar Professor Mobile-->
+<div data-ng-show="escrita && mostraProfessores" class="btn-add hide-on-med-and-up">
+    <a data-ng-show="mostraProfessores"  data-ng-click="adicionarProfessor()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Professor"><i class="material-icons">add</i></a>
+</div>
+
+<!-- Botão Adicionar Alunos (enturmar)-->
+<div data-ng-click="enturmarAlunos()" id="enturmarAlunos" data-ng-show="escrita && turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos && !enturmandoAlunos" class="btn-add hide-on-small-only">
+    <a class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
+</div>
+
+<!-- Botão Adicionar Mobile-->
+<div data-ng-show="escrita && turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos" class="btn-add hide-on-med-and-up">
+    <a data-ng-click="enturmarAlunos()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
 </div>
  
 <ul id='dropProfessores' class='dropdown-content'>
     <li class="divider"></li>
-    <li data-ng-repeat="professor in professores"><a data-ng-click="carregaFuncionario(professor)">{{ professor.vinculo.funcionario.nome | uppercase }}</a></li>
+    <li data-ng-repeat="professor in professores">
+        <a data-ng-click="carregaFuncionario(professor)">{{ professor.vinculo.funcionario.nome | uppercase }}</a>
+    </li>
 </ul>
 
 <ul id='dropUnidadesTurmaBusca' class='dropdown-content'>
     <li class="divider"></li>
-    <li data-ng-repeat="unidade in unidades"><a class="drop-item-busca" data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+    <li data-ng-repeat="unidade in unidades">
+        <a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a>
+    </li>
 </ul>
 
 <ul id='dropUnidadesTurmaForm' class='dropdown-content'>
     <li class="divider"></li>
-    <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+    <li data-ng-repeat="unidade in unidades">
+        <a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a>
+    </li>
 </ul>
 
-<!-- Loader 
+<!-- Loader -->
 <div data-ng-show="loader" class="preloader-wrapper small active loader ajeita-loader">
     <div class="spinner-layer spinner-red-only">
         <div class="circle-clipper left">
@@ -86,27 +112,3 @@
     </div>
 </div>
 <div data-ng-show="loader" class="cortinaProgresso"></div>
--->
-
-<!-- Controle Edição Turma -->
-<div class="fixed-action-btn vertical click-to-toggle fab-button" data-ng-show="escrita && turma.id && lista !== true">
-    <a data-ng-hide="mostraAlunos === true" class="btn-floating waves-effect waves-circle waves-light btn-large red" data-ng-click="mostrarLabels()"><i class="material-icons">menu</i></a>
-    <ul>
-        <li>
-            <div class="chip z-depth-2 toolchip">Alunos</div>
-            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/alunos" class="btn-floating orange lighten-1 menu-turma"><i class="material-icons">group</i></a>
-        </li>
-        <li>
-            <div class="chip z-depth-2 toolchip">Professores</div>
-            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/professores" class="btn-floating yellow lighten-1 menu-turma"><i class="material-icons">record_voice_over</i></a>
-        </li>
-        <li>
-            <div class="chip z-depth-2 toolchip">Lista de Presença</div>
-            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/presencas" class="btn-floating green menu-turma"><i class="material-icons">format_list_numbered</i></a>
-        </li>
-        <li>
-            <div class="chip z-depth-2 toolchip">Grade de Horário</div>
-            <a href="{{config.dominio}}/#/turmas/{{ turma.id }}/horarios" class="btn-floating blue menu-turma"><i class="material-icons">alarm</i></a>
-        </li>
-    </ul>
-</div>

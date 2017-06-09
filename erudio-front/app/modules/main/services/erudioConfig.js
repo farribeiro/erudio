@@ -28,7 +28,7 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        this.dominio = 'http://10.1.2.66/erudio-git-final/Erudio/erudio-front'; this.extraUrl = '/erudio-git-final/Erudio/erudio-front';
+        this.dominio = 'http://10.1.2.66/erudio-old'; this.extraUrl = '/erudio-old';
         //this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
         //this.urlRelatorios = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api/report';
         //this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';

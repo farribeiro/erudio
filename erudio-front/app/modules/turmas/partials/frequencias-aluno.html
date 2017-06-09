@@ -25,18 +25,23 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <div class="row form-geral"> 
-    <div class="col s12 mobile-full" style="padding: 0;">
+    <div class="col s12 mobile-full">
         <div class="row form-box show-form">
-            <div id="paginaFrequenciaAluno" class="card-panel" style="margin-top: 0px">
-                <div class="row"><h4 class='card-title-h3' style="padding-left: 10px; padding-top: 20px">Discente: {{matriculaPresenca.aluno.nome}}</h4></div>
+            <div id="paginaFrequenciaAluno" class="card-panel" style="margin-top: -20px">
+                <div class="row">                         
+                    <h3 class='card-title-h3' style="padding: 20px; padding-top: 30px">Frequências de {{matriculaPresenca.aluno.nome}}</h3>                        
+                </div>
                 <div class="row">
                     <div>
                         <div class="row" style="margin-top: 10px !important; margin-bottom: 15px !important;">
                             <div class="input-field col s12 m12 l4">
                                 <i class="material-icons prefix select-prefix">settings_brightness</i>
-                                <select id="opcaoPesquisaPresencaAluno" data-ng-model="opcaoPesquisa" data-ng-change="limpaOpcao()">
-                                    <option disabled selected></option><option value="mes">MÊS</option><option value="dia">DIA</option>                    
-                                </select><label for="opcaoPesquisaPresencaAluno">BUSCAR POR:</label>
+                                <select id="opcaoPesquisaPresencaAluno" data-ng-model="opcaoPesquisa" data-ng-change="limpaOpcao()">                                                                        
+                                    <option disabled selected></option>
+                                    <option value="mes">MÊS</option>
+                                    <option value="dia">DIA</option>                    
+                                </select>
+                                <label for="opcaoPesquisaPresencaAluno">Opção de Pesquisa</label>
                             </div>                     
                             <div class="input-field col s12 m12 l4" data-ng-show="opcaoPesquisa === 'dia'">
                                 <i class="material-icons prefix">settings_brightness</i>
@@ -47,48 +52,64 @@
                                 <i class="material-icons prefix select-prefix">settings_brightness</i>
                                 <select id="mesFrequencia" style="display: none;" data-ng-model="buscaFrequenciaAluno.mes">                                                                        
                                     <option disabled selected></option>
-                                    <option value="01">JANEIRO</option><option value="02">FEVEREIRO</option><option value="03">MARÇO</option>
-                                    <option value="04">ABRIL</option><option value="05">MAIO</option><option value="06">JUNHO</option>
-                                    <option value="07">JULHO</option><option value="08">AGOSTO</option><option value="09">SETEMBRO</option>
-                                    <option value="10">OUTUBRO</option><option value="11">NOVEMBRO</option><option value="12">DEZEMBRO</option>
-                                </select><label for="mesFrequencia">MÊS</label>
+                                    <option value="01">JANEIRO</option>
+                                    <option value="02">FEVEREIRO</option>
+                                    <option value="03">MARÇO</option>
+                                    <option value="04">ABRIL</option>
+                                    <option value="05">MAIO</option>
+                                    <option value="06">JUNHO</option>
+                                    <option value="07">JULHO</option>
+                                    <option value="08">AGOSTO</option>
+                                    <option value="09">SETEMBRO</option>
+                                    <option value="10">OUTUBRO</option>
+                                    <option value="11">NOVEMBRO</option>
+                                    <option value="12">DEZEMBRO</option>
+                                </select>                        
+                                <!--                        <input id="mesFrequencia" data-ng-model="buscaFrequenciaAluno.mes" length="2" class="validate counter" type="text"  />-->
+                                <label for="mesFrequencia">MÊS</label>
                             </div>
                             <div class="input-field col s12 m12 l4" data-ng-show="opcaoPesquisa === 'mes' && buscaFrequenciaAluno.mes">
                                 <i class="material-icons prefix">settings_brightness</i>
-                                <select id="disciplinaMes" style="display: none;" data-ng-model="index" data-ng-change="buscarFrequenciasMes(index)">                                                                        
-                                    <option disabled selected></option><option value="todas">TODAS</option>
+                                <select id="disciplinaMes" style="display: none;" data-ng-model="index" data-ng-change="buscarFrequenciasMes()">                                                                        
+                                    <option disabled selected></option>
+                                    <option value="todas">TODAS</option>
                                     <option value="{{ $index }}" data-ng-repeat="disciplina in disciplinasCursadas">{{disciplina.nome| uppercase}}</option>
-                                </select><label for="disciplinaMes">DISCIPLINAS CURSADAS</label>
+                                </select>
+                                <label for="disciplinaMes">DISCIPLINAS CURSADAS</label>
                             </div>                      
                             <div class="input-field col s12 m12 l4" data-ng-show="opcaoPesquisa === 'dia' && buscaFrequenciaAluno.data.length === 10 && disciplinasFrequencia.length">
                                 <i class="material-icons prefix select-prefix">settings_brightness</i>
-                                <select id="disciplinasDoDia" style="display: none;" data-ng-model="index" data-ng-change="carregarHorarioDisciplinas(index)" required>                                                                        
+                                <select id="disciplinasDoDia" style="display: none;" data-ng-model="index" data-ng-change="carregarHorarioDisciplinas()" required>                                                                        
                                     <option disabled selected></option>
-                                    <option class="truncate" value="{{ $index }}" data-ng-repeat="d in disciplinasFrequencia">{{$index+1}}ª aula - {{d.disciplinaOfertada.nome| uppercase }} - {{ d.horario.inicio | horario }}  </option>
-                                </select><label for="disciplinasDoDia">DISCIPLINAS DO DIA</label>
+                                    <option class="truncate" value="{{ $index}}" data-ng-repeat="d in disciplinasFrequencia">{{$index+1}}ª aula - {{d.disciplinaOfertada.nome| uppercase}} - {{ d.horario.inicio | horario }}  </option><!---{{ d.horario.inicio | horario }} - {{ d.horario.termino | horario }}-->
+                                </select>
+                                <label for="disciplinasDoDia">DISCIPLINAS DO DIA</label>
                             </div>                    
                         </div> 
                     </div> 
                     <table class="bordered" data-ng-show="frequenciasDoAluno.length && opcaoPesquisa === 'dia'">
                         <thead>
                             <tr>
-                                <th style="padding-left: 15px;" data-field="name">NOME</th><th class="center" data-field="dln">PRESENCA</th>
+                                <th data-field="name">NOME</th>
+                                <th class="center" data-field="dln">PRESENCA</th>
                                 <th class="center" data-field="dln">FALTA</th>
                                 <th class="center" data-field="dln" data-ng-show="frequenciasDoAluno.status === 'FALTA_JUSTIFICADA'">JUSTIFICATIVA</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr data-ng-repeat="frequencia in frequenciasDoAluno">
-                                <td style="padding-bottom: 5px;"><div style="margin-left: 10px;">{{ matriculaPresenca.aluno.nome | uppercase }}</div></td>
-                                <td class="center" style="padding-bottom: 5px;">
+                                <td>
+                                    <div>{{ matriculaPresenca.aluno.nome | uppercase }}</div>
+                                </td>
+                                <td class="center">
                                     <input class="with-gap" name="{{matriculaFrequencia.codigo}}"  type="radio" id="PRESENCA{{matriculaFrequencia.codigo}}" data-ng-click="alteraStatusDaFrequencia('PRESENCA', frequencia)" data-ng-checked="frequencia.status === 'PRESENCA'" />
                                     <label for="PRESENCA{{matriculaFrequencia.codigo}}"></label>
                                 </td>
-                                <td class="center" style="padding-bottom: 5px;">
+                                <td class="center">
                                     <input class="with-gap" name="{{matriculaFrequencia.codigo}}" type="radio" id="FALTA{{matriculaFrequencia.codigo}}" data-ng-click="justificarFalta(frequencia)"  data-ng-checked="frequencia.status !== 'PRESENCA'"/>
                                     <label for="FALTA{{matriculaFrequencia.codigo}}"></label>
                                 </td>
-                                <td class="center" data-ng-show="frequencia.status === 'FALTA_JUSTIFICADA'" style="padding-bottom: 5px;">
+                                <td class="center" data-ng-show="frequencia.status === 'FALTA_JUSTIFICADA'">
                                     <p style="cursor: pointer;" data-ng-click="justificarFalta(frequencia)">{{frequencia.justificativa}}&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                 </td>                    
                             </tr>
@@ -96,20 +117,33 @@
                     </table>             
                     <table class="bordered" data-ng-show="frequenciasMes.length && opcaoPesquisa === 'mes'" >
                         <thead>
-                            <tr>
-                                <th style="padding-left: 15px;" data-field="dln">CÓDIGO</th>
-                                <th data-field="dln">DATA</th><th class="center" data-field="dln">DISCIPLINA</th>
-                                <th class="center" data-field="dln">STATUS</th><th class="center" data-field="dln">JUSTIFICATIVA</th>                        
+                            <tr>                     
+                                <th data-field="dln">DATA</th>
+                                <th class="center" data-field="dln">DISCIPLINA</th>
+                                <th class="center" data-field="dln">STATUS</th>                        
+                                <th class="center" data-field="dln">JUSTIFICATIVA</th>                        
                             </tr>
                         </thead>
                         <tbody data-ng-repeat="frequencia in frequenciasMes">
                             <tr>
-                                <td style="padding-bottom: 5px;"><div style="margin-left: 10px;">{{ matriculaPresenca.codigo | uppercase }}</div></td>
-                                <td><div>{{ matriculaPresenca.aluno.nome | uppercase }}</div></td>
-                                <td>{{frequencia.aula.dia.data | date: 'dd/MM/yyyy'}}</td>
-                                <td class="center">{{frequencia.disciplinaCursada.disciplina.nome | uppercase}}</td>
-                                <td class="center">{{frequencia.status | uppercase}}</td>
-                                <td class="center">{{frequencia.justificativa}}</td>
+                                <td>
+                                    <div>{{ matriculaPresenca.codigo | uppercase }}</div>
+                                </td>
+                                <td>
+                                    <div>{{ matriculaPresenca.aluno.nome | uppercase }}</div>
+                                </td>
+                                <td>
+                                    {{frequencia.aula.dia.data | date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td class="center">
+                                    {{frequencia.disciplinaCursada.disciplina.nome | uppercase}}
+                                </td>
+                                <td class="center">
+                                    {{frequencia.status | uppercase}}
+                                </td>       
+                                <td class="center">
+                                    {{frequencia.justificativa}}
+                                </td>                                 
                             </tr>
                         </tbody>
                     </table>                     

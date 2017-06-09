@@ -175,7 +175,7 @@
 
             $scope.prepararVoltar = function(objeto) {
                 if (objeto.nome && !objeto.id) {
-                    $('#modal-certeza').modal();
+                    $('#modal-certeza').openModal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -227,7 +227,7 @@
             /* Abrir modal para remover */
             $scope.prepararRemover = function (disciplina) {
                 $scope.disciplinaRemover = disciplina;
-                $('#remove-modal-disciplina').modal();
+                $('#remove-modal-disciplina').openModal();
             };
 
             /* Remover Disciplina */
@@ -256,10 +256,10 @@
                     };
                     $('.tooltipped').tooltip({delay: 50});
                     $('ul.tabs').tabs();
-                    $('.modal-trigger-disciplina').modal();
+                    $('.modal-trigger-disciplina').leanModal();
                     //Mask Carga Horária
                     $('.tooltipped').tooltip({delay: 50});
-                    $('.modal-trigger').modal({dismissible: true, complete: function () {
+                    $('.modal-trigger').leanModal({dismissible: true, complete: function () {
                             $('.lean-overlay').hide();
                         }});
 

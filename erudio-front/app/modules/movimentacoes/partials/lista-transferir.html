@@ -45,14 +45,22 @@
                 </div>
                 <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">school</i>
-                    <select id="curso" data-ng-model="matriculaMovimentacoes.curso">
+                    <select id="curso" data-ng-change="selecionarCurso()" data-ng-model="matriculaMovimentacoes.curso">
                         <option disabled selected></option>
-                        <option value="{{ curso.id }}" data-ng-repeat="curso in cursos">{{ curso.nome | uppercase }}</option>
+                        <option value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome | uppercase }}</option>
                     </select>
                     <label for="curso">Curso</label>
                 </div>
             </div>
-            <div class="col s12">                
+            <div class="col s12">
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">school</i>
+                    <select id="etapas-ofertadas" data-ng-model="etapaBusca">
+                        <option disabled selected></option>
+                        <option value="{{ etapa.id }}" data-ng-repeat="etapa in etapasOfertadas">{{ etapa.nome | uppercase }}</option>
+                    </select>
+                    <label for="etapas-ofertadas">Etapas</label>
+                </div>
                 <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">description</i>
                     <select id="statusMatriculaMovimentacoes" data-ng-model="matriculaMovimentacoes.status">
@@ -65,14 +73,14 @@
                     </select>
                     <label for="statusMatriculaMovimentacoes">Status</label>
                 </div>
+            </div>
+            <div class="col s12">
                 <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">toll</i>
                     <input id="codigoMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.codigo" class="counter" length="12">
                     <label for="codigoMovimentacoes">Código de Matrícula</label>
                 </div>
-            </div>
-            <div class="col s12">
-                <div class="input-field col l12">
+                <div class="input-field col s12 m12 l6">
                     <i class="material-icons prefix">account_box</i>
                     <input id="nomeBuscaMovimentacoes" type="text" data-ng-model="matriculaMovimentacoes.aluno_nome">
                     <label for="nomeBuscaMovimentacoes">Nome</label>
@@ -116,7 +124,7 @@
                     </thead>
                     <tbody>
                         <tr data-ng-repeat="matricula in matriculas | orderBy:'aluno.nome':reverse | comecarEm: (paginaAtual-1)*50+1 | limitTo: 50">
-                            <td class="celula-link relative mobile-full left-align" style="padding: 5px!important;width: 981px;">
+                            <td class="celula-link relative mobile-full left-align" style="padding: 0px !important; width: 981px;">
                                 <div class="hide-on-small-only" style="padding: 15px">{{matricula.aluno.nome}}</div>
                                 <div class="hide-on-med-and-up" style="padding: 15px">{{matricula.aluno.nome}}</div>
                                 <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesCurso{{matricula.pessoa.id}}">
@@ -125,11 +133,12 @@
                                     <div style="height: 100%" data-ng-click="prepararRemover(matricula)" data-target="remove-modal-instituicao" class="col s6 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
                                 </div>
                             </td>
-                            <td class='hide-on-small-only center-align'>{{ matricula.status }}</td>
-                            <td class='hide-on-small-only center-align' data-ng-show="escrita">
+                            <td class='hide-on-small-only center-align' style="padding: 0px !important;">{{ matricula.status }}</td>
+                            <td class='hide-on-small-only center-align' style="padding: 0px !important;" data-ng-show="escrita">
                                 <i data-ng-click="carregar(matricula, 'Transferência')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Transferência' class="material-icons info-icon tooltipped" style="padding-right: 5px">account_balance</i>
                                 <i data-ng-click="abrirModalTransferenciaLocal(matricula)" data-ng-show="matricula.unidadeEnsino.id !== unidade.id && (matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO')" data-position='top' data-delay='50' data-tooltip='Transferência para minha Unidade' class="material-icons info-icon tooltipped">swap_vert</i>
                                 <i data-ng-click="carregar(matricula, 'Movimentação')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Movimentação' class="material-icons info-icon tooltipped" style="padding-right: 5px">compare_arrows</i>                                
+                                <i data-ng-click="carregar(matricula, 'Reclassificação')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Reclassificação' class="material-icons info-icon tooltipped">publish</i>
                                 <i data-ng-click="carregar(matricula, 'Desligamento')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Desligamento' class="material-icons delete-icon tooltipped">power_settings_new</i>
                             </td>
                         </tr>

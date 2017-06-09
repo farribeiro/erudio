@@ -219,7 +219,7 @@
         
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id) {                
-                $('#modal-certeza-modelo-quadro').modal();
+                $('#modal-certeza-modelo-quadro').openModal();
             } else {
                 $scope.mostraProgresso();
                 $scope.fecharFormulario();
@@ -277,7 +277,7 @@
                             }
                             if(permissaoExcluir && cont === response.data.length){
                                 $scope.modeloQuadroHorarioRemover = modeloQuadroHorario;
-                                $('#remove-modal-modeloQuadroHorario').modal();
+                                $('#remove-modal-modeloQuadroHorario').openModal();
                             }else if(!permissaoExcluir && cont === response.data.length){
                                 Servidor.customToast('Modelo de Quadro de Horários não pode ser excluido.');
                             }
@@ -285,7 +285,7 @@
                     });
                 } else {
                     $scope.modeloQuadroHorarioRemover = modeloQuadroHorario;
-                    $('#remove-modal-modeloQuadroHorario').modal();
+                    $('#remove-modal-modeloQuadroHorario').openModal();
                 }
             });
         };
