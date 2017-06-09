@@ -51,8 +51,8 @@
                             <td text-align="left">
                                 {{aluno.nomeAluno}}
                             </td>
-                            {% for media in aluno.medias %}
-                                <td>{{media.valor ? 0 + media.valor}}</td>
+                            {% for m in aluno.medias %}
+                                <td>{{m.valor ? (m.valor|number_format(2)|last == 0 ? m.valor|number_format(1) : m.valor|number_format(2))}}</td>
                             {% endfor %}
                             <td>-</td>
                             <td></td>
