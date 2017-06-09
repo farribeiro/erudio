@@ -109,32 +109,17 @@
             };
             
             //FECHAR TURMA
-            $scope.fecharTurma = function (turma){
-                $scope.mostraProgresso(); $scope.contadorMedias = 0; $scope.mediasNaoPreenchidas = [];
-                var promiseDisciplinasOfertada = Servidor.buscar('disciplinas-ofertadas',{turma: turma.id});
-                promiseDisciplinasOfertada.then(function(response){
-                    var disciplinas = response.data;
-                    disciplinas.forEach(function(disciplina, i) {
-                        var promise = Servidor.buscar('medias',{disciplinaOfertada: disciplina.id});
-                        promise.then(function(response){
-                            var tamanho = response.data.length;
-                            response.data.forEach(function(media, j){
-                                if (media.valor === undefined) { $scope.mediasNaoPreenchidas.push(media); }
-                                if (j === tamanho-1) {;
-                                    if ($scope.mediasNaoPreenchidas.length === 0) {
-                                        //Tudo certo
-                                    } else {
-                                        console.log($scope.mediasNaoPreenchidas);
-                                    }                                    
-                                }
-                            });
-                        });
-                    });
+            $scope.fecharTurma = function (){
+                $scope.mostraProgresso();
+                var promise = Servidor.finalizar({nome:null},'disciplinas-ofertadas/'+$scope.disciplinaTurma.id+'/media-final');
+                promise.then(function(response){
+                    Servidor.customToast("Média calculada com sucesso.");
+                    $scope.buscarAlunos($scope.disciplinaTurma.id);
                 });
             };
             
             //BUSCA DISCIPLINA OFERTADA
-            $scope.buscaDisciplinaOfertada = function (etapa) { console.log(etapa);
+            $scope.buscaDisciplinaOfertada = function (etapa) {
                 var promise = Servidor.buscarUm('etapas',etapa);
                 promise.then(function(response){
                     if (!response.data.integral) {
@@ -359,7 +344,10 @@
                             var promise = Servidor.buscar('disciplinas-ofertadas', {turma: $scope.turma.id});
                             promise.then(function(response) {
                                 $scope.disciplinasTurma = response.data;
-                                $timeout(function () { $('#disciplinaNota').material_select('destroy'); $('#disciplinaNota').material_select(); $('#disciplina').material_select('destroy'); $('#disciplina').material_select(); }, 100);
+                                $timeout(function () { 
+                                    $('#disciplinaNota').material_select('destroy'); $('#disciplinaNota').material_select(); $('#disciplina').material_select('destroy'); $('#disciplina').material_select();
+                                    $('#disciplina').change(function(){ $scope.buscarAlunos($(this).val()); });
+                                }, 100);
                             });
                             $scope.editando = true;
                         } else {
@@ -369,30 +357,33 @@
             };
             
             //BUSCA ALUNOS
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mediasPorAluno = [];
-            $scope.buscarAlunos = function () {
-                $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso(); $scope.nomeAtual = '';
-                var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.disciplinaTurma.id});
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mediasPorAluno = []; $scope.statusAlunos = [];
+            $scope.buscarAlunos = function (disciplina) {
+                $scope.disciplinaTurma.id = disciplina;
+                $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso(); $scope.nomeAtual = ''; $scope.statusAlunos = [];
+                var promise = Servidor.buscar('medias', {'disciplinaOfertada': disciplina});
                 promise.then(function (response) {
                     $scope.totalMedias = []; for (var i=0; i<$scope.turma.etapa.sistemaAvaliacao.quantidadeMedias; i++) { $scope.totalMedias.push(i+1); }
                     //console.log($scope.totalMedias);
-                    for (var i=0; i<response.data.length; i++) { 
+                    for (var i=0; i<response.data.length; i++) {
                         if (response.data[i].valor === undefined) { response.data[i].valor = 'N/A'; }
                         if (response.data[i].disciplinaCursada.matricula.nomeAluno === $scope.nomeAtual) {
                             $scope.mediasPorAluno[response.data[i].numero] = response.data[i];
                         } else {
                             if ($scope.mediasPorAluno.length-1 === $scope.turma.etapa.sistemaAvaliacao.quantidadeMedias) {
                                 $scope.enturmacoesNotas.push($scope.mediasPorAluno); $scope.mediasPorAluno = [];
+                                var promisePrevista  = Servidor.buscarUm('disciplinas-cursadas',$scope.enturmacoesNotas[$scope.enturmacoesNotas.length-1][1].disciplinaCursada.id);
+                                promisePrevista.then(function(response){
+                                    var array = [response.data.mediaPreliminar, response.data.status]; $scope.statusAlunos.push(array);
+                                });
                             } else { $scope.nomeAtual = response.data[i].disciplinaCursada.matricula.nomeAluno; }
                             $scope.mediasPorAluno[response.data[i].numero] = response.data[i];
                         }
                         
                         if (i < response.data.length-1) {
-                           //console.log($scope.enturmacoesNotas); 
+                           
                         }
                     }
-                    //$scope.qtedMedias = []; for (var i=0; i<$scope.turma.etapa.sistemaAvaliacao.quantidadeMedias; i++) { $scope.qtdeMedias[i] = i; }
-                    //$('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); });
                     $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
                     if (response.data.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
                 });

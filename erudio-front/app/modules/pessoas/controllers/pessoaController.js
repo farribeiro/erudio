@@ -1335,17 +1335,22 @@
                             }
                         } else {
                             if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
-                                var endereco = Restangular.copy($scope.pessoa.endereco);
-                                if (Servidor.validar('validate-endereco')) {
-                                    endereco.route = 'enderecos';
-                                    var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
-                                    promise.then(function (response) {
-                                        $scope.pessoa.endereco.id = response.data.id;
-                                        $scope.endereco.id = response.data.id;
-                                        $scope.finalizarPessoa();
-                                    });
+                                if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                                    var endereco = Restangular.copy($scope.pessoa.endereco);
+                                    if (Servidor.validar('validate-endereco')) {
+                                        endereco.route = 'enderecos';
+                                        var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
+                                        promise.then(function (response) {
+                                            $scope.pessoa.endereco.id = response.data.id;
+                                            $scope.endereco.id = response.data.id;
+                                            $scope.finalizarPessoa();
+                                        });
+                                    } else {
+                                        return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                    }
                                 } else {
-                                    return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                    delete $scope.pessoa.endereco;
+                                    $scope.finalizarPessoa();
                                 }
                             } else {
                                 $scope.finalizarPessoa();
@@ -1369,6 +1374,7 @@
                         $scope.pessoa.responsavelNome = $scope.pessoa.nomePai;
                         break;
                 };
+                $scope.pessoa.tipo_pessoa = "PessoaFisica"; delete $scope.pessoa.usuario;
                 var promise = Servidor.finalizar($scope.pessoa, 'pessoas', 'Pessoa');
                 
                 promise.then(function (response) {
