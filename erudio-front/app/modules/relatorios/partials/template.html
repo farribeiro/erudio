@@ -42,12 +42,33 @@
     </div>
     
     <div class="row" style="margin-top: 15px;">
-        <div class="col s12 m4 l4"><p><input name="tipo" data-ng-click="ativo='nominal'; resetDropdown();" class="with-gap" type="radio" checked id="tipoNominal" /><label for="tipoNominal">Alunos - Nominal</label></p></div>
-        <div class="col s12 m4 l4"><p data-ng-show="isAdmin"><input name="tipo" data-ng-click="ativo='instituicao'; buscarInstituicoes();" class="with-gap" type="radio" id="tipoInstituicao" /><label for="tipoInstituicao">Alunos por Instituição</label></p></div>
-        <div class="col s12 m4 l4"><p><input name="tipo" data-ng-click="ativo='unidade'; resetDropdown();" class="with-gap" type="radio" id="tipoUnidade" /><label for="tipoUnidade">Alunos por Unidade</label></p></div>
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='soUnidade'; resetDropdown();" class="with-gap" type="radio" id="tipoSoUnidade" /><label for="tipoSoUnidade">Nominal por Unidade</label></p></div>
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='nominal'; resetDropdown();" class="with-gap" type="radio" checked id="tipoNominal" /><label for="tipoNominal">Nominal por Turma</label></p></div>
+        <div class="col s12 m3 l3"><p data-ng-show="isAdmin"><input name="tipo" data-ng-click="ativo='instituicao'; buscarInstituicoes();" class="with-gap" type="radio" id="tipoInstituicao" /><label for="tipoInstituicao">Quantitativo por Instituição</label></p></div>
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='unidade'; resetDropdown();" class="with-gap" type="radio" id="tipoUnidade" /><label for="tipoUnidade">Quantitativo por Unidade</label></p></div>
     </div>
     
     <div class="row card relative" style="margin-top: 15px; overflow-y: auto; height: {{height}}px !important;">
+        
+        <div data-ng-if="ativo === 'soUnidade'" class="row soUnidade" style="padding-top: 15px;">
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                    <option disabled selected></option>
+                    <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Unidade de Ensino</label>
+            </div>
+            <!--<div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
+                <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+            </div>-->
+        </div>
+        <div data-ng-if="ativo === 'soUnidade'" class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlServidor}}/report/enturmacoes/nominal-unidade?unidade={{unidade.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
         
         <div data-ng-if="ativo === 'nominal'" class="row nominal" style="padding-top: 15px;">
             <div class="input-field col s12 m6 l6">
@@ -64,6 +85,14 @@
                 <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
                 <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
             </div>-->
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="curso" ng-change="selecionaCurso(curso.id)" data-ng-model="curso.id" required>
+                    <option disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
+                </select>
+                <label for="curso">Curso</label>
+            </div>
             <div class="input-field col s12 m6 l6" data-ng-show="escrita">
                 <i class="material-icons prefix">account_balance</i>
                 <select class="ng-valid initialized" id="etapa" data-ng-model="etapa.id" required>

@@ -1,0 +1,81 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row form-geral"> 
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div class="col s12" style="margin-bottom: 2rem;">
+                <div id="paginaProfessores" class="row card-panel">
+                    <ul class="collection with-header" data-ng-repeat="disciplina in disciplinasOfertadasTurma| orderBy: 'disciplina.nome'" style="border-bottom: solid #d1d1d1 1px!important;">
+                        <li>
+                            <h4 style="font-size: 1.5rem!important">{{ disciplina.disciplina.nome|uppercase }}</h4>                                                        
+                            <!--<a class="btn-floating btn-medium waves-effect waves-light green right" style="right: 1rem" data-ng-click="abrirModalProfessor(disciplina)"><i class="material-icons">add</i></a>-->
+                        </li>
+                        <div class="row">
+                            <i class="material-icons left pointer" data-ng-click="abrirModalHorarios(disciplina)">remove_red_eye</i>
+                            <div class="col s12 m4 clicavel" style="padding-left: 0; padding-top: 0.2rem;  font-size: 0.9rem" data-ng-click="abrirModalHorarios(disciplina)">Ver Horários</div>
+                        </div>
+                        <!--
+                        <div class="col s2" data-ng-repeat="dia in disciplina.dias" style="width: 4.5rem; padding: 0rem; margin-right: 0.5rem;"> 
+                            <div  class="waves-effect waves-light full-width" style="margin: 0rem !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;" >
+                                <div class="row card-content center-align black-text blue-grey lighten-4" style="font-size: 1rem; padding: 0rem;">
+                                    <h6 class="col s2" style="padding-left: 0.3rem; padding-right: 0.3rem; width: 4.4rem !important">{{ dia }}</h6>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="row" data-ng-hide="disciplina.professores.length > 0">
+                            <div class="col s12">
+                                <span data-ng-hide="disciplina.professores.length > 0" style="line-height: 3rem!important;">Nenhum professor</span>
+                            </div>
+                        </div>
+                        <!--<div><h6 class="col s2" data-ng-repeat="dia in disciplina.dias">{{dia}}</h6></div>-->
+                        <li data-ng-show="disciplina.professores.length > 0">
+                            <table class='highlight striped' data-ng-show="disciplina.professores.length > 0">
+                                <tbody>
+                                    <tr data-ng-repeat="professor in disciplina.professores| orderBy: 'vinculo.funcionario.nome'">
+                                        <div class="col s12">
+                                            <div class="col s11">
+                                                <td class="celula-link relative mobile-full" style="padding-bottom: 2.78rem; padding-top: -1.6rem;">
+                                                    <div class="hide-on-small-only" style="line-height: 2rem!important; padding: 0px 0px 0px 18px!important; position: absolute;" data-ng-click="carregaInfoProfessor(professor)" style="padding-left: 3rem;">{{ professor.vinculo.funcionario.nome | uppercase }}</div>
+                                                </td>                                            
+                                            </div>  
+                                            <br>
+                                            <div class="col s1">
+                                                <td class='center-align hide-on-small-only' style="padding-bottom: 2.78rem; position: relative; left: 13rem;">
+                                                    <i data-ng-show="escrita" data-ng-click="prepararRemoverProfessor(professor, disciplina)" style="position: absolute;" data-target="remove-modal-professor" data-position='top' data-delay='50' data-tooltip='Remover Professor' class="material-icons modal-trigger delete-icon tooltipped">delete</i>
+                                                </td>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                </tbody>
+                            </table>                          
+                        </li>         
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

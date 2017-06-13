@@ -207,7 +207,7 @@
 
         $scope.prepararVoltar = function(agrupamento) {
             if(agrupamento.id === undefined && (agrupamento.nome || agrupamento.turmas.length)) {
-                $('#modal-certeza').modal();
+                $('#modal-certeza').openModal();
             } else {
                 $scope.fecharFormulario();
             }

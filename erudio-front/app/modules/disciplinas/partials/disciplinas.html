@@ -26,7 +26,7 @@
 
 <link rel="stylesheet" type="text/css" href="app/modules/disciplinas/assets/css/disciplinas.css"/>
 
-<div class="inicio-modulo">
+<div data-ng-controller="DisciplinaController" class="inicio-modulo">
     <controle-disciplinas></controle-disciplinas>
     <form-disciplinas data-ng-show="editando"></form-disciplinas>
     <lista-disciplinas data-ng-hide="editando"></lista-disciplinas>

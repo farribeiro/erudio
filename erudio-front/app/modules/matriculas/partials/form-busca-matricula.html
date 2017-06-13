@@ -38,7 +38,9 @@
     <div class="input-field col s12 m12 l6">
         <i class="material-icons prefix">account_balance</i>
         <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
-            <option value="{{ unidade.id}}" data-ng-repeat="unidade in unidades">{{unidade.nome| uppercase}}</option>
+            <option value=""></option>
+            <option value="">TODOS</option>
+            <option value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{unidade.nome| uppercase}}</option>
         </select>
         <label for="unidadeBuscaMatricula">Unidade de Ensino</label>
     </div>                                        

@@ -1,0 +1,85 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<link rel="stylesheet" type="text/css" href="app/modules/cursos/assets/css/cursos.css"/>
+
+<!-- Listagem de Cursos -->
+<div id="listaCursos" style="position: relative; bottom: 64px;" >
+    
+    <!-- Imagem da página -->
+    <div class="row"><div class="col s12 curso-banner topo-pagina"></div></div>
+    
+    <div class="row">
+        <div class="col s1 l1 hide-on-small-only"></div>
+        <div class="col s12 l12 mobile-full init-card">
+            
+            <curso-cabecalho></curso-cabecalho>
+            
+            <div data-ng-show="cursos.length" class="row ripple-list list-card" style="margin-top: -64px;">
+                <div class="col s12 m12 mobile-full list-items">
+                    <div class="card-panel card-list">
+                        <div class="card-content mobile-full main-list">
+                            <table class='highlight striped table-pattern'>
+                                <thead>
+                                    <tr>
+                                        <th data-field='nome'>Nome do Curso</th>
+                                        <th class='center-align hide-on-small-only' data-field='opcoes'>Opções</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="curso in cursos | orderBy: 'nome'">
+                                        <td class="celula-link relative mobile-full">
+                                            <a href="#/cursos/{{ curso.id }}"><div class="hide-on-small-only">{{ curso.nome}}</div></a>
+                                            <a href="#/cursos/{{ curso.id }}"><div class="hide-on-med-and-up">{{ curso.nome}}</div></a>
+                                            <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesCurso{{ curso.id}}">
+                                                <div style="height: 100%" data-ng-click="$scope.editandoMobile = true;
+                                                        carregar(curso, false, false, $index)" class="col s6 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
+                                                <div style="height: 100%" data-ng-click="prepararRemover(curso, $index)" data-target="remove-modal-instituicao" class="col s6 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
+                                            </div>
+                                        </td>
+                                        <td class='center-align hide-on-small-only'>
+                                            <a href="#/etapas/curso/{{ curso.id }}"><i data-ng-click="intraForms(curso);" data-ng-show="escrita" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">chrome_reader_mode</i>
+                                            <i data-ng-click="prepararRemover(curso)" data-target="remove-modal-curso" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger delete-icon tooltipped" data-ng-show="escrita">delete</i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <form-curso data-ng-show="editando"></form-curso> -->
+        </div>
+        <div class="col s1 l1 hide-on-small-only"></div>
+    </div>
+    
+    <!-- Controles -->
+    <erro-busca-curso data-ng-hide="cursos.length"></erro-busca-curso>
+    <!-- Botão Adicionar -->
+    <div class="btn-add hide-on-small-only" data-ng-show="escrita"><a href="#/cursos/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Curso"><i class="material-icons">add</i></a></div>
+    <!-- Botão Adicionar Mobile-->
+    <div class="btn-add hide-on-med-and-up" data-ng-show="escrita"><a hrerf="#/cursos/novo" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Curso"><i class="material-icons">add</i></a></div>
+</div>

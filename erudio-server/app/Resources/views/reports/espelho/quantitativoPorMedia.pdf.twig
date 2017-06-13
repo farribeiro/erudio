@@ -16,6 +16,11 @@
                 <p padding="0">
                     Curso: {{turma.etapa.curso.nome}}
                 </p>
+                {% if turma.etapa.frequenciaUnificada %}
+                    <p padding="0">
+                        Professor: {{professor}}
+                    </p>
+                {% endif %}
             {% endblock %}
             
             {% block content %}
@@ -50,16 +55,16 @@
                                 <td>{{e.matricula.codigo}}</td>
                                 <td text-align="left">{{e.matricula.nomeAluno|upper}}</td>
                                 {% for m in e.medias %}
-                                    <td>{{0 + m.valor}}</td>
-                                    <td>{{m.faltas}}</td>
+                                    <td>{{m.valor ? (m.valor|number_format(2)|last == 0 ? m.valor|number_format(1) : m.valor|number_format(2))}}</td>
+                                    <td>{{m.valor ? m.faltas}}</td>
                                 {% endfor %}    
                             </tr>
                         {% endfor %}
                         <tr>
                             <td colspan="3" text-align="right"><strong>Médias</strong></td>
                             {% for m in mediasTurma %}
-                                <td>{{0 + m.valor|number_format(2)}}</td>
-                                <td>{{m.faltas|number_format(0)}}</td>
+                                <td>{{m.valor ? (m.valor|number_format(2)|last == 0 ? m.valor|number_format(1) : m.valor|number_format(2))}}</td>
+                                <td>{{m.valor ? m.faltas|number_format(0)}}</td>
                             {% endfor %}    
                         </tr>
                     </table>

@@ -25,10 +25,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <div id="validate" class="row form-geral">    
-    <div class="col s12 mobile-full form-card-wrapper" style="padding: 0;">
+    <div class="col s12 mobile-full form-card-wrapper">
         <div class="row form-box show-form">
             <div class="card-panel fix-no-margin-card">
-                <form id="instituicaoForm" style="padding-top: 15px;">
+                <form id="instituicaoForm" class="form-opacity-out">
+                    <div class="row">
+                        <h3 class='card-title-h3' style="padding: 20px">{{ acao }} Instituição</h3>
+                    </div>
                     <div class="row">                        
                         <div class="col s12 m12 l6 input-field">
                             <i class="material-icons prefix">account_circle</i>
@@ -55,16 +58,16 @@
                     </div>
                     <div class="row" style="margin-top: 35px">
                         <div class="col s12 m12 l12">
-                            <div style="padding: 0.5rem;" class="no-margin ajuste-titulo-card subtitulo-typo">Contatos <small data-ng-show="escrita" class="hide-on-small-only" style="font-size: 1rem;">(clique no botão + para adicionar contatos)</small></div>
+                            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Contatos <small data-ng-show="escrita" class="hide-on-small-only" style="font-size: 1rem;">(clique no botão + para adicionar contatos)</small></h5>
                         </div>                        
                     </div>
                     <div class="row" style="margin-top: 15px" data-ng-show="escrita">
-                        <div class="input-field col s12 m5 l5 input-telefone">
+                        <div class="input-field col s12 m12 input-telefone" style="width: 30%">
                             <i class="material-icons prefix">phone</i>
                             <input id="telefoneInstituicao" type="text" length="15" class="validate counter" data-ng-model="telefone.numero">
                             <label for="telefoneInstituicao">Número*</label>
                         </div>
-                        <div class="input-field col s12 m5 l5 input-telefone">
+                        <div class="input-field col s12 m12 input-telefone" style="width: 30%">
                             <i class="material-icons prefix">settings_phone</i>
                             <select id="descricaoInstituicao" data-ng-model="telefone.descricao">
                                 <option disabled="" selected="" value=""></option>
@@ -74,7 +77,7 @@
                             </select>
                             <label for="descricaoInstituicao">Descrição*</label>
                         </div>                        
-                        <div class="col s12 m2 l2 right">
+                        <div class="col s12 m12 l3 right">
                             <a class="tooltipped btn-floating btn btn-telefone green waves-effect waves-light right"
                            data-position="left" data-delay="30"  
                            data-tooltip="Adicionar Telefone" data-ng-click="salvarTelefone(telefone)"><i class="material-icons">add</i></a>
@@ -97,43 +100,43 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col s12"><div style="padding: 0.5rem;" class="no-margin ajuste-titulo-card subtitulo-typo">Endereço</div></div>
+                        <div class="col s12"><h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Endereço</h5></div>
                     </div>
                     <div class='row'>
-                        <div class='col s12'>
-                            <div class="col s12 m12 l6 input-field">
+                        <div class='col s6'>
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">my_location</i>
                                 <input id="cepInstituicao" type="text" length="8" class="validate counter cep" data-ng-model="instituicao.endereco.cep" data-ng-change="buscaCEP(instituicao.endereco.cep)" data-ng-disabled="!escrita" />
                                 <label for="cepInstituicao">C.E.P</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field">
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">directions</i>
                                 <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="logradouroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.logradouro" data-ng-disabled="!escrita" required />
                                 <label for="logradouroInstituicao">Logradouro*</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field">
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">filter_1</i>
                                 <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="numeroInstituicao" type="text" length="10" class="validate counter numeros" data-ng-model="instituicao.endereco.numero" data-ng-disabled="!escrita" />
                                 <label for="numeroInstituicao">Número</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field">
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">receipt</i>
                                 <input id="complementoInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.complemento" data-ng-disabled="!escrita" />
                                 <label for="complementoInstituicao">Complemento</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field">
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">location_on</i>
                                 <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="bairroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.bairro" data-ng-disabled="!escrita" required />
                                 <label for="bairroInstituicao">Bairro*</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field">
+                            <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">location_on</i>
                                 <select id="estadoInstituicao" data-ng-change="selecionaEstado()" data-ng-model="estadoId" data-ng-disabled="!escrita" required>
                                     <option value="{{ estado.id }}" data-ng-selected="verificaSelectEstado(estado.id)" data-ng-repeat="estado in estados">{{ estado.nome }}</option>
                                 </select>
                                 <label for="estadoInstituicao" class="ajuste-select-top-label">Estado*</label>
                             </div>
-                            <div class="col s12 m12 l6 input-field" data-ng-show="instituicao.endereco.cidade.estado.id || estadoId">
+                            <div class="col s12 m12 l12 input-field" data-ng-show="instituicao.endereco.cidade.estado.id || estadoId">
                                 <i class="material-icons prefix">location_on</i>
                                 <select id="cidadeInstituicao" data-ng-change="selecionaCidade()" data-ng-model="cidadeId" data-ng-disabled="!escrita" required>
                                     <option value="{{ cidade.id }}" data-ng-selected="verificaSelectCidade(cidade.id)" data-ng-repeat="cidade in cidades">{{ cidade.nome }}</option>
@@ -141,10 +144,8 @@
                                 <label for="cidadeInstituicao">Cidade*</label>
                             </div>
                         </div>
-                        <div class="col s6 m12 l12">
-                            <div class="row">
-                                <div id="mapa" class="col s12" style="margin: 14px 0px 14px 0px; height: 250px;"></div>
-                            </div>
+                        <div class="col s6 m6 l6">
+                            <div id="mapa" class="col s12" style="margin: 14px 0px 14px 0px; height: 505px;"></div>
                         </div>
                     </div>                    
                     <div class="row end-card" data-ng-show="escrita">

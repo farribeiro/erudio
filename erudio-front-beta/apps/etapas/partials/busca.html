@@ -1,0 +1,8 @@
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="buscaEtapaCurso" label="'Curso'" nome="'cursoBusca'">
+        <md-select ng-model="curso.id" ng-change="buscarEtapas()">
+            <md-option value=""></md-option>
+            <md-option ng-repeat="curso in cursos track by $index" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>

@@ -107,7 +107,7 @@
                     Servidor.verificaLabels();
                     $scope.editando = true;
                     $('.wrapper-padding').css('padding',0);
-                    //$('.top-cards').css('margin-top','-8px');
+                    $('.top-cards').css('margin-top','-8px');
                 }, 100);
             } else {
                 Servidor.customToast('Você deve possuir um grupo de permissões para poder criar outros.');
@@ -120,7 +120,7 @@
             Servidor.resetarValidador('validate'); $scope.acao = "CADASTRAR";
             $('.nav-wrapper').removeClass('ajuste-nav-direita');
             $('.wrapper-padding').css('padding','');
-            //$('.top-cards').css('margin-top','-64px');
+            $('.top-cards').css('margin-top','-64px');
             $timeout(function (){ Servidor.verificaLabels(); },1000);
         };
         
@@ -132,10 +132,10 @@
         };
         
         //GUARDA OBJETO PARA SER REMOVIDO
-        $scope.preRemover = function (grupo){ $scope.grupoRemover = grupo; $("#remove-modal-grupo").modal(); };
+        $scope.preRemover = function (grupo){ $scope.grupoRemover = grupo; $("#remove-modal-grupo").openModal(); };
         
         //GUARDA OBJETO PERMISSAO PARA SER REMOVIDO
-        $scope.prepararRemoverPermissao = function (perm){ $scope.permRemover = perm; $("#remove-modal-permissao-grupo").modal(); };
+        $scope.prepararRemoverPermissao = function (perm){ $scope.permRemover = perm; $("#remove-modal-permissao-grupo").openModal(); };
         
         /* REMOVER GRUPO */
         $scope.remover = function (){
@@ -163,7 +163,7 @@
 
         /* MODAL DE RETORNO */
         $scope.prepararVoltar = function(objeto) {
-            if (objeto.nome && !objeto.id) { $('#modal-certeza').modal(); } else { $scope.fecharFormulario(); }
+            if (objeto.nome && !objeto.id) { $('#modal-certeza').openModal(); } else { $scope.fecharFormulario(); }
         };
 
         /* BUSCA - LISTENER  */
@@ -345,7 +345,7 @@
         };
         
         $scope.abrirModalRemoverTodasPermissoes = function() {
-            $('#remove-modal-permissao-total').modal();
+            $('#remove-modal-permissao-total').openModal();
         };
         
         /* SALVAR GRUPO DE PERMISSOES */

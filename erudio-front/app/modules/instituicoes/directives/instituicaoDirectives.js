@@ -27,8 +27,23 @@
 (function (){
     var instituicaoDirectives = angular.module('instituicaoDirectives', []);
     
-    instituicaoDirectives.directive('bannerInstituicao', function (){ return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/banner.html' }; });
-    instituicaoDirectives.directive('erroBuscaInstituicao', function (){ return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/erro.html' }; });
-    instituicaoDirectives.directive('controleInstituicao', function (){ return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/controle.html' }; });    
-    instituicaoDirectives.directive('modalInstituicao', function (){ return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/modal.html' }; });
+    instituicaoDirectives.directive('controleInstituicao', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/controle.html' };
+    });
+    
+    instituicaoDirectives.directive('listaInstituicao', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/lista.html' };
+    });
+    
+    instituicaoDirectives.directive('formInstituicao', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/form.html' };
+    });
+    
+    instituicaoDirectives.directive('modalInstituicao', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/modal.html' };
+    });
+    
+    instituicaoDirectives.directive('erroBuscaInstituicao', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/instituicoes/partials/erro.html' };
+    });
 })();

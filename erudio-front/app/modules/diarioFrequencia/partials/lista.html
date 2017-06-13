@@ -84,7 +84,7 @@
                                 <i class="material-icons prefix">school</i>
                                 <select id="cursoDiarioFrequencia" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
                                     <option value="" disabled selected></option>
-                                    <option value="{{curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome | uppercase}}</option>
+                                    <option value="{{curso.curso.id}}" data-ng-repeat="curso in cursos">{{curso.curso.nome | uppercase}}</option>
                                 </select>
                                 <label for="cursoDiarioFrequencia">Curso</label>
                             </div>

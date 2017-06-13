@@ -1,0 +1,11 @@
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="moduloNome" label="'Nome do Módulo'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="modulo" campo="nome" erro="'moduloForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="moduloCurso" label="'Curso'" nome="'curso'" obrigatorio="required" erro="'moduloForm.curso.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-change="validaCampo();" ng-model="modulo.curso.id" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="curso in cursos" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>

@@ -25,8 +25,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 @import url('styles/fonts.css');
-@import url('styles/tipografia.css');
-@import url('styles/reset.css');
 @import url('styles/geral.css');
 @import url('styles/toolbar.css');
 @import url('styles/menus.css');
@@ -37,14 +35,13 @@
 @import url('styles/buttons.css');
 @import url('styles/mobile.css');
 @import url('styles/shared.css');
-@import url('styles/tables.css');
 
 .select-busca {
     padding-left: 0px !important;
 }
 
 .main-banner {
-    height: 150px;
+    height: 20rem;
     background: url('../images/head.png') no-repeat center bottom;
     background-size: 100% auto;
 }

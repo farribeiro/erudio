@@ -57,7 +57,15 @@
                 <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
                 <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
             </div>-->
-            <div class="input-field col s12 m6 l6" data-ng-show="escrita">
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="curso" ng-change="selecionaCurso(curso.id)" data-ng-model="curso.id" required>
+                    <option disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
+                </select>
+                <label for="curso">Curso</label>
+            </div>
+            <div class="input-field col s12 m6 l6">
                 <i class="material-icons prefix">account_balance</i>
                 <select class="ng-valid initialized" id="etapa" data-ng-model="etapa.id" required>
                     <option disabled selected></option>
@@ -65,7 +73,7 @@
                 </select>
                 <label for="etapa">Etapa</label>
             </div>
-            <div class="input-field col s12 m6 l6" data-ng-show="escrita">
+            <div class="input-field col s12 m6 l6">
                 <i class="material-icons prefix">account_balance</i>
                 <select class="ng-valid initialized" id="turma" data-ng-model="turma.id" required>
                     <option disabled selected></option>
@@ -73,7 +81,7 @@
                 </select>
                 <label for="unidade">Turma</label>
             </div>
-            <div class="input-field col s12 m6 l6" data-ng-show="escrita">
+            <div class="input-field col s12 m6 l6">
                 <i class="material-icons prefix">account_balance</i>
                 <select class="ng-valid initialized" id="media" data-ng-model="media.id" required>
                     <option disabled selected></option>

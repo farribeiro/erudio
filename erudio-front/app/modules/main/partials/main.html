@@ -28,11 +28,11 @@
 <!-- Imagem do Módulo -->
 <div class="row"><div class="col s12 main-banner"></div></div>
 <div data-ng-controller="HomeController">
-    <div class="col s12 l12" style="padding: 0;">
-        <div class="row" data-ng-show="isHome">
-            <div class="col s12 m12" style="padding: 0;">
+    <div class="col s12 l12">
+        <div class="row" data-ng-show="isHome" style="margin-top: -105px;">
+            <div class="col s12 m12">
                 <!-- Card de Informações -->
-                <div class="card" style="margin:0;">
+                <div class="card">
                     <div class="card-content">
                         <h3 class='card-title-h3' data-ng-cloak>Olá, <span class="username-label" data-ng-bind="usuario.nome"></span>!</h3>
                         <p class="main-descricao">
@@ -48,7 +48,7 @@
                     <div class="row">
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">account_balance</i>
-                            <select class="ng-valid initialized" id="unidade" data-ng-change="selecionaUnidade()" data-ng-model="unidade.id" required>
+                            <select class="ng-valid initialized" id="unidade" data-ng-change="selecionaUnidade(unidade)" data-ng-model="unidade.id" required>
                                 <option disabled selected></option>
                                 <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
                             </select>
@@ -56,7 +56,7 @@
                         </div>
                         <!-- Selecionar Vínculo
                         <div class="input-field col s12 m12" data-ng-class="{'l4': vinculo.cargo.professor, 'l6': !vinculo.cargo.professor}">
-                            <select id="vinculosz" class="select-busca" data-ng-model="vinculo.id" data-ng-change="carregarVinculo(vinculo.id);buscarAlocacoes(vinculo.id)">                            
+                            <select id="vinculos" class="select-busca" data-ng-model="vinculo.id" data-ng-change="carregarVinculo(vinculo.id);buscarAlocacoes(vinculo.id)">                            
                                 <option disabled selected></option>
                                 <option value="{{vinculo.id}}" data-ng-repeat="vinculo in vinculos" data-ng-selected="verificaSelectVinculo(vinculo.id)">{{ vinculo.codigo }} - {{ vinculo.cargo.nome | uppercase }} - {{ vinculo.cargaHoraria }}hrs</option>
                             </select>

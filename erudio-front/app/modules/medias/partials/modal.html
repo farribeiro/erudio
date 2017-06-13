@@ -1,0 +1,468 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Modal de Exclusão -->
+<div id="remove-modal-turma" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-turma">
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 14rem; color: white;">Remover Turma</h4>
+                </div>
+                <p>Você realmente deseja remover esta turma?</p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="remover()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Justificativa -->
+<div id="modal-justificativa" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal('')">close</i>-->
+                <div class="modal-title-event modal-titulo">
+                    <h4>Dar falta {{$index+1}}ª aula {{ frequencia.aula.horario.inicio | horario }} / {{frequencia.aula.disciplinaOfertada.nomeExibicao}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="col s12 m12 l12" style="padding: 1rem" data-ng-hide="fazerChamada">
+                            <strong>Aluno: </strong>{{frequencia.matricula.aluno.nome | uppercase}}
+                        </div>
+                        <div class="input-field col s12">
+                            <!--<textarea id="textarea1" data-ng-model="justificativa" class="materialize-textarea"></textarea>-->
+                            <i class="material-icons prefix">textsms</i>
+                            <input id="justificativaDaPresenca" type="text" data-ng-model="frequencia.justificativa">
+                            <label for="justificativaDaPresenca">Escreva a justificativa caso houver:</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="end-card modal-footer" data-ng-hide="fazerChamada">
+                <a data-ng-click="alteraStatusDaFrequencia('FALTA')" class="modal-action modal-close waves-effect waves-green btn-flat ">Salvar</a>
+                <a data-ng-click="fecharModal()" class="modal-action modal-close waves-effect waves-green btn-flat ">Cancelar</a>
+            </div>
+            <div class="end-card modal-footer" data-ng-show="fazerChamada">
+                <a data-ng-click="darFalta()" class="modal-action modal-close waves-effect waves-green btn-flat ">Salvar</a>
+                <a data-ng-click="fecharModal()" class="modal-action modal-close waves-effect waves-red btn-flat">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Dispensa da Turma -->
+<div id="modal-falta-dispensa" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal('')">close</i>-->
+                <div class="modal-title-event modal-titulo">
+                    <h4>Falta/Dispensa da Turma {{enturmacoes[0].turma.nome}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m12 l12" style="font-size: 1.2rem; padding: 0.5rem 0 1rem 2rem">
+                    Deseja <strong>dispensar</strong> a classe ou aplicar <strong>falta</strong> para todos os alunos ?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a data-ng-click="finalizarChamada()" class="modal-action modal-close waves-effect waves-green btn-flat ">Confirmar Faltas</a>
+                <a data-ng-click="dispensarTurma()" class="modal-action modal-close waves-effect waves-blue btn-flat">Confirmar Dispensa</a>
+                <a data-ng-click="fecharModal()" class="modal-action modal-close waves-effect waves-red btn-flat ">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Justificativa Chamada-->
+<div id="modal-justificativa-chamada" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-banner">
+                    <h4>Justificar falta Chamada</h4>
+                </div>
+            </div>
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea id="textareaJustificativa" data-ng-model="justificativaDeFalta" class="materialize-textarea"></textarea>
+                            <label for="textareaJustificativa">Escreva a justificativa:</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" data-ng-show="desabilitarBotao">
+                <a data-ng-click="justificarFaltaChamada()" class="modal-action modal-close waves-effect waves-green btn-flat ">JUSTIFICAR</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-aluno" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+            <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-info-aluno">
+                    <h4 style="color: white; position: relative; top: 87px; padding-left: 10px;">{{ aluno.nome | uppercase }}
+                        <!--<a style="top: -5px" data-ng-click="presencaMatricula(matricula)" class="tooltipped btn-floating grey lighten-4" data-position="top" data-delay="50" data-tooltip="Frequência"><i style="color: #212121;" class="material-icons">playlist_add_check</i></a>
+                        <a style="top: -5px" data-ng-click="notasMatricula(matricula)" class="tooltipped btn-floating grey lighten-4" data-position="top" data-delay="50" data-tooltip="Notas"><i style="color: #212121;" class="material-icons">import_contacts</i></i></a>                       -->
+                    </h4>
+                </div>
+                <div class="row">
+                    <div data-ng-show="aluno.nomeMae" class="col s6" style="padding-top:1rem;"><strong>Responsável</strong>: {{ aluno.nomeMae | uppercase }}</div>
+                    <div data-ng-show="aluno.dataNascimento" class="col s6" style="padding-top:1rem;"><strong>Data Nascimento</strong>: {{ aluno.dataNascimento | date: 'dd/MM/yyyy' }}</div>
+                    <div data-ng-show="aluno.email" class="col s6"><strong>E-mail:</strong> {{ aluno.email }}</div>
+                    <div data-ng-show="telefones.length" class="col s6">
+                        <strong>Contatos</strong>:
+                        <span data-ng-repeat="telefone in telefones">{{ telefone.numero }} - Falar com: {{ telefone.falarCom |uppercase }}<br /></span><br />
+                    </div>
+                    <div data-ng-show="aluno.endereco.logradouro" class="col s12" style="padding-top: 1rem; padding-bottom: 0.8rem;">
+                        <strong>Endereço</strong>:<br/>
+                        CEP: {{ aluno.endereco.cep }}
+                        {{ aluno.endereco.logradouro | uppercase }}, {{ aluno.endereco.numero }}, Bairro {{ aluno.endereco.bairro }}, 
+                        {{ aluno.endereco.cidade.nome }}, {{ aluno.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ aluno.endereco.complemento }}">{{ aluno.endereco.complemento }}<br /></span>
+                    </div>
+                </div>
+                <div class="info-map row" style="margin-bottom: 1rem !important;">
+                    <div class="col s12"><div id="info-map" style="height: 250px;"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Horários da disciplina -->
+<div id="horarios-disciplina" class="modal">
+    <div class="modal-content">
+        <h4 style="padding: 10px 0 0 15px">Horários de {{disciplina.nome}}</h4>
+        <table class="bordered centered table-horarios-disciplina">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th data-ng-repeat="diaSemana in quadroHorario.diasSemana">{{getDiaSemanaNome(diaSemana.diaSemana)}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aulas antes do intervalo -->
+                <tr data-ng-show="quadroHorario.modelo.posicaoIntervalo > 0" data-ng-repeat="aula in aulas | quantidade | limitTo: quadroHorario.modelo.posicaoIntervalo-1">
+                    <td>{{aula}}ª Aula</td>
+                    <td data-ng-repeat="d in quadroHorario.diasSemana">
+                        <span data-ng-repeat="h in horarios" data-ng-if="h.naula === aula && h.horario.diaSemana.diaSemana === d.diaSemana">
+                            {{disciplina.nomeExibicao}}
+                        </span>
+                    </td>
+                </tr>
+                <!-- Intervalo -->
+                <tr data-ng-show="quadroHorario.modelo.posicaoIntervalo > 0"><td>Intervalo</td><td data-ng-repeat="d in quadroHorario.diasSemana"><i class="material-icons">alarm</i></td></tr> 
+                <!-- Aulas após o intervalo -->
+                <tr data-ng-repeat="aula in quadroHorario.modelo.quantidadeAulas | quantidade | comecarEm: quadroHorario.modelo.posicaoIntervalo">
+                    <td data-ng-show="aula !== undefined">{{aula}}ª Aula</td>
+                    <td data-ng-show="aula !== undefined" data-ng-repeat="d in quadroHorario.diasSemana">
+                        <span data-ng-repeat="h in horarios" data-ng-if="h.naula === aula && h.horario.diaSemana.diaSemana === d.diaSemana">
+                            {{disciplina.nomeExibicao}}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--MODAL Adicionar Professor-->
+<div id="modal-adicionar-professor" class="modal" style="max-height: 85%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-adicionar-professor">
+                    <h4 style="color:white;position:relative;top:5rem;padding:1rem;">
+                        Adicionar Professor.
+                    </h4>
+                </div>
+                <p>
+                    <div class="input-field col s12 m12 l12 ">
+                        <i class="material-icons prefix">account_balance</i>
+                        <select id="disciplinaProfessor" style="display: none;" data-ng-model="disciplinaProfessor.id" required>
+                            <option disabled selected></option>
+                            <option value="{{ disciplina.id }}" data-ng-repeat="disciplina in disciplinasOfertadasTurma | orderBy: 'disciplina.nome'">{{ disciplina.disciplina.nome | uppercase }}</option>
+                        </select>
+                        <label for="disciplinaProfessor">Disciplina*</label>
+                    </div>
+                    <div class="input-field col s12 m12 l12" data-ng-show="disciplinaProfessor.id">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input id="nomeProfessor" type="text" class="dropdown"  data-ng-model="nomeProfessor" data-ng-change="buscarAlocacoes()" data-activates='dropProfessores' required />                      
+                        <i class="material-icons prefix clickable" style=" position: absolute;right: -8px;  bottom: 22px; font-size: 1rem !important;">border_color</i>
+                        <label for="nomeProfessor">Professor*</label>
+                    </div>                 
+                </p>
+            </div>
+            <div class="col s12 end-card">
+                <a data-ng-click="finalizarProfessores()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>Salvar</a>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INFO professor -->
+<div id="info-professor" class="modal" style="max-height: 80%;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-info-professor">
+                    <h4 style="left: 0.5rem; top: 6.2rem!important; position: relative; color: white;">{{ funcionario.nome | uppercase }}</h4>
+                </div>
+                <div class="row">
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>Data Nascimento</strong>: {{ funcionario.dataNascimento | date: 'dd/MM/yyyy' }}
+                    </div>
+                    <div class="col s6" style="padding-top: 1rem;">
+                        <strong>E-mail:</strong> {{ funcionario.email }}
+                    </div>
+                    <div class="col s6">
+                        <strong>Codigo</strong>: {{ alocacao.vinculo.codigo}}<br />
+                        <strong>Carga Horária</strong>: {{ alocacao.cargaHoraria }}<br />
+                    </div>
+                    <div class="col s6">
+                        <strong>Contrato</strong>: {{ alocacao.vinculo.tipoContrato | uppercase}}<br />
+                    </div>
+                    <div class="col s6">
+                        <strong>Contatos</strong>:
+                        <span data-ng-hide="telefones.length > 0">Nenhum telefone cadastrado</span>
+                        <span data-ng-show="telefones.length > 0" data-ng-repeat="telefone in telefones">
+                            {{ telefone.numero }} - Falar com: {{ telefone.falarCom | uppercase }}<br />
+                        </span>
+                    </div>
+                    <div class="col s12" style="padding-top:2rem;padding-bottom: 0.5rem">
+                        <strong>Endereço</strong>:<br/> 
+                        CEP: {{ funcionario.endereco.cep }}<br />
+                        {{ funcionario.endereco.logradouro |uppercase }}, {{ funcionario.endereco.numero }}, Bairro {{ funcionario.endereco.bairro }}
+                        {{ funcionario.endereco.cidade.nome }}, {{ funcionario.endereco.cidade.estado.nome }}<br />
+                        <span data-ng-show="{{ funcionario.endereco.complemento }}">{{ funcionario.endereco.complemento }}<br /></span>
+                    </div>
+                </div>
+                <div data-ng-show="funcionario.endereco.latitude" class="info-map row" style="margin-bottom: 1rem !important;"><div class="col s12"><div></div></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Exclusão -->
+<div id="remove-modal-professor" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-banner">
+                    <h4>Remover Professor</h4>
+                </div>
+                <p>Você realmente deseja remover {{ alocacaoRemover.vinculo.funcionario.nome }} da disciplina {{disciplinaRemover.nome}}?</p>
+            </div>
+            <div class="end-card" style="margin-bottom:0px; padding: 0px !important;">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="removerProfessor()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-certeza" class="modal">
+    <div class="modal-body">
+        <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+        <div class="modal-title-banner">
+            <h3 style='position: relative; top: 14rem; color: white; padding-left: 1rem;'>Deseja descartar os dados preenchidos ?</h3>
+        </div>
+        <div class="modal-content">
+            <p>Esteja ciente de que saindo desta página os dados preenchidos neste formulário serão descartados.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-footer end-card">
+            <a class="modal-action modal-close waves-effect waves-red btn-flat">Nao</a>
+            <a href="{{config.dominio}}/#/turmas" class="modal-action modal-close waves-effect waves-green btn-flat">Sim</a>    
+        </div>
+    </div>
+</div>
+
+<!-- Diario de notas -->
+<div id="nota-aluno" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!--<i class="small material-icons right fecharModal" style="font-size: 40px" data-ng-click="fecharModal()">close</i>-->
+                <div class="modal-title-banner-info-aluno">
+                    <div class='row col s12' style='margin-top: 7rem; color: #FAFAFA'>
+                        <h4 class='col s9 truncate'>{{media.nome}} - Notas de {{matricula.aluno.nome}}</h4>                        
+                    </div>
+                </div>
+                <!-- QUANTITATIVA -->
+                <table class="striped" data-ng-show="sistemaAvaliacao === 'quantitativas'">
+                    <thead>
+                        <tr>
+                            <th data-field="id" style="padding-left:23px!important;">Avaliação</th>
+                            <th data-field='tipo'>Tipo</th>                                                        
+                            <th data-field='entrega' class='center'>Entrega</th>
+                            <th data-field='peso' class='center'>Peso</th>
+                            <th data-field="nota">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="nota in media.notas">                            
+                            <td style="padding-left:23px!important;padding-top:20px;">{{nota.avaliacao.nome | uppercase}}</td>                            
+                            <td>{{nota.avaliacao.tipo.nome | uppercase}}</td>
+                            <td class='center'>{{nota.avaliacao.aulaEntrega.dia.data | date: 'dd/MM/yyyy'}}</td>
+                            <td class='center'>{{nota.avaliacao.peso}}</td>
+                            <td style="padding-bottom:0px;padding-top:0px;font-weight: bold">
+                                <div style="width: 40px">
+                                    <input disabled type="text" value="{{nota.valor}}" class="nota" style="margin-bottom:0px; text-align: center;background-color:white;border:solid 1px #d1d1d1;-webkit-border-radius: 20px;
+                                    -moz-border-radius: 5px;border-radius:5px;color: black;">
+                                </div>
+                            </td>                            
+                        </tr>
+                    </tbody>                    
+                </table>
+                <!-- QUALITATIVA -->
+                <ul class="collapsible" data-collapsible="accordion" style="border:none; box-shadow: none;" data-ng-show="sistemaAvaliacao === 'qualitativas'">
+                    <li data-ng-repeat="nota in media.notas" class="row">
+                        <div class="collapsible-header" style="background-color: #FAFAFA">
+                            <span class="col s11">{{nota.avaliacao.nome}}</span>
+                            <span class="col s1"><i class="material-icons right">keyboard_arrow_down</i></span>
+                        </div>
+                        <div class="collapsible-body" style="background-color: #FAFAFA">
+                            <table class="striped">
+                                <thead>
+                                    <tr>
+                                        <th style="padding-left: 3rem;">Habilidades Avaliadas</th>
+                                        <th class="center" style="padding-right: 1.3rem;">Conceito</th>
+                                    </tr>
+                                </thead>                                
+                                <tbody>
+                                    <tr data-ng-repeat="habilidade in nota.habilidadesAvaliadas">
+                                        <td style="padding-left: 3.5rem;">{{habilidade.habilidade.nome}}</td>
+                                        <td class="center" style="padding-right: 1.3rem;">
+                                            {{habilidade.conceito.nome}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+                <div data-ng-if="media.valor" class="row col s12" >
+                    <div class="end-card" style="margin-top:0px;">
+                        <div style="position:relative;float:right;padding:1rem;font-size:23px;padding-right: 2.5rem;">
+                            Nota Final: {{media.valor}}
+                        </div>
+                    </div>
+                </div>
+            </div>                       
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Criação Novo Quadro Horário -->
+<div id="remove-modal-quadro-horario" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body row">
+                <div class="modal-title-banner">
+                    <h4>Alterar Grade de Horário</h4>
+                </div>
+                <p>Para criar uma nova grade de horário você precisa excluir a grade atual.</p>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">event</i>
+                    <input id="dataInicioNovoQuadroHorario" class="date" type="text" data-ng-model="dataInicioQuadroHorario">
+                    <label for="dataInicioNovoQuadroHorario">Data de inicio da nova grade*</label>
+                </div>
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">                    
+                    <a data-ng-click="verificaPresencas()" class="modal-action waves-effect waves-green btn-flat">SIM</a>
+                    <a class="modal-action modal-close waves-effect waves-red btn-flat">NÃO</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Alunos Reprovados -->
+<div id="alunos-reprovados-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno">
+                    <h4 class="modal-alinha-texto white-text" style="padding: 17rem 0 0 1rem">Alunos Não Aptos</h4>
+                </div>
+                <table class="striped table-pattern">
+                    <tbody>
+                        <tr data-ng-repeat="reprovado in reprovados">
+                            <td>
+                                <input type="checkbox" class="filled-in" id="rep{{reprovado.id}}" />
+                                <label for="rep{{reprovado.id}}"></label>
+                            </td>
+                            <td>{{reprovado.matricula.aluno.nome}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer end-card">
+                <a data-ng-click="enturmarAutomaticamente()" class="modal-action modal-close waves-effect waves-green btn-flat ">CONTINUAR</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Ajuda -->
+<div id="modal-ajuda-turma" class="modal">
+    <div class="modal-body">
+        <div class="modal-title-ajuda">
+            <h3 style='padding: 80px 0 0 10px; color: white; position: relative; top: 10rem;'>Sobre este módulo.</h3>
+        </div>
+        <div class="modal-content">
+            <p style='font-family: Roboto'>
+                <strong>Definição:</strong><br />
+                Espaço físico usado pelo professor no aprendizado para reunir os alunos pertencentes à uma mesma etapa.<br />ex: Turma 101, Turma 201, etc…
+                <br /><br />
+                <strong>Instruções Rápidas:</strong><br />
+                Cadastro: Botão +<br />Editar Turma: Clique no nome<br />Ver Informações: Clique nos ícones ao lado<br />Remover Curso: Clique na lixeira<br />
+            </p>
+        </div>
+    </div>
+</div>

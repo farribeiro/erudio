@@ -59,24 +59,29 @@
             <i class="material-icons prefix">description</i>
             <select ng-change="verificaDocumentoCadastro()" style="display: none;" data-ng-model="cadDocumento" id="documento" data-ng-disabled="!escrita">
                 <option value="" disabled selected></option>
-                <option value="certidao" data-ng-selected="tipoDocumento(pessoa.certidaoNascimento)">Certidão de Nascimento(Nova - 32 Digitos)</option>                               
-                <option value="certidao-antiga">Certidão de Nascimento(Antiga - Termo/Livro/Folha)</option>
+                <option value="certidao" data-ng-selected="!certidaoAntiga">Certidão de Nascimento(Nova - 32 Digitos)</option>                               
+                <option value="certidao-antiga" data-ng-selected="certidaoAntiga">Certidão de Nascimento(Antiga - Termo/Livro/Folha)</option>
             </select>
             <label for="documento">Documento</label>
         </div>
-        <div class="input-field col s12 m12 l6" data-ng-show="cadDocumento === 'certidao'">
+        <div class="input-field col s12 m12 l6" data-ng-hide="certidaoAntiga">
             <i class="material-icons prefix">description</i>
-            <input id="certidaoNasc" type="text" length="32" class="validate counter numeros" data-ng-model="certidaoCad">
-            <label for="certidaoNasc">Certidão de Nascimento</label>
+            <input id="certidaoNasc" type="text" length="32" class="validate counter" data-ng-model="pessoa.certidaoNascimento">
+            <label for="certidaoNasc">Certidão de Nascimento*</label>
         </div>
         <div data-ng-class="certidaoPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">event</i>
             <input id="certidaoData" type="text" class="data" data-ng-change="selecionaData()" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
             <label for="certidaoData" class="nomeGrande">Data Expedição Certidão Nascimento</label>            
+        </div>                     
+        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">description</i>
+            <input id="termo" type="text" class="counter" maxlength="7" data-ng-model="termoCad" data-ng-disabled="!escrita"  />
+            <label for="termo">Termo</label>            
         </div>        
         <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">description</i>
-            <input id="livro" type="text" class="counter" maxlength="5" data-ng-model="livroCad" data-ng-disabled="!escrita"  />
+            <input id="livro" type="text" class="counter numeros" maxlength="5" data-ng-model="livroCad" data-ng-disabled="!escrita"  />
             <label for="livro">Livro</label>            
         </div>             
         <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
@@ -85,14 +90,9 @@
             <label for="folha">Folha</label>            
         </div>
         <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
-            <i class="material-icons prefix">description</i>
-            <input id="termo" type="text" class="counter" maxlength="7" data-ng-model="termoCad" data-ng-disabled="!escrita"  />
-            <label for="termo">Termo</label>            
-        </div>                
-        <div data-ng-class="certidaoAntigaPessoa" class="input-field col s12 m12 l6">
             <i class="material-icons prefix">event</i>
             <input id="dataExpedicao" type="text" class="data" data-ng-model="pessoa.dataExpedicaoCertidaoNascimento" data-ng-disabled="!escrita"  />
-            <label for="dataExpedicao" class="nomeGrande">Data Expedição Certidão Nacimento</label>            
+            <label for="dataExpedicao" class="nomeGrande">Data Expedição Certidão Nascimento</label>            
         </div>
         <div class="input-field col s12 m12 l6">
             <i class="material-icons prefix">description</i>

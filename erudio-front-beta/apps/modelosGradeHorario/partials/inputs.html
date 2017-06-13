@@ -1,0 +1,19 @@
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="modeloNome" label="'Nome do Modelo'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="modelo" campo="nome" erro="'modeloForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="modeloQtdeAulas" dica="'Apenas Números'" classe="'maskDoisNumeros'" label="'Quantidade de aulas no turno'" tipo="'text'" troca="validaCampo()" nome="'qtdeAulas'" obrigatorio="required" model="modelo" campo="quantidadeAulas" erro="'modeloForm.qtdeAulas.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <form-input grid="flex-gt-sm" identidade="modeloDuracaoAulas" dica="'Apenas Números'" classe="'maskDoisNumeros'" label="'Duração de aula (em minutos)'" tipo="'text'" troca="validaCampo()" nome="'duracaoAulas'" obrigatorio="required" model="modelo" campo="duracaoAula" erro="'modeloForm.duracaoAulas.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="modeloDuracaoIntervalo" dica="'Apenas Números'" classe="'maskDoisNumeros'" label="'Duração do intervalo (em minutos)'" tipo="'text'" troca="validaCampo()" nome="'duracaoIntervalo'" obrigatorio="required" model="modelo" campo="duracaoIntervalo" erro="'modeloForm.duracaoIntervalo.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <form-input grid="flex-gt-sm" identidade="modeloAulasIntervalo" dica="'Apenas Números'" classe="'maskDoisNumeros'" label="'Quantidade de aulas antes do intervalo'" tipo="'text'" troca="validaCampo()" nome="'aulasIntervalo'" obrigatorio="required" model="modelo" campo="posicaoIntervalo" erro="'modeloForm.aulasIntervalo.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="modeloCurso" label="'Curso'" nome="'curso'" obrigatorio="required" erro="'modeloForm.curso.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-change="validaCampo();" ng-model="modelo.curso.id" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="curso in cursos" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>

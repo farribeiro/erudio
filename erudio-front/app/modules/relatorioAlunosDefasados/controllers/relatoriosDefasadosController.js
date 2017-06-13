@@ -87,10 +87,16 @@
                     promise.then(promise.then(function(response){
                         var user = response.data[0];
                         for (var i=0; i<user.atribuicoes.length; i++) {
-                            if (user.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(user.atribuicoes[i].instituicao); }
-                            if (i === user.atribuicoes.length-1) {                                
-                                if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidade); }
-                                $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                            if (user.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(user.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
+                            if (i === user.atribuicoes.length-1) {
+                                if (i === user.atribuicoes.length-1) {
+                                    if ($scope.isAdmin) {
+                                        $scope.verificaAlocacao();
+                                    } else {
+                                        if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidade); }
+                                        $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
+                                    }
+                                }
                             }
                         }
                     }));

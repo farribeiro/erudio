@@ -93,7 +93,7 @@
             
             $scope.prepararVoltar = function(objeto) {
                 if (objeto.nome && !objeto.id) {                
-                    $('#modal-certeza').modal();
+                    $('#modal-certeza').openModal();
                 } else {
                     $scope.fecharFormulario();
                 }
@@ -116,7 +116,7 @@
             $scope.verificaSelectCurso = function (cursoId) { if (cursoId === $scope.modulo.curso.id) { return true; } };
             
             /* Guarda o modulo para futura remoção e abre o modal de confirmação */
-            $scope.prepararRemover = function (modulo) { $scope.moduloRemover = modulo; $('#remove-modal-modulo').modal(); };
+            $scope.prepararRemover = function (modulo) { $scope.moduloRemover = modulo; $('#remove-modal-modulo').openModal(); };
             
             /* Remove o modulo */
             $scope.remover = function () {

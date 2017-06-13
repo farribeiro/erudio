@@ -645,7 +645,7 @@
 
         /* Busca Tipos de Unidade */
         $scope.buscarTipos = function() {
-            var promise = Servidor.buscar('unidades-ensino/tipos',null);
+            var promise = Servidor.buscar('tipos-unidade-ensino',null);
             promise.then(function (response){
                 $scope.tipos = response.data;
             });
