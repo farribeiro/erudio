@@ -33,18 +33,8 @@
             promise.then(function(response){ $scope.items = response.data; });
         };
         
-        $scope.filtrar = function (unidade){
-            var results = unidade ? $scope.unidades.filter( createFilterFor(unidade) ) : $scope.unidades;
-        };
-        
-        function createFilterFor(query) {
-            var lowercaseQuery = angular.lowercase(query);
-
-            return function filterFn(state) {
-              return ($scope.unidades.nome.indexOf(lowercaseQuery) === 0);
-            };
-
-        }
+        //FILTRANDO AUTOCOMPLETE
+        $scope.filtrar = function (query){ return Util.filtrar(query, $scope.items); };
         
         //BUSCANDO QUADROS
         $scope.buscarQuadros = function () {

@@ -1,7 +1,7 @@
 (function (){
     var util = angular.module('util',['structure', 'validator', 'angular-md5', 'angular-sha1', 'erudioConfig', 'ngMaterial']);
     
-    util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast) {
+    util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', '$filter', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast, $filter) {
         
         //SETA TITULO DA TOOLBAR
         this.setTitulo = function (titulo) { $('.titulo-toolbar').html(titulo); };
@@ -232,6 +232,13 @@
         this.mudarImagemToolbar = function (url) {
             var link = ErudioConfig.dominio + '/apps/'+url;
             $('.content-bar').attr('style',"background: linear-gradient(to bottom,rgba(0, 0, 0, 1), rgba(123, 121, 121, 0.3),rgba(1,0,0,0)), url('"+link+"') center center no-repeat !important;");
+        };
+        
+        //FILTRAR AUTOCOMPLETE
+        this.filtrar = function (query, items){
+            var results = [];
+            if (query) { results = $filter('filter')(items,{nome: query}); } else { results = items; }
+            return results;
         };
     }]);
 })();

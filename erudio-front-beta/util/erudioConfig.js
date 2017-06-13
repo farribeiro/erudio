@@ -2,7 +2,7 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        this.dominio = 'http://10.1.2.66/erudio-material';
+        this.dominio = 'http://10.100.0.90/erudio/erudio-front-beta';
         this.urlTemplates = '/apps/templates/partials/';
         this.extraUrl = '/erudio-material';
         

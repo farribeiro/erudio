@@ -1,4 +1,6 @@
-<md-autocomplete class="md-whiteframe-0dp" md-search-text="itemBusca" md-selected-item-change="" md-items="item in filtrar(itemBusca)" md-item-text="item.nome" md-min-length="0" placeholder="{{autoPlaceholder}}">
+<md-autocomplete class="md-whiteframe-0dp" md-search-text="itemBusca"
+                 md-items="item in filtrar(itemBusca)" md-item-text="item.nome" md-min-length="0" 
+                 placeholder="{{autoPlaceholder}}" md-selected-item-change="selecionar(item)">
 <md-item-template>
 <span md-highlight-flags="^i">{{item.nome}}</span>
 </md-item-template>
