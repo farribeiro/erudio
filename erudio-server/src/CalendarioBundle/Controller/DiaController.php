@@ -29,12 +29,12 @@
 namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
@@ -88,7 +88,7 @@ class DiaController extends AbstractEntityController {
     function getDataAtualAction() {
         $dateTime = new \DateTime();
         $dataAtual = date_format($dateTime, 'Y-m-d');
-        $view = View::create($dataAtual, Codes::HTTP_OK);
+        $view = View::create($dataAtual, Response::HTTP_OK);
         return $this->handleView($view);   
     }
     

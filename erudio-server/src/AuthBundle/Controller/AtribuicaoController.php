@@ -36,14 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Atribuicao;
+use AuthBundle\Service\AtribuicaoFacade;
 
 /**
  * @FOS\RouteResource("atribuicoes")
  */
 class AtribuicaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.atribuicoes');
+    private $atribuicaoFacade;
+    
+    function __construct(AtribuicaoFacade $atribuicaoFacade) {
+        $this->atribuicaoFacade = $atribuicaoFacade;
+    }
+    
+    function getFacade() {
+        return $this->atribuicaoFacade;
     }
     
     /**

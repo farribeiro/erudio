@@ -3,7 +3,7 @@ services:
         class: MatriculaBundle\Service\MatriculaFacade
         arguments: ["@doctrine"]
         calls:
-            - [setUsuarioFacade, ["@facade.auth.usuarios"]]
+            - [setUsuarioFacade, ['@AuthBundle\Service\UsuarioFacade']]
           
     facade.matricula.disciplinas_cursadas:
         class: MatriculaBundle\Service\DisciplinaCursadaFacade

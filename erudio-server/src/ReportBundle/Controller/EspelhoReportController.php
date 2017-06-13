@@ -37,19 +37,33 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CursoBundle\Entity\Turma;
 use ReportBundle\Util\StringUtil;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use CursoBundle\Service\TurmaFacade;
+use MatriculaBundle\Service\EnturmacaoFacade;
+use AvaliacaoBundle\Service\ConceitoFacade;
 
 class EspelhoReportController extends Controller {
     
-    function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
+    private $turmaFacade;
+    private $enturmacaoFacade;
+    private $conceitoFacade;
+    
+    function __construct(TurmaFacade $turmaFacade, EnturmacaoFacade $enturmacaoFacade, 
+            ConceitoFacade $conceitoFacade) {
+        $this->turmaFacade = $turmaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->conceitoFacade = $conceitoFacade;
     }
     
     function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
+        return $this->turmaFacade;
     }
-    
+
+    function getEnturmacaoFacade() {
+        return $this->enturmacaoFacade;
+    }
+
     function getConceitoFacade() {
-        return $this->get('facade.avaliacao.conceitos');
+        return $this->conceitoFacade;
     }
     
     /**

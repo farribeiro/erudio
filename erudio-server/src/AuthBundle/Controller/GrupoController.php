@@ -36,14 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Grupo;
+use AuthBundle\Service\GrupoFacade;
 
 /**
  * @FOS\RouteResource("grupos")
  */
 class GrupoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.grupos');
+    private $grupoFacade;
+    
+    function __construct(GrupoFacade $grupoFacade) {
+        $this->grupoFacade = $grupoFacade;
+    }
+    
+    function getFacade() {
+        return $this->grupoFacade;
     }
     
     /**

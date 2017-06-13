@@ -36,16 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Usuario;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
+use AuthBundle\Service\UsuarioFacade;
 
 /**
  * @FOS\RouteResource("users")
  */
 class UsuarioController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.usuarios');
+    private $usuarioFacade;
+    
+    function __construct(UsuarioFacade $usuarioFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+    }
+    
+    function getFacade() {
+        return $this->usuarioFacade;
     }
     
     /**

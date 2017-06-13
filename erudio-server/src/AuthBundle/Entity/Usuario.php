@@ -49,7 +49,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     private $username;
     
     /**
-    * @JMS\Groups({"LIST"})
+    * @JMS\Exclude
     * @ORM\Column(name="senha") 
     */
     private $password;

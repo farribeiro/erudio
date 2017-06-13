@@ -28,11 +28,11 @@
 
 namespace CoreBundle\ORM;
 
-use Symfony\Bridge\Monolog\Logger;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CoreBundle\ORM\Exception\UniqueViolationException;
 
@@ -52,7 +52,7 @@ abstract class AbstractFacade {
     protected $orm;
     protected $logger;
     
-    function __construct (Registry $doctrine, Logger $logger = null) {
+    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null) {
         $this->orm = $doctrine;
         $this->logger = $logger;
     }
@@ -302,8 +302,8 @@ abstract class AbstractFacade {
     * @return type
     */
     protected function loadEntity($id, $entityClass = null) {
-        $entityClass = $entityClass === null ? $this->getEntityClass() : $entityClass;
-        $qb = $this->orm->getRepository($entityClass)
+        $class = $entityClass === null ? $this->getEntityClass() : $entityClass;
+        $qb = $this->orm->getRepository($class)
             ->createQueryBuilder($this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true')
             ->andWhere($this->queryAlias() . '.' . self::ATTR_ID . ' = :id')

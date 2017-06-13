@@ -1,10 +1,10 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: 10.100.1.134
+    database_host: 10.10.1.191
     database_port: 3306
     database_name: erudio
-    database_user: root
-    database_password: warning
+    database_user: gestao
+    database_password: teste
     mailer_transport: gmail
     mailer_host: null
     mailer_user: educacaoitajai

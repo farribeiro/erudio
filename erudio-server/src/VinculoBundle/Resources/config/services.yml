@@ -1,16 +1,16 @@
 services:
-    facade.vinculo.alocacoes:
-      class: VinculoBundle\Service\AlocacaoFacade
-      arguments: ["@doctrine"]
-      calls:
-          - [setAtribuicaoFacade, ["@facade.auth.atribuicoes"]]
-      
-    facade.vinculo.cargos:
-      class: VinculoBundle\Service\CargoFacade
-      arguments: ["@doctrine"]
-      
-    facade.vinculo.vinculos:
-      class: VinculoBundle\Service\VinculoFacade
-      arguments: ["@doctrine"]
-      calls:
-          - [setUsuarioFacade, ["@facade.auth.usuarios"]]
+    
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    VinculoBundle\:
+        resource: '../../{Service,Listener}'
+       
+    VinculoBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]

@@ -29,12 +29,12 @@
 namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
@@ -111,11 +111,11 @@ class MediaController extends AbstractEntityController {
             $faltas = $turma->getEnturmacoes()->map(function($e) use ($numero) {
                 return $this->getFacade()->getFaltasUnificadas($e, $numero);
             }); 
-            $view = View::create($faltas, Codes::HTTP_OK);
+            $view = View::create($faltas, Response::HTTP_OK);
             $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
             $view->getSerializationContext()->enableMaxDepthChecks();
         } catch (IllegalUpdateException $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } 
         return $this->handleView($view);
     }
@@ -135,9 +135,9 @@ class MediaController extends AbstractEntityController {
                 $this->getFacade()->inserirFaltasUnificadas(
                         $registroFaltas->faltas, $registroFaltas->media, $registroFaltas->enturmacao);
             }
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch (IllegalUpdateException $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } 
         return $this->handleView($view);
     }

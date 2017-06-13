@@ -28,19 +28,20 @@
 
 namespace VinculoBundle\Service;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use VinculoBundle\Entity\Vinculo;
-use PessoaBundle\Entity\PessoaFisica;
-use AuthBundle\Entity\Usuario;
-use AuthBundle\Service\UsuarioFacade;
+use VinculoBundle\Event\VinculoEvent;
 
 class VinculoFacade extends AbstractFacade {
     
-    private $usuarioFacade;
+    private $eventDispatcher;
     
-    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
-        $this->usuarioFacade = $usuarioFacade;
+    function __construct(RegistryInterface $orm, EventDispatcherInterface $eventDispatcher) {
+        parent::__construct($orm);
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     function getEntityClass() {
@@ -86,7 +87,10 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($vinculo) {
-        $this->gerarUsuario($vinculo->getFuncionario());
+         $this->eventDispatcher->dispatch(
+            VinculoEvent::VINCULO_CRIADO,
+            new VinculoEvent($vinculo)
+        );
     }
     
     /**
@@ -108,22 +112,6 @@ class VinculoFacade extends AbstractFacade {
             $numero = $ano . $vinculo->getInstituicao()->getId() . '00000';
         }
         $vinculo->definirCodigo($numero + 1);
-    }
-    
-    /**
-     * Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
-     * não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
-     * 
-     * @param PessoaFisica $pessoa
-     */
-    private function gerarUsuario(PessoaFisica $pessoa) {
-        if (!$pessoa->getUsuario()) {
-            $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
-            $this->usuarioFacade->create($usuario);
-            $pessoa->setUsuario($usuario);
-            $this->orm->getManager()->merge($pessoa);
-            $this->orm->getManager()->flush();
-        }
     }
 
 }

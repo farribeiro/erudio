@@ -35,23 +35,40 @@ use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use ReportBundle\Util\DateTimeUtil;
+use CursoBundle\Service\TurmaFacade;
+use CursoBundle\Service\DisciplinaOfertadaFacade;
+use CalendarioBundle\Service\DiaFacade;
+use CalendarioBundle\Service\AulaFacade;
 
 class FrequenciaReportController extends Controller {
     
-    function getAulaFacade() {
-        return $this->get('facade.calendario.aulas');
-    }
+    private $turmaFacade;
+    private $disciplinaOfertadaFacade;
+    private $diaFacade;
+    private $aulaFacade;
     
-    function getDiaFacade() {
-        return $this->get('facade.calendario.dias');
-    }
-    
-    function getDisciplinaOfertadaFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
+    function __construct(TurmaFacade $turmaFacade, DisciplinaOfertadaFacade $disciplinaOfertadaFacade, 
+            DiaFacade $diaFacade, AulaFacade $aulaFacade) {
+        $this->turmaFacade = $turmaFacade;
+        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
+        $this->diaFacade = $diaFacade;
+        $this->aulaFacade = $aulaFacade;
     }
     
     function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
+        return $this->turmaFacade;
+    }
+
+    function getDisciplinaOfertadaFacade() {
+        return $this->disciplinaOfertadaFacade;
+    }
+
+    function getDiaFacade() {
+        return $this->diaFacade;
+    }
+
+    function getAulaFacade() {
+        return $this->aulaFacade;
     }
     
     /**

@@ -26,56 +26,40 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace ReportBundle\Controller;
+namespace VinculoBundle\Listener;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Ps\PdfBundle\Annotation\Pdf;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\MatriculaFacade;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use VinculoBundle\Event\VinculoEvent;
+use AuthBundle\Service\UsuarioFacade;
+use AuthBundle\Entity\Usuario;
+use PessoaBundle\Service\PessoaFisicaFacade;
 
-class MatriculaReportController extends Controller {
+/**
+* Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
+* não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
+*
+*/
+class CriarUsuarioListener implements EventSubscriberInterface {
     
-    private $matriculaFacade;
+     private $usuarioFacade;
+     private $pessoaFacade;
     
-    function __construct(MatriculaFacade $matriculaFacade) {
-        $this->matriculaFacade = $matriculaFacade;
+    function __construct(UsuarioFacade $usuarioFacade, PessoaFisicaFacade $pessoaFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+        $this->pessoaFacade = $pessoaFacade;
     }
-
-    function getMatriculaFacade() {
-        return $this->matriculaFacade;
+    
+    static function getSubscribedEvents() {
+        return [VinculoEvent::VINCULO_CRIADO => 'execute'];
     }
     
-    /**
-    * @ApiDoc(
-    *   resource = true,
-    *   section = "Módulo Relatórios",
-    *   description = "Atestado de Matrícula",
-    *   statusCodes = {
-    *       200 = "Documento PDF"
-    *   }
-    * )
-    * 
-    * @Route("atestados/matricula", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function atestadoAction(Request $request) {
-        try {
-           $matricula = $this->getMatriculaFacade()->find($request->query->getInt('matricula'));
-           $enturmacoes = $matricula->getEnturmacoesAtivas();
-           $etapa = count($enturmacoes) 
-                   ? $enturmacoes->first()->getTurma()->getEtapa()->getNomeExibicao() 
-                   : 'Não Enturmado';
-            return $this->render('reports/atestado/matricula.pdf.twig', [
-                'instituicao' => $matricula->getUnidadeEnsino(),
-                'matricula' => $matricula,
-                'etapa' => $etapa
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
+    function execute(VinculoEvent $event) {
+        $pessoa = $event->getVinculo()->getFuncionario();
+        if (!$pessoa->getUsuario()) {
+            $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
+            $this->usuarioFacade->create($usuario);
+            $pessoa->setUsuario($usuario);
+            $this->pessoaFacade->update($pessoa->getId(), $pessoa);
         }
     }
     

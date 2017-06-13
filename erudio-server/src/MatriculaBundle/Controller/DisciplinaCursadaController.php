@@ -29,14 +29,14 @@
 namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use JMS\Serializer\Annotation as JMS;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\DisciplinaCursada;
 
@@ -113,7 +113,26 @@ class DisciplinaCursadaController extends AbstractEntityController {
             $disciplina = $this->getFacade()->find($id);
             $this->getFacade()->encerrar($disciplina);
             $view = View::create($disciplina);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
+            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $this->handleView($view);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * 
+    * @FOS\Post("disciplinas-ofertadas/{id}/media-final", requirements = {"id": "\d+"})
+    */
+    function postMediasFinaisAction($id) {
+        $disciplinas = $this->getFacade()->findAll(['disciplinaOfertada' => $id]);
+        try {
+            foreach($disciplinas as $disciplina) {
+                $this->getFacade()->encerrar($disciplina);
+            }
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
+        } catch (Exception $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);

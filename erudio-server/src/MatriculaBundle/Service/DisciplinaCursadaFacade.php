@@ -111,15 +111,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         }
     }
     
-    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
-        $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
-        for ($i = 1; $i <= $numeroMedias; $i++) {
-            $media = new Media($disciplinaCursada, $i);
-            $this->mediaFacade->create($media);
-        }
-    }
-    
-    private function encerrar(DisciplinaCursada $disciplina, $status = null) {
+    function encerrar(DisciplinaCursada $disciplina, $status = null) {
         if ($status) {
             $disciplina->encerrar($status);
         } else {
@@ -132,7 +124,15 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                 $disciplina->encerrar();
             }
         }
-        $this->orm->flush();
+        $this->orm->getManager()->flush();
+    }
+    
+    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
+        $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
+        for ($i = 1; $i <= $numeroMedias; $i++) {
+            $media = new Media($disciplinaCursada, $i);
+            $this->mediaFacade->create($media);
+        }
     }
     
     private function criarMediaExame(DisciplinaCursada $disciplina) {

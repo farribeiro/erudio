@@ -36,7 +36,6 @@ use Doctrine\ORM\NoResultException;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
@@ -87,11 +86,11 @@ class HorarioDisciplinaController extends AbstractEntityController {
                     : new \DateTime();
             $horario = $this->getFacade()->find($id);
             $this->getFacade()->trocar($horario, $horarioTroca, $dataInicio);
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
-            $view = FOS\View::create(null, Codes::HTTP_NOT_FOUND);
+            $view = FOS\View::create(null, Response::HTTP_NOT_FOUND);
         } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_INTERNAL_SERVER_ERROR);
+            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);
     }

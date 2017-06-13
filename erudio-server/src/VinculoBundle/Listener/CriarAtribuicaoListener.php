@@ -26,56 +26,47 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace ReportBundle\Controller;
+namespace VinculoBundle\Listener;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Ps\PdfBundle\Annotation\Pdf;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\MatriculaFacade;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use CoreBundle\ORM\Exception\UniqueViolationException;
+use AuthBundle\Service\AtribuicaoFacade;
+use AuthBundle\Entity\Atribuicao;
+use VinculoBundle\Event\AlocacaoEvent;
 
-class MatriculaReportController extends Controller {
+/**
+ * Gera uma atribuição para o usuário da pessoa alocada, contendo as permissões
+ * pertinentes à ela.
+ * 
+ */
+class CriarAtribuicaoListener implements EventSubscriberInterface {
     
-    private $matriculaFacade;
+    private $atribuicaoFacade;
     
-    function __construct(MatriculaFacade $matriculaFacade) {
-        $this->matriculaFacade = $matriculaFacade;
+    function __construct(AtribuicaoFacade $atribuicaoFacade) {
+        $this->atribuicaoFacade = $atribuicaoFacade;
     }
-
-    function getMatriculaFacade() {
-        return $this->matriculaFacade;
+    
+    static function getSubscribedEvents() {
+        return [AlocacaoEvent::ALOCACAO_CRIADA => 'execute'];
     }
     
-    /**
-    * @ApiDoc(
-    *   resource = true,
-    *   section = "Módulo Relatórios",
-    *   description = "Atestado de Matrícula",
-    *   statusCodes = {
-    *       200 = "Documento PDF"
-    *   }
-    * )
-    * 
-    * @Route("atestados/matricula", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function atestadoAction(Request $request) {
-        try {
-           $matricula = $this->getMatriculaFacade()->find($request->query->getInt('matricula'));
-           $enturmacoes = $matricula->getEnturmacoesAtivas();
-           $etapa = count($enturmacoes) 
-                   ? $enturmacoes->first()->getTurma()->getEtapa()->getNomeExibicao() 
-                   : 'Não Enturmado';
-            return $this->render('reports/atestado/matricula.pdf.twig', [
-                'instituicao' => $matricula->getUnidadeEnsino(),
-                'matricula' => $matricula,
-                'etapa' => $etapa
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
+    function execute(AlocacaoEvent $event) {
+        $alocacao = $event->getAlocacao(); 
+        $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
+        if ($grupo) {
+            try {
+                $atribuicao = Atribuicao::criarAtribuicao(
+                    $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
+                    $grupo, 
+                    $alocacao->getInstituicao()
+                );
+                $this->atribuicaoFacade->create($atribuicao, false);
+            } catch (UniqueViolationException $ex) {
+                //ignorar
+            } catch (\Exception $ex) {
+                throw $ex;
+            }
         }
     }
     

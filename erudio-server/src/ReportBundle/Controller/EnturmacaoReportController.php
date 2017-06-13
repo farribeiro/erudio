@@ -40,39 +40,27 @@ use MatriculaBundle\Service\EnturmacaoFacade;
 
 class EnturmacaoReportController extends Controller {
     
-//      private $turmaFacade;
-//      private $matriculaFacade;
-//      private $enturmacaoFacade;
-//      
-//      function __construct(TurmaFacade $turmaFacade, MatriculaFacade $matriculaFacade, 
-//            EnturmacaoFacade $enturmacaoFacade) {
-//          $this->turmaFacade = $turmaFacade;
-//          $this->matriculaFacade = $matriculaFacade;
-//          $this->enturmacaoFacade = $enturmacaoFacade;
-//      }
-//
-//      function getTurmaFacade() {
-//          return $this->turmaFacade;
-//      }
-//
-//      function getMatriculaFacade() {
-//          return $this->matriculaFacade;
-//      }
-//
-//      function getEnturmacaoFacade() {
-//          return $this->enturmacaoFacade;
-//      }
-    
+    private $turmaFacade;
+    private $matriculaFacade;
+    private $enturmacaoFacade;
+      
+    function __construct(TurmaFacade $turmaFacade, MatriculaFacade $matriculaFacade, 
+            EnturmacaoFacade $enturmacaoFacade) {
+        $this->turmaFacade = $turmaFacade;
+        $this->matriculaFacade = $matriculaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
+
     function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
+        return $this->turmaFacade;
     }
-    
+
     function getMatriculaFacade() {
-        return $this->get('facade.matricula.matriculas');
+        return $this->matriculaFacade;
     }
-    
+
     function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
+        return $this->enturmacaoFacade;
     }
     
     /**

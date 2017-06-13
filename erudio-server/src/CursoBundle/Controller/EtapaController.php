@@ -29,13 +29,13 @@
 namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Etapa;
@@ -113,9 +113,9 @@ class EtapaController extends AbstractEntityController {
             ['unidadeEnsino' => $unidadeEnsino, 'curso' => $curso, 'encerrado' => false]
         ));
         $resultados = array_unique($turmas->map(function($t) { return $t->getEtapa(); })->toArray());
-        $view = View::create(array_values($resultados), Codes::HTTP_OK);
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
+        $view = View::create(array_values($resultados), Response::HTTP_OK);
+        $view->getContext()->setMaxDepth(3);
+        $view->getContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
         return $this->handleView($view);
     }
     
