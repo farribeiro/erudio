@@ -26,57 +26,23 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace ReportBundle\Controller;
+namespace VinculoBundle\Event;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Ps\PdfBundle\Annotation\Pdf;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\MatriculaFacade;
+use VinculoBundle\Entity\Vinculo;
 
-class MatriculaReportController extends Controller {
+class VinculoEvent {
     
-    private $matriculaFacade;
+    const VINCULO_CRIADO = 'event.vinculo.vinculo_criado';
+    const VINCULO_REMOVIDO = 'event.vinculo.vinculo_removido';
     
-    function __construct(MatriculaFacade $matriculaFacade) {
-        $this->matriculaFacade = $matriculaFacade;
+    private $vinculo;
+    
+    function __construct(Vinculo $vinculo) {
+        $this->vinculo = $vinculo;
     }
 
-    function getMatriculaFacade() {
-        return $this->matriculaFacade;
-    }
-    
-    /**
-    * @ApiDoc(
-    *   resource = true,
-    *   section = "Módulo Relatórios",
-    *   description = "Atestado de Matrícula",
-    *   statusCodes = {
-    *       200 = "Documento PDF"
-    *   }
-    * )
-    * 
-    * @Route("atestados/matricula", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function atestadoAction(Request $request) {
-        try {
-           $matricula = $this->getMatriculaFacade()->find($request->query->getInt('matricula'));
-           $enturmacoes = $matricula->getEnturmacoesAtivas();
-           $etapa = count($enturmacoes) 
-                   ? $enturmacoes->first()->getTurma()->getEtapa()->getNomeExibicao() 
-                   : 'Não Enturmado';
-            return $this->render('reports/atestado/matricula.pdf.twig', [
-                'instituicao' => $matricula->getUnidadeEnsino(),
-                'matricula' => $matricula,
-                'etapa' => $etapa
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
-        }
+    function getVinculo() {
+        return $this->vinculo;
     }
     
 }

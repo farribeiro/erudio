@@ -26,57 +26,23 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace ReportBundle\Controller;
+namespace VinculoBundle\Event;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Ps\PdfBundle\Annotation\Pdf;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\MatriculaFacade;
+use VinculoBundle\Entity\Alocacao;
 
-class MatriculaReportController extends Controller {
+class AlocacaoEvent {
     
-    private $matriculaFacade;
+    const ALOCACAO_CRIADA = 'event.vinculo.alocacao_criada';
+    const ALOCACAO_REMOVIDA = 'event.vinculo.alocacao_removida';
     
-    function __construct(MatriculaFacade $matriculaFacade) {
-        $this->matriculaFacade = $matriculaFacade;
-    }
-
-    function getMatriculaFacade() {
-        return $this->matriculaFacade;
+    private $alocacao;
+    
+    function __construct(Alocacao $alocacao) {
+        $this->alocacao = $alocacao;
     }
     
-    /**
-    * @ApiDoc(
-    *   resource = true,
-    *   section = "Módulo Relatórios",
-    *   description = "Atestado de Matrícula",
-    *   statusCodes = {
-    *       200 = "Documento PDF"
-    *   }
-    * )
-    * 
-    * @Route("atestados/matricula", defaults={ "_format" = "pdf" })
-    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
-    */
-    function atestadoAction(Request $request) {
-        try {
-           $matricula = $this->getMatriculaFacade()->find($request->query->getInt('matricula'));
-           $enturmacoes = $matricula->getEnturmacoesAtivas();
-           $etapa = count($enturmacoes) 
-                   ? $enturmacoes->first()->getTurma()->getEtapa()->getNomeExibicao() 
-                   : 'Não Enturmado';
-            return $this->render('reports/atestado/matricula.pdf.twig', [
-                'instituicao' => $matricula->getUnidadeEnsino(),
-                'matricula' => $matricula,
-                'etapa' => $etapa
-            ]);
-        } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
-        }
+    function getAlocacao() {
+        return $this->alocacao;
     }
     
 }

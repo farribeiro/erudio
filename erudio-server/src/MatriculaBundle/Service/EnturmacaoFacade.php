@@ -158,6 +158,8 @@ class EnturmacaoFacade extends AbstractFacade {
     protected function afterRemove($enturmacao) {
         if ((new \DateTime())->diff($enturmacao->getDataCadastro())->days < 1) {
             $this->excluirDisciplinas($enturmacao);
+        } else {
+            $this->desvincularDisciplinas($enturmacao);
         }
         $enturmacao->getMatricula()->resetarEtapa();
         $this->orm->getManager()->flush();

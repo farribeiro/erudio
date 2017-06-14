@@ -33,27 +33,47 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
+use CursoBundle\Service\TurmaFacade;
+use CursoBundle\Service\DisciplinaOfertadaFacade;
+use CalendarioBundle\Service\AulaFacade;
+use AvaliacaoBundle\Service\HabilidadeFacade;
+use AvaliacaoBundle\Service\ConceitoFacade;
 
 class NotasReportController extends Controller {
     
-    function getAulaFacade() {
-        return $this->get('facade.calendario.aulas');
-    }
+    private $turmaFacade;
+    private $disciplinaOfertadaFacade;
+    private $aulaFacade;
+    private $habilidadeFacade;
+    private $conceitoFacade;
     
-    function getDisciplinaOfertadaFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
+    function __construct(TurmaFacade $turmaFacade, DisciplinaOfertadaFacade $disciplinaOfertadaFacade, 
+            AulaFacade $aulaFacade, HabilidadeFacade $habilidadeFacade, ConceitoFacade $conceitoFacade) {
+        $this->turmaFacade = $turmaFacade;
+        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
+        $this->aulaFacade = $aulaFacade;
+        $this->habilidadeFacade = $habilidadeFacade;
+        $this->conceitoFacade = $conceitoFacade;
     }
     
     function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
+        return $this->turmaFacade;
+    }
+
+    function getDisciplinaOfertadaFacade() {
+        return $this->disciplinaOfertadaFacade;
+    }
+
+    function getAulaFacade() {
+        return $this->aulaFacade;
     }
     
     function getHabilidadeFacade() {
-        return $this->get('facade.avaliacao.habilidades');
+        return $this->habilidadeFacade;
     }
-    
+
     function getConceitoFacade() {
-        return $this->get('facade.avaliacao.conceitos');
+        return $this->conceitoFacade;
     }
     
     /**

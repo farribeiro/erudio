@@ -40,39 +40,27 @@ use MatriculaBundle\Service\EnturmacaoFacade;
 
 class AlunoReportController extends Controller {
     
-//    private $cursoFacade;
-//    private $cursoOfertadoFacade;
-//    private $enturmacaoFacade;
-//    
-//    function __construct(CursoFacade $cursoFacade, CursoOfertadoFacade $cursoOfertadoFacade, 
-//            EnturmacaoFacade $enturmacaoFacade) {
-//        $this->cursoFacade = $cursoFacade;
-//        $this->cursoOfertadoFacade = $cursoOfertadoFacade;
-//        $this->enturmacaoFacade = $enturmacaoFacade;
-//    }
-//    
-//    function getCursoFacade() {
-//        return $this->cursoFacade;
-//    }
-//
-//    function getCursoOfertadoFacade() {
-//        return $this->cursoOfertadoFacade;
-//    }
-//
-//    function getEnturmacaoFacade() {
-//        return $this->enturmacaoFacade;
-//    }
+    private $cursoFacade;
+    private $cursoOfertadoFacade;
+    private $enturmacaoFacade;
+    
+    function __construct(CursoFacade $cursoFacade, CursoOfertadoFacade $cursoOfertadoFacade, 
+            EnturmacaoFacade $enturmacaoFacade) {
+        $this->cursoFacade = $cursoFacade;
+        $this->cursoOfertadoFacade = $cursoOfertadoFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
     
     function getCursoFacade() {
-        return $this->get('facade.curso.cursos');
+        return $this->cursoFacade;
     }
-    
+
     function getCursoOfertadoFacade() {
-        return $this->get('facade.curso.cursos_ofertados');
+        return $this->cursoOfertadoFacade;
     }
-    
+
     function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
+        return $this->enturmacaoFacade;
     }
     
     /**

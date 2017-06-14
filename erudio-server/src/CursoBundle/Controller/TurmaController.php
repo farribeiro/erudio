@@ -29,11 +29,11 @@
 namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Turma;
@@ -112,11 +112,11 @@ class TurmaController extends AbstractEntityController {
         try {
             $turma = $this->getFacade()->loadEntity($id);
             $this->getFacade()->removerAgrupamento($turma);
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
-            $view = View::create(null, Codes::HTTP_NOT_FOUND);
+            $view = View::create(null, Response::HTTP_NOT_FOUND);
         } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_INTERNAL_SERVER_ERROR);
+            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);
     } 

@@ -48,7 +48,7 @@ trait CalculosMedia {
         $cargaHoraria = $disciplinaCursada->getDisciplina()->getCargaHoraria();
         $duracaoAula = $disciplinaCursada->getEnturmacao()->getTurma()
                 ->getQuadroHorario()->getModelo()->getDuracaoAula();
-        $numeroAulas = floor($cargaHoraria / $duracaoAula);
+        $numeroAulas = floor($cargaHoraria / ($duracaoAula / 60));
         return 100 - ($somaFaltas * 100) / $numeroAulas;
     }
     
