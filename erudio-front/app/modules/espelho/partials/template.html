@@ -1,0 +1,167 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- CSS DO MODULO -->
+<link rel="stylesheet" type="text/css" href="{{ cssUrl }}/app/modules/relatorios/assets/css/relatorio.css"/>
+
+<div data-ng-show="progresso" class="progress"><div class="indeterminate"></div></div>
+<div data-ng-show="progresso" class="cortinaProgresso"></div>
+
+<div id="listaRelatorios" style="position: relative;" >
+    
+    <!-- BANNER --> 
+    <div class="row" style="height: 150px;">
+        <div class="col s12 relatorio-banner"></div>
+        <div class="col s12 gradient relative" style="height: 150px !important;">
+            <div class='absolute title-module' style='bottom: 10px; color: #fafafa; font-size: 2.5rem;'></div>
+            <i data-ng-show="lista === true" class="material-icons absolute" data-ng-click="ajuda()" style="bottom: 10px; right: 10px; color: #fafafa; cursor: pointer;">info_outline</i>
+        </div>
+    </div>
+    
+    <div class="row" style="margin-top: 15px;">
+        <div class="col s12 m4 l4"><p><input name="tipo" data-ng-click="ativo='nominal'; resetDropdown();" class="with-gap" type="radio" checked id="tipoNominal" /><label for="tipoNominal">Turma</label></p></div>
+        <div class="col s12 m4 l4"><p><input name="tipo" data-ng-click="ativo='instituicao'; resetDropdown(); buscarUnidades();" class="with-gap" type="radio" id="tipoInstituicao" /><label for="tipoInstituicao">Período</label></p></div>
+    </div>
+    
+    <div class="row card relative" style="margin-top: 15px; overflow-y: auto; height: {{height}}px !important;">
+        
+        <div data-ng-if="ativo === 'nominal'" class="row nominal" style="padding-top: 15px;">
+            <div class="input-field col s12 m6 l6" data-ng-hide="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                    <option selected></option>
+                    <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Unidade de Ensino*</label>
+            </div>
+            <div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
+                <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+            </div>
+            <div class="input-field col s12 m12 l6">
+                <i class="material-icons prefix">school</i>
+                <select id="curso" data-ng-change="buscarEtapas(turmaBusca.curso.id)" data-ng-model="turmaBusca.curso.id" required>
+                    <option selected></option> 
+                    <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
+                </select>
+                <label for="curso">Curso</label>
+            </div>                            
+            <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                <i class="material-icons prefix">layers</i>
+                <select id="etapa" data-ng-model="turmaBusca.etapa.id" data-ng-change="selecionarEtapa(turmaBusca.etapa.id)" data-ng-disabled="!etapas.length">
+                    <option selected></option> 
+                    <option data-ng-selected="etapas.length === 1" value="{{ etapa.id }}" data-ng-repeat="etapa in etapas | orderBy: 'nome'">{{ etapa.nomeExibicao }}</option>
+                </select>
+                <label for="etapa">Etapa</label>
+            </div>
+            <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                <i class="material-icons prefix">chrome_reader_mode</i>
+                <select id="turma" data-ng-change="selecionarTurma(turmaBusca.turma.id)" data-ng-model="turmaBusca.turma.id" data-ng-disabled="!turmas.length">
+                    <option selected></option> 
+                    <option data-ng-selected="turmas.length === 1" value="{{ turma.id }}" data-ng-repeat="turma in turmas | orderBy: 'nome'">{{ turma.nomeCompleto }}</option>
+                </select>
+                <label for="turma">Turma</label>
+            </div>
+        </div>
+        <div data-ng-if="ativo === 'nominal'" class="col s12 right-align save" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlRelatorios}}/espelhos?turma={{turmaBusca.turma.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
+        
+        <div data-ng-if="ativo === 'instituicao'" class="row instituicao" style="padding-top: 15px;">
+            <div style="background: #fafafa; padding: 0; padding-top: 10px;" class="col s12">
+                <div class="input-field col s12 m6 l6" data-ng-hide="isAdmin">
+                    <i class="material-icons prefix">account_balance</i>
+                    <select class="ng-valid initialized" id="unidadeNota" data-ng-model="unidade.id" required>
+                        <option selected></option>
+                        <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                    </select>
+                    <label for="unidadeNota">Unidade de Ensino*</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                    <i class="material-icons prefix">account_balance</i>
+                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                    <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBuscaNotas">
+                    <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+                </div>
+                <div class="input-field col s12 m12 l6">
+                    <i class="material-icons prefix">school</i>
+                    <select id="cursoNota" data-ng-change="buscarEtapas(turmaBusca.curso.id)" data-ng-model="turmaBusca.curso.id" required>
+                        <option selected></option> 
+                        <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
+                    </select>
+                    <label for="cursoNota">Curso</label>
+                </div>                            
+                <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                    <i class="material-icons prefix">layers</i>
+                    <select id="etapaNota" data-ng-model="turmaBusca.etapa.id" data-ng-change="selecionarEtapa(turmaBusca.etapa.id)" data-ng-disabled="!etapas.length">
+                        <option selected></option> 
+                        <option data-ng-selected="etapas.length === 1" value="{{ etapa.id }}" data-ng-repeat="etapa in etapas | orderBy: 'nome'">{{ etapa.nomeExibicao }}</option>
+                    </select>
+                    <label for="etapaNota">Etapa</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                    <i class="material-icons prefix">chrome_reader_mode</i>
+                    <select id="turmaNota" data-ng-change="selecionarTurma(turmaBusca.turma.id)" data-ng-model="turmaBusca.turma.id" data-ng-disabled="!turmas.length">
+                        <option selected></option> 
+                        <option data-ng-selected="turmas.length === 1" value="{{ turma.id }}" data-ng-repeat="turma in turmas | orderBy: 'nome'">{{ turma.nomeCompleto }}</option>
+                    </select>
+                    <label for="turmaNota">Turma</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                    <i class="material-icons prefix">iso</i>
+                    <select id="mediaNota" data-ng-model="turmaBusca.media.id" data-ng-disabled="!medias.length">
+                        <option selected></option> 
+                        <option data-ng-selected="medias.length === 1" value="{{ media.id }}" data-ng-repeat="media in medias | orderBy: 'nome'">{{ media.nome }}</option>
+                    </select>
+                    <label for="mediaNota">Média</label>
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="ativo === 'instituicao'" class="col s12 right-align save" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlRelatorios}}/espelho-media?turma={{turmaBusca.turma.id}}&media={{turmaBusca.media.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>        
+    </div>
+    
+    <ul id='dropUnidadesTurmaBusca' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades"><a class="drop-item-busca" data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+</ul>
+
+<ul id='dropUnidadesTurmaBuscaNotas' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidadesNota"><a class="drop-item-busca" data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+</ul>
+
+<ul id='dropUnidadesTurmaForm' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+</ul>
+
+    
+    <modal-relatorio></modal-relatorio>
+</div>

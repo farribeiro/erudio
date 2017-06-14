@@ -29,7 +29,6 @@
 namespace AvaliacaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -38,35 +37,26 @@ use JMS\Serializer\Annotation as JMS;
 */
 class AvaliacaoQualitativa extends Avaliacao {
     
+    const TIPO_DIAGNOSTICO = 'DIAGNOSTICO';
+    const TIPO_PROCESSUAL = 'PROCESSUAL';
+    const TIPO_FINAL = 'FINAL';
+    
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(name = "regime_fechamento", type = "boolean", nullable = false) 
+    * @ORM\Column
     */
-    private $fechamentoMedia = false;
+    private $tipo;
+    
+    function getTipo() {
+        return $this->tipo;
+    }
     
     /**
-    * @ORM\ManyToMany(targetEntity="Habilidade")
-    * @ORM\JoinTable(name="edu_avaliacao_qualitativa_habilidade",
-    *      joinColumns={@ORM\JoinColumn(name="avaliacao_qualitativa_id", referencedColumnName="id")},
-    *      inverseJoinColumns={@ORM\JoinColumn(name="habilidade_id", referencedColumnName="id")}
-    *   )
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
     */
-    private $habilidades;
-    
-    public function __construct() {
-        $this->habilidades = new ArrayCollection();
-    }
-    
     function getFechamentoMedia() {
-        return $this->fechamentoMedia;
-    }
-    
-    function getHabilidades() {
-        return $this->habilidades;
-    }
-
-    function setHabilidades(ArrayCollection $habilidades) {
-        $this->habilidades = $habilidades;
+        return $this->tipo === self::TIPO_FINAL;
     }
     
 }

@@ -30,88 +30,70 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\AulaObservacao;
 
 /**
  * @FOS\RouteResource("aula-observacoes")
  */
-class AulaObservacaoController extends AbstractEntityResource {
+class AulaObservacaoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:AulaObservacao';
-    }
-    
-    function queryAlias() {
-        return 'aO';
-    }
-    
-    function parameterMap() {
-        return array (
-            'observacao' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('aO.observacao LIKE :observacao')->setParameter('observacao', '%' . $value . '%');
-            },
-            'aula' => function(QueryBuilder $qb, $value) {
-                $qb->join('aO.aula', 'aula')
-                   ->andWhere('aula.id = :aula')->setParameter('aula', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.calendario.observacoes_aula');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Get("aula-observacoes/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @FOS\QueryParam(name = "observacao", nullable = true) 
-        *   @FOS\QueryParam(name = "aula", requirements="\d+", nullable = false) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *  @ApiDoc()
+    * 
+    *  @FOS\Get("aula-observacoes")
+    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *  @FOS\QueryParam(name = "aula", requirements="\d+", nullable = true)
+     * @FOS\QueryParam(name = "observacao", nullable = true)
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) { 
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        *  @ApiDoc()
-        * '
-        *  @FOS\Post("aula-observacoes")
-        *  @ParamConverter("aulaObservacao", converter="fos_rest.request_body")
-        */
-    function postAction(Request $request, AulaObservacao $aulaObservacao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($aulaObservacao);
+    * @ApiDoc()
+    * 
+    * @FOS\Post("aula-observacoes")
+    * @ParamConverter("observacao", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, AulaObservacao $observacao, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $observacao, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Put("aula-observacoes/{id}")
-        *  @ParamConverter("aulaObservacao", converter="fos_rest.request_body")
-        */
-    function putAction(Request $request, $id, AulaObservacao $aulaObservacoes, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $aulaObservacoes);
+    * @ApiDoc()
+    * 
+    * @FOS\Put("aula-observacoes/{id}")
+    * @ParamConverter("observacao", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, AulaObservacao $observacao, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $observacao, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("aula-observacoes/{id}") 
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

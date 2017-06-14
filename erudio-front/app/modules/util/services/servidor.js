@@ -191,6 +191,23 @@
             }
             return result;
         };
+        
+        this.customPut = function (objeto, endereco, label) {
+            resultado = $http({
+                method: "PUT",
+                url: Restangular.configuration.baseUrl + "/" + endereco,
+                data: objeto,
+                headers: {'X-WSSE': this.criarHeader()}
+            });
+            resultado.then(function(data){
+                if (data.status === 200 || data.status === 204) {
+                    if (label) { Toast.show(label, 'salvo(a)', data.status); }
+                } else {
+                    resultado = false;
+                }
+            }, function(error) { Toast.show('','', error.status); });
+            return resultado;
+        };
 
         this.salvarLote = function(objeto, endereco, label) {
             resultado = $http({
@@ -200,7 +217,7 @@
                 headers: {'X-WSSE': this.criarHeader()}
             });
             resultado.then(function(data){
-                if (data.status === 200) {
+                if (data.status === 200 || data.status === 204) {
                     if (label) { Toast.show(label, 'salvo(a)', data.status); }
                 } else {
                     resultado = false;

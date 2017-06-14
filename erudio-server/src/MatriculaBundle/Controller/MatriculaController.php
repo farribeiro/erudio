@@ -64,7 +64,8 @@ class MatriculaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "aluno_nome", nullable = true) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "aluno", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {

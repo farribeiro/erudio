@@ -36,14 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use VinculoBundle\Entity\Cargo;
+use VinculoBundle\Service\CargoFacade;
 
 /**
- * @FOS\RouteResource("cargos")
+ * @FOS\NamePrefix("cargos")
  */
 class CargoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.vinculo.cargos');
+    private $cargoFacade;
+    
+    function __construct(CargoFacade $cargoFacade) {
+        $this->cargoFacade = $cargoFacade;
+    }
+    
+    function getFacade() {
+        return $this->cargoFacade;
     }
     
     /**

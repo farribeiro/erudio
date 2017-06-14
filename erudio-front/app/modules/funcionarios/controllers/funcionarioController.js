@@ -43,7 +43,7 @@
         $templateCache.removeAll();
         
         $scope.escrita = Servidor.verificaEscrita('FUNCIONARIO');         
-        $scope.isAdmin = !Servidor.verificaAdmin();
+        $scope.isAdmin = Servidor.verificaAdmin();
         $scope.vinculos = [];
         $scope.instituicoes = [];
         $scope.unidades = [];
@@ -54,7 +54,8 @@
         $scope.totalUnidadesEscolares = 0;
         $scope.FuncionarioService = FuncionarioService;
         $scope.PessoaService = PessoaService;        
-        $scope.unidadeId = parseInt(sessionStorage.getItem('unidade'));
+        var unidadeEnsino = JSON.parse(sessionStorage.getItem('unidade'));
+        $scope.unidade = {id: unidadeEnsino.id}; $scope.unidadeId = unidadeEnsino.id;
         $scope.nomeRemover = '';
         $scope.nomeUnidade = '';
 
@@ -77,7 +78,7 @@
         // Estruturas
         $scope.vinculo = {
             'codigo': null,
-            'status': '',
+            'status': null,
             'tipoContrato': '', // EFETIVO ou TEMPORARIO
             'cargaHoraria': '', // MAXIMO 40Hrs
             'funcionario': {}, // PESSOA
@@ -93,7 +94,7 @@
 
         $scope.vinculoBusca = {
             'funcionario': {'nome': null, 'cpfCnpj': null},
-            'status': '',
+            'status': null,
             'cargo': {'id':null, 'nome': null},
             'codigo': null
         };
@@ -197,7 +198,7 @@
         // Realiza a busca de unidades
         $scope.selecionarUnidade = function(unidade) {
             $scope.alocacao.instituicao = unidade;
-            $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome;
+            if (unidade.tipo === undefined) { $scope.nomeUnidade = unidade.nome; } else { $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome; }
         };
 
         $scope.alterarPagina = function (pagina) {
@@ -321,9 +322,16 @@
         
         $scope.buscarUnidades = function() {
             if($scope.nomeUnidade !== undefined && $scope.nomeUnidade.length > 4) {
+                $scope.unidades = [];
                 var promise = Servidor.buscar('unidades-ensino', {'nome': $scope.nomeUnidade});
                 promise.then(function(response) {
                     $scope.unidades = response.data;
+                    var promiseInstituicoes = Servidor.buscar('instituicoes', {'nome': $scope.nomeUnidade});
+                    promiseInstituicoes.then(function(response){
+                        if (response.data.length > 0) {
+                            for (var i=0; i<response.data.length; i++) { $scope.unidades.push(response.data[i]); }
+                        }
+                    });
                 });
             } else {
                 $scope.unidades = [];
@@ -380,8 +388,8 @@
                             }
 
                         }
-                        $scope.fecharFormulario();
-                        $scope.limpaVinculo();
+                        //$scope.fecharFormulario();
+                        //$scope.limpaVinculo();
                     });
                     /*var promise = Servidor.buscar('vinculos', {funcionario: vinculo.funcionario.id, status:'ATIVO'});
                     promise.then(function(response) {
@@ -421,8 +429,12 @@
                 promise.then(function(response){
                     $scope.vinculo = response.data;
                     if(!$scope.isAdmin) {
-                        $scope.alocacao.instituicao = $scope.unidade;
-                        $scope.nomeUnidade = $scope.unidade.nomeCompleto;
+                        //$scope.alocacao.instituicao = $scope.vinculo.instituicao;
+                        var promise = Servidor.buscarUm('unidades-ensino',$scope.unidade.id);
+                        promise.then(function(response){
+                            $scope.alocacao.instituicao = response.data;
+                            ($scope.alocacao.instituicao.nomeCompleto === undefined)? $scope.nomeUnidade = $scope.alocacao.instituicao.nome : $scope.nomeUnidade = $scope.alocacao.instituicao.nomeCompleto ;
+                        });
                     }
                     if (vinculo.id) {
                         var promise = Servidor.buscar('alocacoes', {'vinculo': $scope.vinculo.id});
@@ -468,7 +480,7 @@
                         alignment: 'left'
                     }
                 );
-                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); console.log($scope.vinculo); }, 250);
+                $timeout(function() { $('ul.tabs').tabs('select_tab', 'tabVinculo'); }, 250);
             }, 500);
         };
 

@@ -102,7 +102,7 @@
                             <i class="material-icons prefix">account_balance</i>
                             <select id="unidade"  data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
                                 <option disabled selected></option>
-                                <option value="{{ unidade.id}}" data-ng-selected="verificaUnidade(unidade.id)" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
+                                <option value="{{ unidade.id }}" data-ng-selected="verificaUnidade(unidade.id)" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
                             </select>
                             <label for="unidade">Unidade de Ensino*</label>
                         </div>
@@ -113,18 +113,18 @@
                             <label for="unidadeTurmaAutoCompleteForm">Unidade de Ensino*</label>
                         </div>
                     </div>
-                    <div class="row">                    
+                    <div class="row">
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">school</i>
-                            <select id="curso" data-ng-model="turma.etapa.curso.id" data-ng-change="buscarEtapas(turma.etapa.curso.id)" data-ng-disabled="turma.id" required>
+                            <select id="cursoE" data-ng-model="turma.etapa.curso.id" data-ng-change="buscarEtapas(turma.etapa.curso.id)" data-ng-disabled="turma.id" required>
                                 <option disabled selected></option>
-                                <option value="{{ curso.id}}" data-ng-selected="verificaCurso(curso.id)" data-ng-repeat="curso in cursos">{{ curso.nome | uppercase }}</option>
+                                <option value="{{ curso.curso.id }}" data-ng-selected="verificaCurso(curso.curso.id)" data-ng-repeat="curso in cursos">{{ curso.curso.nome | uppercase }}</option>
                             </select>
-                            <label for="curso">Curso*</label>
+                            <label for="cursoE">Curso*</label>
                         </div>
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">view_week</i>
-                            <select id="etapaForm" data-ng-model="turma.etapa.id" data-ng-disabled="turma.id"  required>
+                            <select id="etapaForm" data-ng-model="turma.etapa.id" data-ng-change="buscaDisciplinaOfertada(turma.etapa.id)" data-ng-disabled="turma.id"  required>
                                 <option value="" disabled selected></option>
                                 <option value="{{ etapa.id }}" data-ng-selected="verificaEtapa(etapa.id)" data-ng-repeat="etapa in etapas">{{ etapa.nomeExibicao | uppercase }}</option>
                             </select>
@@ -159,6 +159,12 @@
                             <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
                         </div>
                     </div>
+                    <div class="row" data-ng-hide="integral">
+                        <div class="col s12" style="margin-bottom: 10px;">
+                            <div class="subtitulo-typo" style="font-size: 25px;">Disciplinas Ofertadas:</div>
+                            <div class="chip d{{ disciplina.id }}" id="{{ disciplina.id }}" style="cursor: pointer; width: initial; margin-right: 5px;" data-ng-repeat="disciplina in disciplinas" data-ng-click="situacaoDisciplina(disciplina)">{{ disciplina.nomeExibicao }}</div>
+                        </div>
+                    </div>
                     <div data-ng-show="verificarEscrita()" class="row end-card">
                         <div class="col s12 right-align">
                             <a data-ng-click="finalizar(etapa.id)" style="margin-top: 15px; margin-bottom: 15px;" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
@@ -171,6 +177,7 @@
                 <turma-frequencia data-ng-show="fazerChamada"></turma-frequencia>
                 <professores-turma data-ng-show="mostraProfessores"></professores-turma> 
                 <notas-turma data-ng-show="alunoNotas" ></notas-turma>
+                <fechar-turma data-ng-show="fechaTurma"></fechar-turma>
             </div>
             <enturmar-alunos data-ng-show="enturmandoAlunos"></enturmar-alunos>
             <oferecer-disciplinas data-ng-show="oferecendoDisciplina"></oferecer-disciplinas>

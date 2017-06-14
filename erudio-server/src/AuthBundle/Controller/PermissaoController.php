@@ -36,14 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Permissao;
+use AuthBundle\Service\PermissaoFacade;
 
 /**
- * @FOS\RouteResource("permissoes")
+ * @FOS\NamePrefix("permissoes")
  */
 class PermissaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.permissoes');
+    private $permissaoFacade;
+    
+    function __construct(PermissaoFacade $permissaoFacade) {
+        $this->permissaoFacade = $permissaoFacade;
+    }
+    
+    function getFacade() {
+        return $this->permissaoFacade;
     }
     
     /**

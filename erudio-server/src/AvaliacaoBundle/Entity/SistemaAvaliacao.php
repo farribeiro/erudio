@@ -73,9 +73,27 @@ class SistemaAvaliacao extends AbstractEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @ORM\Column(name = "nota_aprovacao", nullable = false) 
+    */
+    private $notaAprovacao;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
     * @ORM\Column(type = "boolean", nullable = false) 
     */
     private $exame;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(name = "peso_exame") 
+    */
+    private $pesoExame = 0;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(name = "nota_aprovacao_exame") 
+    */
+    private $notaAprovacaoExame;
     
     function getNome() {
         return $this->nome;
@@ -99,6 +117,38 @@ class SistemaAvaliacao extends AbstractEntity {
     
     function getRegime() {
         return $this->regime;
+    }
+    
+    function getNotaAprovacao() {
+        return $this->notaAprovacao;
+    }
+
+    function setNotaAprovacao($notaAprovacao) {
+        $this->notaAprovacao = $notaAprovacao;
+    }
+    
+    function getNotaAprovacaoExame() {
+        return $this->notaAprovacaoExame;
+    }
+
+    function setNotaAprovacaoExame($notaAprovacaoExame) {
+        $this->notaAprovacaoExame = $notaAprovacaoExame;
+    }
+    
+    function getPesoExame() {
+        return $this->pesoExame;
+    }
+
+    function setPesoExame($pesoExame) {
+        $this->pesoExame = $pesoExame;
+    }
+    
+    function isQualitativo() {
+        return $this->tipo == self::TIPO_QUALITATIVO;
+    }
+    
+    function isQuantitativo() {
+        return $this->tipo == self::TIPO_QUANTITATIVO;
     }
     
 }

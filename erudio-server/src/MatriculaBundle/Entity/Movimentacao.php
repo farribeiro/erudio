@@ -41,7 +41,8 @@ use CursoBundle\Entity\Turma;
 * @ORM\DiscriminatorMap({
 *   "MOVIMENTACAO_TURMA" = "MovimentacaoTurma", 
 *   "TRANSFERENCIA" = "Transferencia", 
-*   "DESLIGAMENTO" = "Desligamento"
+*   "DESLIGAMENTO" = "Desligamento",
+*   "RECLASSIFICACAO" = "Reclassificacao" 
 * })
 */
 abstract class Movimentacao extends AbstractEditableEntity {
@@ -52,7 +53,10 @@ abstract class Movimentacao extends AbstractEditableEntity {
     */
     private $matricula;
     
-     /** @ORM\Column() */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column
+    */
     private $justificativa;
     
     function getMatricula() {

@@ -48,19 +48,42 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column(type = "integer")
     */
     private $numero;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float") 
     * @ORM\Column
     */
     private $valor;
     
     /**  
-    *  @JMS\Groups({"LIST"}) 
-    *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}) 
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column
+    */
+    private $peso;
+    
+    /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\Type("integer")
+     * @ORM\Column
+     */
+    private $faltas = 0;
+    
+    /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\Type("float")
+     * @ORM\Column 
+     */
+    private $frequencia = 100;
+    
+    /**  
+    *  @JMS\Groups({"LIST"})
+    *  @JMS\MaxDepth(depth = 2)
+    *  @ORM\ManyToOne(targetEntity = "DisciplinaCursada", cascade = {"all"}, inversedBy="medias") 
     *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
     */
     private $disciplinaCursada;
@@ -71,22 +94,47 @@ class Media extends AbstractEditableEntity {
     */
     private $notas;
     
-    /** 
-    * @JMS\Type("boolean")
-    */
-    private $calculoAutomatico;
-    
-    function __construct(DisciplinaCursada $disciplinaCursada, $numero) {
+    function __construct(DisciplinaCursada $disciplinaCursada, $numero, $peso = 1, $nome = null) {
         $this->disciplinaCursada = $disciplinaCursada;
         $this->numero = $numero;
-        $this->nome = 'M' . $numero;
-        $this->init();
+        $this->nome = is_null($nome) ? 'M' . $numero : $nome;
+        $this->peso = $peso;
+        $this->notas = new ArrayCollection();
+    }
+    
+    /**  
+    * @JMS\VirtualProperty 
+    * @JMS\MaxDepth(depth = 3)
+    */
+    function getNotas() {
+        return $this->notas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );    
+    }
+    
+    /**
+     * Em médias de um sistema qualitativo, retorna as habilidades avaliadas na média
+     * com seus respectivos conceitos.
+     * 
+     * @return Traversable habilidades avaliadas
+     */
+    function getHabilidadesAvaliadas() {
+        $notasFechamento = $this->notas->filter(function($n) {
+           return $n instanceof NotaQualitativa && $n->getAvaliacao()->getFechamentoMedia();
+        });
+        return $notasFechamento->count()
+                ? $notasFechamento->first()->getHabilidadesAvaliadas()
+                : [];
     }
     
     function removeNota($nota) {
         if($this->notas->contains($nota)) {  
             $this->notas->removeElement($nota);
         }        
+    }
+    
+    function resetar() {
+        $this->valor = 0;
     }
     
     function getNome() {
@@ -100,6 +148,14 @@ class Media extends AbstractEditableEntity {
     function getValor() {
         return $this->valor;
     }
+    
+    function getFaltas() {
+        return $this->faltas;
+    }
+
+    function getFrequencia() {
+        return $this->frequencia;
+    }
 
     function getDisciplinaCursada() {
         return $this->disciplinaCursada;
@@ -109,22 +165,16 @@ class Media extends AbstractEditableEntity {
         $this->valor = $valor;
     }
     
-    /**  
-    * @JMS\VirtualProperty 
-    * @JMS\MaxDepth(depth = 3)
-    */
-    function getNotas() {
-        return $this->notas->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        );    
+    function setFaltas($faltas) {
+        $this->faltas = $faltas;
     }
     
-    function getCalculoAutomatico() {
-        return $this->calculoAutomatico;
+    function setFrequencia($frequencia) {
+        $this->frequencia = $frequencia;
+    }     
+    
+    function getPeso() {
+        return $this->peso;
     }
-
-    function setCalculoAutomatico($calculoAutomatico = true) {
-        $this->calculoAutomatico = $calculoAutomatico;
-    }       
     
 }

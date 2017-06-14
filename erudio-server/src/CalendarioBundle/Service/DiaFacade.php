@@ -29,8 +29,8 @@
 namespace CalendarioBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
-use \CoreBundle\ORM\AbstractFacade;
-use \CalendarioBundle\Entity\Calendario;
+use CoreBundle\ORM\AbstractFacade;
+use CalendarioBundle\Entity\Calendario;
 
 class DiaFacade extends AbstractFacade {
     
@@ -46,13 +46,22 @@ class DiaFacade extends AbstractFacade {
         return array (
             'data' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('d.data = :dia')->setParameter('dia', $value);
+            },
+            'mes' => function(QueryBuilder $qb, $value) {
+                $mes = $value < 10 ? '0' . $value : $value;
+                $qb->andWhere('d.data LIKE :mes')
+                   ->setParameter('mes', '%-' . $mes . '-%');
+            },
+            'efetivo' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('d.efetivo = :efetivo')->setParameter('efetivo', $value);
             }
         );
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('d.calendario', 'calendario')
-            ->andWhere('calendario.id = :calendario')->setParameter('calendario', $params['calendario']);
+            ->andWhere('calendario.id = :calendario')->setParameter('calendario', $params['calendario'])
+            ->andWhere('calendario.ativo = true');
     }
 
     protected function afterUpdate($dia) {
@@ -70,4 +79,5 @@ class DiaFacade extends AbstractFacade {
             }                
         }
     }
+    
 }

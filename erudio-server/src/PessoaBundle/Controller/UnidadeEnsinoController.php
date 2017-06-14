@@ -30,144 +30,115 @@ namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\Delete;
-use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\UnidadeEnsino;
 
 /**
- * @RouteResource("unidades-ensino")
+ * @FOS\RouteResource("unidades-ensino")
  */
-class UnidadeEnsinoController extends AbstractEntityResource {
+class UnidadeEnsinoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'PessoaBundle:UnidadeEnsino';
-    }
-    
-    function queryAlias() {
-        return 'u';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('u.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'tipo' => function(QueryBuilder $qb, $value) {
-                $qb->join('u.tipo', 't')->andWhere('t.id LIKE :tipo')->setParameter('tipo', '%' . $value . '%');
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.pessoa.unidades_ensino');
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Busca uma unidade de ensino por seu id",
-        *   parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *   },
-        *   statusCodes = {
-        *       200 = "Retorno do objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        * 
-        * @Get("unidades-ensino/{id}", requirements={"id" = "\d+"}) 
-        */
+    * @ApiDoc(
+    *   section = "Módulo Pessoa",
+    *   description = "Busca uma unidade de ensino por seu id",
+    *   parameters={
+    *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *   },
+    *   statusCodes = {
+    *       200 = "Retorno do objeto",
+    *       404 = "Objeto não encontrado"
+    *   }
+    * )
+    * 
+    * @FOS\Get("unidades-ensino/{id}", requirements={"id" = "\d+"})
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc(
-        *   resource = true,
-        *   section = "Módulo Pessoa",
-        *   description = "Busca de unidades de ensino",
-        *   statusCodes = {
-        *       200 = "Retorno dos resultados da busca"
-        *   }
-        * ) 
-        * 
-        * @Get("unidades-ensino") 
-        * @QueryParam(name = "page", requirements="\d+", default = null) 
-        * @QueryParam(name = "nome", nullable = true) 
-        * @QueryParam(name = "tipo", requirements="\d+", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Pessoa",
+    *   description = "Busca de unidades de ensino",
+    *   statusCodes = {
+    *       200 = "Retorno dos resultados da busca"
+    *   }
+    * ) 
+    * 
+    * @FOS\Get("unidades-ensino") 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "nome", nullable = true) 
+    * @FOS\QueryParam(name = "tipo", requirements="\d+", nullable = true) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Cadastra uma nova unidade de ensino",
-        *   input = "PessoaBundle\Entity\UnidadeEnsino",
-        *   statusCodes = {
-        *       200 = "Objeto criado contendo seu id"
-        *   }
-        * ) 
-        * 
-        * @Post("unidades-ensino")
-        * @ParamConverter("unidade", converter="fos_rest.request_body")
-        */
+    * @ApiDoc(
+    *   section = "Módulo Pessoa",
+    *   description = "Cadastra uma nova unidade de ensino",
+    *   input = "PessoaBundle\Entity\UnidadeEnsino",
+    *   statusCodes = {
+    *       200 = "Objeto criado contendo seu id"
+    *   }
+    * ) 
+    * 
+    * @FOS\Post("unidades-ensino")
+    * @ParamConverter("unidade", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, UnidadeEnsino $unidade, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($unidade);
+        return $this->post($request, $unidade, $errors);
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Atualiza uma unidade de ensino por seu id",
-        *   parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *   },
-        *   statusCodes = {
-        *       200 = "Objeto com atualizações aplicadas",
-        *       403 = "Operação não permitida sobre este objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        * 
-        * @Put("unidades-ensino/{id}")
-        * @ParamConverter("unidade", converter="fos_rest.request_body")
-        */
+    * @ApiDoc(
+    *   section = "Módulo Pessoa",
+    *   description = "Atualiza uma unidade de ensino por seu id",
+    *   parameters={
+    *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *   },
+    *   statusCodes = {
+    *       200 = "Objeto com atualizações aplicadas",
+    *       403 = "Operação não permitida sobre este objeto",
+    *       404 = "Objeto não encontrado"
+    *   }
+    * )
+    * 
+    * @FOS\Put("unidades-ensino/{id}")
+    * @ParamConverter("unidade", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, UnidadeEnsino $unidade, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $unidade);
+        return $this->put($request, $id, $unidade, $errors);
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Exclui uma unidade de ensino por seu id",
-        *   parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *   },
-        *   statusCodes = {
-        *       204 = "Exclusão realizada",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        * 
-        * @Delete("unidades-ensino/{id}")
-        */
+    * @ApiDoc(
+    *   section = "Módulo Pessoa",
+    *   description = "Exclui uma unidade de ensino por seu id",
+    *   parameters={
+    *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *   },
+    *   statusCodes = {
+    *       204 = "Exclusão realizada",
+    *       404 = "Objeto não encontrado"
+    *   }
+    * )
+    * 
+    * @FOS\Delete("unidades-ensino/{id}")
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

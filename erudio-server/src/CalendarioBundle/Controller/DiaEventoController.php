@@ -32,48 +32,43 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\DiaEvento;
-class DiaEventoController extends AbstractEntityResource {
+
+class DiaEventoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:DiaEvento';
+    function getFacade() {
+        return $this->get('facade.calendario.dias_evento');
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        *  @FOS\Get("calendarios/{calendario}/dias/{dia}/eventos/{id}")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("calendarios/{calendario}/dias/{dia}/eventos/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
      /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Get("calendarios/{calendario}/dias/{id}/eventos")
-        */
-    function getByDiaAction(Request $request, $calendario, $id) {
-        $dia = $this->loadEntity($id, 'CalendarioBundle:Dia');
-        if(!$dia) {
-            throw $this->createNotFoundException();
-        }
-        $view = View::create($dia->getEventos(), Codes::HTTP_OK);
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        return $this->handleView($view);
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("calendarios/{calendario}/dias/{dia}/eventos")
+    */
+    function getByDiaAction(Request $request, $dia) {
+        return $this->getList($request, ['dia' => $dia]);
     }
     
     /**
-        *  @ApiDoc()
-        * '
-        *  @FOS\Post("calendarios/{calendario}/dias/{dia}/eventos")
-        *  @ParamConverter("evento", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Post("calendarios/{calendario}/dias/{dia}/eventos")
+    *   @ParamConverter("evento", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, DiaEvento $evento, ConstraintViolationListInterface $errors) {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
@@ -82,11 +77,11 @@ class DiaEventoController extends AbstractEntityResource {
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @FOS\Put("calendarios/{calendario}/dias/{dia}/eventos/{id}")
-        *  @ParamConverter("evento", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Put("calendarios/{calendario}/dias/{dia}/eventos/{id}")
+    *   @ParamConverter("evento", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, DiaEvento $evento, ConstraintViolationListInterface $errors) {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
@@ -95,10 +90,10 @@ class DiaEventoController extends AbstractEntityResource {
     }
     
     /**
-        * @ApiDoc()
-        * 
-        * @FOS\Delete("calendarios/{calendario}/dias/{dia}/eventos/{id}")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("calendarios/{calendario}/dias/{dia}/eventos/{id}")
+    */
     function deleteAction(Request $request, $id) {
         return $this->remove($id);
     }

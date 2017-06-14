@@ -29,39 +29,26 @@
 namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 
 /**
  * @FOS\RouteResource("modalidades-ensino")
  */
-class ModalidadeEnsinoController extends AbstractEntityResource {
+class ModalidadeEnsinoController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CursoBundle:ModalidadeEnsino';
-    }
-    
-    function queryAlias() {
-        return 'me';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('me.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.curso.modalidades_ensino');
     }
     
     /**
     *   @ApiDoc()
-    *  @FOS\Get("modalidades-ensino/{id}")
+    *   @FOS\Get("modalidades-ensino/{id}")
     */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
@@ -71,8 +58,8 @@ class ModalidadeEnsinoController extends AbstractEntityResource {
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)  
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
 
 }

@@ -39,39 +39,61 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Disciplina extends AbstractEditableEntity {
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = false) 
+    */
     private $nome;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(name = "nome_exibicao", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(name = "nome_exibicao", nullable = false) 
+    */
     private $nomeExibicao;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(nullable = true) 
+    */
+    private $sigla;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(name = "carga_horaria", type = "integer", nullable = false) 
+    */
     private $cargaHoraria;
     
     /**
-    *@JMS\Groups({"LIST"})
+    * @JMS\Groups({"LIST"})
     * @ORM\Column(type = "boolean", nullable = false) 
     */
     private $opcional = false;
     
     /**
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(type = "boolean", nullable = false)
+    */
+    private $ofertado = true;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Etapa", inversedBy = "disciplinas") 
     */
     private $etapa;
     
-    /** 
-        * @ORM\ManyToOne(targetEntity = "Curso", inversedBy = "disciplinas") 
-        */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Curso", inversedBy = "disciplinas") 
+    */
     private $curso;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina")
+    * @ORM\JoinColumn(name = "disciplina_agrupamento_id") 
+    */
+    private $agrupamento;
     
     function getNome() {
         return $this->nome;
@@ -81,6 +103,10 @@ class Disciplina extends AbstractEditableEntity {
         return $this->nomeExibicao;
     }
     
+    function getSigla() {
+        return $this->sigla;
+    }
+
     function getCargaHoraria() {
         return $this->cargaHoraria;
     }
@@ -95,6 +121,14 @@ class Disciplina extends AbstractEditableEntity {
 
     function getCurso() {
         return $this->curso;
+    }
+    
+    function getOfertado() {
+        return $this->ofertado;
+    }
+    
+    function getAgrupamento() {
+        return $this->agrupamento;
     }
 
     function setNome($nome) {
@@ -115,6 +149,14 @@ class Disciplina extends AbstractEditableEntity {
 
     function setEtapa(Etapa $etapa) {
         $this->etapa = $etapa;
+    }
+    
+    function setOfertado($ofertado) {
+        $this->ofertado = $ofertado;
+    }
+    
+    function setAgrupamento($agrupamento) {
+        $this->agrupamento = $agrupamento;
     }
     
 }

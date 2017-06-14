@@ -30,107 +30,87 @@ namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\Telefone;
 
 /**
- * @RouteResource("telefones")
+ * @FOS\RouteResource("telefones")
  */
-class TelefoneController extends AbstractEntityResource {
+class TelefoneController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'PessoaBundle:Telefone';
-    }
-    
-    function queryAlias() {
-        return 't';
-    }
-    
-    function parameterMap() {
-        return array (
-            'pessoa' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.pessoa', 'p')->andWhere('p.id = :pessoa')->setParameter('pessoa', $value);
-            },
-            'numero' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.numero LIKE :numero')->setParameter('numero', '%' . $value . '%');
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.pessoa.telefones');
     }
     
     /**
-        * @ApiDoc(
-        *   section = "Módulo Pessoa",
-        *   description = "Busca um telefone por seu id",
-        * parameters={
-        *      {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
-        *  },
-        *   statusCodes = {
-        *       200 = "Retorno do objeto",
-        *       404 = "Objeto não encontrado"
-        *   }
-        * )
-        */
+    *   @ApiDoc(
+    *       section = "Módulo Pessoa",
+    *       description = "Busca um telefone por seu id",
+    *       parameters={
+    *           {"name" = "id", "dataType"="integer", "required"=true, "description"="id do objeto"}
+    *       },
+    *       statusCodes = {
+    *           200 = "Retorno do objeto",
+    *           404 = "Objeto não encontrado"
+    *       }
+    *   )
+    *   
+    *   @FOS\Get("telefones/{id}") 
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        * @ApiDoc(
-        *   resource = true,
-        *   section = "Módulo Pessoa",
-        *   description = "Busca de telefones",
-        *   statusCodes = {
-        *       200 = "Retorno dos resultados da busca"
-        *   }
-        * ) 
-        * 
-        *   @QueryParam(name = "page", requirements="\d+", default = null)
-        *   @QueryParam(name = "pessoa", requirements="\d+", nullable = true) 
-        *   @QueryParam(name = "numero", requirements="\d+", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc(
+    *       resource = true,
+    *       section = "Módulo Pessoa",
+    *       description = "Busca de telefones",
+    *       statusCodes = {
+    *           200 = "Retorno dos resultados da busca"
+    *       }
+    *   ) 
+    * 
+    *   @FOS\Get("telefones") 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    *   @FOS\QueryParam(name = "pessoa", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "numero", requirements="\d+", nullable = true) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-        * @ApiDoc()
-        * '
-        * @Post("telefones")
-        * @ParamConverter("telefone", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Post("telefones")
+    *   @ParamConverter("telefone", converter="fos_rest.request_body")
+    */
     function postAction(Request $request, Telefone $telefone, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($telefone);
+        return $this->post($request, $telefone, $errors);
     }
     
     /**
-        * @ApiDoc()
-        * 
-        * @Put("telefones/{id}")
-        * @ParamConverter("telefone", converter="fos_rest.request_body")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Put("telefones/{id}")
+    *   @ParamConverter("telefone", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, Telefone $telefone, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $telefone);
+        return $this->put($request, $id, $telefone, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("telefones/{id}") 
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

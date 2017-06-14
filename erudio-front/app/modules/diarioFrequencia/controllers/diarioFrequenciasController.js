@@ -26,18 +26,46 @@
 
 (function () {
 
-    var diarioFrequenciasModule = angular.module('diarioFrequenciasModule', ['servidorModule', 'diarioFrequenciasDirectives', 'dateTimeModule']);
-
-    diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime) {
+    var diarioFrequenciasModule = angular.module('diarioFrequenciasModule', ['servidorModule', 'diarioFrequenciasDirectives', 'dateTimeModule', 'erudioConfig']);
+    diarioFrequenciasModule.controller('diarioFrequenciasController', ['$scope', 'Servidor', 'Restangular', '$timeout', '$templateCache', 'makePdf', 'dateTime', 'ErudioConfig', function ($scope, Servidor, Restangular, $timeout, $templateCache, makePdf, dateTime, ErudioConfig) {
         $templateCache.removeAll();
 
+        $scope.config = ErudioConfig;
         $scope.mostrarCortina = function() { $scope.cortina = true; };
         $scope.fecharCortina = function() { $scope.cortina = false; };
-        $scope.editando = false;
+        $scope.editando = false; $scope.unidades = [];
         $scope.disciplinasSelecionadas = [];
         $scope.requisicoes = 0;
-        $scope.unidade = {id: parseInt(sessionStorage.getItem('unidade'))};
+        if (sessionStorage.getItem('unidade') !== undefined && sessionStorage.getItem('unidade') !== "" && sessionStorage.getItem('unidade') !== null) {
+            var unidadeEnsino = JSON.parse(sessionStorage.getItem('unidade'));
+            $scope.unidade = {id: unidadeEnsino.id};
+        }
         $scope.isAdmin = Servidor.verificaAdmin();
+
+        //VERIFICA SE HÁ ALOCAÇÃO SELECIONADA
+        $scope.verificaAlocacao = function (nomeUnidade) {
+            if ($scope.isAdmin) {
+                $scope.buscarUnidades("");
+            } else {
+                if (Servidor.verificarPermissoes('DIARIO_FREQUENCIA')) {
+                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    promise.then(function(response) {
+                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        $timeout(function () {
+                            for (var i=0; i<$scope.atribuicoes.length; i++) {
+                                if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
+                                if (i === $scope.atribuicoes.length-1) {
+                                    if ($scope.isAdmin) { $scope.verificaAlocacao(); }
+                                    else {
+                                        $scope.buscarCursos();
+                                    }
+                                }
+                            }
+                        },500);
+                    });
+                }
+            }
+        };
 
         var montarSelect = function(seletor, tempo) {
             if (!tempo) { tempo = 250; }
@@ -68,13 +96,16 @@
 
         $scope.selecionarUnidade = function(unidade) {
             $scope.nomeUnidade = unidade.nomeCompleto;
-            $scope.unidade = unidade;
+            $scope.unidade = unidade; $scope.buscarCursos();
         };
 
         $scope.buscarCursos = function() {
-            var promise = Servidor.buscar('cursos', null);
+            var promise = Servidor.buscar('cursos-ofertados', {unidadeEnsino: $scope.unidade.id});
             promise.then(function(response) {
                 $scope.cursos = response.data;
+                if (response.data.length === 0) {
+                    Servidor.customToast("Sua unidade atual não possui nenhum curso ofertado.");
+                }
                 montarSelect('#cursoDiarioFrequencia');
             });
         };
@@ -95,17 +126,17 @@
             });
         };
 
-        $scope.buscarVinculo = function() {
+        /*$scope.buscarVinculo = function() {
             var promise = Servidor.buscarUm('vinculos', sessionStorage.getItem('vinculo'));
             promise.then(function(response) {
                 $scope.vinculo = response.data;
             });
-        };
+        };*/
 
         $scope.buscarDisciplinasOfertadas = function(id) {
-            if (!id) { return Servidor.customToast("Selecione uma turma para realizar a busca."); };
-            if ($scope.busca.mes === undefined || !$scope.busca.mes.numero) { return Servidor.customToast("Selecione um mês para realizar a busca.");}
-            var promise = Servidor.buscarUm('turmas', id);
+            //if (!id) { return Servidor.customToast("Selecione uma turma para realizar a busca."); };
+            //if ($scope.busca.mes === undefined || !$scope.busca.mes.numero) { return Servidor.customToast("Selecione um mês para realizar a busca.");}
+            /*var promise = Servidor.buscarUm('turmas', id);
             promise.then(function(response) {
                 $scope.checkAll = false;
                 var turma = response.data;
@@ -119,7 +150,7 @@
                     $timeout(function() { $('.tooltipped').tooltip(); }, 50);
                     $scope.disciplinasSelecionadas = [];
                 });
-            });
+            });*/
         };
 
         $scope.selecionarTudo = function () {
@@ -301,8 +332,7 @@
         };
 
         $scope.inicializar = function(){
-            $scope.buscarCursos();
-            $scope.buscarVinculo();
+            $scope.verificaAlocacao();
             $timeout(function(){
                 $('select').material_select();
                 Servidor.entradaPagina();

@@ -84,7 +84,7 @@
                                 <i class="material-icons prefix">school</i>
                                 <select id="cursoDiarioFrequencia" data-ng-model="busca.curso.id" data-ng-change="buscarEtapas(busca.curso.id)">
                                     <option value="" disabled selected></option>
-                                    <option value="{{curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome | uppercase}}</option>
+                                    <option value="{{curso.curso.id}}" data-ng-repeat="curso in cursos">{{curso.curso.nome | uppercase}}</option>
                                 </select>
                                 <label for="cursoDiarioFrequencia">Curso</label>
                             </div>
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
                             <div class="end-card col s12" style="padding-top: 1rem">                        
-                                <a data-ng-click="buscarDisciplinasOfertadas(busca.turma.id)" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                                <a target="_blank" href="{{ config.urlRelatorios }}/diarios-frequencia?mes={{ busca.mes.numero }}&turma={{ busca.turma.id }}&auto=0" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">print</i>IMPRIMIR</a>
                                 <a data-ng-click="limparBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
                             </div>
                         </div>

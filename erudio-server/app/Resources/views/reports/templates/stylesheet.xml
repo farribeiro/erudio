@@ -1,0 +1,23 @@
+<stylesheet>
+    <td>
+        <attribute name="padding" value="3px" />
+        <attribute name="text-align" value="center" />
+        <attribute name="vertical-align" value="middle" />
+    </td>
+    <h1>
+        <attribute name="padding" value="0px" />
+        <attribute name="margin" value="0px" />
+    </h1>
+    <h3>
+        <attribute name="padding" value="0px" />
+        <attribute name="margin" value="0px" />
+    </h3>
+    <h4>
+        <attribute name="margin" value="0" />
+    </h4>
+    <p>
+        <attribute name="margin" value="0" />
+        <attribute name="padding" value="2px" />
+        <attribute name="line-height" value="20px" />
+    </p>
+</stylesheet>

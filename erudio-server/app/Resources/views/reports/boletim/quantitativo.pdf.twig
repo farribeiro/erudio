@@ -1,0 +1,74 @@
+<pdf>
+    {% for b in boletins %}
+        {% embed 'reports/templates/page.twig' %}
+           {% block pageType %}a4-landscape{% endblock %}
+            
+           {% block title %}
+                <h1>Boletim Escolar {{"now"|date('Y')}}</h1>
+            {% endblock %}
+            
+            {% block headerHeight %}100px{% endblock %}
+            
+            {% block info %}
+                <p>Aluno: {{b.matricula.aluno.nome}}</p>
+                <p>Matrícula: {{b.matricula.codigo}}</p>
+                <p>Turma: {{turma.nomeExibicao}}</p>
+                <p>Curso: {{turma.etapa.curso.nome}}</p>
+                <p>Etapa: {{turma.etapa.nomeExibicao}}</p>
+            {% endblock %}
+            
+            {% block content %}
+                <div margin="0" padding="0" font-size="12px">
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>Disciplina</strong>
+                            </td>
+                            {% for i in 1..quantidadeMedias %}
+                                <td width="90px" colspan="2">
+                                    <strong>{{i}}º {{unidadeRegime}}</strong>
+                                </td>
+                            {% endfor %}
+                            <td width="60px">
+                                <strong>Exame Final</strong>
+                            </td>
+                            <td width="90px" colspan="2">
+                                <strong>Resultado Final</strong>
+                            </td>
+                            <td width="120px">
+                                <strong>Situação</strong>
+                            </td>
+                        </tr>
+                        {% for disciplina in b.disciplinas %}
+                            <tr line-height="15px">
+                                <td text-align="left">
+                                    {{disciplina.nomeExibicao}}
+                                </td>
+                                {% for media in disciplina.medias %}
+                                    <td>{{media.valor}}</td>
+                                    <td>{{media.faltas}}</td>
+                                {% endfor %}
+                                <td>-</td>
+                                <td>{{disciplina.mediaFinal}}</td>
+                                <td></td>
+                                <td>{{disciplina.status}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <p margin-top="15px">
+                        Estou ciente do aproveitamento de {{b.matricula.aluno.nome}}, matrícula nº: {{b.matricula.codigo}}.
+                    </p>
+                    <p text-align="center" margin-top="30px">
+                        ____________________________________________
+                    </p>
+                    <p text-align="center">
+                        Assinatura do responsável
+                    </p>
+                </div>
+            {% endblock %}
+            
+        {% endembed %}
+    {% endfor %}
+</pdf>
+
+

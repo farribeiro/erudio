@@ -28,16 +28,24 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        // SERVER - http://10.1.6.86/erudio/erudio-server/web/api/
-        this.dominio = 'http://erudio.com';
-        this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
-        this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
+        this.dominio = 'http://10.100.0.143/erudio/erudio/erudio-front'; this.extraUrl = '/erudio-old';
+        //this.urlServidor = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api';
+        //this.urlRelatorios = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/app_dev.php/api/report';
+        //this.urlUpload = 'http://10.100.0.195/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
+        
+        this.urlServidor = 'http://10.1.3.68/erudio/Erudio/erudio-server/web/app_dev.php/api';
+        this.urlRelatorios = 'http://10.1.3.68/erudio/Erudio/erudio-server/web/app_dev.php/api/report';
+        //this.urlRelatorios = 'http://10.1.6.95/erudio/Erudio/erudio-server/web/app_dev.php/api/report';
+        this.urlUpload = 'http://10.1.3.68/erudio/Erudio/erudio-server/web/bundles/assets/uploads/';
+        
+        //this.urlServidor = 'http://10.1.6.86/erudio/erudio-server/web/api';
+        //this.urlUpload = 'http://10.1.6.86/erudio/erudio-server/web/bundles/assets/uploads/';
         this.urlTemplateInicio = "/app/modules/";
         this.urlTemplateFinal = "/partials/";
         
-        this.getTemplateLista = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; };
-        this.getTemplateForm = function (modulo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; };
-        this.getTemplateCustom = function (modulo,arquivo) { return this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; };
+        this.getTemplateLista = function (modulo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; };
+        this.getTemplateForm = function (modulo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; };
+        this.getTemplateCustom = function (modulo,arquivo) { return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; };
     }]);
 
 })();

@@ -29,6 +29,7 @@
 namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
@@ -42,14 +43,14 @@ use CursoBundle\Entity\Turma;
  */
 class TurmaController extends AbstractEntityController {
     
-    public function getFacade() {
+    function getFacade() {
         return $this->get('facade.curso.turmas');
     }
         
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("turmas/{id}")
+    * @FOS\Get("turmas/{id}", requirements={"id" = "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -63,7 +64,8 @@ class TurmaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "nome", nullable = true) 
     * @FOS\QueryParam(name = "apelido", nullable = true)  
     * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "etapa_ordem", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "agrupamento", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "quadroHorario", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
@@ -85,7 +87,7 @@ class TurmaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("turmas/{id}")
+    * @FOS\Put("turmas/{id}", requirements={"id" = "\d+"})
     * @ParamConverter("turma", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Turma $turma, ConstraintViolationListInterface $errors) {
@@ -95,7 +97,7 @@ class TurmaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("turmas/{id}") 
+    * @FOS\Delete("turmas/{id}", requirements={"id" = "\d+"}) 
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
@@ -104,19 +106,20 @@ class TurmaController extends AbstractEntityController {
    /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("turmas/{id}/agrupamento")
+    * @FOS\Delete("turmas/{id}/agrupamento", requirements={"id" = "\d+"})
     */
     function removeAgrupamentoAction($id) {
         try {
             $turma = $this->getFacade()->loadEntity($id);
             $this->getFacade()->removerAgrupamento($turma);
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
-            $view = View::create(null, Codes::HTTP_NOT_FOUND);
+            $view = View::create(null, Response::HTTP_NOT_FOUND);
         } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_INTERNAL_SERVER_ERROR);
+            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);
     } 
     
 }
+

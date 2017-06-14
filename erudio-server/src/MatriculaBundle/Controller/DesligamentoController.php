@@ -38,8 +38,8 @@ use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Desligamento;
 
 /**
- * @FOS\RouteResource("desligamentos")
- */
+* @FOS\RouteResource("desligamentos")
+*/
 class DesligamentoController extends AbstractEntityController {
     
     public function getFacade() {

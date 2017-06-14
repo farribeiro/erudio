@@ -1,0 +1,168 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="listaAvaliacoes">
+    <div class="row">
+        <div class="col s12 movimentacoes-banner topo-pagina">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 l12 mobile-full">
+            <div class="row" style="margin-top: -64px;">
+                <div class="col s12 l12 mobile-full" data-ng-hide="detalhesTransferencia || detalhesMovimentacoes">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class='card-title-h3'>Reclassificacão</h3>
+                            <div class='row hide-on-small-only'>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        Movimentação é qualquer alteração na matrícula que afete o aluno dentro da unidade de ensino.<br>
+                                        Ex.: Transferências, movimentação ou desligamento.
+                                    </p>
+                                </div>
+                                <div class='col s6 m6 l6'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Instruções Rápidas:</strong><br />
+                                        Clique no ícone correspondente para gerenciar transferências, movimentações ou desligamentos.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class='row hide-on-med-and-up'>
+                                <div class='col s12 m12 l12'>
+                                    <p style='font-family: Roboto'>
+                                        <strong>Definição:</strong><br />
+                                        ex: <br /><br />
+                                        <strong>Dica:</strong><br />
+                                        Clique sobre o item desejado para ver as opções disponíveis para ele.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="tabs">
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#movimentacoesBusca" data-ng-click="trocarTab('movimentar')">Movimentar</a></li>
+                            <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#historicoMovimentacao" data-ng-click="trocarTab('historico')">Histórico</a></li>
+                        </ul>
+                    </div>
+                    <div id="historicoMovimentacao">
+                        <div data-ng-hide="editando" style="background: #fafafa; padding-top: 1rem; margin-top: -1rem;" class="z-depth-1 row">
+                            <div class="col s12">
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">account_box</i>
+                                    <input id="nomeMovimentacoes" type="text" data-ng-model="buscaAluno">
+                                    <label for="nomeMovimentacoes">Nome</label>
+                                </div>
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">view_week</i>
+                                    <select id="statusTransferencia" data-ng-model="transferencia.status">
+                                        <option disabled></option>
+                                        <option value="">TODOS</option>
+                                        <option value="ACEITO">ACEITO</option>
+                                        <option value="PENDENTE" data-ng-selected="true">PENDENTE</option>
+                                        <option value="RECUSADO">RECUSADO</option>
+                                    </select>
+                                    <label for="statusTransferencia">Status</label>
+                                </div>
+                            </div>                                
+                            <div class="col s12" data-ng-show="isAdmin">
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                    <input id="unidadeOrigem" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidadesOrigem()" data-activates="dropUnidades">
+                                    <label for="unidadeOrigem">Unidade de Origem</label>
+                                </div>
+                                <div class="input-field col s12 m12 l6 unidade-destino">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <select id="unidadeDestino" data-ng-model="transferencia.unidadeEnsinoDestino.id">
+                                        <option selected></option>
+                                        <option value="{{ unidade.id }}" data-ng-selected="unidade.id === transferencia.unidadeEnsinoDestino.id" data-ng-repeat="unidade in unidades">{{ unidade.tipo.sigla | uppercase }} {{ unidade.nome | uppercase }}</option>
+                                    </select>
+                                    <label for="unidadeDestino">Unidade de Destino</label>
+                                </div>
+                            </div>
+                            <div class="col s12" data-ng-hide="isAdmin">
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">swap_horiz</i>
+                                    <select id="tipoFiltroHistorico" data-ng-model="tipoConsulta" data-ng-change="buscarTransferenciasPorTipoConsulta(tipoConsulta)">
+                                        <option disabled></option>
+                                        <option value="TODAS">TODAS</option>
+                                        <option value="RECEBIDAS" data-ng-selected="true">RECEBIDAS</option>
+                                        <option value="EFETUADAS">EFETUADAS</option>
+                                    </select>
+                                    <label for="tipoFiltroHistorico">Movimentações</label>
+                                </div>
+                            </div>
+                            <div class="col s12 end-card right-align">
+                                <a data-ng-click="reiniciarBuscaTransferencia()" class="waves-effect waves-blue btn-flat"><i class="material-icons">delete</i>LIMPAR BUSCA</a>
+                                <a data-ng-click="validarBusca()" class="waves-effect waves-blue btn-flat"><i class="material-icons">search</i>BUSCAR</a>                                
+                            </div>
+                        </div>
+                        <div data-ng-hide="editando || !transferencias.length || transferencias.length === null" style="margin-top:20px;">
+                            <div class="card-panel">
+                                <div class="card-content mobile-full">
+                                    <table class="highlight striped table-pattern">
+                                        <thead>
+                                            <tr>
+                                                <th data-field='nome' class="left-align">
+                                                    <div class="pointer" data-ng-click="predicate = 'nome'; reverse = !reverse">
+                                                        Aluno
+                                                        <span class="sortorder" data-ng-show="predicate === 'nome'" data-ng-class="{reverse: reverse}"></span>
+                                                    </div>
+                                                </th>
+                                                <th>Etapa</th>
+                                                <th>Unidade de Origem</th>
+                                                <th></th>
+                                                <th>Unidade de Destino</th>
+                                                <th>Status</th>
+                                                <th>Opções</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="transferencia in transferencias | orderBy: 'matricula.aluno.nome':reverse">
+                                                <td class="celula-link relative mobile-full" data-ng-click="carregarTransferencia(transferencia)">{{ transferencia.matricula.aluno.nome }}</td>
+                                                <td class="relative mobile-full">{{transferencia.matricula.etapaAtual.nomeExibicao | uppercase}}</td>
+                                                <td class="relative mobile-full">{{ transferencia.unidadeEnsinoOrigem.nomeCompleto }}</td>
+                                                <td class="relative mobile-full"><i class="material-icons">arrow_forward</i></td>
+                                                <td class="relative mobile-full">{{ transferencia.unidadeEnsinoDestino.nomeCompleto }}</td>
+                                                <td class="relative mobile-full">{{ transferencia.status }}</td>
+                                                <td class="relative mobile-full">
+                                                    <i data-ng-click="prepararAceitar(transferencia, true)" data-ng-show="escrita && transferencia.status==='PENDENTE' && (transferencia.unidadeEnsinoOrigem.id !== unidade.id || isAdmin)" data-position="top" data-delay="50" data-tooltip="Aceitar" class="tooltipped material-icons grey-icon aceito pointer">done</i>
+                                                    <i data-ng-click="preparaRecusar(transferencia, false)" data-ng-show="escrita && transferencia.status==='PENDENTE'"data-position="top" data-delay="50" data-tooltip="Recusar" data-target="modal-recusar-matricula" class="tooltipped modal-trigger material-icons delete-icon">clear</i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <historico-lista-transferir-reclassificacao></historico-lista-transferir-reclassificacao>
+                </div>
+                <reclassificacao-informacoes data-ng-show="detalhesTransferencia"></reclassificacao-informacoes>
+            </div>
+        </div>
+    </div>
+</div>

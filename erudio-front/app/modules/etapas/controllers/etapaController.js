@@ -172,9 +172,7 @@
         /* Buscando modelos horários - Form */
         $scope.buscarModelosHorarios = function() {
             var promise = Servidor.buscar('modelo-quadro-horarios',{ 'curso':$scope.curso });
-            promise.then(function (response){
-                $scope.modeloQuadroHorarios = response.data;
-            });
+            promise.then(function (response){ $scope.modeloQuadroHorarios = response.data; });
         };
 
         /* Remove a etapa */
@@ -268,10 +266,10 @@
                         }
                         $scope.primeiroScroll = true;
                     } else{
-//                        if ($scope.primeiroScroll) {
-//                            Materialize.toast('Nenhuma etapa foi carregada agora.', 1000);
-//                            $scope.primeiroScroll = false;
-//                        }
+                        if ($scope.primeiroScroll) {
+                            Materialize.toast('Nenhuma etapa foi carregada agora.', 1000);
+                            $scope.primeiroScroll = false;
+                        }
                         $scope.pagina--; $scope.fechaLoader(finalPagina);
                     }
                     $timeout(function (){ $scope.fechaLoader(finalPagina); }, 1000);
@@ -288,14 +286,7 @@
                 if (!nova) {
                     $scope.acao = "Editar";
                     var promise = Servidor.buscarUm('etapas',etapa.id);
-                    promise.then(function (response) { 
-                        $scope.etapa = response.data; 
-                        $timeout(function() {
-                            Servidor.verificaLabels();
-                            $('#modulo, #sistemaAvaliacao, #modeloQuadroHorario').material_select('destroy');
-                            $('#modulo, #sistemaAvaliacao, #modeloQuadroHorario').material_select();
-                        }, 50);
-                    });
+                    promise.then(function (response) { $scope.etapa = response.data; });
                 }
                 $timeout(function (){ Servidor.verificaLabels(); $timeout(function(){$('#nomeEtapa').focus();},150);},500);
                 $timeout(function(){
@@ -348,12 +339,11 @@
         };
 
         /* Salvando etapa */
-        $scope.finalizar = function (novaEtapa) {            
-            if($scope.modeloQuadroHorarios.length === 1) { $scope.etapa.modeloQuadroHorario.id = $scope.modeloQuadroHorarios[0].id; }
+        $scope.finalizar = function (novaEtapa) {
             if (novaEtapa) {
                 if ($scope.validar('validateEtapa') === true) {
                     $scope.mostraLoader(false);
-                    $scope.etapa.sistemaAvaliacao = {id: $scope.etapa.sistemaAvaliacao.id };                    
+                    $scope.etapa.sistemaAvaliacao = {id: $scope.etapa.sistemaAvaliacao.id };
                     var result = Servidor.finalizar($scope.etapa, 'etapas', 'Etapa');
                     result.then(function (response) {
                         $scope.fecharFormulario();

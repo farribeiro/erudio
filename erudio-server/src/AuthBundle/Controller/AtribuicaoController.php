@@ -36,14 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Atribuicao;
+use AuthBundle\Service\AtribuicaoFacade;
 
 /**
- * @FOS\RouteResource("atribuicoes")
+ * @FOS\NamePrefix("atribuicoes")
  */
 class AtribuicaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.atribuicoes');
+    private $atribuicaoFacade;
+    
+    function __construct(AtribuicaoFacade $atribuicaoFacade) {
+        $this->atribuicaoFacade = $atribuicaoFacade;
+    }
+    
+    function getFacade() {
+        return $this->atribuicaoFacade;
     }
     
     /**
@@ -131,19 +138,6 @@ class AtribuicaoController extends AbstractEntityController {
             return $this->handleValidationErrors($errors);
         }
         return $this->put($request, $id, $atribuicao, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Put("atribuicoes-removidas/{id}")
-    * @ParamConverter("atribuicao", converter="fos_rest.request_body")
-    */
-    function putDeletedAction(Request $request, $id, Atribuicao $atribuicao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->putDeleted($request, $id, $atribuicao, $errors);
     }
     
     /**

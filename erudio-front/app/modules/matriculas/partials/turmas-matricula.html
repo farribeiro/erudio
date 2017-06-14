@@ -29,12 +29,12 @@
         <div class="row form-box show-form">          
             <div class="card-panel">
                 <div class="col s12">
-                    <div class="col s1" style="padding-left:0px;">
+                    <!--<div class="col s1" style="padding-left:0px;">
                         <i class="material-icons" style="font-size:6rem;margin-bottom:40px;">people</i>
                     </div>
                     <div class="col s10">
                         <h3 style="padding: 1.70rem 0rem 0rem 0rem;" class="no-margin">Enturmações</h3>
-                    </div>
+                    </div>-->
                 </div>
                 <table data-ng-show="enturmacoes.length">
                     <thead>
@@ -97,10 +97,11 @@
                     </li>
                 </ul>                
             </div>
-            <div class="card-panel" data-ng-show="escrita && (!enturmacoes.length || (matricula.curso.especializado && etapas.length) || verificaCadastroEnturmacoes(enturmacoes))">
+            <!-- <div class="card-panel" data-ng-show="escrita && (!enturmacoes.length || (matricula.curso.especializado && etapas.length) || verificaCadastroEnturmacoes(enturmacoes))"> -->
+            <div class="card-panel" data-ng-show="escrita && !enturmacoes.length">
                 <h4 style="padding: 1rem 0 0 1rem"> Enturmar Aluno </h4>                   
                 <div class="row">
-                    <div class="col s12 m12 l6 input-field" data-ng-show="matricula.curso.especializado">
+                    <!--<div class="col s12 m12 l6 input-field" data-ng-show="matricula.curso.especializado">
                         <i class="material-icons prefix">layers</i>
                         <select id="enturmacaoEtapa" data-ng-model="etapa.id" data-ng-change="buscarTurmasEnturmacao(etapa.id, '#enturmacaoTurma');
                                     buscarDisciplinasEnturmacao(etapa.id)">
@@ -108,12 +109,12 @@
                             <option data-ng-repeat="etapa in etapas" value="{{etapa.id}}">{{etapa.nomeExibicao| uppercase}}</option>
                         </select>
                         <label for="enturmacaoEtapa">Etapa</label>
-                    </div>
+                    </div>-->
                     <div class="col s12 m12 input-field" data-ng-class="{'l6': matricula.curso.especializado}">
                         <i class="material-icons prefix">chrome_reader_mode</i>
                         <select id="enturmacaoTurma" data-ng-model="enturmacao.turma.id">
-                            <option disabled selected></option>
-                            <option data-ng-repeat="turma in turmas" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
+                            <option selected></option>
+                            <option data-ng-repeat="turma in turmas track by $index" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
                         </select>
                         <label for="enturmacaoTurma">Turma</label>
                     </div>

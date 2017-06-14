@@ -1,8 +1,8 @@
 /* List */
 
 .collection .collection-item {
-    padding: 0 !important;
-    padding-top: 1px !important;
+    /*padding: 0 !important;
+    padding-top: 1px !important;*/
     padding-left: 20px !important;
     padding-bottom: 0 !important;
     line-height: 1.5em;

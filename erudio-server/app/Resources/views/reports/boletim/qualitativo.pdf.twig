@@ -1,0 +1,68 @@
+<pdf>
+    {% for i in 0..quantidadeMedias-1 %}
+        {% for b in boletins %}
+            {% embed 'reports/templates/page.twig' %}
+                {% block pageType %}A4{% endblock %}
+
+                {% block title %}
+                    <h1>Boletim Escolar {{"now"|date('Y')}}</h1>
+                    <h3> {{i+1}}º {{unidadeRegime}}</h3>
+                {% endblock %}
+
+                {% block headerHeight %}90px{% endblock %}
+
+                {% block info %}
+                    <p><strong>Aluno: {{b.matricula.aluno.nome}}</strong></p>
+                    <p>Matrícula: {{b.matricula.codigo}}</p>
+                    <p>Turma: {{turma.nomeExibicao}}</p>
+                    <p>Curso: {{turma.etapa.curso.nome}}</p>
+                {% endblock %}
+
+                {% block content %}
+                    <div margin="0" padding="0" font-size="10px">
+                        <table>
+                            {% for disciplina in b.disciplinas %}
+                                <tr>
+                                    <td colspan="2" text-align="left" border.type="none">
+                                        <strong>DISCIPLINA: {{disciplina.nomeExibicao|upper}} </strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Habilidade</strong>
+                                    </td>
+                                    <td width="100px">
+                                        <strong>Resultado Final</strong>
+                                    </td>
+                                </tr>
+                                {% for habilidade in disciplina.medias[i].habilidadesAvaliadas %}
+                                    <tr>
+                                        <td>
+                                            {{habilidade.habilidade.nome}}
+                                        </td>
+                                        <td>
+                                            {{habilidade.conceito.sigla}}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <tr margin-bottom="10px">
+                                    <td text-align="right">
+                                        <strong>Nota:</strong>
+                                    </td>
+                                    <td>
+                                        <strong>{{disciplina.medias[i].valor|number_format(1) }}</strong>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>    
+                        <div>
+                            <strong>Total de Faltas: {{b.disciplinas[3].medias[i].faltas}}</strong>
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        {% endfor %} 
+    {% endfor %}
+</pdf>
+
+

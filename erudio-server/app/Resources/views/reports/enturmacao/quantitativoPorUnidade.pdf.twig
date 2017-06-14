@@ -1,0 +1,41 @@
+<pdf orientation="L">
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}
+            <h1>Alunos Enturmados</h1>
+            <h3>Quantitativo por Unidade Escolar</h3>
+        {% endblock %}
+        {% block content %}
+            <div margin-top="15px" font-size="8px">
+                <table>
+                    <tr>
+                        <td><strong>Curso</strong></td>
+                        <td><strong>Etapa</strong></td>
+                        <td><strong>Turma</strong></td>
+                        <td><strong>Turno</strong></td>
+                        <td><strong>Masc</strong></td>
+                        <td><strong>Fem</strong></td>
+                        <td><strong>Total</strong></td>
+                    </tr>
+                    {% for e in enturmados %}
+                        <tr>
+                            <td>{{e.turma.etapa.curso.nome}}</td>
+                            <td>{{e.turma.etapa.nome}}</td>
+                            <td>{{e.turma.nome}} - {{e.turma.apelido}}</td>
+                            <td>{{e.turma.turno.nome}}</td>
+                            <td>{{e.masculino}}</td>
+                            <td>{{e.feminino}}</td>
+                            <td>{{e.total}}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4" text-align="right"><strong>TOTAL</strong></td>
+                        <td>{{totais.masculino}}</td>
+                        <td>{{totais.feminino}}</td>
+                        <td>{{totais.total}}</td>
+                    </tr>
+                </table>
+            </div>
+        {% endblock %}
+    {% endembed %}
+</pdf>
+

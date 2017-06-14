@@ -54,12 +54,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     private $disciplina;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
     * @ORM\OneToMany(targetEntity = "CalendarioBundle\Entity\HorarioDisciplina", mappedBy = "disciplina", fetch="EAGER")
     */
     private $horarios;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToMany(targetEntity="VinculoBundle\Entity\Alocacao", inversedBy = "disciplinasMinistradas")
     * @ORM\JoinTable(name="edu_turma_disciplina_alocacao",
@@ -72,6 +74,12 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     function __construct(Turma $turma, Disciplina $disciplina) {
         $this->turma = $turma;
         $this->disciplina = $disciplina;
+    }
+    
+    function setTurma(Turma $turma) {
+        if (is_null($this->turma)) {
+            $this->turma = $turma;
+        }
     }
     
     /**
@@ -97,6 +105,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
         return $this->disciplina->getNomeExibicao();
     }
     
+    /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\VirtualProperty
+     */
+    function getSigla() {
+        return $this->disciplina->getSigla();
+    }
+    
     function getTurma() {
         return $this->turma;
     }
@@ -111,6 +127,19 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     
     function getProfessores() {
         return $this->professores;
+    }
+    
+    function getProfessoresAsString() {
+        $professores = $this->getProfessores();
+        $nomesProfessores = '';
+        $numeroProfessores = count($professores);
+        foreach ($professores as $i => $professor) {
+            $nomesProfessores .= $professor->getVinculo()->getFuncionario()->getNome();
+            if ($i + 1 < $numeroProfessores) {
+                $nomesProfessores .= ", ";
+            }
+        }
+        return $nomesProfessores;
     }
     
     function setProfessores(ArrayCollection $professores) {

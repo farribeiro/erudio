@@ -30,25 +30,37 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CursoBundle\Entity\DisciplinaOfertada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 class TurmaFacade extends AbstractFacade {
     
+    private $disciplinaOfertadaFacade;
+    private $disciplinaCursadaFacade;
     private $vagaFacade;
-    
-    function removerAgrupamento(Turma $turma) {
-        $turma->setAgrupamento(null);
-        $this->orm->getManager()->flush();
-    }
     
     function getEntityClass() {
         return 'CursoBundle:Turma';
     }
     
-    function setVagaFacade($vagaFacade) {
+    function setDisciplinaOfertadaFacade(DisciplinaOfertadaFacade $disciplinaOfertadaFacade) {
+        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
+    }
+    
+    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    }
+    
+    function setVagaFacade(VagaFacade $vagaFacade) {
         $this->vagaFacade = $vagaFacade;
+    }
+    
+    function removerAgrupamento(Turma $turma) {
+        $turma->setAgrupamento(null);
+        $this->orm->getManager()->flush();
     }
     
     function queryAlias() {
@@ -67,7 +79,8 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere('t.status = :status')->setParameter('status', $value);
             },                    
             'encerrado' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.encerrado = :encerrado')->setParameter('encerrado', $value);
+                $operator = $value ? '=' : '<>';
+                $qb->andWhere("t.status ${operator} :encerrado")->setParameter('encerrado', Turma::STATUS_ENCERRADO);
             },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->join('etapa.curso', 'curso')                   
@@ -75,6 +88,9 @@ class TurmaFacade extends AbstractFacade {
             },
             'etapa' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+            },
+            'etapa_ordem' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
             },
             'quadroHorario' => function(QueryBuilder $qb, $value) {
                 $qb->join('t.quadroHorario', 'quadroHorario')
@@ -92,36 +108,98 @@ class TurmaFacade extends AbstractFacade {
         );
     }    
     
-    protected function prepareQuery(QueryBuilder $qb, array $params){
-        $qb->join('t.etapa', 'etapa');
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('t.etapa', 'etapa')
+           ->addOrderBy('etapa.curso','ASC')
+           ->addOrderBy('etapa.ordem','ASC')
+           ->addOrderBy('t.nome', 'ASC');
     }
         
     protected function beforeRemove($turma) {
-        $turma->setStatus(Turma::STATUS_ENCERRADO);
-    }
-    
-    protected function afterCreate($turma) {
-        $this->gerarVagas($turma, $turma->getLimiteAlunos());
-    }
-    
-    protected function afterUpdate($turma) {
-        $numeroVagas = $turma->getVagas()->count();
-        if ($numeroVagas < $turma->getLimiteAlunos()) {
-            $this->gerarVagas($turma, $turma->getLimiteAlunos() - $numeroVagas);
-        } else if ($numeroVagas > $turma->getLimiteAlunos()) {
+        if ($turma->getEnturmacoes()->count() > 0) {
             throw new IllegalUpdateException(
-                IllegalUpdateException::FINAL_STATE, 
-                'Operação não permitida, não é possível diminuir a quantidade de vagas de uma turma'
+                IllegalUpdateException::ILLEGAL_STATE_TRANSITION, 
+                'Operação não permitida, não é possível excluir uma turma com alunos enturmados'
             );
         }
     }
     
-    private function gerarVagas(Turma $turma, $quantidade) {
-        for ($i = 0; $i < $quantidade; $i++) {
-            $vaga = new Vaga();
-            $vaga->setTurma($turma);
-            $this->vagaFacade->create($vaga);
+    protected function afterCreate($turma) {
+        $this->criarDisciplinas($turma);
+        $this->gerarVagas($turma);
+    }
+    
+    protected function afterUpdate($turma) {
+        $this->gerarVagas($turma);
+        if ($turma->getEncerrado()) {
+            $this->finalizar($turma);
         }
     }
-
+    
+    protected function afterRemove($turma) {
+        $this->encerrarDisciplinas($turma);
+        $this->encerrarVagas($turma);
+    }
+    
+    private function criarDisciplinas(Turma $turma) {
+         if($turma->getEtapa()->getIntegral()) {
+            foreach ($turma->getEtapa()->getDisciplinas() as $disciplina) {
+                $disciplinaOfertada = new DisciplinaOfertada($turma, $disciplina);
+                $this->disciplinaOfertadaFacade->create($disciplinaOfertada);
+            }
+        }
+    }
+    
+    private function gerarVagas(Turma $turma) {
+        $numeroVagas = $turma->getVagas()->count();
+        if ($numeroVagas < $turma->getLimiteAlunos()) {
+            $quantidade = $turma->getLimiteAlunos() - $numeroVagas;
+            for ($i = 0; $i < $quantidade; $i++) {
+                $vaga = new Vaga($turma);
+                $this->vagaFacade->create($vaga);
+            }
+        } else if ($turma->getTotalEnturmacoes() > $turma->getLimiteAlunos()) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::FINAL_STATE, 
+                'Operação não permitida, não é possível diminuir a quantidade '
+                    . 'de vagas abaixo da quantidade de enturmações atual'
+            );
+        } else {
+            $vagasEliminadas = 0;
+            foreach ($turma->getVagasAbertas() as $vaga) {
+                if ($vagasEliminadas == $numeroVagas - $turma->getLimiteAlunos()) {
+                    break;
+                }
+                $this->vagaFacade->remove($vaga->getId());
+                $vagasEliminadas++;
+            }
+        }
+    }
+    
+    private function encerrarDisciplinas(Turma $turma) {
+        foreach ($turma->getDisciplinas() as $disciplina) {
+            $this->disciplinaOfertadaFacade->remove($disciplina);
+        }
+    }
+    
+    private function encerrarVagas(Turma $turma) {
+        foreach ($turma->getVagasAbertas() as $vaga) {
+            $this->vagaFacade->remove($vaga);
+        } 
+    }
+ 
+    private function finalizar(Turma $turma) {
+        foreach($turma->getDisciplinas() as $ofertada) {
+            $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
+            foreach ($cursadas as $cursada) {
+                if ($cursada->emAberto()) {
+                    throw new IllegalUpdateException(
+                        'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
+                            . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
+                    );
+                }
+            }
+        }
+    }
+    
 }

@@ -1,0 +1,5 @@
+<div layout="row" layout-wrap>
+    <div flex="100" layout="row">
+        <md-checkbox ng-checked="verificarCurso(curso.id)" ng-click="adicionarCurso(curso.id)" ng-repeat="curso in cursos">{{ curso.nome }}</md-checkbox>
+    </div>
+</div>

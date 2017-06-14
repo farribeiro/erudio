@@ -71,6 +71,10 @@
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/informacoes-turma.html' };
     });
     
+    turmaDirectives.directive('fecharTurma', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/fechar-turma.html' };
+    });
+    
     turmaDirectives.directive('quadroHorario', function (){
         return { restrict: 'E', templateUrl: 'app/modules/turmas/partials/quadro-horario.html' };
     });      

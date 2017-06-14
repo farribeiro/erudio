@@ -32,7 +32,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
 * @ORM\Entity
@@ -47,37 +46,38 @@ class Calendario extends AbstractEditableEntity {
     private $nome;
     
     /**
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_inicio", type = "date") 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_inicio", type = "date") 
+    */
     private $dataInicio;
     
     /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_termino", type = "date") 
+    */
     private $dataTermino;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("PessoaBundle\Entity\Instituicao")
-        * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao") 
-        */
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("PessoaBundle\Entity\Instituicao")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao") 
+    */
     private $instituicao;
      
     /** 
-        * @JMS\Type("CalendarioBundle\Entity\Calendario")
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_base_id")
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("CalendarioBundle\Entity\Calendario")
+    * @ORM\ManyToOne(targetEntity = "Calendario") 
+    * @ORM\JoinColumn(name = "calendario_base_id")
+    */
     private $calendarioBase;
     
     /** 
-        * @JMS\Exclude 
-        * @ORM\OneToMany(targetEntity = "Dia", mappedBy = "calendario", cascade = {"all"}) 
-        */
+    * @JMS\Exclude 
+    * @ORM\OneToMany(targetEntity = "Dia", mappedBy = "calendario", cascade = {"all"}) 
+    */
     private $dias;
     
     function init() {

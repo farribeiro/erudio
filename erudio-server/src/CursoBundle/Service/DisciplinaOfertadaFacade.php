@@ -30,11 +30,19 @@ namespace CursoBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 class DisciplinaOfertadaFacade extends AbstractFacade {
     
+    private $disciplinaCursadaFacade;
+    
     function getEntityClass() {
         return 'CursoBundle:DisciplinaOfertada';
+    }
+    
+    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
     
     function queryAlias() {
@@ -52,6 +60,26 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
                    ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
             }
         );
+    }
+    
+    function afterCreate($disciplinaOfertada) {
+        $enturmacoes = $disciplinaOfertada->getTurma()->getEnturmacoes();
+        foreach ($enturmacoes as $enturmacao) {
+            $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll([
+                'matricula' => $enturmacao->getMatricula()->getId(),
+                'disciplina' => $disciplinaOfertada->getDisciplina()->getId(),
+                'encerrado' => false
+            ]);
+            if (count($disciplinasCursadas) > 0) {
+                $disciplinaCursada = $disciplinasCursadas[0];
+                $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
+                $this->orm->getManager()->flush();
+            } else {
+                $disciplinaCursada = new DisciplinaCursada($enturmacao->getMatricula(), $disciplinaOfertada->getDisciplina());
+                $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
+                $this->disciplinaCursadaFacade->create($disciplinaCursada);
+            }
+        }
     }
 
 }

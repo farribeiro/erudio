@@ -48,8 +48,11 @@ class NotaQualitativaFacade extends AbstractFacade {
                     ->setParameter('media', $value);
             },
             'avaliacao' => function(QueryBuilder $qb, $value) {
-                $qb->join('n.avaliacao', 'avaliacao')->andWhere('avaliacao.id = :avaliacao')
-                    ->setParameter('avaliacao', $value);
+                $qb->andWhere('n.avaliacao = :avaliacao')->setParameter('avaliacao', $value);
+            },
+            'avaliacao_tipo' => function(QueryBuilder $qb, $value) {
+                $qb->join('n.avaliacao', 'avaliacao')->andWhere('avaliacao.tipo = :tipoAvaliacao')
+                   ->setParameter('tipoAvaliacao', $value);
             }
         );
     }
@@ -58,6 +61,14 @@ class NotaQualitativaFacade extends AbstractFacade {
         foreach($nota->getHabilidadesAvaliadas() as $habilidade) {
             $habilidade->setNotaQualitativa($nota);
         }
+    }
+    
+    function uniqueMap($nota) {
+        return [[
+            'avaliacao' => $nota->getAvaliacao(), 
+            'media' => $nota->getMedia(),
+            'avaliacao_tipo' => $nota->getAvaliacao()->getTipo()
+        ]];
     }
     
 }

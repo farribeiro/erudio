@@ -31,6 +31,7 @@ namespace CursoBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
@@ -65,30 +66,47 @@ class Etapa extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"}) 
+    * @ORM\ManyToOne(targetEntity = "Modulo") 
+    */
+    private $modulo;
+    
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Curso", inversedBy = "etapas") 
+    */
+    private $curso;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})       
+    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\ModeloQuadroHorario")
+    * @ORM\JoinColumn(name = "quadro_horario_modelo_id") 
+    */
+    private $modeloQuadroHorario;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})       
+    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao")
+    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    */
+    private $sistemaAvaliacao;
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(name = "idade_recomendada", type = "integer") 
+    */
+    private $idadeRecomendada;
+    
+    /** 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\Column(type = "boolean", nullable = false) 
     */
     private $integral = true;
     
     /** 
     * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "Modulo") 
+    * @ORM\Column(type = "boolean", nullable = false, name = "frequencia_unificada") 
     */
-    private $modulo;
-    
-    /** @ORM\ManyToOne(targetEntity = "Curso", inversedBy = "etapas") */
-    private $curso;
-    
-    /**        
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\ModeloQuadroHorario")
-    * @ORM\JoinColumn(name = "quadro_horario_modelo_id") 
-    */
-    private $modeloQuadroHorario;
-    
-    /**        
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-    */
-    private $sistemaAvaliacao;
+    private $frequenciaUnificada = false;
     
     /** 
     * @JMS\Exclude
@@ -96,8 +114,22 @@ class Etapa extends AbstractEditableEntity {
     */
     private $disciplinas;
     
-    function __construct() {
+    function init() {
         $this->disciplinas = new ArrayCollection();
+    }
+    
+    function isSistemaQuantitativo() {
+        return $this->getSistemaAvaliacao()->isQuantitativo();
+    }
+    
+    function isSistemaQualitativo() {
+        return $this->getSistemaAvaliacao()->isQualitativo();
+    }
+    
+    function getDisciplinas() {
+        return $this->disciplinas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     function getNome() {
@@ -136,10 +168,6 @@ class Etapa extends AbstractEditableEntity {
         return $this->sistemaAvaliacao;
     }
 
-    function getDisciplinas() {
-        return $this->disciplinas;
-    }
-
     function setNome($nome) {
         $this->nome = $nome;
     }
@@ -162,6 +190,22 @@ class Etapa extends AbstractEditableEntity {
     
     function setModulo(Modulo $modulo) {
         $this->modulo = $modulo;
+    }
+    
+    function getFrequenciaUnificada() {
+        return $this->frequenciaUnificada;
+    }
+
+    function setFrequenciaUnificada($frequenciaUnificada) {
+        $this->frequenciaUnificada = $frequenciaUnificada;
+    }
+    
+    function getIdadeRecomendada() {
+        return $this->idadeRecomendada;
+    }
+
+    function setIdadeRecomendada($idadeRecomendada) {
+        $this->idadeRecomendada = $idadeRecomendada;
     }
     
 }

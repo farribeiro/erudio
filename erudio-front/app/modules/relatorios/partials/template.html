@@ -1,0 +1,171 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- CSS DO MODULO -->
+<link rel="stylesheet" type="text/css" href="{{ cssUrl }}/app/modules/relatorios/assets/css/relatorio.css"/>
+
+<div data-ng-show="progresso" class="progress"><div class="indeterminate"></div></div>
+<div data-ng-show="progresso" class="cortinaProgresso"></div>
+
+<div id="listaRelatorios" style="position: relative;" >
+    
+    <!-- BANNER --> 
+    <div class="row" style="height: 150px;">
+        <div class="col s12 relatorio-banner"></div>
+        <div class="col s12 gradient relative" style="height: 150px !important;">
+            <div class='absolute title-module' style='bottom: 10px; color: #fafafa; font-size: 2.5rem;'></div>
+            <i data-ng-show="lista === true" class="material-icons absolute" data-ng-click="ajuda()" style="bottom: 10px; right: 10px; color: #fafafa; cursor: pointer;">info_outline</i>
+        </div>
+    </div>
+    
+    <div class="row" style="margin-top: 15px;">
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='soUnidade'; resetDropdown();" class="with-gap" type="radio" id="tipoSoUnidade" /><label for="tipoSoUnidade">Nominal por Unidade</label></p></div>
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='nominal'; resetDropdown();" class="with-gap" type="radio" checked id="tipoNominal" /><label for="tipoNominal">Nominal por Turma</label></p></div>
+        <div class="col s12 m3 l3"><p data-ng-show="isAdmin"><input name="tipo" data-ng-click="ativo='instituicao'; buscarInstituicoes();" class="with-gap" type="radio" id="tipoInstituicao" /><label for="tipoInstituicao">Quantitativo por Instituição</label></p></div>
+        <div class="col s12 m3 l3"><p><input name="tipo" data-ng-click="ativo='unidade'; resetDropdown();" class="with-gap" type="radio" id="tipoUnidade" /><label for="tipoUnidade">Quantitativo por Unidade</label></p></div>
+    </div>
+    
+    <div class="row card relative" style="margin-top: 15px; overflow-y: auto; height: {{height}}px !important;">
+        
+        <div data-ng-if="ativo === 'soUnidade'" class="row soUnidade" style="padding-top: 15px;">
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                    <option disabled selected></option>
+                    <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Unidade de Ensino</label>
+            </div>
+            <!--<div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
+                <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+            </div>-->
+        </div>
+        <div data-ng-if="ativo === 'soUnidade'" class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlServidor}}/report/enturmacoes/nominal-unidade?unidade={{unidade.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
+        
+        <div data-ng-if="ativo === 'nominal'" class="row nominal" style="padding-top: 15px;">
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                    <option disabled selected></option>
+                    <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Unidade de Ensino</label>
+            </div>
+            <!--<div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaBusca">
+                <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+            </div>-->
+            <div class="input-field col s12 m6 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="curso" ng-change="selecionaCurso(curso.id)" data-ng-model="curso.id" required>
+                    <option disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome }}</option>
+                </select>
+                <label for="curso">Curso</label>
+            </div>
+            <div class="input-field col s12 m6 l6" data-ng-show="escrita">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="etapa" data-ng-model="etapa.id" required>
+                    <option disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ etapa.id }}" data-ng-repeat="etapa in etapas">{{ etapa.nome }}</option>
+                </select>
+                <label for="etapa">Etapa</label>
+            </div>
+            <div class="input-field col s12 m6 l6" data-ng-show="escrita">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="turma" data-ng-model="turma.id" required>
+                    <option disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ turma.id }}" data-ng-repeat="turma in turmas">{{ turma.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Turma</label>
+            </div>
+        </div>
+        <div data-ng-if="ativo === 'nominal'" class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlServidor}}/report/enturmacoes/nominal-turma?turma={{turma.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
+        
+        <div data-ng-if="ativo === 'instituicao'" data-ng-show="isAdmin" class="row instituicao" style="padding-top: 15px;">
+            <div class="input-field col s12 m12 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="instituicoes" data-ng-model="instituicao.id" required>
+                    <option data-ng-if="instituicoes.length > 1" disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ instituicao.id }}" data-ng-repeat="instituicao in instituicoes">{{ instituicao.nome }}</option>
+                </select>
+                <label for="instituicoes">Instituições</label>
+            </div>
+            <div class="input-field col s12 m12 l6">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="cursos" data-ng-model="curso.id" required>
+                    <option data-ng-if="curso.length > 1" disabled selected></option>
+                    <option class="truncate ng-binding" value="{{ curso.id }}" data-ng-repeat="curso in cursos">{{ curso.nome }}</option>
+                </select>
+                <label for="cursos">Curso</label>
+            </div>
+        </div>
+        <div data-ng-if="ativo === 'instituicao'" class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlServidor}}/report/enturmacoes/quantitativo-instituicao?instituicao={{instituicao.id}}&curso={{curso.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
+        
+        <div data-ng-if="ativo === 'unidade'" class="row unidade" style="padding-top: 15px;">
+            <div class="input-field col s12 m6 l12">
+                <i class="material-icons prefix">account_balance</i>
+                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade2.id" required>
+                    <option disabled selected></option>
+                    <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
+                </select>
+                <label for="unidade">Unidade de Ensino</label>
+            </div>
+            <!--<div class="input-field col s12 m12 l12" data-ng-show="isAdmin">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidadeRelatorioUnidade" data-ng-change="buscarUnidades(nomeUnidadeRelatorioUnidade)" data-activates="dropUnidadesTurmaBusca2">
+                <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+            </div>-->
+        </div>
+        <div data-ng-if="ativo === 'unidade'" class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
+            <a target="_blank" href="{{config.urlServidor}}/report/enturmacoes/quantitativo-unidade?unidadeEnsino={{unidade.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+        </div>
+        
+    </div>
+    
+    <ul id='dropUnidadesTurmaBusca' class='dropdown-content'>
+        <li class="divider"></li>
+        <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+    </ul>
+    <ul id='dropUnidadesTurmaBusca2' class='dropdown-content'>
+        <li class="divider"></li>
+        <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+    </ul>
+    
+    <modal-relatorio></modal-relatorio>
+</div>

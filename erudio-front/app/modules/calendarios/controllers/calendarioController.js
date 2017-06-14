@@ -264,7 +264,7 @@
                 Servidor.verificaLabels();
                 $scope.editando = true;
                 $scope.fecharCortina();
-            }, 1000);
+            }, 500);
         };
 
         $scope.selecionarTipoEvento = function() {
@@ -677,7 +677,7 @@
             var result = Servidor.finalizar(evento, 'calendarios/' + calendario.id + '/dias/' + evento.dia.id + '/eventos', '');
             result.then(function (response) {                        
                 if(calendario.id === $scope.calendario.id) {
-                    $scope.eventos.push(response.data);
+                    $scope.eventos.push(response.data);                    
                     for (var i = 0; i < $scope.semanas.length; i++) {
                         switch (response.data.dia.id) {
                             case $scope.semanas[i].domingo.id:
@@ -825,8 +825,7 @@
                     $scope.carregarCalendario(response.data);
                 } else {
                     $scope.salvarPeriodosMedia(response.data);
-                }
-                $scope.fecharCortina();
+                }                    
             });
         };
 

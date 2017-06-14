@@ -42,25 +42,29 @@ class Transferencia extends Movimentacao {
           STATUS_RECUSADO = 'RECUSADO';
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @ORM\Column(type = "string", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @ORM\Column(type = "string", nullable = false) 
+    */
     private $status;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_agendamento", type = "date") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_agendamento", type = "date") 
+    */
     private $dataAgendamento;
     
     /** 
-        * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
-        * @ORM\Column(name = "data_encerramento", type = "datetime") 
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
+    * @ORM\Column(name = "data_encerramento", type = "datetime") 
+    */
     private $dataEncerramento;
     
-    /** @ORM\Column() */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column 
+    */
     private $resposta;
     
     /** 

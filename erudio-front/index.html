@@ -53,8 +53,8 @@
         <script type="text/javascript" src="lib/css/materialize/js/materialize.js"></script>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <!-- Google Maps API -->
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDGYOmrW5zjuyneSG5b5D5Bvmwi5GmJfTA"></script>
+        <!-- Google Maps API 
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDGYOmrW5zjuyneSG5b5D5Bvmwi5GmJfTA"></script> -->
         <!-- OpenStreetMap API 
         <script type="text/javascript" src="lib/js/jquery/openlayers/OpenLayers.js"></script> -->
 
@@ -113,7 +113,7 @@
                                         </div>
                                     </div>
                                     <div class='row'>
-                                        <a style="font-size: 15px;" href="#/"><div class='white-text username truncate pointer left' style="padding: 1.2rem 0 0 1rem"></div></a>
+                                        <a style="font-size: 15px;" href="/#/"><div class='white-text username truncate pointer left' style="padding: 1.2rem 0 0 1rem"></div></a>
                                     </div>
                                 </div>
                             </li>
@@ -152,6 +152,7 @@
                                         <li data-ng-show="verificarPermissoes('TURMA')"><a href="#/turmas" data-ng-click="TurmaService.fechaForm()">Turma</a></li>
                                         <li data-ng-show="verificarPermissoes('MATRICULA')"><a href="#/matriculas" data-ng-click="MatriculaService.fechaForm(); TurmaService.fechaForm();">Matrícula e Enturmação</a></li>
                                         <li data-ng-show="verificarPermissoes('MOVIMENTACAO')"><a href="#/movimentacoes">Movimentação</a></li>
+                                        <li data-ng-show="verificarPermissoes('MEDIAS')"><a href="#/medias">Notas e Faltas</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -179,20 +180,24 @@
                                  <a class="collapsible-header">Documentos</a>
                                  <div class="collapsible-body">
                                      <ul class="menuLateral">                                        
-                                        <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a href="#/boletim-escolar">Boletim Escolar</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a href="#/diario-frequencia">Diário de Frequência</a></li>
-                                        <li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a href="#/historico-escolar">Historico Escolar</a></li>                                        
-                                        <li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a href="#/vagas">Solicitação de Vaga</a></li>
-                                        <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a href="#/registro-matriculas">Registro de Matriculas</a></li>
+                                        <!--<li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a href="#/boletim-escolar">Boletim Escolar</a></li>-->
+                                        <li data-ng-show="verificarPermissoes('BOLETIM_ESCOLAR')"><a href="#/boletins">Boletim Escolar</a></li>
+                                        <li data-ng-show="verificarPermissoes('DIARIO_FREQUENCIA')"><a class="submenu-style" href="#/diario-frequencia">Diário de Frequência</a></li>
+					<li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/diario-notas">Diário de Notas</a></li>
+                                        <!--<li data-ng-show="verificarPermissoes('DIARIO_NOTAS')"><a href="#/historico-escolar">Historico Escolar</a></li>-->
+                                        <!--<li data-ng-show="verificarPermissoes('SOLICITAR_VAGA')"><a href="#/vagas">Solicitação de Vaga</a></li>-->
+                                        <!-- <li data-ng-show="verificarPermissoes('REGISTRO_MATRICULA')"><a href="#/registro-matriculas">Registro de Matriculas</a></li> -->
                                      </ul>
                                  </div>
                              </li>
-                            <li class="bold opacityInit">
+			     <li class="bold opacityInit">
                                 <a class="collapsible-header">Relatórios</a>
                                 <div class="collapsible-body">
                                     <ul class="menuLateral">
-                                        <li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a href="#/alunos-defasados">Alunos Defasados</a></li>
-                                        <li data-ng-show="verificarPermissoes('ESPELHO_NOTA')"><a href="#/espelho-notas">Espelho de Nota</a></li>
+                                        <!--<li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a href="#/alunos-defasados">Alunos Defasados</a></li>-->
+					<li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/relatorio-alunos-defasados">Alunos Defasados</a></li>
+					<li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/alunos-enturmados">Alunos Enturmados</a></li>
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a href="#/espelhos">Espelho de Notas</a></li> 
                                     </ul>
                                 </div>
                             </li>
@@ -287,6 +292,11 @@
         <script type="text/javascript" src="app/modules/main/services/erudioConfig.js"></script>
         <script type="text/javascript" src="app/modules/instituicoes/controllers/instituicaoController.js"></script>
         
+        <script type="text/javascript" src="app/modules/medias/controllers/mediasController.js"></script>
+        <script type="text/javascript" src="app/modules/medias/directives/mediasDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/boletins/controllers/boletinsController.js"></script>
+        <script type="text/javascript" src="app/modules/boletins/directives/boletinsDirectives.js"></script>
+        
         <!-- Cursos -->
         <script type="text/javascript" src="app/modules/cursos/controllers/cursoController.js"></script>
         <script type="text/javascript" src="app/modules/cursos/controllers/cursoFormController.js"></script>
@@ -305,6 +315,18 @@
         <script type="text/javascript" src="app/modules/quadroHorarios/controllers/quadroHorarioController.js"></script>
         <script type="text/javascript" src="app/modules/modeloQuadroHorarios/controllers/modeloQuadroHorarioController.js"></script>
         <script type="text/javascript" src="app/modules/matriculas/controllers/matriculaController.js"></script>
+
+	<!-- Relatorios -->
+        <script type="text/javascript" src="app/modules/relatorios/controllers/relatorioController.js"></script>
+	<script type="text/javascript" src="app/modules/relatorios/directives/relatorioDirectives.js"></script>
+	<script type="text/javascript" src="app/modules/diarioNotas/controllers/diarioNotasController.js"></script>
+	<script type="text/javascript" src="app/modules/relatorioAlunosDefasados/controllers/relatoriosDefasadosController.js"></script>
+        <script type="text/javascript" src="app/modules/relatorioAlunosDefasados/directives/relatoriosDefasadosDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/espelho/controllers/espelhoController.js"></script>
+        
+        <script type="text/javascript" src="app/modules/reclassificacao/controllers/reclassificacaoController.js"></script>
+        <script type="text/javascript" src="app/modules/reclassificacao/directives/reclassificacaoDirectives.js"></script>
+
         <script type="text/javascript" src="app/modules/pessoas/controllers/pessoaController.js"></script>
         <script type="text/javascript" src="app/modules/funcionarios/controllers/funcionarioController.js" ></script>
         <script type="text/javascript" src="app/modules/cargos/controllers/cargosController.js" ></script>  
@@ -361,6 +383,7 @@
         <script type="text/javascript" src="app/modules/alunosDefasados/directives/alunosDefasadosDirectives.js"></script>
         <script type="text/javascript" src="app/modules/grupoPermissoes/directives/grupoPermissaoDirectives.js"></script>
         <script type="text/javascript" src="app/modules/turmasMistas/directives/turmasMistasDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/espelho/directives/espelhoDirectives.js"></script>
         
         <!-- Angular Services & Other Stuffs -->        
         <script type="text/javascript" src="app/modules/util/services/servidor.js"></script>

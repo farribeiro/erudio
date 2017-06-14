@@ -33,12 +33,16 @@ use CoreBundle\ORM\AbstractFacade;
 
 class ConceitoFacade extends AbstractFacade {
     
-        function getEntityClass() {
+    function getEntityClass() {
         return 'AvaliacaoBundle:Conceito';
     }
     
     function queryAlias() {
         return 'c';
+    }
+    
+    function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->orderBy('c.valorMinimo');
     }
     
 }

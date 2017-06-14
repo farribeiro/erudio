@@ -45,13 +45,13 @@ class Frequencia extends AbstractEditableEntity {
     const DISPENSA = 'DISPENSA';
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @ORM\Column(type = "string", nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @ORM\Column(type = "string", nullable = false) 
+    */
     private $status;
     
     /**  
-    *  @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\Column
     */
     private $justificativa;
@@ -64,7 +64,7 @@ class Frequencia extends AbstractEditableEntity {
     private $disciplinaCursada;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Aula") 
     */
     private $aula;

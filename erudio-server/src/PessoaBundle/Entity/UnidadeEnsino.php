@@ -29,7 +29,6 @@
 namespace PessoaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -43,23 +42,13 @@ class UnidadeEnsino extends Instituicao {
     * @ORM\ManyToOne(targetEntity = "TipoUnidadeEnsino") 
     */
     private $tipo;
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @ORM\ManyToMany(targetEntity="\CursoBundle\Entity\Curso")
-    * @ORM\JoinTable(name="edu_unidade_ensino_curso",
-    *      joinColumns={@ORM\JoinColumn(name="unidade_ensino_id", referencedColumnName="id")},
-    *      inverseJoinColumns={@ORM\JoinColumn(name="curso_id", referencedColumnName="id")}
-    *   )
-    */
-    private $cursos;
         
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty()
     */
     function getNomeCompleto() {
-        return $this->tipo->getSigla() . ' ' . $this->getNome();
+        return $this->tipo != null ? "{$this->tipo->getSigla()} {$this->getNome()}" : $this->getNome();
     }    
     
     function getTipo() {
@@ -68,14 +57,6 @@ class UnidadeEnsino extends Instituicao {
 
     function setTipo(TipoUnidadeEnsino $tipo) {
         $this->tipo = $tipo;
-    }
-    
-    function getCursos() {
-        return $this->cursos;
-    }
-
-    function setCursos(ArrayCollection $cursos) {
-        $this->cursos = $cursos;
     }
     
 }

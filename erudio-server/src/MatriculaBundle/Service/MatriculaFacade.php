@@ -30,9 +30,10 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\Matricula;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
-use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 class MatriculaFacade extends AbstractFacade {
     
@@ -64,6 +65,10 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->join('m.curso', 'curso')
                    ->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },
+            'etapa' => function(QueryBuilder $qb, $value) {
+                $qb->leftJoin('m.etapa', 'etapa')
+                   ->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
+            },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.unidadeEnsino', 'unidadeEnsino')
                    ->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
@@ -71,16 +76,26 @@ class MatriculaFacade extends AbstractFacade {
             'codigo' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.codigo LIKE :codigo')->setParameter('codigo', '%' . $value . '%');
             },
-            'alfabetizado' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('m.alfabetizado = :alfabetizado')->setParameter('alfabetizado', $value);
-            },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             }
         );
     }
     
+    function uniqueMap($matricula) {
+        return [
+            [
+                'curso' => $matricula->getCurso()->getId(), 
+                'aluno' => $matricula->getAluno()->getId(), 
+                'status' => Matricula::STATUS_CURSANDO
+            ]
+        ];
+    }
+    
     protected function beforeCreate($matricula) {
+        if ($this->jaExiste($matricula)) {
+            throw new IllegalOperationException('Pessoa já possui matrícula neste curso');
+        }
         $this->gerarCodigo($matricula);
     }
     
@@ -89,13 +104,23 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($matricula) {
-        if($matricula->getAlfabetizado() == "") {
-            $matricula->setAlfabetizado(null);
-        }
         $this->orm->getManager()->flush();
     }
     
-    private function gerarCodigo($matricula) {
+    private function jaExiste(Matricula $matricula) {
+        $qb = $this->orm->getManager()->createQueryBuilder();
+        return $qb->select('COUNT(m.id)')
+            ->from($this->getEntityClass(), 'm')
+            ->join('m.aluno', 'aluno')->join('m.curso', 'curso')
+            ->where('m.ativo = true')
+            ->andWhere('aluno.id = :aluno')->setParameter('aluno', $matricula->getAluno()->getId())
+            ->andWhere('curso.id = :curso')->setParameter('curso', $matricula->getCurso()->getId())
+            ->andWhere('m.status IN (:status)')
+            ->setParameter('status', [Matricula::STATUS_CURSANDO, Matricula::STATUS_TRANCADO])
+            ->getQuery()->getSingleScalarResult() > 0;
+    }
+    
+    private function gerarCodigo(Matricula $matricula) {
         $now = new \DateTime();
         $ano = $now->format('Y');
         $qb = $this->orm->getManager()->createQueryBuilder()

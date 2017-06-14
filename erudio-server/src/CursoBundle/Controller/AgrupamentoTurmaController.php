@@ -29,87 +29,70 @@
 namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use FOS\RestBundle\Controller\Annotations\Post;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\AgrupamentoTurma;
 
 /**
- * @RouteResource("turmas/agrupamentos")
+ * @FOS\RouteResource("turmas/agrupamentos")
  */
-class AgrupamentoTurmaController extends AbstractEntityResource {
+class AgrupamentoTurmaController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CursoBundle:AgrupamentoTurma';
-    }
-    
-    function queryAlias() {
-        return 'a';
-    }
-    
-    function parameterMap() {
-        return array (
-            'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
-            }
-        );
+    function getFacade() {
+        return $this->get('facade.curso.agrupamentos_turma');
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    *    
+    *   @FOS\Get("turmas/agrupamentos/{id}", requirements={"id" = "\d+"})
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        * 
-        *   @QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("turmas/agrupamentos") 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
+    */
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
     *  @ApiDoc()
     * 
-    *  @Post("turmas/agrupamentos")
+    *  @FOS\Post("turmas/agrupamentos")
     *  @ParamConverter("agrupamento", converter="fos_rest.request_body")
     */
     function postAction(Request $request, AgrupamentoTurma $agrupamento, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($agrupamento);
+        return $this->post($request, $agrupamento, $errors);
     }
     
     /**
-        *  @ApiDoc()
-        * 
-        *  @Put("turmas/agrupamentos/{id}")
-        *  @ParamConverter("agrupamento", converter="fos_rest.request_body")
-        */
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("turmas/agrupamentos/{id}")
+    *  @ParamConverter("agrupamento", converter="fos_rest.request_body")
+    */
     function putAction(Request $request, $id, AgrupamentoTurma $agrupamento, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $agrupamento);
+        return $this->put($request, $id, $agrupamento, $errors);
     }
     
     /**
-        *   @ApiDoc()
-        */
+    *   @ApiDoc()
+    * 
+    *  @FOS\Delete("turmas/agrupamentos/{id}")
+    */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

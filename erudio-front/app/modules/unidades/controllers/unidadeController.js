@@ -433,7 +433,7 @@
         /* Previne os dados de serem descartados */
         $scope.prepararVoltar = function(objeto) {
             if (objeto.nome && !objeto.id) {
-                $('#modal-certeza').openModal();
+                $('#modal-certeza').modal();
             } else {
                 $scope.fecharFormulario();
             }
@@ -536,7 +536,7 @@
                 $('.opcoesUnidade' + unidade.id).hide();
                 $scope.fechaLoader();
                 $scope.buscaTelefones();
-                $timeout(function(){ $('#info-modal-unidade').openModal(); $scope.initMap(false, "info-map"); },500);
+                $timeout(function(){ $('#info-modal-unidade').modal(); $scope.initMap(false, "info-map"); },500);
             }, 300);
         };
 
@@ -622,7 +622,7 @@
             $timeout(function() {
                 $('#descricao').material_select('destroy');
                 $('#descricao').material_select();
-                $('#telefone-modal-unidade').openModal();
+                $('#telefone-modal-unidade').modal();
                 $('.lean-overlay').on('click', function() {
                     $('.lean-overlay').hide();
                 });
@@ -645,7 +645,7 @@
 
         /* Busca Tipos de Unidade */
         $scope.buscarTipos = function() {
-            var promise = Servidor.buscar('unidades-ensino/tipos',null);
+            var promise = Servidor.buscar('tipos-unidade-ensino',null);
             promise.then(function (response){
                 $scope.tipos = response.data;
             });
@@ -661,7 +661,7 @@
 
         /* Guarda a instituição para futura remoção e abre o modal de confirmação */
         $scope.prepararRemover = function (unidade, index){
-            $('#remove-modal-unidade').openModal();
+            $('#remove-modal-unidade').modal();
             $scope.unidadeRemover = unidade;
             $('.opcoesunidade' + unidade.id).hide();
             $scope.index = index;

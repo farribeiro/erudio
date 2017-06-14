@@ -36,9 +36,14 @@
         }).when('/unidades',{ templateUrl: 'app/modules/unidades/partials/unidades.html', controller: 'UnidadeController'
         }).when('/regimes',{ templateUrl: 'app/modules/regimes/partials/regimes.html', controller: 'RegimeController'
             
-        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
-        }).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
-        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
+        //}).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoController'
+        //}).when('/cursos/:id',{ templateUrl: 'app/modules/cursos/partials/template.html', controller: 'CursoFormController'
+        }).when('/cursos',{ templateUrl: 'app/modules/cursos/partials/cursos.html', controller: 'CursoController'
+            
+        }).when('/reclassificacao',{ templateUrl: 'app/modules/reclassificacao/partials/reclassificacao.html', controller: 'ReclassificacaoController'
+        }).when('/medias',{ templateUrl: 'app/modules/medias/partials/template.html', controller: 'MediasController'
+        }).when('/boletins',{ templateUrl: 'app/modules/boletins/partials/template.html', controller: 'BoletinsController'
+	}).when('/espelhos',{ templateUrl: 'app/modules/espelho/partials/template.html', controller: 'EspelhoController'
             
         }).when('/etapas',{ templateUrl: 'app/modules/etapas/partials/etapas.html', controller: 'EtapaController'
         }).when('/disciplinas',{ templateUrl: 'app/modules/disciplinas/partials/disciplinas.html', controller: 'DisciplinaController'
@@ -50,6 +55,11 @@
         }).when('/eventos',{ templateUrl: 'app/modules/eventos/partials/eventos.html', controller: 'eventoController'
         }).when('/turmas',{ templateUrl: 'app/modules/turmas/partials/turmas.html', controller: 'TurmaController'
         }).when('/matriculas',{ templateUrl: 'app/modules/matriculas/partials/matriculas.html', controller: 'MatriculaController'
+
+	}).when('/alunos-enturmados',{ templateUrl: 'app/modules/relatorios/partials/template.html', controller: 'RelatoriosController'
+	}).when('/diario-notas',{ templateUrl: 'app/modules/diarioNotas/partials/template.html', controller: 'DiarioNotasController'
+	}).when('/relatorio-alunos-defasados',{ templateUrl: 'app/modules/relatorioAlunosDefasados/partials/template.html', controller: 'RelatorioDefasadosController'
+
         }).when('/movimentacoes',{ templateUrl: 'app/modules/movimentacoes/partials/movimentacoes.html', controller: 'movimentacoesController'
         }).when('/pessoas',{ templateUrl: 'app/modules/pessoas/partials/pessoas.html', controller: 'pessoaController'
         }).when('/cargos',{ templateUrl: 'app/modules/cargos/partials/cargos.html', controller: 'cargoController'
@@ -78,7 +88,7 @@
         sessionStorage.setItem('baseUrl',ErudioConfig.urlServidor); sessionStorage.setItem('baseUploadUrl',ErudioConfig.urlUpload);
         var sessionId = sessionStorage.getItem('sessionId'); var nome = sessionStorage.getItem('nome');
         if (!sessionId) { window.location = 'login.html'; } else { $timeout(function(){ $('.username').html(nome); },500); }
-        var width = $(window).width();
-        if (width < 992) { $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');}
+        //var width = $(window).width();
+        //if (width < 992) { $('head').append('<script type="text/javascript" src="lib/js/jquery/jquery.mobile.min.js"></script>');}
     }]);
 })();

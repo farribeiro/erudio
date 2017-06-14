@@ -32,11 +32,15 @@ use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
-use MatriculaBundle\Entity\DisciplinaCursada;
-use MatriculaBundle\Entity\Enturmacao;
 use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
+    
+    private $enturmacaoFacade;
+    
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+    }
     
     function getEntityClass() {
         return 'MatriculaBundle:Desligamento';
@@ -56,6 +60,11 @@ class DesligamentoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($desligamento) {
+        $this->desligarMatricula($desligamento);
+        $this->encerrarEnturmacoes($desligamento->getMatricula());
+    }
+    
+    private function desligarMatricula(Desligamento $desligamento) {
         $matricula = $desligamento->getMatricula();
         switch($desligamento->getMotivo()) {
             case Desligamento::ABANDONO:
@@ -66,37 +75,19 @@ class DesligamentoFacade extends AbstractFacade {
                 break;
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
+                break;
+            case Desligamento::CANCELAMENTO:
+                $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
-        $this->encerrarEnturmacoes($matricula);
-        $this->encerrarDisciplinas($matricula);
-    }
-    
-    private function encerrarDisciplinas(Matricula $matricula) {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq('status', DisciplinaCursada::STATUS_CURSANDO));
-        $disciplinas = $matricula->getDisciplinasCursadas()->matching($criteria);
-        foreach ($disciplinas as $d) {
-            $d->setStatus(DisciplinaCursada::STATUS_INCOMPLETO);
-            $this->orm->getManager()->merge($d);
-            $this->orm->getManager()->flush();
-        }
+        $this->orm->getManager()->merge($matricula);
+        $this->orm->getManager()->flush();
     }
     
     private function encerrarEnturmacoes(Matricula $matricula) {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('encerrado', false));
         $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
         foreach ($enturmacoes as $e) {
-            $e->encerrar();
-            $this->liberarVagas($e);
-            $this->orm->getManager()->merge($e);
-            $this->orm->getManager()->flush();
-        }
-    }
-    
-    private function liberarVagas(Enturmacao $enturmacao) {
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(['enturmacao' => $enturmacao]);
-        foreach ($vagas as $vaga) {
-            $vaga->setEnturmacao(null);
-            $this->orm->getManager()->merge($vaga);
+            $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
         }
     }
     

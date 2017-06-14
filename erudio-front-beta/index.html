@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Erudio</title>
+        <!-- META -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#000">
+        <link rel="icon" href="assets/images/erudio.png">
+        <link rel="stylesheet" href="lib/material/angular-material.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
+        
+        <!-- JQUERY -->
+        <script src="lib/js/jquery/jquery.js"></script>
+        <script src="lib/js/jquery/jquery.mask.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment-timezone.js"></script>
+        
+        <!-- ANGULAR -->
+        <script src="lib/angular/angular.min.js"></script>
+        <script src="lib/angular/angular-route.js"></script>
+        <script src="lib/angular/angular-animate.min.js"></script>
+        <script src="lib/angular/angular-aria.min.js"></script>
+        <script src="lib/angular/angular-messages.min.js"></script>
+        <script src="lib/angular/angular-translate.min.js"></script>
+        <script src="lib/angular/angular-translate-loader-static-files.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/underscore-min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/restangular.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/angular-md5.js"></script>
+        <script type="text/javascript" src="lib/js/angular/sha1.js"></script>
+        
+        <!-- ANGULAR MATERIAL -->
+        <script src="lib/material/angular-material.min.js"></script>
+    </head>
+    <body ng-app="Erudio" ng-cloak>
+        <!-- BARRA DE PROGRESSO -->
+        <md-progress-linear class="md-warn progresso" md-mode="indeterminate"></md-progress-linear>
+        <div class="cortina"></div>
+        
+        <md-content class="fit-screen" ng-controller="AppController">            
+            <section class="main-layout" layout="row" flex>
+                
+                <!-- MENU LATERAL -->
+                <md-sidenav class="md-sidenav-left md-whiteframe-3dp" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+                    <md-toolbar class="md-tall">
+                        <div class="md-toolbar-tools">
+                            <h2 flex md-truncate></h2>
+                            <md-menu md-position-mode="target-right target">
+                                <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
+                                <md-menu-content class="main-menu" width="2">
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>Perfil</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>Sobre</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>O que mudou?</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>Configurações</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>Sair</p></div></md-button></md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                        </div>
+                        <span flex></span>
+                    </md-toolbar>
+                    
+                    <!-- MENU -->
+                    <md-content>
+                        <ul class="menu" flex ng-repeat="menu in menus track by $index">
+                            <li ng-click="menuToggle($index)" class="menu-titulo">{{ menu.categoria }}</li>
+                            <md-divider></md-divider>
+                            <ul class="submenu submenu{{$index}}" ng-show="menu.temSubmenu" >
+                                <li ng-repeat="link in menu.links" class="submenu-item"><a data-titulo="{{ link.label }}" class="link-submenu" href="{{ link.href }}">{{ link.label }}</a></li>
+                                <md-divider></md-divider>
+                            </ul>
+                        </ul>
+                    </md-content>
+                </md-sidenav>
+                
+                <md-content class="w100 conteudo">
+                    <!-- TOOLBAR COM IMAGEM -->
+                    <md-toolbar class="md-tall content-bar">
+                        <div class="md-toolbar-tools">
+                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <h2 class="titulo-toolbar" flex md-truncate></h2>
+                        </div>
+                        <span flex></span>
+                    </md-toolbar>
+                    
+                    <!-- TOOLBAR ATIVADA NO SCROLL  -->
+                    <md-toolbar class="scroll-toolbar">
+                        <div class="md-toolbar-tools">
+                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <h2 class="titulo-toolbar" flex md-truncate></h2>
+                        </div>
+                        <span flex></span>
+                    </md-toolbar>
+                    
+                    <!-- CONTEUDO -->
+                    <md-content class="bottom-fix static" flex ng-view></md-content>
+                </md-content>
+            </section>
+        </md-content>
+        
+        <!-- CONTROLLERS -->
+        <script src="apps/appController.js"></script>
+        <script src="apps/appDirectives.js"></script>
+        <script src="apps/home/controllers/modulesController.js"></script>
+        <script src="util/erudioConfig.js"></script>
+        <script src="util/utilController.js"></script>
+        <script src="util/structureController.js"></script>
+        <script src="util/validatorController.js"></script>
+        <script src="util/sharedProperties.js"></script>
+        <script src="apps/home/controllers/homeController.js"></script>
+        <script src="apps/instituicoes/controllers/instituicaoController.js"></script>
+        <script src="apps/instituicoes/controllers/instituicaoFormController.js"></script>
+        <script src="apps/tiposUnidade/controllers/tipoUnidadeController.js"></script>
+        <script src="apps/tiposUnidade/controllers/tipoUnidadeFormController.js"></script>
+        <script src="apps/unidades/controllers/unidadeController.js"></script>
+        <script src="apps/unidades/controllers/unidadeFormController.js"></script>
+        <script src="apps/regimes/controllers/regimeController.js"></script>
+        <script src="apps/regimes/controllers/regimeFormController.js"></script>
+        <script src="apps/cursos/controllers/cursoController.js"></script>
+        <script src="apps/cursos/controllers/cursoFormController.js"></script>
+        <script src="apps/etapas/controllers/etapaController.js"></script>
+        <script src="apps/etapas/controllers/etapaFormController.js"></script>
+        <script src="apps/disciplinas/controllers/disciplinaController.js"></script>
+        <script src="apps/disciplinas/controllers/disciplinaFormController.js"></script>
+        <script src="apps/modulos/controllers/moduloController.js"></script>
+        <script src="apps/modulos/controllers/moduloFormController.js"></script>
+        <script src="apps/turnos/controllers/turnoController.js"></script>
+        <script src="apps/turnos/controllers/turnoFormController.js"></script>
+        <script src="apps/modelosGradeHorario/controllers/modeloGradeHorarioController.js"></script>
+        <script src="apps/modelosGradeHorario/controllers/modeloGradeHorarioFormController.js"></script>
+        <script src="apps/quadroHorarios/controllers/quadroHorariosController.js"></script>
+        <script src="apps/quadroHorarios/controllers/quadroHorariosFormController.js"></script>
+    </body>
+</html>

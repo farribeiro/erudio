@@ -61,6 +61,7 @@ class Telefone extends AbstractEditableEntity {
     private $falarCom;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("PessoaBundle\Entity\Pessoa")
     * @ORM\ManyToOne(targetEntity = "Pessoa", inversedBy = "telefones") 
     */

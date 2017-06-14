@@ -30,8 +30,15 @@ namespace CalendarioBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CalendarioBundle\Entity\HorarioDisciplina;
 
 class HorarioDisciplinaFacade extends AbstractFacade {
+    
+    private $aulaFacade;
+    
+    function setAulaFacade(AulaFacade $aulaFacade) {
+        $this->aulaFacade = $aulaFacade;
+    }
     
     function getEntityClass() {
         return 'CalendarioBundle:HorarioDisciplina';
@@ -59,6 +66,30 @@ class HorarioDisciplinaFacade extends AbstractFacade {
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('h.disciplina', 'disciplina');  
+    }
+    
+    function trocar(HorarioDisciplina $horario1, HorarioDisciplina $horario2) {
+        try {
+            $this->validarTroca($horario1, $horario2);
+            $this->orm->getManager()->beginTransaction();
+            $this->aulaFacade->trocarAulas($horario1, $horario2);
+            $horario1->trocar($horario2);
+            $this->orm->getManager()->flush();
+            $this->orm->getManager()->commit();
+        } catch(\Exception $ex) {
+            $this->orm->getManager()->rollback();
+            throw $ex;
+        }
+    }
+    
+    private function validarTroca(HorarioDisciplina $horario1, HorarioDisciplina $horario2) {
+        if ($horario1->getHorario()->getQuadroHorario()->getId() 
+            != $horario2->getHorario()->getQuadroHorario()->getId()) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::ILLEGAL_STATE_TRANSITION,
+                'Horários de quadros diferentes não podem ser trocados'
+            );
+        }
     }
     
 }

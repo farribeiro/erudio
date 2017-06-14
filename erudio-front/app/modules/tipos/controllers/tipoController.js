@@ -75,7 +75,7 @@
 
       /* Buscando tipos - Lista */
         $scope.buscarTipos = function(){
-            var promise = Servidor.buscar('unidades-ensino/tipos', null);
+            var promise = Servidor.buscar('tipos-unidade-ensino', null);
             promise.then(function(response){
                 $scope.tipos = response.data;
                 $('.tooltipped').tooltip('remove');
@@ -103,7 +103,7 @@
                             }
                         }                        
                         if (i === $scope.tipos.length-1) {
-                            var result = Servidor.finalizar($scope.tipo, 'unidades-ensino/tipos', 'Tipo de Unidade');
+                            var result = Servidor.finalizar($scope.tipo, 'tipos-unidade-ensino', 'Tipo de Unidade');
                             result.then(function (response) {
                                 $scope.fecharFormulario();
                                 $scope.fechaProgresso();
@@ -115,7 +115,7 @@
                         }
                     });
                 } else {
-                    var result = Servidor.finalizar($scope.tipo, 'unidades-ensino/tipos', 'Tipo de Unidade');
+                    var result = Servidor.finalizar($scope.tipo, 'tipos-unidade-ensino', 'Tipo de Unidade');
                     result.then(function (response) {
                         $scope.fecharFormulario();
                         $scope.fechaProgresso();

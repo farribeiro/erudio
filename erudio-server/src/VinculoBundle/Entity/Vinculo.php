@@ -40,16 +40,17 @@ use CoreBundle\ORM\AbstractEditableEntity;
 */
 class Vinculo extends AbstractEditableEntity {
     
-    const STATUS_ATIVO = "ATIVO",
-          STATUS_AFASTADO = "AFASTADO",
-          STATUS_DESLIGADO = "DESLIGADO";
+    const STATUS_ATIVO = 'ATIVO',
+          STATUS_AFASTADO = 'AFASTADO',
+          STATUS_DESLIGADO = 'DESLIGADO',
+          STATUS_CANCELADO = 'CANCELADO';
     
-    const CONTRATO_EFETIVO = "EFETIVO",
-          CONTRATO_TEMPORARIO = "TEMPORARIO",
-          CONTRATO_COMISSIONADO = "COMISSIONADO";
+    const CONTRATO_EFETIVO = 'EFETIVO',
+          CONTRATO_TEMPORARIO = 'TEMPORARIO',
+          CONTRATO_COMISSIONADO = 'COMISSIONADO';
     
     /**
-    * @JMS\Groups({"LIST"})   
+    * @JMS\Groups({"LIST"})
     * @ORM\Column
     */
     private $codigo;
@@ -106,14 +107,23 @@ class Vinculo extends AbstractEditableEntity {
         $this->status = self::STATUS_ATIVO;
     }
     
-    function getCodigo() {
-        return $this->codigo;
+    /**
+    * @JMS\VirtualProperty
+    */
+    function getAlocacoes() {
+        return $this->alocacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     function definirCodigo($codigo) {
         if($this->codigo == null) {
             $this->codigo = $codigo;
         }
+    }
+    
+    function getCodigo() {
+        return $this->codigo;
     }
 
     function getStatus() {
@@ -154,15 +164,6 @@ class Vinculo extends AbstractEditableEntity {
    
     function setCargaHoraria($cargaHoraria) {
         $this->cargaHoraria = $cargaHoraria;
-    }
-    
-    /**
-     * @JMS\VirtualProperty
-     */
-    function getAlocacoes() {
-        return $this->alocacoes->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        );
     }
      
 }

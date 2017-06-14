@@ -1,35 +1,43 @@
 # API
 api_pessoa:
-    resource: "@PessoaBundle/Resources/config/routing.yml"
+    resource: "@PessoaBundle/Controller/"
+    type: rest
     prefix: /api
     
 api_curso:
-    resource: "@CursoBundle/Resources/config/routing.yml"
+    resource: "@CursoBundle/Controller/"
+    type: rest
     prefix: /api
     
 api_matricula:
-    resource: "@MatriculaBundle/Resources/config/routing.yml"
+    resource: "@MatriculaBundle/Controller/"
+    type: rest
     prefix: /api
     
 api_vinculo:
-    resource: "@VinculoBundle/Resources/config/routing.yml"
+    resource: "@VinculoBundle/Controller/"
+    type: rest
     prefix: /api
     
 api_calendario:
-    resource: "@CalendarioBundle/Resources/config/routing.yml"
+    resource: "@CalendarioBundle/Controller/"
+    type: rest
     prefix: /api
     
 api_avaliacao:
-    resource: "@AvaliacaoBundle/Resources/config/routing.yml"
+    resource: "@AvaliacaoBundle/Controller/"
+    type: rest
     prefix: /api
-
+    
 api_auth:
-    resource: "@AuthBundle/Resources/config/routing.yml"
+    resource: "@AuthBundle/Controller/"
+    type: rest
     prefix: /api
-
-api_asset:
-    resource: "@AssetsBundle/Resources/config/routing.yml"
-    prefix: /api
+    
+api_reports:
+    resource: "@ReportBundle/Controller/"
+    type: annotation
+    prefix: /api/report
     
 # Docs    
 NelmioApiDocBundle:

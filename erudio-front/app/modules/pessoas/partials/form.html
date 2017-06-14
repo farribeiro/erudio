@@ -60,16 +60,17 @@
                             <div class="row ajuste-margin-bottom-0">
                                 <div class=" input-field col s12 m12 l6">
                                     <i class="material-icons prefix">cake</i>
-                                    <input  id="dataNascimentoAluno" type="text" class="data"  data-ng-model="pessoa.dataNascimento" data-ng-disabled="!escrita">
+                                    <input id="dataNascimentoAluno" type="text" class="data" data-ng-model="pessoa.dataNascimento" data-ng-disabled="!escrita">
                                     <label for="dataNascimentoAluno" id="nomeGrande">Data de Nascimento*</label>
                                 </div>                   
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">wc</i>
-                                    <select name="select" id="genero" style="display: none;"ng-model="pessoa.genero" data-ng-disabled="!escrita">                                
+                                    <select required name="select" id="genero" style="display: none;"ng-model="pessoa.genero" data-ng-disabled="!escrita">                                
+                                        <option></option>
                                         <option value="M" data-ng-selected="verificaGenero('M')">Masculino</option> 
                                         <option value="F" data-ng-selected="verificaGenero('F')">Feminino</option>
                                     </select>
-                                    <label for="genero">Gênero</label>
+                                    <label for="genero">Gênero*</label>
                                 </div>
                             </div>
                             <div class="row ajuste-margin-bottom-0">

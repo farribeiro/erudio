@@ -72,8 +72,8 @@
                         </div>
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix ajuste-icone-select">alarm</i>
-                            <select id="modeloQuadroHorario" data-ng-model="etapa.modeloQuadroHorario.id" data-ng-disabled="!escrita || modeloQuadroHorarios.length === 1" required>
-                                <option value="{{ modeloQuadroHorario.id }}" data-ng-selected="modeloQuadroHorarios.length === 1 || etapa.modeloQuadroHorario.id === modeloQuadroHorario.id" data-ng-repeat="modeloQuadroHorario in modeloQuadroHorarios">{{ modeloQuadroHorario.nome }}</option>
+                            <select id="modeloQuadroHorario" data-ng-model="etapa.modeloQuadroHorario.id" data-ng-disabled="!escrita" required>
+                                <option value="{{ modeloQuadroHorario.id }}" data-ng-selected="verificaSelectModeloQuadroHorario(modeloQuadroHorario.id)" data-ng-repeat="modeloQuadroHorario in modeloQuadroHorarios">{{ modeloQuadroHorario.nome }}</option>
                             </select>
                             <label for="modeloQuadroHorario">Modelo de Quadro de Horário*</label>
                         </div>

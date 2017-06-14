@@ -244,6 +244,7 @@
             $scope.pessoa.endereco.logradouro = null;
         };
 
+        $scope.unidades = []; $scope.unidade = {id:null};
         /* CARREGA O VINCULO SELECIONADO */
         $scope.carregarVinculo = function (vinculoId) {
             //se for vinculo diferente, zera alocação e disciplina
@@ -281,10 +282,10 @@
             var promise = Servidor.buscarUm('alocacoes', alocacaoId);
             promise.then(function (response) {
                 $scope.alocacao = response.data;
-                sessionStorage.setItem('unidade', response.data.instituicao.id);
+                //sessionStorage.setItem('unidade', response.data.instituicao.id);
                 if(sessionStorage.getItem('alocacao') !== alocacaoId) { sessionStorage.setItem('alocacao', alocacaoId); }
                 $scope.alocacao.id = ''; $scope.alocacao.id = sessionStorage.getItem('alocacao');
-                $timeout(function() { $('#alocacoes').material_select(); }, 150);
+                $timeout(function() { $('#alocacoes').material_select(); }, 500);
                 $scope.disciplinas = [];
                 $scope.alocacao.disciplinasMinistradas.forEach(function(d, $index){
                     var promise = Servidor.buscarUm('disciplinas-ofertadas', d.id);
@@ -917,7 +918,7 @@
         };
 
         /* Busca as alocacoes de um vinculo */
-        $scope.buscarAlocacoes = function (vinculoId) {
+        /*$scope.buscarAlocacoes = function (vinculoId) {
             var promise = Servidor.buscar('alocacoes', {'vinculo': vinculoId});
             promise.then(function (response) {
                 $scope.alocacoes = response.data;
@@ -925,6 +926,19 @@
                 if (alocacao === undefined || !alocacao && $scope.alocacoes.length === 1) { $scope.carregarAlocacao(response.data[0].id); }
                 $timeout(function () { $('#alocacoes').material_select(); }, 100);
             });
+        };*/
+        /* Busca as alocacoes de um vinculo */
+        $scope.buscarAlocacoes = function (unidade) {
+            var strPessoa = sessionStorage.getItem('pessoa'); var pessoa = JSON.parse(strPessoa); $scope.usuario = { nome: pessoa.nome };
+            if (unidade.id !== undefined || $scope.usuario.nome !== undefined) {
+                var promise = Servidor.buscar('alocacoes', {'instituicao': unidade.id, 'funcionario_nome': $scope.usuario.nome});
+                promise.then(function (response) {
+                    $scope.alocacoes = response.data;
+                    for (var i=0; i<$scope.alocacoes.length; i++) { if ($scope.alocacoes[i].instituicao.nomeCompleto === undefined) { $scope.alocacoes[i].instituicao.nomeCompleto = $scope.alocacoes[i].instituicao.nome; } }
+                    var alocacao = sessionStorage.getItem('alocacao'); console.log(alocacao);
+                    if (alocacao === undefined || alocacao === "" || alocacao === null) { $scope.carregarAlocacao(response.data[0].id); } else { $scope.carregarAlocacao(alocacao); }
+                });
+            }
         };
 
         $scope.verificaSelectVinculo = function (id) {
@@ -1859,9 +1873,43 @@
             Servidor.verificaLabels();
         };
 
+        //SELECIONA UNIDADE DE ENSINO
+        $scope.selecionaUnidade = function(unidade) {
+            $scope.unidade = unidade; $timeout(function(){ Servidor.verificaLabels(); $scope.buscarAlocacoes($scope.unidade); },100);
+            if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
+            sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); 
+        };
+
         /* INICIALIZA A PAGINA */
         $scope.inicializar = function () {
             if (sessionStorage.getItem('module') === 'main') {
+                var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                promise.then(function(response) {
+                    var user = response.data[0];
+                    $scope.atribuicoes = user.atribuicoes;
+                    $timeout(function () {
+                        for (var i=0; i<$scope.atribuicoes.length; i++) {
+                            if ($scope.atribuicoes[i] !== undefined) {
+                                if ($scope.atribuicoes[i].instituicao !== undefined) { 
+                                    if ($scope.atribuicoes[i].instituicao.instituicaoPai === undefined) { $scope.atribuicoes[i].instituicao.nomeCompleto = $scope.atribuicoes[i].instituicao.nome; }
+                                    $scope.unidades.push($scope.atribuicoes[i].instituicao);
+                                }
+                                if (i === $scope.atribuicoes.length-1) {
+                                    //if ($scope.unidades.length === 1) { 
+                                        $scope.unidade = $scope.unidades[0]; $scope.selecionaUnidade($scope.unidades[0]);
+                                        /*if ($scope.unidade.instituicaoPai === undefined) { sessionStorage.setItem('visãoGeral',true); } else { sessionStorage.setItem('visãoGeral',false); }
+                                        sessionStorage.setItem('unidade', JSON.stringify($scope.unidade)); */
+                                        //$scope.buscarAlocacoes($scope.unidades[0]);
+                                    //}
+                                    $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); }, 500);
+                                    $timeout(function () { $('#vinculos, #disciplinas').material_select(); Servidor.entradaPagina(); $scope.inicializando = false; }, 500);
+                                }
+                            }
+                        }
+                    },500);
+                });
+            }
+            /*if (sessionStorage.getItem('module') === 'main') {
                 $scope.vinculos = []; $scope.limparVinculo();
                 var strPessoa = sessionStorage.getItem('pessoa');
                 var pessoa = JSON.parse(strPessoa);
@@ -1898,7 +1946,7 @@
                         $scope.inicializando = false;
                     }
                 });
-            }
+            }*/
         };
 
         $scope.mostrarFAB = function () {
@@ -1943,7 +1991,7 @@
         } else {
             this.selecionar(sessionStorage.getItem('module'), sessionStorage.getItem('moduleOptions'));
         }*/
-        if ($scope.inicializando === false) { $scope.inicializar(); };
+        $scope.inicializar();
     }]);
 
 })();

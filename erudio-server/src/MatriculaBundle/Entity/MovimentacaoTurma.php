@@ -46,12 +46,15 @@ class MovimentacaoTurma extends Movimentacao {
     
     /** 
     * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Enturmacao", cascade = {"persist"}) 
+    * @ORM\ManyToOne(targetEntity = "Enturmacao") 
     * @ORM\JoinColumn(name = "enturmacao_destino_id") 
     */
     private $enturmacaoDestino;
     
-    /** @JMS\Type("CursoBundle\Entity\Turma") */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("CursoBundle\Entity\Turma") 
+    */
     private $turmaDestino;
     
     function getEnturmacaoOrigem() {
@@ -66,10 +69,10 @@ class MovimentacaoTurma extends Movimentacao {
         return $this->turmaDestino;
     }
     
-    function aplicar() {
-        $enturmacao = new Enturmacao($this->getMatricula(), $this->turmaDestino);
-        $this->enturmacaoDestino = $enturmacao;
-        $this->enturmacaoOrigem->encerrar();
+    function aplicar(Enturmacao $enturmacaoDestino) {
+        if (!$this->enturmacaoDestino) {
+            $this->enturmacaoDestino = $enturmacaoDestino;
+        }
     }
     
 }

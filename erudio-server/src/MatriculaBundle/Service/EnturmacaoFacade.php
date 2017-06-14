@@ -31,6 +31,7 @@ namespace MatriculaBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use CursoBundle\Entity\Turma;
 use MatriculaBundle\Entity\Enturmacao;
 use CursoBundle\Service\VagaFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
@@ -39,14 +40,6 @@ class EnturmacaoFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
     private $vagaFacade;
-    
-    function encerrarPorTransferencia(Enturmacao $enturmacao) {
-        $enturmacao->encerrar();
-        $this->orm->getManager()->merge($enturmacao);
-        $this->orm->getManager()->flush();
-        $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
-        $this->liberarVagas($enturmacao);
-    }
     
     function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
@@ -81,8 +74,69 @@ class EnturmacaoFacade extends AbstractFacade {
     
     function uniqueMap($enturmacao) {
         return [
-            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma()]
+            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma(), 'encerrado' => 0]
         ];
+    }
+    
+    /**
+     * Lista enturmaçẽos de alunos defasados de um curso ofertado, em determinada etapa.
+     * 
+     * @param Etapa $etapa
+     * @return array alunos defasados
+     */
+    function getAlunosDefasados($cursoOfertado, $etapa, \DateTime $dataReferencia = null) {
+        $dataLimite = $dataReferencia ? $dataReferencia 
+                : \DateTime::createFromFormat('Y-m-d', (new \DateTime())->format('Y') . '-03-31');
+        $idadeLimite = $etapa->getIdadeRecomendada() + $etapa->getCurso()->getLimiteDefasagem();
+        $dataLimite->sub(new \DateInterval("P{$idadeLimite}Y"));
+        $qb = $this->orm->getManager()->createQueryBuilder()->select('en')
+            ->from($this->getEntityClass(), 'en')
+            ->join('en.turma', 't')->join('t.etapa', 'e')->join('t.unidadeEnsino', 'u')
+            ->join('en.matricula', 'm')->join('m.aluno', 'a')
+            ->where('en.ativo = true')->andWhere('en.encerrado = false')
+            ->andWhere('u.id = :unidadeEnsino')->andWhere('e.id = :etapa')
+            ->andWhere('a.dataNascimento < :limiteInferior')
+            ->setParameter('etapa', $etapa->getId())
+            ->setParameter('unidadeEnsino', $cursoOfertado->getUnidadeEnsino()->getId())
+            ->setParameter('limiteInferior', $dataLimite);
+        return $qb->getQuery()->getResult();
+    }
+    
+    /**
+     * Conta alunos de uma turma. O parâmetro adicional filtra a contagem por gênero.
+     * 
+     * @param Turma $turma
+     * @param $genero 'M' para masculino e 'F' para feminino
+     * @return integer número de alunos da turma
+     */
+    function countByTurma(Turma $turma, $genero = '') {
+        $qb = $this->orm->getManager()->createQueryBuilder()->select('COUNT(e.id)')
+            ->from($this->getEntityClass(), 'e')
+            ->join('e.turma', 't')->join('e.matricula', 'm')
+            ->where('e.ativo = true')->andWhere('e.encerrado = false')
+            ->andWhere('t.id = :turma')->setParameter('turma', $turma->getId());
+        if ($genero) {
+            $qb = $qb->join('m.aluno', 'a')->andWhere('a.genero = :genero')->setParameter('genero', $genero);
+        }
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+    
+    /**
+     * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
+     * de ensino, bem como suas disciplinas cursadas.
+     * 
+     * @param Enturmacao $enturmacao
+     */
+    function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
+        $enturmacao->encerrar();
+        $this->orm->getManager()->merge($enturmacao);
+        $this->orm->getManager()->flush();
+        if ($manterDisciplinas) {
+            $this->desvincularDisciplinas($enturmacao);
+        } else {
+            $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+        }
+        $this->liberarVaga($enturmacao);
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -96,53 +150,85 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($enturmacao) {
+        $enturmacao->getMatricula()->redefinirEtapa();
         $this->vincularDisciplinas($enturmacao);
         $this->ocuparVaga($enturmacao);
     }
     
     protected function afterRemove($enturmacao) {
-        $this->excluirDisciplinas($enturmacao);
-        $this->liberarVagas($enturmacao);
+        if ((new \DateTime())->diff($enturmacao->getDataCadastro())->days < 1) {
+            $this->excluirDisciplinas($enturmacao);
+        } else {
+            $this->desvincularDisciplinas($enturmacao);
+        }
+        $enturmacao->getMatricula()->resetarEtapa();
+        $this->orm->getManager()->flush();
+        $this->liberarVaga($enturmacao);
     }
     
+    /**
+     * Vincula disciplinas cursadas existentes à uma enturmação recém-criada, ou cria
+     * novas disciplinas cursadas de acordo com aquelas oferecidas na turma.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function vincularDisciplinas(Enturmacao $enturmacao) {
         $matricula = $enturmacao->getMatricula();
         $disciplinasOfertadas = $enturmacao->getTurma()->getDisciplinas();
-        $qb = $this->orm->getRepository('MatriculaBundle:DisciplinaCursada')->createQueryBuilder('d')
-            ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
-            ->where('d.' . self::ATTR_ATIVO . ' = true')
-            ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', array(
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO)
-            )
-            ->andWhere('etapa.id = :etapa')->setParameter('etapa', $enturmacao->getTurma()->getEtapa()->getId());
-        $disciplinasCursadas = $qb->getQuery()->getResult();
+        $disciplinasEmAndamento = $this->disciplinaCursadaFacade
+                ->findByMatriculaAndEtapa($matricula, $enturmacao->getTurma()->getEtapa());
         foreach ($disciplinasOfertadas as $disciplinaOfertada) {   
-            $enturmado = false;                     
-            foreach ($disciplinasCursadas as $disciplinaCursada) {
-                if($disciplinaCursada->getDisciplina()->getId() === $disciplinaOfertada->getDisciplina()->getId()) {
-                    if($disciplinaCursada->getDisciplinaOfertada() === null && $disciplinaCursada->getStatus() === DisciplinaCursada::STATUS_CURSANDO) {
-                        $disciplinaCursada->setEnturmacao($enturmacao);
-                        $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
-                        $this->orm->getManager()->merge($disciplinaCursada);
-                    }
-                    $enturmado = true;
+            $emAndamento = false;                     
+            foreach ($disciplinasEmAndamento as $disciplinaCursada) {
+                if ($disciplinaCursada->getDisciplina()->getId() === $disciplinaOfertada->getDisciplina()->getId()) {
+                    $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
+                    $this->orm->getManager()->merge($disciplinaCursada);
+                    $emAndamento = true;
                     break;
                 }                
+            }
+            if (!$emAndamento) {
+                $disciplinaCursada = new DisciplinaCursada($matricula, $disciplinaOfertada->getDisciplina());
+                $disciplinaCursada->vincularEnturmacao($enturmacao, $disciplinaOfertada);
+                $this->disciplinaCursadaFacade->create($disciplinaCursada);
             }
         }
         $this->orm->getManager()->flush();
     }
     
-    private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
+    /**
+     * Encerra disciplinas cursadas de uma enturmação, com o status informado.
+     * 
+     * @param Enturmacao $enturmacao
+     * @param $status
+     */
+    private function desvincularDisciplinas(Enturmacao $enturmacao) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
-            $disciplina->setStatus($status);
+            $disciplina->desvincularEnturmacao();
             $this->orm->getManager()->merge($disciplina);
         }
         $this->orm->getManager()->flush();
     }
     
+    /**
+     * Encerra disciplinas cursadas de uma enturmação, com o status informado.
+     * 
+     * @param Enturmacao $enturmacao
+     * @param $status
+     */
+    private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
+        foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
+            $disciplina->encerrar($status);
+            $this->orm->getManager()->merge($disciplina);
+        }
+        $this->orm->getManager()->flush();
+    }
+    
+    /**
+     * Exclui disciplinas de uma enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function excluirDisciplinas(Enturmacao $enturmacao) {
         $this->disciplinaCursadaFacade->removeBatch(
             $enturmacao->getDisciplinasCursadas()
@@ -151,21 +237,35 @@ class EnturmacaoFacade extends AbstractFacade {
         );
     }
     
+    /**
+     * Indica se existe vaga aberta para a enturmação informada.
+     * 
+     * @param Enturmacao $enturmacao
+     * @return true caso a turma da enturmação possua vaga disponível, e false em
+     * caso contrário
+     */
     private function possuiVagaAberta(Enturmacao $enturmacao) {
         return $enturmacao->getTurma()->getVagasAbertas()->count() > 0;
     }
     
+    /**
+     * Aloca uma vaga na turma da enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
     private function ocuparVaga(Enturmacao $enturmacao) {
-        $this->vagaFacade->ocupar(
-                $enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
+        $this->vagaFacade->ocupar($enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
     }
     
-    private function liberarVagas(Enturmacao $enturmacao) {
-        $vagas = $this->vagaFacade->findAll(['enturmacao' => $enturmacao]);
-        foreach ($vagas as $vaga) {
-            $this->vagaFacade->liberar($vaga);
+    /**
+     * Libera a vaga ocupada pela enturmação.
+     * 
+     * @param Enturmacao $enturmacao
+     */
+    private function liberarVaga(Enturmacao $enturmacao) {
+        if ($enturmacao->getVaga()) {
+            $this->vagaFacade->liberar($enturmacao->getVaga());
         }
     }
     
 }
-

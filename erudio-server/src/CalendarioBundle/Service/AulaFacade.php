@@ -31,14 +31,21 @@ namespace CalendarioBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Monolog\Logger;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use CalendarioBundle\Entity\Aula;
+use CalendarioBundle\Entity\HorarioDisciplina;
 use CursoBundle\Entity\Turma;
 
 class AulaFacade extends AbstractFacade {
     
     private $horarioDisciplinaFacade;
+    
+    function __construct(Registry $doctrine, Logger $logger) {
+        parent::__construct($doctrine, $logger);
+    }
     
     function setHorarioDisciplinaFacade(HorarioDisciplinaFacade $horarioDisciplinaFacade) {
         $this->horarioDisciplinaFacade = $horarioDisciplinaFacade;
@@ -53,22 +60,33 @@ class AulaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'dia' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('dia.id = :dia')->setParameter('dia', $value);
             },
             'mes' => function(QueryBuilder $qb, $value) {
+                $mes = $value < 10 ? '0' . $value : $value;
                 $qb->andWhere('dia.data LIKE :mes')
-                   ->setParameter('mes', '%-' . $value . '-%');
+                   ->setParameter('mes', '%-' . $mes . '-%');
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
             },
+            'disciplinas' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplina.id IN (:disciplinas)')->setParameter('disciplinas', $value);
+            },
+            'horario' => function(QueryBuilder $qb, $value) {
+                $qb->join('a.horario', 'horario')
+                   ->andWhere('horario.id = :horario')->setParameter('horario', $value);
+            },
             'turma' => function(QueryBuilder $qb, $value) {
                 $qb->join('disciplina.turma', 'turma')
                    ->andWhere('turma.id = :turma')->setParameter('turma', $value);
+            },
+            'dataInicio' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('dia.data > :dataInicio')->setParameter('dataInicio', $value->format('Y-m-d'));
             }
-        );
+       ];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -88,19 +106,18 @@ class AulaFacade extends AbstractFacade {
             ))
         );
         foreach($dias as $dia) {
-            $horarios
-                ->filter(function($h) use ($dia) {
-                    return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
-                })
-                ->map(function($h) use ($dia, $aulasCriadas) {
-                    $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
-                    $this->orm->getManager()->persist($aula);
-                    $aulasCriadas++;
-                });
+            $horariosAula = $horarios->filter(function($h) use ($dia) {
+                return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
+            });
+            foreach ($horariosAula as $h) {
+                $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
+                $this->orm->getManager()->persist($aula);
+                $aulasCriadas++;
+            }
             $this->orm->getManager()->flush();
             $this->orm->getManager()->clear('CalendarioBundle:Aula');
         }
-        if ($aulasCriadas) {
+        if ($aulasCriadas > 0) {
             $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
             $this->orm->getManager()->flush();
         }
@@ -111,33 +128,33 @@ class AulaFacade extends AbstractFacade {
      * @param type $turmaId
      * @param type $dataInicio
      */
-    function refatorarAulas($turmaId, $dataInicio = null) {
-        $turma = $this->loadEntity($turmaId, 'CursoBundle:Turma');
-        $dias = $turma->getCalendario()->getDias()->matching( Criteria::create()->where(Criteria::expr()->eq('efetivo', true)) );
-        $horarios = new ArrayCollection($this->horarioDisciplinaFacade->findAll(array('turma' => $turmaId)));
-        $datas = array();
-        foreach($dias as $dia) {
-            $diaCalendario = $dia->getData()->format('Y-m-d');
-            if ($diaCalendario >= $dataInicio) {
-                $datas[] = $diaCalendario;
-                $horarios
-                    ->filter(function($h) use ($dia) {
-                        return $dia->getData()->format('w') + 1 == $h->getHorario()->getDiaSemana()->getDiaSemana();
-                    })
-                    ->map(function($h) use ($dia) {
-                        $disciplina = $h->getDisciplina(); $horario = $h->getHorario();
-                        $aulaBusca = $this->orm->getRepository('CalendarioBundle:Aula')->findBy(array('dia'=>$dia,'disciplinaOfertada' => $disciplina, 'horario' => $horario));
-                        if (count($aulaBusca) == 0) {
-                            $aula = new Aula($h->getDisciplina(), $dia, $h->getHorario());
-                            $this->orm->getManager()->persist($aula);
-                        }
-                    });
-                $this->orm->getManager()->flush();
-                $this->orm->getManager()->clear('CalendarioBundle:Aula');
+    function trocarAulas(HorarioDisciplina $horario1, HorarioDisciplina $horario2, \DateTime $data = null) {
+        $dataInicio = $data ? $data : new \DateTime();
+        $aulas1 = $this->findAll([
+            'horario' => $horario1->getHorario()->getId(), 
+            'disciplina' => $horario1->getDisciplina()->getId(),
+            'dataInicio' => $dataInicio
+        ]);
+        $aulas2 = $this->findAll([
+            'horario' => $horario2->getHorario()->getId(), 
+            'disciplina' => $horario2->getDisciplina()->getId(),
+            'dataInicio' => $dataInicio
+        ]);
+        $numeroAulas1 = count($aulas1);
+        $numeroAulas2 = count($aulas2);
+        $this->logger->info('Existem ' . $numeroAulas1 . ' - ' . $numeroAulas2);
+        $maiorAulas = $numeroAulas1 >= $numeroAulas2 ? $aulas1 : $aulas2;
+        $menorAulas = $numeroAulas1 < $numeroAulas2 ? $aulas1 : $aulas2;
+        $quantidadeTrocas = count($menorAulas);
+        foreach ($maiorAulas as $k => $v) {
+            if ($k < $quantidadeTrocas) {
+                $v->trocarDataHorario($menorAulas[$k]);
+            } else {
+                //criar
             }
+            $this->orm->getManager()->flush();
         }
-        $turma->setStatus(Turma::STATUS_EM_ANDAMENTO);
-        $this->orm->getManager()->flush();
+        $this->logger->info($quantidadeTrocas . ' trocas de horário de aulas efetuados.');
     }
 }
 

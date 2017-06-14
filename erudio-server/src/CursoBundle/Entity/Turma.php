@@ -69,6 +69,7 @@ class Turma extends AbstractEditableEntity {
     private $limiteAlunos;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name="data_encerramento", type="datetime", nullable=false) 
     */
@@ -94,12 +95,14 @@ class Turma extends AbstractEditableEntity {
     */
     private $turno;
     
-    /** 
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Calendario")
     */
     private $calendario;
     
     /** 
+    * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\QuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_id") 
@@ -115,7 +118,7 @@ class Turma extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude 
-    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", cascade = {"persist"}) 
+    * @ORM\OneToMany(targetEntity = "DisciplinaOfertada", mappedBy = "turma", fetch="EXTRA_LAZY")
     */
     private $disciplinas;
     
@@ -134,15 +137,96 @@ class Turma extends AbstractEditableEntity {
     function init() {
         $this->status = self::STATUS_CRIADO;
         $this->enturmacoes = new ArrayCollection();
-        $this->solicitacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
-        if($this->etapa->getIntegral()) {
-            $this->disciplinas = new ArrayCollection();
-            foreach($this->etapa->getDisciplinas() as $disciplina) {
-                $disciplinaOfertada = new DisciplinaOfertada($this, $disciplina);
-                $this->disciplinas->add($disciplinaOfertada);
-            }
-        }
+    }
+
+    function getDisciplinas() {
+        return $this->disciplinas->matching(
+            Criteria::create()
+                ->where(Criteria::expr()->eq('ativo', true))
+                ->orderBy(['disciplina' => 'ASC'])
+        );
+    }
+    
+    function getTotalEnturmacoes() {
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->count();
+    }
+    
+    function getEnturmacoes() {
+        $enturmacoes = $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->toArray();
+        usort($enturmacoes, function($e1, $e2) {
+            return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
+                $e2->getMatricula()->getAluno()->getNome()); 
+        });
+        return new ArrayCollection($enturmacoes);
+    }
+    
+    function getProfessores() {
+        $aux = $this->disciplinas->map(
+            function($d) { return $d->getProfessores()->toArray(); }
+        )->toArray();
+        $professores = [];
+        array_walk_recursive($aux, function($p) use (&$professores) {
+            if (!in_array($p, $professores)) {
+                $professores[] = $p;
+            } 
+        });
+        return $professores;
+    }
+       
+    function getVagas() {
+        return $this->vagas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
+    function getVagasAbertas() {
+         return $this->vagas->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->isNull('enturmacao')
+            ))
+        );
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getEncerrado() {
+        return $this->status === self::STATUS_ENCERRADO;
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getQuantidadeAlunos() {
+        return $this->getEnturmacoes()->count();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getNomeCompleto() {
+        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
+    }
+    
+    function getNomeExibicao() {
+        return $this->apelido 
+                ? "{$this->etapa->getNomeExibicao()} - {$this->apelido}" 
+                : "{$this->etapa->getNomeExibicao()} - {$this->nome}";
     }
     
     function getNome() {
@@ -181,45 +265,8 @@ class Turma extends AbstractEditableEntity {
         return $this->agrupamento;
     }
     
-    function getDisciplinas() {
-        return $this->disciplinas;
-    }
-    
     function getDataEncerramento() {
         return $this->dataEncerramento;
-    }
-
-    function getEnturmacoes() {
-        return $this->enturmacoes->matching(
-            Criteria::create()->where(Criteria::expr()->andX(              
-                Criteria::expr()->eq('ativo', true), 
-                Criteria::expr()->eq('encerrado', false)
-            ))
-        );
-    }
-        
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getEncerrado() {
-        return $this->status === self::STATUS_ENCERRADO;
-    }
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getQuantidadeAlunos() {
-        return $this->getEnturmacoes()->count();
-    }
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getNomeCompleto() {
-        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
     }
     
     function setNome($nome) {
@@ -252,19 +299,6 @@ class Turma extends AbstractEditableEntity {
     
     function setQuadroHorario($quadroHorario) {
         $this->quadroHorario = $quadroHorario;
-    }
-    
-    function getVagas() {
-        return $this->vagas;
-    }
-    
-    function getVagasAbertas() {
-         return $this->vagas->matching(
-            Criteria::create()->where(Criteria::expr()->andX(              
-                Criteria::expr()->eq('ativo', true), 
-                Criteria::expr()->isNull('enturmacao')
-            ))
-        );
     }
     
 }

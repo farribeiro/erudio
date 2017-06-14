@@ -30,13 +30,15 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\Enturmacao;
 
 class MovimentacaoTurmaFacade extends AbstractFacade {
     
-    private $disciplinaCursadaFacade;
+    private $enturmacaoFacade;
     
-    function setDisciplinaCursadaFacade($disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
     }
     
     function getEntityClass() {
@@ -57,45 +59,20 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($movimentacao) {
-        $movimentacao->aplicar();
-        $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll(
-            array('enturmacao' => $movimentacao->getEnturmacaoOrigem()->getId())
-        );
-        foreach($disciplinasCursadas as $disciplinaCursada) {
-            $disciplinaCursada->setEnturmacao($movimentacao->getEnturmacaoDestino());
-            foreach($movimentacao->getEnturmacaoDestino()->getTurma()->getDisciplinas() as $disciplinaOfertada) {
-                if($disciplinaOfertada->getDisciplina()->getId() === $disciplinaCursada->getDisciplina()->getId()) {
-                    $disciplinaCursada->setDisciplinaOfertada($disciplinaOfertada);
-                    break;
-                }
-            }
+        $turmaOrigem = $movimentacao->getEnturmacaoOrigem()->getTurma();
+        if ($movimentacao->getTurmaDestino()->getEtapa()->getId() != $turmaOrigem->getEtapa()->getId()) {
+            throw new IllegalOperationException(
+                'Uma movimentação de turma só pode ser realizada entre turmas da mesma etapa.'
+            );
         }
+        $enturmacaoDestino = $this->enturmacaoFacade->create(
+            new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
+        );
+        $movimentacao->aplicar($enturmacaoDestino);
     }
     
     protected function afterCreate($movimentacao) {
-        $origem = $movimentacao->getEnturmacaoOrigem();
-        $destino = $movimentacao->getEnturmacaoDestino();
-        $vagasOrigem = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('enturmacao' => $origem));
-        $vagaNova = null;
-        $turma = $destino->getTurma();
-        $vagas = $this->orm->getRepository('CursoBundle:Vaga')->findBy(array('turma' => $turma));
-        foreach ($vagas as $vaga) {
-            $enturma = $vaga->getEnturmacao();
-            if (is_null($enturma)) {
-                $vagaNova = $vaga;
-            }
-        }
-        if (is_null($vagaNova)) {
-            $vagaNova->setEnturmacao($destino);
-            $this->orm->getManager()->merge($vagaNova); 
-            $this->orm->getManager()->flush();            
-            //Depois de tudo transferido, desabilita a vaga antiga.
-            foreach ($vagasOrigem as $vagaOrigem) { 
-                $vagaOrigem->setEnturmacao(null); 
-                $this->orm->getManager()->merge($vagaOrigem); 
-                $this->orm->getManager()->flush();       
-            }
-        }
+        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
     }
     
 }

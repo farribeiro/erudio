@@ -29,12 +29,16 @@
 namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\Common\Collections\ArrayCollection;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use MatriculaBundle\Entity\Enturmacao;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Model\RegistroFaltas;
+use MatriculaBundle\Entity\Media;
+use MatriculaBundle\Traits\CalculosMedia;
 
 class MediaFacade extends AbstractFacade {
+    
+    use CalculosMedia;
     
     public function getEntityClass() {
         return 'MatriculaBundle:Media';
@@ -45,68 +49,70 @@ class MediaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
+            'numero' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('m.numero = :numero')->setParameter('numero', $value);
+            },
             'disciplinaCursada' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.disciplinaCursada', 'disciplinaCursada')
-                    ->andWhere('disciplinaCursada.id = :disciplinaCursada')
+                $qb->andWhere('disciplinaCursada = :disciplinaCursada')
                     ->setParameter('disciplinaCursada', $value);
+            },
+            'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplinaCursada.disciplinaOfertada = :disciplinaOfertada')
+                   ->andWhere('disciplinaCursada.status <> :incompleto')
+                   ->andWhere('disciplinaCursada.ativo = true')
+                   ->setParameter('incompleto', DisciplinaCursada::STATUS_INCOMPLETO)
+                   ->setParameter('disciplinaOfertada', $value);
+            },
+            'enturmacao' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('disciplinaCursada.enturmacao = :enturmacao')
+                   ->setParameter('enturmacao', $value);
+            },
+            'turma' => function(QueryBuilder $qb, $value) {
+                $qb->join('disciplinaCursada.disciplinaOfertada', 'disciplinaOfertada')
+                    ->andWhere('disciplinaOfertada.turma = :turma')
+                    ->setParameter('turma', $value);
             }
-        );
+        ];
     }
     
-    function calcular($media) {
-        $sistemaAvaliacao = $media->getDisciplinaCursada()->getDisciplina()->getEtapa()->getSistemaAvaliacao();
-        $valor = null;
-        switch($sistemaAvaliacao->getTipo()) {
-            case SistemaAvaliacao::TIPO_QUANTITATIVO:
-                $valor = $this->calcularMediaPonderada($media->getNotas());
-                break;
-            case SistemaAvaliacao::TIPO_QUALITATIVO:
-                $valor = $this->calcularMediaConceitual($media->getNotas());
-                break;
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('m.disciplinaCursada', 'disciplinaCursada')
+           ->join('disciplinaCursada.matricula', 'matricula')
+           ->join('matricula.aluno', 'aluno')
+           ->orderBy('aluno.nome');
+    }
+    
+    function resetar(Media $media) {
+        $media->resetar();
+    }
+    
+    function getFaltasUnificadas(Enturmacao $enturmacao, $numeroMedia) {
+        $primeiraDisciplina = $enturmacao->getDisciplinasCursadas()->first();
+        if (!$primeiraDisciplina) {
+            throw new \Exception("O aluno com a matrícula {$enturmacao->getMatricula()->getCodigo()} "
+                . "não possui disciplinas em sua enturmação");
         }
-        $media->setValor($valor);
-        return $media;
+        $media = $this->findAll([
+            'numero' => $numeroMedia, 
+            'disciplinaCursada' => $primeiraDisciplina->getId()
+        ])[0];
+        return new RegistroFaltas($enturmacao, $media->getNumero(), $media->getFaltas());
+    }
+    
+    function inserirFaltasUnificadas($faltas, $numeroMedia, Enturmacao $enturmacao) {
+        $medias = $this->findAll(['numero' => $numeroMedia, 'enturmacao' => $enturmacao->getId()]);
+        foreach ($medias as $media) {
+            $media->setFaltas($faltas);
+            $this->orm->getManager()->flush();
+        }
     }
 
-    function calcularMediaPonderada($notas) {
-        $valor = $peso = 0.00;
-        foreach($notas as $nota) {
-            $peso += $nota->getAvaliacao()->getPeso();
-            $valor += $nota->getValor() * (float)$nota->getAvaliacao()->getPeso();
-        }        
-        return $valor / (float) $peso;
-    }
-    
-    function calcularMediaConceitual($notas) {
-        $valor = 0.00;
-        $notaFechamento = $notas->filter(function($n) { return $n->getFechamentoMedia(); })->first();
-        if(!$notaFechamento) {
-            throw new IllegalOperationException('Não existem notas de fechamento para a média');
-        }
-        $habilidades = $notaFechamento->getHabilidadesAvaliadas();
-        $numHabilidades = count($habilidades);
-        foreach($habilidades as $habilidade) {            
-            $conceito = $habilidade->getConceito();
-            $conceitos[] = $conceito->getId();
-            if($conceito->getValorMaximo() == 0 && $conceito->getValorMinimo() == 0) {
-                $numHabilidades--;
-            }
-        }
-        $countConceitos = array_count_values($conceitos);        
-        foreach($habilidades as $habilidade) {            
-            $valor += ($countConceitos[$conceito->getId()] >= $numHabilidades / 2)
-                ? $habilidade->getConceito()->getValorMaximo() 
-                : $habilidade->getConceito()->getValorMinimo();
-        }        
-        return ($numHabilidades > 0) ? $valor / $numHabilidades : 0.00;
-    }
-    
     protected function afterUpdate($media) {
-        if($media->getCalculoAutomatico()) {
-            $this->calcular($media);
+        if ($media->getValor() === null || $media->getValor() === 0) {
+            $media->setValor($this->calcularMedia($media));
+            $this->orm->getManager()->flush();
         }
-        $this->orm->getManager()->flush();
     }
 
 }

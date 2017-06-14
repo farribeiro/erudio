@@ -46,8 +46,8 @@ class Evento extends AbstractEditableEntity {
     const RECESSO = 'RECESSO';
     
     /** 
-    *   @JMS\Groups({"LIST"})   
-    *   @ORM\Column(nullable = false) 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
     */
     private $nome;
     
@@ -58,9 +58,9 @@ class Evento extends AbstractEditableEntity {
     private $descricao;
     
     /** 
-        *   @JMS\Groups({"LIST"})   
-        *   @ORM\Column(nullable = false) 
-        */
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = false) 
+    */
     private $tipo;
     
     function getNome() {

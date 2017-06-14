@@ -44,79 +44,128 @@ class PessoaFisica extends Pessoa {
           NACIONALIDADE_NATURALIZADA = "ESTRANGEIRO_NATURALIZADO",
           NACIONALIDADE_ESTRANGEIRA = "ESTRANGEIRO";
     
-    /** @ORM\Column(name = "rg_numero") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "rg_numero") 
+    */
     private $numeroRg;
     
-    /** @ORM\Column(name = "rg_orgao_expedidor") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "rg_orgao_expedidor") 
+    */
     private $orgaoExpedidorRg;
     
     /** 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "rg_data_expedicao", type="date") 
-        */
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "rg_data_expedicao", type="date") 
+    */
     private $dataExpedicaoRg;
     
-    /** @ORM\Column() */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column() 
+    */
     private $nis;
     
-    /** @ORM\Column(name="pis_pasep") */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(name="pis_pasep") 
+    */
     private $pisPasep;
     
-    /** @ORM\Column(name="cns") */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(name="cns") 
+    */
     private $cns;
     
-    /** @ORM\Column(name = "nacionalidade_tipo") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "nacionalidade_tipo") 
+    */
     private $nacionalidade;
     
-    /**  @ORM\Column(name = "certidao_nascimento_completa", length = 32) */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "certidao_nascimento_completa", length = 32) 
+    */
     private $certidaoNascimento;
     
-    /** 
-        * @JMS\Type("DateTime<'Y-m-d'>")  
-        * @ORM\Column(name = "certidao_nascimento_data_expedicao", type = "date") 
-        */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("DateTime<'Y-m-d'>")  
+    * @ORM\Column(name = "certidao_nascimento_data_expedicao", type = "date") 
+    */
     private $dataExpedicaoCertidaoNascimento;
     
-    /** @ORM\Column(name = "mae_nome") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "mae_nome") 
+    */
     private $nomeMae;
     
-    /** @ORM\Column(name = "pai_nome") */
+    /**
+    * @JMS\Groups({"DETAILS"}) 
+    * @ORM\Column(name = "pai_nome") 
+    */
     private $nomePai;
     
     /** 
-        * @ORM\ManyToOne(targetEntity = "Cidade") 
-        * @ORM\JoinColumn(name = "cidade_nascimento_id", referencedColumnName = "id") 
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Cidade") 
+    * @ORM\JoinColumn(name = "cidade_nascimento_id", referencedColumnName = "id") 
+    */
     private $naturalidade;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "EstadoCivil")
-        * @ORM\JoinColumn(name = "estado_civil_id", referencedColumnName = "id") 
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "EstadoCivil")
+    * @ORM\JoinColumn(name = "estado_civil_id", referencedColumnName = "id") 
+    */
     private $estadoCivil;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "Raca")
-        * @ORM\JoinColumn(name = "raca_id", referencedColumnName = "id") 
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Raca")
+    * @ORM\JoinColumn(name = "raca_id", referencedColumnName = "id") 
+    */
     private $raca;
     
-    /** @ORM\Column(name = "carteira_trabalho_numero") */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "carteira_trabalho_numero") 
+    */
     private $carteiraTrabalhoNumero;
     
-    /** @ORM\Column(name = "carteira_trabalho_serie") */
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "carteira_trabalho_serie") 
+    */
     private $carteiraTrabalhoSerie;
     
-    /** @ORM\Column(name = "carteira_trabalho_data_expedicao", type = "date") */
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\Column(name = "carteira_trabalho_data_expedicao", type = "date") 
+    */
     private $carteiraTrabalhoDataExepdicao;
     
     /**
-        * @ORM\ManyToOne(targetEntity = "Estado")
-        * @ORM\JoinColumn(name = "carteira_trabalho_estado_id", referencedColumnName = "id") 
-        */
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Estado")
+    * @ORM\JoinColumn(name = "carteira_trabalho_estado_id", referencedColumnName = "id") 
+    */
     private $carteiraTrabalhoEstado;
     
     /**
+     * @JMS\Groups({"LIST"}) 
+     * @ORM\Column(type = "boolean")
+     */
+    private $alfabetizado = false;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToMany(targetEntity="Particularidade")
     * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
@@ -126,6 +175,7 @@ class PessoaFisica extends Pessoa {
     private $particularidades;
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToMany(targetEntity="NecessidadeEspecial")
     * @ORM\JoinTable(name="sme_pessoa_fisica_necessidade_especial",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
@@ -150,6 +200,10 @@ class PessoaFisica extends Pessoa {
     
     public function __construct() {
         parent::__construct();
+    }
+    
+    function getIdade() {
+        return (new \DateTime())->diff($this->getDataNascimento());
     }
     
     function getNumeroRg() {
@@ -313,6 +367,12 @@ class PessoaFisica extends Pessoa {
         $this->necessidadesEspeciais = $necessidadesEspeciais;
     }
 
+    function getAlfabetizado() {
+        return $this->alfabetizado;
+    }
 
+    function setAlfabetizado($alfabetizado) {
+        $this->alfabetizado = $alfabetizado;
+    }
 
 }

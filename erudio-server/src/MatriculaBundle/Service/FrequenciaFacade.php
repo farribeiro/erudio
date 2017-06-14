@@ -30,7 +30,6 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
 
 class FrequenciaFacade extends AbstractFacade {
     
@@ -69,12 +68,6 @@ class FrequenciaFacade extends AbstractFacade {
         $qb->join('f.aula', 'aula')->join('f.disciplinaCursada', 'disciplina');
     }
     
-/*    protected function beforeCreate($frequencia) {
-        $dataAtual = new \DateTime();
-        if ($frequencia->getAula()->getDia()->getData() > $dataAtual) {
-            throw new IllegalOperationException ('Data Inválida');
-        }
-    } */
 }
 
 

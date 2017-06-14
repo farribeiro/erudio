@@ -1,0 +1,95 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- LISTA -->
+<div class="cortina-auxiliar"></div>
+<div class="fakeModal">
+    <div class="modal-content" style="margin: 10px !important;">
+        <h4>Notas - {{ enturmacao.disciplinaCursada.matricula.nomeAluno }}</h4>
+        <p>
+            <div class="row">
+                <div class="col s12" data-ng-repeat="habilidade in habilidades" style="border-bottom: 1px solid #eee;">
+                    <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
+                        <div class="col s7">
+                            {{ habilidade.nome }}
+                        </div>
+                        <div class="col s5">
+                            <div data-delay="50" data-position="top" data-tooltip="{{ conceito.nome }}"  data-ng-click="prepararConceito(habilidade.id,conceito.id)" data-habilidade="{{habilidade.id}}" data-conceito="{{conceito.id}}" class="chip col s2 c{{conceito.id}}h{{habilidade.id}} h{{habilidade.id}} tooltipped" data-ng-repeat="conceito in conceitos">{{ conceito.sigla }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 right-align">
+                <a data-ng-click="salvarNotasQualitativas()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+            </div>
+        </p>
+    </div>
+</div>
+
+
+<div data-ng-show="enturmacoesNotas.length" class="row">
+    <div class="col s12 m12 mobile-full" style="padding: 0;" data-ng-show="verificaTipoAvaliacao()">
+        <div class="card-panel" style="margin: 0; background: #fff;">
+            <div class="card-content mobile-full" style="padding: 0;">
+                <div class="row"><h4 class="col s12">{{ enturmacoesNotas[0].disciplinaCursada.nomeExibicao }}</h4></div>
+                <ul class="collection" style="margin: 0;">
+                    <li data-ng-repeat="enturmacao in enturmacoesNotas" class="collection-item avatar">
+                        <i class="material-icons circle light-blue darken-4">person</i>
+                        <span class="title aluno-nome">{{ enturmacao.disciplinaCursada.matricula.nomeAluno }}</span>
+                        
+                        <div class="secondary-content">
+                            <div class="input-field col s1 m1 l8 input-fix" data-ng-show="escrita">&nbsp;</div>
+                            <div class="input-field col s12 m12 l4 input-fix" data-ng-show="escrita">
+                                <input class="input-col" value="{{ enturmacao.valor }}" data-item-id="{{ enturmacao.id }}" id="nota{{ $index }}" type="text"/>
+                                <label class="input-collection" for="nota{{ $index }}">Notas</label>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="col s12 right-align">
+                    <a data-ng-click="salvarNotas()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">save</i>SALVAR</a>
+                </div>
+            </div>                   
+        </div>
+    </div>
+    
+    <div class="col s12 m12 mobile-full" style="padding: 0;" data-ng-hide="verificaTipoAvaliacao()">
+        <div class="card" style="margin: 0; background: #fff;">
+            <div class="card-content mobile-full" style="padding: 0;">
+                <div class="row"><h4 class="col s12">{{ enturmacoesNotas[0].disciplinaCursada.nomeExibicao }}</h4></div>
+                <ul class="collection" style="margin: 0;">
+                    <li data-ng-repeat="enturmacao in enturmacoesNotas" class="collection-item avatar">
+                        <i class="material-icons circle light-blue darken-4">person</i>
+                        <span data-ng-click="conceituar(enturmacao)" class="title aluno-nome">{{ enturmacao.disciplinaCursada.matricula.nomeAluno }}</span>
+                        <div class="secondary-content" data-ng-show="enturmacao.valor" style="margin-top: -15px;">
+                            <i style="color: #1b5e20;" class="material-icons">done</i>
+                        </div>
+                    </li>
+                </ul>
+            </div>                   
+        </div>
+    </div>
+</div>

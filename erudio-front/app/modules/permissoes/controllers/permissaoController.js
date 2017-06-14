@@ -324,22 +324,26 @@
             if (!mobile) {
                 $scope.mostraLoader(true); $scope.reiniciar();
                 $scope.acao = "Adicionar"; $scope.usuario = usuario;
-                $scope.atribuicao.usuario = usuario;
-                $scope.buscarEntidades();
-                $scope.buscarRoles();
-                $timeout(function(){
-                    for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].idEntidade, i); }
-                    if (!nova) { $('.opcoesUsuario' + usuario.id).hide(); }
-                    if ($scope.editandoMobile) { $(".usuario-banner, .busca").hide(); }
-                    $scope.fechaLoader();
-                    Servidor.verificaLabels();
-                    $('#tipoEntidade, #tipoAcesso, #tipoPermissao').material_select('destroy');
-                    $('#tipoEntidade, #tipoAcesso, #tipoPermissao').material_select();
-                    $('div').find('.usuario-banner').removeClass('topo-pagina');
-                    $('.tooltipped').tooltip('remove');
-                    $('.tooltipped').tooltip({delay: 50});
-                    $scope.editando = true;
-                }, 1000);
+                var promise = Servidor.buscarUm('users',usuario.id);
+                promise.then(function(response){
+                    $scope.usuario = response.data;
+                    $scope.atribuicao.usuario = response.data;
+                    $scope.buscarEntidades();
+                    $scope.buscarRoles();
+                    $timeout(function(){
+                        if ($scope.usuario.rolesAtribuidas !== undefined) { for (var i=0; i<$scope.usuario.rolesAtribuidas.length; i++) { $scope.nomeEntidade($scope.usuario.rolesAtribuidas[i].idEntidade, i); } }
+                        if (!nova) { $('.opcoesUsuario' + usuario.id).hide(); }
+                        if ($scope.editandoMobile) { $(".usuario-banner, .busca").hide(); }
+                        $scope.fechaLoader();
+                        Servidor.verificaLabels();
+                        $('#tipoEntidade, #tipoAcesso, #tipoPermissao').material_select('destroy');
+                        $('#tipoEntidade, #tipoAcesso, #tipoPermissao').material_select();
+                        $('div').find('.usuario-banner').removeClass('topo-pagina');
+                        $('.tooltipped').tooltip('remove');
+                        $('.tooltipped').tooltip({delay: 50});
+                        $scope.editando = true;
+                    }, 1000); 
+                });
             } else {
                 if (!nova){
                     $('div').find('.usuario-banner').removeClass('topo-pagina'); $scope.editandoMobile = true; $('.opcoesUsuario' + usuario.id).show();

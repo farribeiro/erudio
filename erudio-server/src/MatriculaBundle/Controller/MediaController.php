@@ -29,12 +29,16 @@
 namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\View\View;
+use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 use MatriculaBundle\Entity\Media;
 
 /**
@@ -49,7 +53,7 @@ class MediaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("medias/{id}")
+    * @FOS\Get("medias/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -59,8 +63,12 @@ class MediaController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Get("medias")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "numero", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "disciplinaCursada", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "disciplinaOfertada", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
@@ -69,15 +77,84 @@ class MediaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("medias/{id}")
+    * @FOS\Put("medias/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("media", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Media $media, ConstraintViolationListInterface $errors) {
-        if($media->getCalculoAutomatico() === null) {
-            $media->setCalculoAutomatico(true);
+        if ($request->query->has('calcular')) {
+            $this->getFacade()->resetar($media);
         }
         return $this->put($request, $id, $media, $errors);
     }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Put("medias")
+    * @ParamConverter("medias", converter="fos_rest.request_body")
+    */
+    function putBatchAction(Request $request, MediaCollection $medias, ConstraintViolationListInterface $errors) {
+        return $this->putBatch($request, $medias->medias, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Get("medias/faltas")
+    * @FOS\QueryParam(name = "numero", requirements="\d+", nullable = false, strict = true)
+    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = false, strict = true) 
+    */
+    function getFaltasAction(Request $request, ParamFetcherInterface $params) {
+        try {
+            $turma = $this->get('facade.curso.turmas')->find($params->get('turma'));
+            $numero = $params->get('numero');
+            $faltas = $turma->getEnturmacoes()->map(function($e) use ($numero) {
+                return $this->getFacade()->getFaltasUnificadas($e, $numero);
+            }); 
+            $view = View::create($faltas, Response::HTTP_OK);
+            $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
+            $view->getSerializationContext()->enableMaxDepthChecks();
+        } catch (IllegalUpdateException $ex) {
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
+        } 
+        return $this->handleView($view);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("medias/faltas")
+    * @ParamConverter("faltas", converter="fos_rest.request_body")
+    */
+    function postFaltasAction(Request $request, FaltasCollection $faltas, ConstraintViolationListInterface $errors) {
+        if(count($errors) > 0) {
+            return $this->handleValidationErrors($errors);
+        }
+        try {
+            foreach ($faltas->faltas as $registroFaltas) {
+                $this->getFacade()->inserirFaltasUnificadas(
+                        $registroFaltas->faltas, $registroFaltas->media, $registroFaltas->enturmacao);
+            }
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
+        } catch (IllegalUpdateException $ex) {
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
+        } 
+        return $this->handleView($view);
+    }
+    
+}
+
+class MediaCollection {
+    
+    /** @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Media>") */
+    public $medias;
+    
+}
+
+class FaltasCollection {
+    
+    /** @JMS\Type("ArrayCollection<MatriculaBundle\Model\RegistroFaltas>") */
+    public $faltas;
     
 }
 

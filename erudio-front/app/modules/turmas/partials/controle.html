@@ -34,7 +34,7 @@
 </div>
 
 <!-- Botão Voltar às informações da turma -->
-<div data-ng-click="trocarTab('form')" data-ng-show="!mostraForm && origemBotao && !voltarAlunos" class="btn-voltar hide-on-med-and-down">
+<div data-ng-click="trocarTab('form')" data-ng-show="escrita && !mostraForm && origemBotao && !voltarAlunos" class="btn-voltar hide-on-med-and-down">
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para as informaçoes da Turma"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
 
@@ -57,22 +57,22 @@
 </div>
 
 <!-- Botão Adicionar Professor -->
-<div data-ng-show="mostraProfessores" class="btn-add">
+<div data-ng-show="escrita && mostraProfessores" class="btn-add">
     <a data-ng-click="adicionarProfessor()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Professor"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Botão Adicionar Professor Mobile-->
-<div data-ng-show="mostraProfessores" class="btn-add hide-on-med-and-up">
+<div data-ng-show="escrita && mostraProfessores" class="btn-add hide-on-med-and-up">
     <a data-ng-show="mostraProfessores"  data-ng-click="adicionarProfessor()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Professor"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Botão Adicionar Alunos (enturmar)-->
-<div data-ng-click="enturmarAlunos()" id="enturmarAlunos" data-ng-show="turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos && !enturmandoAlunos" class="btn-add hide-on-small-only">
+<div data-ng-click="enturmarAlunos()" id="enturmarAlunos" data-ng-show="escrita && turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos && !enturmandoAlunos" class="btn-add hide-on-small-only">
     <a class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
 </div>
 
 <!-- Botão Adicionar Mobile-->
-<div data-ng-show="turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos" class="btn-add hide-on-med-and-up">
+<div data-ng-show="escrita && turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos" class="btn-add hide-on-med-and-up">
     <a data-ng-click="enturmarAlunos()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Alunos"><i class="material-icons">add</i></a>
 </div>
  

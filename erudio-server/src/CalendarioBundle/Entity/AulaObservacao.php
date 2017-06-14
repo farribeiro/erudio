@@ -15,14 +15,15 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class AulaObservacao extends AbstractEditableEntity {
     
     /** 
-    *   @JMS\Groups({"LIST"})   
-    *   @ORM\Column(nullable = true) 
+    * @JMS\Groups({"LIST"})   
+    * @ORM\Column(nullable = true) 
     */
     private $observacao;
     
-    /**        
+    /**
+    * @JMS\Groups({"DETAILS"})      
     * @ORM\ManyToOne(targetEntity = "Aula")
-    * @ORM\JoinColumn(name = "aula_id") 
+    * @ORM\JoinColumn(name = "aula_id")
     */
     private $aula;
     
@@ -36,10 +37,6 @@ class AulaObservacao extends AbstractEditableEntity {
 
     function setObservacao($observacao) {
         $this->observacao = $observacao;
-    }
-
-    function setAula($aula) {
-        $this->aula = $aula;
     }
     
 }

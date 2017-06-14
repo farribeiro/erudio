@@ -29,7 +29,6 @@
 namespace CalendarioBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -54,25 +53,25 @@ class Periodo extends AbstractEditableEntity {
     private $dataInicio;
     
     /** 
-        * @JMS\Groups({"LIST"}) 
-        * @JMS\Type("DateTime<'Y-m-d'>")
-        * @ORM\Column(name = "data_termino", type = "date") 
-        */
+    * @JMS\Groups({"LIST"}) 
+    * @JMS\Type("DateTime<'Y-m-d'>")
+    * @ORM\Column(name = "data_termino", type = "date") 
+    */
     private $dataTermino;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @ORM\ManyToOne(targetEntity = "Calendario") 
-        * @ORM\JoinColumn(name = "calendario_id") 
-        */
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "Calendario") 
+    * @ORM\JoinColumn(name = "calendario_id") 
+    */
     private $calendario;
     
     /** 
-        * @JMS\Groups({"LIST"})
-        * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-        * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-        * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-        */
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
+    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
+    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    */
     private $sistemaAvaliacao;
     
     function getMedia() {
@@ -95,24 +94,12 @@ class Periodo extends AbstractEditableEntity {
         return $this->sistemaAvaliacao;
     }
 
-    function setMedia($media) {
-        $this->media = $media;
-    }
-
     function setDataInicio($dataInicio) {
         $this->dataInicio = $dataInicio;
     }
 
     function setDataTermino($dataTermino) {
         $this->dataTermino = $dataTermino;
-    }
-
-    function setCalendario($calendario) {
-        $this->calendario = $calendario;
-    }
-
-    function setSistemaAvaliacao($sistemaAvaliacao) {
-        $this->sistemaAvaliacao = $sistemaAvaliacao;
     }
 
 

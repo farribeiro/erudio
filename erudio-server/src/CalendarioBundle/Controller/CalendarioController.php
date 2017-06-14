@@ -30,101 +30,73 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityResource;
+use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\Calendario;
-use CalendarioBundle\Entity\Dia;
-use CalendarioBundle\Entity\DiaEvento;
 
 /**
  * @FOS\RouteResource("calendarios")
  */
-class CalendarioController extends AbstractEntityResource {
+class CalendarioController extends AbstractEntityController {
     
-    function getEntityClass() {
-        return 'CalendarioBundle:Calendario';
+    function getFacade() {
+        return $this->get('facade.calendario.calendarios');
     }
-    
-    function queryAlias() {
-        return 'c';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },
-            'ano' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('c.dataInicio LIKE :ano')->setParameter('ano', $value . '%');
-            },
-            'instituicao' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.instituicao', 'instituicao')
-                   ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
-            }
-        );
-    }
-    
+
     /**
-        *   @ApiDoc()
-        * 
-        * @FOS\Get("calendarios/{id}")
-        */
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("calendarios/{id}")
+    */
     function getAction(Request $request, $id) {
-        return $this->getOne($id);
+        return $this->getOne($request, $id);
     }
     
     /**
-        *   @ApiDoc()
-        *  
-        *   @FOS\Get("calendarios")
-        *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-        *   @FOS\QueryParam(name = "nome", nullable = true)
-        *   @FOS\QueryParam(name = "instituicao", nullable = false) 
-        *   @FOS\QueryParam(name = "ano", nullable = true)
-        *   @FOS\QueryParam(name = "calendarioBase", nullable = true)
-        */
-    function cgetAction(Request $request, ParamFetcher $paramFetcher) {
-        return $this->getList($paramFetcher);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Post("calendarios")
-    *  @ParamConverter("calendario", converter="fos_rest.request_body")
+    *   @ApiDoc()
+    *  
+    *   @FOS\Get("calendarios")
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "nome", nullable = true)
+    *   @FOS\QueryParam(name = "instituicao", requirements="\d+", nullable = false) 
+    *   @FOS\QueryParam(name = "ano", requirements="\d+", nullable = true)
+    *   @FOS\QueryParam(name = "calendarioBase", nullable = true)
     */
-    function postAction(Request $request, Calendario $calendario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->create($calendario);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("calendarios/{id}")
-    *  @ParamConverter("calendario", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, Calendario $calendario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
-        return $this->update($id, $calendario);
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
+        return $this->getList($request, $paramFetcher->all());
     }
     
     /**
     * @ApiDoc()
+    * 
+    * @FOS\Post("calendarios")
+    * @ParamConverter("calendario", converter="fos_rest.request_body")
+    */
+    function postAction(Request $request, Calendario $calendario, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $calendario, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Put("calendarios/{id}")
+    * @ParamConverter("calendario", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, Calendario $calendario, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $calendario, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("calendarios/{id}") 
     */
     function deleteAction(Request $request, $id) {
-        return $this->remove($id);
+        return $this->delete($request, $id);
     }
 
 }

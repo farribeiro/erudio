@@ -105,33 +105,38 @@
                             //USUARIO NAO ENCONTRADO
                             $scope.btnText = 'ENTRAR'; Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
                         } else {
+                            
                             //ANIMACAO INICIAL
                             $scope.loginAnimation(); var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
                             var roles = user.atribuicoes; var atribuicoes = [];
                             
                             //PREPARA PERMISSOES
                             var unidadesPermissoes = [];
-                            for (var i=0; i<roles.length; i++)
-                            {
-                                unidadesPermissoes.push(roles[i].instituicao);
-                                var index = i;
-                                if (roles[i].grupo !== undefined) {
-                                    var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                    promise.then(function(response){
-                                        for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                        if (atribuicoes.length > 0) {
-                                            sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                        } else {
-                                            var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                            sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                        }
-                                    });
-                                } else {
-                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                            if (roles.length > 0) {
+                                for (var i=0; i<roles.length; i++)
+                                {
+                                    unidadesPermissoes.push(roles[i].instituicao);
+                                    var index = i;
+                                    if (roles[i].grupo !== undefined) {
+                                        var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                        promise.then(function(response){
+                                            for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
+                                            if (atribuicoes.length > 0) {
+                                                sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                            } else {
+                                                var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                                sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                            }
+                                        });
+                                    } else {
+                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                    }
+                                    if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
                                 }
-                                if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
+                            } else {
+                                $scope.setaSessao(user, sessionId);
                             }
                         }
                     }

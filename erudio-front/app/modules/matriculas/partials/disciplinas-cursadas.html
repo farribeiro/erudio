@@ -26,7 +26,7 @@
 
 <div class="row" >
     <div class="col s12 m12 l12">
-        <div class="card-panel" data-ng-show="etapas.length">
+        <!-- <div class="card-panel" data-ng-show="etapas.length">
             <div class="row">
                 <div class="col s12" style="padding-top: 15px">
                     <div class="col s1" style="padding-left: 0px;">
@@ -81,8 +81,8 @@
                     </div>
                 </li>
             </ul>
-        </div>
-        <div class="card-panel" data-ng-hide="!escrita && etapas.length && !camposNovaEtapa">
+        </div> -->
+        <div class="card-panel" data-ng-show="escrita && !enturmacoes.length">
             <div class="row">                
                 <h4 style="padding: 1rem 0 0 1rem"> Escolher Etapa</h4>                
                 <div class="input-field col s12 m12 l12">
@@ -101,9 +101,9 @@
                         <label for="disc{{disciplina.disciplina.id}}">{{disciplina.disciplina.nomeExibicao | uppercase}}</label><br/>
                     </p>
                 </div>
-                <div class="col s12 right-align end-card">
+                <!--<div class="col s12 right-align end-card">
                     <a data-ng-click="salvarDisciplinasCursadas()"class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

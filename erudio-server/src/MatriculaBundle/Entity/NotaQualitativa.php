@@ -37,11 +37,24 @@ use JMS\Serializer\Annotation as JMS;
 */
 class NotaQualitativa extends Nota {
     
+    /**  
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("AvaliacaoBundle\Entity\AvaliacaoQualitativa")
+    * @JMS\MaxDepth(2)
+    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\AvaliacaoQualitativa")
+    * @ORM\JoinColumn(name = "avaliacao_qualitativa_id") 
+    */
+    private $avaliacao;
+    
     /**
     * @JMS\Groups({"LIST"}) 
     * @ORM\OneToMany(targetEntity = "NotaHabilidade", mappedBy = "notaQualitativa", fetch = "EAGER", cascade = {"persist"}) 
     */
     private $habilidadesAvaliadas;
+    
+    function getAvaliacao() {
+        return $this->avaliacao;
+    }
     
     function getHabilidadesAvaliadas() {
         return $this->habilidadesAvaliadas;

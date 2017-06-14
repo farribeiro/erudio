@@ -1,0 +1,46 @@
+<pdf>
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}
+            <h1>Alunos Enturmados</h1>
+            <h3>Nominal</h3>
+        {% endblock %}
+        
+        {% block info %}{% endblock %}    
+        
+        {% block content %}
+            {% for turma in turmas %}
+                {% set enturmados = turma.enturmacoes %}
+                <div font-size="8px" breakable="false" margin-bottom="5px">
+                    <table>
+                        <tr background.color="grey" color="white" font-size="10px">
+                            <td border.type="top+bottom+left" text-align="left" colspan="5"><strong>Turma: {{turma.nomeExibicao}}</strong></td>
+                            <td border.type="top+bottom+right" text-align="right"><strong>Total de alunos: {{enturmados|length}}</strong></td>
+                        </tr>
+
+                        <tr font-size="9px">
+                            <td width="17px"><strong>Nº</strong></td>
+                            <td width="90px"><strong>Matrícula</strong></td>
+                            <td><strong>Nome</strong></td>
+                            <td width="60px"><strong>Data Nasc</strong></td>
+                            <td width="38px"><strong>Gênero</strong></td>
+                            <td><strong>Pais</strong></td>
+                        </tr>
+                        {% for i, e in enturmados %}
+                            <tr>
+                                <td>{{ i + 1 }}</td>
+                                <td>{{e.matricula.codigo}}</td>
+                                <td text-align="left">{{e.matricula.aluno.nome|upper}}</td>
+                                <td>{{e.matricula.aluno.dataNascimento|date('d/m/Y')}}</td>
+                                <td>{{e.matricula.aluno.genero}}</td>
+                                <td  text-align="left">
+                                    {{e.matricula.aluno.nomeMae|upper}} 
+                                    <br/> {{e.matricula.aluno.nomePai|upper}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
+       {% endblock %}
+    {% endembed %}
+</pdf>

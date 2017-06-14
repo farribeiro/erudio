@@ -54,24 +54,24 @@ class Horario extends AbstractEditableEntity {
     private $diaSemana;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time") 
+    */
     private $inicio;
     
     /** 
-        * @JMS\Groups({"LIST"})  
-        * @JMS\Type("DateTime<'H:i:s'>")
-        * @ORM\Column(type = "time") 
-        */
+    * @JMS\Groups({"LIST"})  
+    * @JMS\Type("DateTime<'H:i:s'>")
+    * @ORM\Column(type = "time") 
+    */
     private $termino;
     
     /**  
-        * @JMS\Exclude
-        * @ORM\ManyToOne(targetEntity = "QuadroHorario", inversedBy= "horarios") 
-        * @ORM\JoinColumn(name = "quadro_horario_id") 
-        */
+    * @JMS\Exclude
+    * @ORM\ManyToOne(targetEntity = "QuadroHorario", inversedBy= "horarios") 
+    * @ORM\JoinColumn(name = "quadro_horario_id") 
+    */
     private $quadroHorario;
     
     function __construct(QuadroHorario $qHorario, \DateTime $inicio, \DateTime $termino, $diaSemana) {

@@ -72,7 +72,7 @@
                         <div data-ng-hide="editando || formTurma" style="background: #fafafa; padding: 1rem; margin-top: -1rem; padding-bottom: 0px;" class="row z-depth-1">
                             <div class="input-field col s12 m6 l6" data-ng-hide="isAdmin">
                                 <i class="material-icons prefix">account_balance</i>
-                                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" required>
+                                <select class="ng-valid initialized" id="unidade" data-ng-model="unidade.id" ng-change="selecionaUnidade(unidade)" required>
                                     <option disabled selected></option>
                                     <option data-ng-selected="unidades.length === 1" class="truncate ng-binding" value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{ unidade.nomeCompleto }}</option>
                                 </select>
@@ -88,7 +88,7 @@
                                 <i class="material-icons prefix">school</i>
                                 <select id="curso" data-ng-change="buscarEtapas(turmaBusca.curso.id)" data-ng-model="turmaBusca.curso.id" required>
                                     <option disabled selected></option> 
-                                    <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.id }}" data-ng-repeat="curso in cursos">{{ curso.nome}}</option>
+                                    <option data-ng-selected="cursos.length === 1" class="truncate" value="{{ curso.curso.id }}" data-ng-repeat="curso in cursos">{{ curso.curso.nome}}</option>
                                 </select>
                                 <label for="curso">Curso</label>
                             </div>                            
@@ -140,8 +140,9 @@
                                             <i data-ng-click="carregarTurma(turma, 'alunos');" data-position="top" data-delay="50" data-tooltip="Alunos da Turma" class="material-icons tooltipped info-icon">group</i>
                                             <i data-ng-click="carregarTurma(turma, 'quadro');" data-position="top" data-delay="50" data-tooltip="Grade de Horários" class="material-icons tooltipped info-icon">alarm</i>
                                             <i data-ng-click="carregarTurma(turma, 'professores');" data-position="top" data-delay="50" data-tooltip="Professores" class="material-icons tooltipped info-icon">record_voice_over</i>
-                                            <i data-ng-click="carregarTurma(turma, 'chamada');" data-position="top" data-delay="50" data-tooltip="Lista de Chamada" class="material-icons tooltipped info-icon">format_list_numbered</i>
+                                            <i data-ng-show="escrita" data-ng-click="carregarTurma(turma, 'chamada');" data-position="top" data-delay="50" data-tooltip="Lista de Chamada" class="material-icons tooltipped info-icon">format_list_numbered</i>
                                             <i data-ng-if="etapa.disciplinasOpcionais" data-ng-click="carregarTurma(turma, 'oferecer-disciplina');" data-position="top" data-delay="50" data-tooltip="Oferecer Disciplinas" class="material-icons tooltipped info-icon">book</i>
+                                            <i data-ng-click="carregarTurma(turma,'fecharTurma');" data-position="top" data-delay="50" data-tooltip="Encerrar Turma" class="material-icons tooltipped info-icon">block</i>
                                             <i data-ng-show="verificarEscrita()" data-ng-click="prepararRemover(turma, $index)" data-position='top' data-delay='50' data-tooltip='Remover' class="material-icons modal-trigger-turma delete-icon tooltipped">delete</i>
                                         </td>
                                     </tr>

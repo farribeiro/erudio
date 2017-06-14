@@ -30,6 +30,7 @@ namespace MatriculaBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use CoreBundle\ORM\AbstractEditableEntity;
 use PessoaBundle\Entity\UnidadeEnsino;
@@ -43,6 +44,7 @@ class Matricula extends AbstractEditableEntity {
     const STATUS_CURSANDO = "CURSANDO",
           STATUS_APROVADO = "APROVADO",
           STATUS_REPROVADO = "REPROVADO",
+          STATUS_CANCELADO = "CANCELADO",
           STATUS_TRANCADO = "TRANCADO",
           STATUS_ABANDONO = "ABANDONO",
           STATUS_FALECIDO = "FALECIDO";
@@ -53,39 +55,46 @@ class Matricula extends AbstractEditableEntity {
     */
     private $codigo;
     
-    /**  
-    * @JMS\Groups({"LIST"})
-    * @ORM\Column(type = "string", nullable = true) 
-    */
-    private $alfabetizado;
-    
     /**
     * @JMS\Groups({"LIST"})  
     * @ORM\Column(type = "string", nullable = false) 
     */
     private $status;
     
+    /**
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column(type = "datetime", nullable = true)
+    */
+    private $dataEncerramento;
+    
     /** 
     * @JMS\Groups({"LIST"}) 
     * @JMS\MaxDepth(depth = 1)
     * @JMS\Type("PessoaBundle\Entity\PessoaFisica")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\PessoaFisica")
-    * @ORM\JoinColumn(name = "pessoa_fisica_aluno_id") 
+    * @ORM\JoinColumn(name = "pessoa_fisica_aluno_id")
     */
     private $aluno;
     
     /**
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"}) @JMS\Groups({"DETAILS"}) 
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Curso") 
     */
     private $curso;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Etapa") 
+    */
+    private $etapa;
+    
     /** 
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 2)
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
-    * @ORM\JoinColumn(name = "unidade_ensino_id") 
+    * @ORM\JoinColumn(name = "unidade_ensino_id")
     */
     private $unidadeEnsino;
     
@@ -101,7 +110,8 @@ class Matricula extends AbstractEditableEntity {
     */
     private $enturmacoes;
     
-    public function init() {
+    function init() {
+        $this->enturmacoes = new ArrayCollection();
         $this->status = self::STATUS_CURSANDO;
     }
     
@@ -114,13 +124,13 @@ class Matricula extends AbstractEditableEntity {
             $this->codigo = $codigo;
         }
     }
-    
-    function getAlfabetizado() {
-        return $this->alfabetizado;
-    }
 
     function getStatus() {
         return $this->status;
+    }
+    
+    function getDataEncerramento() {
+        return $this->dataEncerramento;
     }
 
     function getAluno() {
@@ -130,22 +140,49 @@ class Matricula extends AbstractEditableEntity {
     function getCurso() {
         return $this->curso;
     }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getNomeAluno() {
+        return $this->aluno->getNome();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    * @JMS\MaxDepth(depth = 1)
+    */
+    function getEtapaAtual() {
+        return $this->etapa ? $this->etapa : $this->redefinirEtapa();
+    }
 
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
     }
-
-    function setAlfabetizado($alfabetizado) {
-        $this->alfabetizado = $alfabetizado;
-    }
     
     function setStatus($status) {
         $this->status = $status;
+        if ($this->status != self::STATUS_CURSANDO) {
+            $this->dataEncerramento = new \DateTime();
+        }
+    }
+    
+    function redefinirEtapa() {
+        if ($this->getEnturmacoesAtivas()->count() > 0) {
+            $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
+        }
+        return $this->etapa;
+    }
+    
+    function resetarEtapa() {
+        $this->etapa = null;
     }
 
     function transferir(UnidadeEnsino $unidadeEnsino) {
         $this->unidadeEnsino = $unidadeEnsino;
-        foreach($this->enturmacoes as $enturmacao) {
+        foreach ($this->enturmacoes as $enturmacao) {
             $enturmacao->encerrar();
         }
     }
@@ -155,12 +192,16 @@ class Matricula extends AbstractEditableEntity {
     }
 
     function getEnturmacoes() {
-        return $this->enturmacoes;
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
-    /**  
-    * @JMS\VirtualProperty 
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
     * @JMS\MaxDepth(depth = 3)
+    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Enturmacao>")
     */
     function getEnturmacoesAtivas() {
         return $this->enturmacoes->matching(
