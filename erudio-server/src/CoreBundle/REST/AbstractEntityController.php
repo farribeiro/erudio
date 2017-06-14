@@ -48,7 +48,7 @@ abstract class AbstractEntityController extends Controller {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
-    const SERIALIZER_MAX_DEPTH = 3;
+    const SERIALIZER_MAX_DEPTH = 4;
     const LINK_HEADER = 'Link';
     const PAGE_PARAM = 'page';
     
