@@ -39,7 +39,7 @@ use AuthBundle\Entity\PermissaoGrupo;
 use AuthBundle\Service\GrupoPermissaoFacade;
 
 /**
- * @FOS\RouteResource("permissoes-grupo")
+ * @FOS\NamePrefix("permissoes-grupo")
  */
 class PermissaoGrupoController extends AbstractEntityController {
     

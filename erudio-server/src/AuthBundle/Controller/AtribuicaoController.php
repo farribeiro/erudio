@@ -39,7 +39,7 @@ use AuthBundle\Entity\Atribuicao;
 use AuthBundle\Service\AtribuicaoFacade;
 
 /**
- * @FOS\RouteResource("atribuicoes")
+ * @FOS\NamePrefix("atribuicoes")
  */
 class AtribuicaoController extends AbstractEntityController {
     

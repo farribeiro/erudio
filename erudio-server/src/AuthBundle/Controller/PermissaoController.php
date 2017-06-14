@@ -39,7 +39,7 @@ use AuthBundle\Entity\Permissao;
 use AuthBundle\Service\PermissaoFacade;
 
 /**
- * @FOS\RouteResource("permissoes")
+ * @FOS\NamePrefix("permissoes")
  */
 class PermissaoController extends AbstractEntityController {
     

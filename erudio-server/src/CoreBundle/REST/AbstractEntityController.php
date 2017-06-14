@@ -54,10 +54,6 @@ abstract class AbstractEntityController extends Controller {
     
     private $viewHandler;
     
-    function __construct(ViewHandlerInterface $viewHandler = null) {
-        $this->viewHandler = $viewHandler;
-    }
-    
     function setViewHandler(ViewHandlerInterface $viewHandler) {
         $this->viewHandler = $viewHandler;
     }

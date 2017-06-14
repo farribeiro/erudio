@@ -39,7 +39,7 @@ use VinculoBundle\Entity\Cargo;
 use VinculoBundle\Service\CargoFacade;
 
 /**
- * @FOS\RouteResource("cargos")
+ * @FOS\NamePrefix("cargos")
  */
 class CargoController extends AbstractEntityController {
     

@@ -39,8 +39,8 @@ use VinculoBundle\Entity\Alocacao;
 use VinculoBundle\Service\AlocacaoFacade;
 
 /**
-* @FOS\RouteResource("alocacoes")
-*/
+ * @FOS\NamePrefix("alocacoes")
+ */
 class AlocacaoController extends AbstractEntityController {
     
     private $alocacaoFacade;

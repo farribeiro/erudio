@@ -39,7 +39,7 @@ use VinculoBundle\Entity\Vinculo;
 use VinculoBundle\Service\VinculoFacade;
 
 /**
- * @FOS\RouteResource("vinculos")
+ * @FOS\NamePrefix("vinculos")
  */
 class VinculoController extends AbstractEntityController {
     

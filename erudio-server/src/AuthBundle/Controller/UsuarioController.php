@@ -39,7 +39,7 @@ use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
 
 /**
- * @FOS\RouteResource("users")
+ * @FOS\NamePrefix("usuarios")
  */
 class UsuarioController extends AbstractEntityController {
     
@@ -56,7 +56,9 @@ class UsuarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
+    * 
     * @FOS\Get("users/{id}")
+    * @FOS\Get("usuarios/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -73,6 +75,7 @@ class UsuarioController extends AbstractEntityController {
     * )
     * 
     * @FOS\Get("users")
+    * @FOS\Get("usuarios")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "username", nullable = true) 
     * @FOS\QueryParam(name = "nomeExibicao", nullable = true) 
@@ -85,6 +88,7 @@ class UsuarioController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Post("users")
+    * @FOS\Post("usuarios")
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Usuario $usuario, ConstraintViolationListInterface $errors) {
@@ -98,6 +102,7 @@ class UsuarioController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Put("users/{id}")
+    * @FOS\Put("usuarios/{id}")
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Usuario $usuario, ConstraintViolationListInterface $errors) {
@@ -109,6 +114,9 @@ class UsuarioController extends AbstractEntityController {
     
     /**
     * @ApiDoc()
+    * 
+    * @FOS\Delete("users/{id}")
+    * @FOS\Delete("usuarios/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

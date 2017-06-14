@@ -39,7 +39,7 @@ use AuthBundle\Entity\Grupo;
 use AuthBundle\Service\GrupoFacade;
 
 /**
- * @FOS\RouteResource("grupos")
+ * @FOS\NamePrefix("grupos")
  */
 class GrupoController extends AbstractEntityController {
     
