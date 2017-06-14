@@ -1,13 +1,20 @@
 # This file is auto-generated during the composer install
 parameters:
     database_host: 10.100.1.134
+    #database_host: 10.10.1.191
     database_port: 3306
+    #database_name: novo_educar4
     database_name: erudio
     database_user: root
+    #database_user: educacao
     database_password: warning
+    #database_password: Educacao2016DB
+    unix_socket: /tmp/mysql.sock
     mailer_transport: gmail
-    mailer_host: null
+    mailer_host: ~
     mailer_user: educacaoitajai
     mailer_password: warningeducacao
+    locale: pt_BR
     secret: 'W!a@r#n$i%n&g'
     jms_serializer.camel_case_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
+

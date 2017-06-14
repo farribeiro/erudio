@@ -62,51 +62,51 @@ class Endereco extends AbstractEditableEntity {
     /** @ORM\Column() */
     private $longitude;
 
-    function getLogradouro() {
+    public function getLogradouro() {
         return $this->logradouro;
     }
 
-    function setLogradouro($logradouro) {
+    public function setLogradouro($logradouro) {
         $this->logradouro = $logradouro;
     }
 
-    function getNumero() {
+    public function getNumero() {
         return $this->numero;
     }
 
-    function setNumero($numero) {
+    public function setNumero($numero) {
         $this->numero = $numero;
     }
 
-    function getComplemento() {
+    public function getComplemento() {
         return $this->complemento;
     }
 
-    function setComplemento($complemento) {
+    public function setComplemento($complemento) {
         $this->complemento = $complemento;
     }
 
-    function getCep() {
+    public function getCep() {
         return $this->cep;
     }
 
-    function setCep($cep) {
+    public function setCep($cep) {
         $this->cep = $cep;
     }
 
-    function getBairro() {
+    public function getBairro() {
         return $this->bairro;
     }
 
-    function setBairro($bairro) {
+    public function setBairro($bairro) {
         $this->bairro = $bairro;
     }
 
-    function getCidade() {
+    public function getCidade() {
         return $this->cidade;
     }
 
-    function setCidade(Cidade $cidade) {
+    public function setCidade(Cidade $cidade) {
         $this->cidade = $cidade;
     }
     
@@ -124,12 +124,6 @@ class Endereco extends AbstractEditableEntity {
 
     function setLongitude($longitude) {
         $this->longitude = $longitude;
-    }
-    
-    function getEnderecoCompleto() {
-        return "{$this->getLogradouro()}, {$this->getNumero()}, {$this->getBairro()}, "
-            . "CEP {$this->getCep()}, {$this->getCidade()->getNome()}/"
-            . "{$this->getCidade()->getEstado()->getNome()}";
     }
     
 }

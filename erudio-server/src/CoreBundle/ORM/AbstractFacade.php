@@ -28,7 +28,6 @@
 
 namespace CoreBundle\ORM;
 
-use Symfony\Bridge\Monolog\Logger;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
@@ -46,11 +45,9 @@ abstract class AbstractFacade {
     const PAGE_SIZE = 50;
     
     protected $orm;
-    protected $logger;
     
-    function __construct (Registry $doctrine, Logger $logger = null) {
+    public function __construct (Registry $doctrine) {
         $this->orm = $doctrine;
-        $this->logger = $logger;
     }
     
     abstract function getEntityClass();
@@ -191,7 +188,7 @@ abstract class AbstractFacade {
     
     private function checkUniqueness($entidade, $isUpdate = false) {
         foreach ($this->uniqueMap($entidade) as $constraint) {
-            if (count($this->findAll($constraint)) > ($isUpdate ? 1 : 0)) {
+            if (count($this->findAll($constraint)) > $isUpdate ? 1 : 0) {
                 throw new Exception\UniqueViolationException();
             }
         }
@@ -287,7 +284,7 @@ abstract class AbstractFacade {
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
+            if($v != null && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }

@@ -23,9 +23,7 @@
         "friendsofsymfony/rest-bundle": "~1.7",
         "jms/serializer-bundle": "~1.0",
         "nelmio/api-doc-bundle": "~2.9",
-        "nelmio/cors-bundle": "~1.4",
-        "psliwa/pdf-bundle": "*",
-        "twig/extensions": "1.0"
+        "nelmio/cors-bundle": "~1.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

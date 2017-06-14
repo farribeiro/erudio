@@ -26,9 +26,9 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace ReportBundle;
+namespace PDFBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ReportBundle extends Bundle {
+class PDFBundle extends Bundle {
 }

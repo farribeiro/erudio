@@ -56,12 +56,6 @@ class DesligamentoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($desligamento) {
-        $this->desligarMatricula($desligamento);
-        $this->encerrarEnturmacoes($desligamento->getMatricula());
-        $this->encerrarDisciplinas($desligamento->getMatricula());
-    }
-    
-    private function desligarMatricula(Desligamento $desligamento) {
         $matricula = $desligamento->getMatricula();
         switch($desligamento->getMotivo()) {
             case Desligamento::ABANDONO:
@@ -73,8 +67,8 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
         }
-        $this->orm->getManager()->merge($matricula);
-        $this->orm->getManager()->flush();
+        $this->encerrarEnturmacoes($matricula);
+        $this->encerrarDisciplinas($matricula);
     }
     
     private function encerrarDisciplinas(Matricula $matricula) {

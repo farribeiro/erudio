@@ -30,17 +30,13 @@ namespace CursoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcher;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityResource;
 use CursoBundle\Entity\Etapa;
-use CursoBundle\Entity\Turma;
 
 /**
  * @FOS\RouteResource("etapas")
@@ -75,40 +71,22 @@ class EtapaController extends AbstractEntityResource {
     }
     
     /**
-    *   @ApiDoc()
-    * 
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "nome", nullable = true) 
-    *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
-    */
+        *   @ApiDoc()
+        * 
+        *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+        *   @FOS\QueryParam(name = "nome", nullable = true) 
+        *   @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true) 
+        */
     function cgetAction(Request $request, ParamFetcher $paramFetcher) {
         return $this->getList($paramFetcher);
     }
     
     /**
-    *  @ApiDoc()
-    * 
-    * @FOS\Get("etapas-ofertadas")
-    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = false) 
-    */
-    function getOfertadasAction(Request $request, ParamFetcher $paramFetcher) {
-        $unidadeEnsino = $paramFetcher->get('unidadeEnsino', true);
-        $turmas = new ArrayCollection($this->get('facade.curso.turmas')->findAll(
-            ['unidadeEnsino' => $unidadeEnsino, 'encerrado' => false]
-        ));
-        $resultados = array_unique($turmas->map(function($t) { return $t->getEtapa(); })->toArray());
-        $view = View::create(array_values($resultados), Codes::HTTP_OK);
-        $view->getSerializationContext()->enableMaxDepthChecks();
-        $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-        return $this->handleView($view);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Post("etapas")
-    *  @ParamConverter("etapa", converter="fos_rest.request_body")
-    */
+        *  @ApiDoc()
+        * 
+        *  @FOS\Post("etapas")
+        *  @ParamConverter("etapa", converter="fos_rest.request_body")
+        */
     function postAction(Request $request, Etapa $etapa, ConstraintViolationListInterface $errors) {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
@@ -117,11 +95,11 @@ class EtapaController extends AbstractEntityResource {
     }
     
     /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("etapas/{id}")
-    *  @ParamConverter("etapa", converter="fos_rest.request_body")
-    */
+        *  @ApiDoc()
+        * 
+        *  @FOS\Put("etapas/{id}")
+        *  @ParamConverter("etapa", converter="fos_rest.request_body")
+        */
     function putAction(Request $request, $id, Etapa $etapa, ConstraintViolationListInterface $errors) {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);

@@ -14,11 +14,9 @@ web_profiler:
 monolog:
     handlers:
         main:
-            type:  rotating_file
-            max_files: 30
+            type:   stream
             path:   "%kernel.logs_dir%/%kernel.environment%.log"
-            level:  info
-            channels: [!event]
+            level:  debug
         console:
             type:   console
             bubble: false

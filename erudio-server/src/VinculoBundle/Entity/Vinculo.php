@@ -40,14 +40,13 @@ use CoreBundle\ORM\AbstractEditableEntity;
 */
 class Vinculo extends AbstractEditableEntity {
     
-    const STATUS_ATIVO = 'ATIVO',
-          STATUS_AFASTADO = 'AFASTADO',
-          STATUS_DESLIGADO = 'DESLIGADO',
-          STATUS_CANCELADO = 'CANCELADO';
+    const STATUS_ATIVO = "ATIVO",
+          STATUS_AFASTADO = "AFASTADO",
+          STATUS_DESLIGADO = "DESLIGADO";
     
-    const CONTRATO_EFETIVO = 'EFETIVO',
-          CONTRATO_TEMPORARIO = 'TEMPORARIO',
-          CONTRATO_COMISSIONADO = 'COMISSIONADO';
+    const CONTRATO_EFETIVO = "EFETIVO",
+          CONTRATO_TEMPORARIO = "TEMPORARIO",
+          CONTRATO_COMISSIONADO = "COMISSIONADO";
     
     /**
     * @JMS\Groups({"LIST"})   

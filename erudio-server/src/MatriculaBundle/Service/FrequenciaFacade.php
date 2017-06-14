@@ -69,6 +69,12 @@ class FrequenciaFacade extends AbstractFacade {
         $qb->join('f.aula', 'aula')->join('f.disciplinaCursada', 'disciplina');
     }
     
+/*    protected function beforeCreate($frequencia) {
+        $dataAtual = new \DateTime();
+        if ($frequencia->getAula()->getDia()->getData() > $dataAtual) {
+            throw new IllegalOperationException ('Data Inválida');
+        }
+    } */
 }
 
 

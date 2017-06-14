@@ -129,7 +129,7 @@ class AlocacaoFacade extends AbstractFacade {
     }
     
     /**
-     * Remove a atribuição que foi gerada para o usuário da pessoa no ato da alocação,
+     * Remova a atribuição que foi gerada para o usuário da pessoa no ato da alocação,
      * retirando assim suas permissões.
      * 
      * @param Alocacao $alocacao

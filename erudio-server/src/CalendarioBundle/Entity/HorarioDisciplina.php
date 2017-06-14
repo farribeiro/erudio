@@ -39,16 +39,14 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class HorarioDisciplina extends AbstractEditableEntity {
     
     /**  
-    * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 2) 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada", inversedBy = "horarios")
     * @ORM\JoinColumn(name = "turma_disciplina_id")
     */
     private $disciplina;
     
     /**  
-    * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 2)
+    * @JMS\Groups({"LIST"}) 
     * @ORM\ManyToOne(targetEntity = "Horario") 
     * @ORM\JoinColumn(name = "quadro_horario_aula_id") 
     */
@@ -60,12 +58,6 @@ class HorarioDisciplina extends AbstractEditableEntity {
 
     function getHorario() {
         return $this->horario;
-    }
-    
-    function trocar(HorarioDisciplina $horario) {
-        $disciplina = $horario->getDisciplina();
-        $horario->disciplina = $this->disciplina;
-        $this->disciplina = $disciplina;
     }
     
 }

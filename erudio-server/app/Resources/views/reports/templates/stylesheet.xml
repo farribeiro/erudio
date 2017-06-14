@@ -1,7 +1,0 @@
-<stylesheet>
-    <td>
-        <attribute name="padding" value="3px" />
-        <attribute name="text-align" value="center" />
-        <attribute name="vertical-align" value="center" />
-    </td>
-</stylesheet>

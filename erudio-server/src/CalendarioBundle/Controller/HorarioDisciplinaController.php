@@ -30,17 +30,14 @@ namespace CalendarioBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Doctrine\ORM\NoResultException;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\HorarioDisciplina;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @FOS\RouteResource("horarios-disciplinas")
@@ -57,8 +54,7 @@ class HorarioDisciplinaController extends AbstractEntityController {
     *   @FOS\Get("horarios-disciplinas")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true) 
-    *   @FOS\QueryParam(name = "horario", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "horario", requirements="\d+", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher);
@@ -72,28 +68,6 @@ class HorarioDisciplinaController extends AbstractEntityController {
     */
     function postAction(Request $request, HorarioDisciplina $horario, ConstraintViolationListInterface $errors) {
         return $this->post($request, $horario, $errors);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("horarios-disciplinas/{id}/troca")
-    *  @ParamConverter("horarioTroca", converter="fos_rest.request_body")
-    */
-    function swapAction(Request $request, $id, HorarioDisciplina $horarioTroca) {
-        try {
-            $dataInicio = $request->query->has('dataInicio')
-                    ? \DateTime::createFromFormat('Y-m-d', $request->query->get('dataInicio'))
-                    : new \DateTime();
-            $horario = $this->getFacade()->find($id);
-            $this->getFacade()->trocar($horario, $horarioTroca, $dataInicio);
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
-        } catch(NoResultException $ex) {
-            $view = FOS\View::create(null, Codes::HTTP_NOT_FOUND);
-        } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return $this->handleView($view);
     }
     
     /**

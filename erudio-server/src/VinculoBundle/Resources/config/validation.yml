@@ -1,6 +1,6 @@
 VinculoBundle\Entity\Vinculo:
     properties:
         status:
-            - Choice: ["ATIVO", "AFASTADO", "DESLIGADO", "CANCELADO"]
+            - Choice: ["ATIVO", "AFASTADO", "DESLIGADO"]
         tipoContrato:
             - Choice: ["EFETIVO", "TEMPORARIO", "COMISSIONADO"]

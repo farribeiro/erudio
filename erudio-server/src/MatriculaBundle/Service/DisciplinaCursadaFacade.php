@@ -30,10 +30,7 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use MatriculaBundle\Entity\Matricula;
-use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Media;
-use CursoBundle\Entity\Etapa;
 
 class DisciplinaCursadaFacade extends AbstractFacade {
     
@@ -78,19 +75,6 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             }
         );
-    }
-    
-    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa) {
-        return $this->orm->getRepository($this->getEntityClass())->createQueryBuilder('d')
-            ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
-            ->where('d.ativo = true')
-            ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', [
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO
-            ])
-            ->andWhere('etapa.id = :etapa')->setParameter('etapa', $etapa->getId())
-            ->getQuery()->getResult();
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
