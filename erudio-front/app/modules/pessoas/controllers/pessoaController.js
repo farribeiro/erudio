@@ -934,7 +934,7 @@
                     $timeout(function () {
                         var persona = response.data; $scope.pessoa = response.data; $scope.resetaTelefone();
                         $scope.pessoa.dataNascimento = dateTime.converterDataForm($scope.pessoa.dataNascimento);
-                        if (persona.telefones !== undefined) { $timeout(function(){ $scope.buscaTelefones(); },800); }
+                        $scope.buscaTelefones();
                         if (response.data.certidaoNascimento !== undefined) {
                             if (response.data.certidaoNascimento.indexOf("00000000000000000") !== -1) { $scope.desmontaCertidao(); }
                         }
@@ -988,7 +988,7 @@
                         $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.slice(0,3) + '.' + $scope.pessoa.cpfCnpj.slice(3,6) + '.' + $scope.pessoa.cpfCnpj.slice(6,9) + '-' + $scope.pessoa.cpfCnpj.slice(9,12);
                         //console.log($scope.pessoa.cpfCnpj);
                     }
-                    $("#nomePessoa").focus();
+                    $("#nomePessoa").focus(); $scope.buscaTelefones();
                     $scope.pessoa.dataNascimento = dateTime.converterDataForm($scope.pessoa.dataNascimento);
                     $scope.pessoa.dataExpedicaoRg = dateTime.converterDataForm($scope.pessoa.dataExpedicaoRg);
                     $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataForm($scope.pessoa.dataExpedicaoCertidaoNascimento);
@@ -1008,6 +1008,7 @@
                     if ($scope.pessoa.responsavelNome !== $scope.pessoa.nomeMae && $scope.pessoa.responsavelNome !== $scope.pessoa.nomePai) {
                         $scope.pessoaResponsavel = 'outro';
                     }
+                    
                     $scope.cadastrarPessoa(salvo, novo);
                 });
                 $scope.buscarParticularidades();
@@ -1290,13 +1291,11 @@
 
             /*Salvar Cadastro de Pessoa*/
             $scope.salvarPessoa = function () {
-                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 3) {
+                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 2) {
                     $scope.mostraLoader();
-                    if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3 && ($scope.pessoa.certidaoNascimento !== "" && $scope.pessoa.certidaoNascimento !== null && $scope.pessoa.certidaoNascimento !== undefined)) {
+                    if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3) {
                         if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
-                        else {
-                            if ($scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); }
-                        }
+                        else { if ($scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); } }
                     }
                     if ($scope.pessoa.dataNascimento && $scope.pessoa.dataNascimento !== undefined) {
                         $scope.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
