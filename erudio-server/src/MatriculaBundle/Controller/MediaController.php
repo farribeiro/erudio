@@ -112,8 +112,8 @@ class MediaController extends AbstractEntityController {
                 return $this->getFacade()->getFaltasUnificadas($e, $numero);
             }); 
             $view = View::create($faltas, Response::HTTP_OK);
-            $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $view->getContext()->setGroups([self::SERIALIZER_GROUP_LIST]);
+            $view->getContext()->setMaxDepth(1);
         } catch (IllegalUpdateException $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } 

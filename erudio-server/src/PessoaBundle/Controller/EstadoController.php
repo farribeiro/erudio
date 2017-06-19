@@ -35,7 +35,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 
 /**
- * @FOS\RouteResource("estados")
+ * @FOS\NamePrefix("estados")
  */
 class EstadoController extends AbstractEntityController {
     
@@ -74,7 +74,7 @@ class EstadoController extends AbstractEntityController {
     * 
     *   @FOS\Get("estados")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "sigla", default = null) 
+    *   @FOS\QueryParam(name = "sigla", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

@@ -110,6 +110,16 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $medias;
     
+    /**
+    * @JMS\Exclude
+    */
+    private $mediaPreliminar;
+    
+    /**
+    * @JMS\Exclude
+    */
+    private $statusPrevisto;
+    
     function __construct(Matricula $matricula, Disciplina $disciplina) {
         $this->matricula = $matricula;
         $this->disciplina = $disciplina;
@@ -121,6 +131,32 @@ class DisciplinaCursada extends AbstractEditableEntity {
         if (is_null($this->status)) {
             $this->status = self::STATUS_CURSANDO;
         }
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    */
+    function getMediaPreliminar() {
+        if (!$this->mediaPreliminar) {
+            try {
+                $this->mediaPreliminar = $this->calcularMediaFinal($this);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+        return $this->mediaPreliminar;
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    */
+    function getStatusPrevisto() {
+        if (!$this->statusPrevisto) {
+            $this->statusPrevisto = self::determinarStatus($this, true);
+        }
+        return $this->statusPrevisto;
     }
     
     /**
@@ -155,18 +191,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
     }
     
-    /**
-    * @JMS\Groups({"DETAILS"})
-    * @JMS\VirtualProperty
-    */
-    function getMediaPreliminar() {
-        try {
-            return $this->calcularMediaFinal($this);
-        } catch (\Exception $ex) {
-            return null;
-        }
-    }
-    
     function emAberto() {
         return $this->status === self::STATUS_CURSANDO 
                 || $this->status === self::STATUS_EXAME 
@@ -182,16 +206,25 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     function atualizarStatus() {
-        $sistemaAvaliacao = $this->getDisciplina()->getEtapa()->getSistemaAvaliacao();
-        if ($this->status === self::STATUS_EXAME) {
-            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
+        $this->status = self::determinarStatus($this);
+    }
+    
+    static function determinarStatus(DisciplinaCursada $disciplina, $preliminar = false) {
+        $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal(); 
+        if (is_null($mediaFinal)) {
+            return $disciplina->getStatus();
+        }
+        $sistemaAvaliacao = $disciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        if ($disciplina->getStatus() === self::STATUS_EXAME) {
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
                     ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
         } else if ($sistemaAvaliacao->getExame() === false) {
-            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
                     ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
         } else {
-            $this->status = self::STATUS_EXAME;
+            $status = self::STATUS_EXAME;
         }
+        return $status;
     }
     
     function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {

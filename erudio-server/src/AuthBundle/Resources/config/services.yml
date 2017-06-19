@@ -1,6 +1,6 @@
-parameters:
-    user_provider.class: AuthBundle\Service\UserProvider
-    md5_encoder.class: AuthBundle\Service\MD5Encoder
+#parameters:
+#    user_provider.class: AuthBundle\Service\UserProvider
+#    md5_encoder.class: AuthBundle\Service\MD5Encoder
 
 services:
     _defaults:
@@ -18,9 +18,9 @@ services:
         calls:
           - [setViewHandler, ["@fos_rest.view_handler"]]
     
-    user_provider:
-      class: "%user_provider.class%"
-      arguments: ["@doctrine"]
-      
-    md5_encoder:
-      class: "%md5_encoder.class%"
+#    user_provider:
+#      class: "%user_provider.class%"
+#      arguments: ["@doctrine"]
+#      
+#    md5_encoder:
+#      class: "%md5_encoder.class%"
