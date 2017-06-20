@@ -34,7 +34,6 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
 use CoreBundle\ORM\AbstractEditableEntity;
 use Doctrine\Common\Collections\Criteria;
-use AuthBundle\Service\MD5Encoder;
 
 /**
  * @ORM\Entity
@@ -139,13 +138,14 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         return $user instanceof Usuario && $this->username === $user->getUsername();
     }
     
-    static function criarUsuario($pessoa, $username) {
+    static function criarUsuario($pessoa, $username, $firstPassword = null) {
         $usuario = new Usuario();
         $usuario->username = $username;
         $usuario->nomeExibicao = $pessoa->getNome();
-        $password = substr(str_shuffle($username.str_replace(' ','',$pessoa->getNome())), 0, 6);            
-        $md5 = new MD5Encoder();
-        $usuario->password = $md5->encodePassword($password);
+        $password = $firstPassword 
+                ? $firstPassword
+                : substr(str_shuffle($username.str_replace(' ', '' , $pessoa->getNome())), 0, 6);
+        $usuario->password = md5($password);
         return $usuario;
     }
 }

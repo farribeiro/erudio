@@ -50,10 +50,10 @@ class CriarUsuarioListener implements EventSubscriberInterface {
     }
     
     static function getSubscribedEvents() {
-        return [VinculoEvent::VINCULO_CRIADO => 'execute'];
+        return [VinculoEvent::VINCULO_CRIADO => 'onVinculoCriado'];
     }
     
-    function execute(VinculoEvent $event) {
+    function onVinculoCriado(VinculoEvent $event) {
         $pessoa = $event->getVinculo()->getFuncionario();
         if (!$pessoa->getUsuario()) {
             $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());

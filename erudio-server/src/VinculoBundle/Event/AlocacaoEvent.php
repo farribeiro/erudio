@@ -29,8 +29,9 @@
 namespace VinculoBundle\Event;
 
 use VinculoBundle\Entity\Alocacao;
+use Symfony\Component\EventDispatcher\Event;
 
-class AlocacaoEvent {
+class AlocacaoEvent extends Event {
     
     const ALOCACAO_CRIADA = 'event.vinculo.alocacao_criada';
     const ALOCACAO_REMOVIDA = 'event.vinculo.alocacao_removida';
