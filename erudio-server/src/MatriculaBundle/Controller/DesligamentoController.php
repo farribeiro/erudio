@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Desligamento;
+use MatriculaBundle\Service\DesligamentoFacade;
 
 /**
-* @FOS\RouteResource("desligamentos")
+* @FOS\NamePrefix("desligamentos")
 */
 class DesligamentoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.desligamentos');
+    function __construct(DesligamentoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

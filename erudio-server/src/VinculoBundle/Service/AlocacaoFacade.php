@@ -87,15 +87,13 @@ class AlocacaoFacade extends AbstractFacade {
 
     protected function afterCreate($alocacao) {
         $this->eventDispatcher->dispatch(
-            AlocacaoEvent::ALOCACAO_CRIADA,
-            new AlocacaoEvent($alocacao)
+            AlocacaoEvent::ALOCACAO_CRIADA, new AlocacaoEvent($alocacao)
         );
     }
     
     protected function afterRemove($alocacao) {
         $this->eventDispatcher->dispatch(
-            AlocacaoEvent::ALOCACAO_REMOVIDA,
-            new AlocacaoEvent($alocacao)
+            AlocacaoEvent::ALOCACAO_REMOVIDA, new AlocacaoEvent($alocacao)
         );
     }
     

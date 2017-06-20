@@ -33,14 +33,15 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use AvaliacaoBundle\Service\SistemaAvaliacaoFacade;
 
 /**
- * @FOS\RouteResource("sistemas-avaliacao")
+ * @FOS\NamePrefix("sistemas-avaliacao")
  */
 class SistemaAvaliacaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.sistemas_avaliacao');
+    function __construct(SistemaAvaliacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

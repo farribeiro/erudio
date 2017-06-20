@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\Habilidade;
+use AvaliacaoBundle\Service\HabilidadeFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes-qualitativas/habilidades")
+ * @FOS\NamePrefix("avaliacoes-qualitativas/habilidades")
  */
 class HabilidadeController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.avaliacao.habilidades');
+    function __construct(HabilidadeFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

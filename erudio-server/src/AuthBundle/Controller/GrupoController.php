@@ -43,14 +43,8 @@ use AuthBundle\Service\GrupoFacade;
  */
 class GrupoController extends AbstractEntityController {
     
-    private $grupoFacade;
-    
-    function __construct(GrupoFacade $grupoFacade) {
-        $this->grupoFacade = $grupoFacade;
-    }
-    
-    function getFacade() {
-        return $this->grupoFacade;
+    function __construct(GrupoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

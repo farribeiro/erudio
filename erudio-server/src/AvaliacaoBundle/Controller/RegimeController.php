@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\Regime;
+use AvaliacaoBundle\Service\RegimeFacade;
 
 /**
- * @FOS\RouteResource("regimes")
+ * @FOS\NamePrefix("regimes")
  */
 class RegimeController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.regimes');
+    function __construct(RegimeFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

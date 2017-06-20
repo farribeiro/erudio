@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\AulaObservacao;
+use CalendarioBundle\Service\AulaObservacaoFacade;
 
 /**
- * @FOS\RouteResource("aula-observacoes")
+ * @FOS\NamePrefix("aula-observacoes")
  */
 class AulaObservacaoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.observacoes_aula');
+    function __construct(AulaObservacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

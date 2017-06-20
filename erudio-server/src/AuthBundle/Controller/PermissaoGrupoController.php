@@ -43,14 +43,8 @@ use AuthBundle\Service\GrupoPermissaoFacade;
  */
 class PermissaoGrupoController extends AbstractEntityController {
     
-    private $permissaoGrupoFacade;
-    
-    function __construct(GrupoPermissaoFacade $permissaoGrupoFacade) {
-        $this->permissaoGrupoFacade = $permissaoGrupoFacade;
-    }
-    
-    function getFacade() {
-        return $this->permissaoGrupoFacade;
+    function __construct(GrupoPermissaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

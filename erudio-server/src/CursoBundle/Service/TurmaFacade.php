@@ -28,13 +28,13 @@
 
 namespace CursoBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
 use CursoBundle\Entity\DisciplinaOfertada;
-use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 class TurmaFacade extends AbstractFacade {
     
@@ -42,20 +42,14 @@ class TurmaFacade extends AbstractFacade {
     private $disciplinaCursadaFacade;
     private $vagaFacade;
     
+    function __construct(RegistryInterface $doctrine, DisciplinaOfertadaFacade $disciplinaFacade, VagaFacade $vagaFacade) {
+        parent::__construct($doctrine);
+        $this->disciplinaOfertadaFacade = $disciplinaFacade;
+        $this->vagaFacade = $vagaFacade;
+    }
+    
     function getEntityClass() {
         return 'CursoBundle:Turma';
-    }
-    
-    function setDisciplinaOfertadaFacade(DisciplinaOfertadaFacade $disciplinaOfertadaFacade) {
-        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
-    }
-    
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
-    }
-    
-    function setVagaFacade(VagaFacade $vagaFacade) {
-        $this->vagaFacade = $vagaFacade;
     }
     
     function removerAgrupamento(Turma $turma) {

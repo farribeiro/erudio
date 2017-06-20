@@ -43,14 +43,8 @@ use AuthBundle\Service\UsuarioFacade;
  */
 class UsuarioController extends AbstractEntityController {
     
-    private $usuarioFacade;
-    
-    function __construct(UsuarioFacade $usuarioFacade) {
-        $this->usuarioFacade = $usuarioFacade;
-    }
-    
-    function getFacade() {
-        return $this->usuarioFacade;
+    function __construct(UsuarioFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

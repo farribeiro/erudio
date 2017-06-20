@@ -40,14 +40,19 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 use MatriculaBundle\Entity\Media;
+use MatriculaBundle\Service\MediaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("medias")
+ * @FOS\NamePrefix("medias")
  */
 class MediaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.medias');
+    private $turmaFacade;
+    
+    function __construct(MediaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
     
     /**
@@ -106,7 +111,7 @@ class MediaController extends AbstractEntityController {
     */
     function getFaltasAction(Request $request, ParamFetcherInterface $params) {
         try {
-            $turma = $this->get('facade.curso.turmas')->find($params->get('turma'));
+            $turma = $this->turmaFacade->find($params->get('turma'));
             $numero = $params->get('numero');
             $faltas = $turma->getEnturmacoes()->map(function($e) use ($numero) {
                 return $this->getFacade()->getFaltasUnificadas($e, $numero);
@@ -133,7 +138,7 @@ class MediaController extends AbstractEntityController {
         try {
             foreach ($faltas->faltas as $registroFaltas) {
                 $this->getFacade()->inserirFaltasUnificadas(
-                        $registroFaltas->faltas, $registroFaltas->media, $registroFaltas->enturmacao);
+                        $registroFaltas->getFaltas(), $registroFaltas->getMedia(), $registroFaltas->getEnturmacao());
             }
             $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch (IllegalUpdateException $ex) {

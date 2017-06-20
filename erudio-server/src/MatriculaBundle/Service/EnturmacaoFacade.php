@@ -28,21 +28,25 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use MatriculaBundle\Entity\DisciplinaCursada;
-use CursoBundle\Entity\Turma;
-use MatriculaBundle\Entity\Enturmacao;
-use CursoBundle\Service\VagaFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Entity\Enturmacao;
+use CursoBundle\Entity\Turma;
+use CursoBundle\Service\VagaFacade;
 
 class EnturmacaoFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
     private $vagaFacade;
     
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade, 
+            VagaFacade $vagaFacade) {
+        parent::__construct($doctrine);
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+        $this->vagaFacade = $vagaFacade;
     }
     
     function setVagaFacade(VagaFacade $vagaFacade) {

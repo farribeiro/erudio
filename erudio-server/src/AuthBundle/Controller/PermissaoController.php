@@ -43,14 +43,8 @@ use AuthBundle\Service\PermissaoFacade;
  */
 class PermissaoController extends AbstractEntityController {
     
-    private $permissaoFacade;
-    
-    function __construct(PermissaoFacade $permissaoFacade) {
-        $this->permissaoFacade = $permissaoFacade;
-    }
-    
-    function getFacade() {
-        return $this->permissaoFacade;
+    function __construct(PermissaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

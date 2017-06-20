@@ -36,14 +36,19 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CalendarioBundle\Service\AulaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("aulas")
+ * @FOS\NamePrefix("aulas")
  */
 class AulaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.aulas');
+    private $turmaFacade;
+    
+    function __construct(AulaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
     
     /**
@@ -73,11 +78,12 @@ class AulaController extends AbstractEntityController {
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Post("turmas/{turma}/aulas")
+    *  @FOS\Post("turmas/{turmaId}/aulas")
     */
-    function postBatchAction(Request $request, $turma) {
+    function postBatchAction(Request $request, $turmaId) {
         try {
-            $this->getFacade()->gerarAulas($turma);
+            $turma = $this->turmaFacade->find($turmaId);
+            $this->getFacade()->gerarAulas($turma, $this->horarioDisciplinaFacade->findAll(['turma' => $turma]));
             $view = View::create(null, Response::HTTP_CREATED);
         } catch (IllegalUpdateException $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);

@@ -39,14 +39,15 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 /**
- * @FOS\RouteResource("disciplinas-cursadas")
+ * @FOS\NamePrefix("disciplinas-cursadas")
  */
 class DisciplinaCursadaController extends AbstractEntityController {
 
-    public function getFacade() {
-        return $this->get('facade.matricula.disciplinas_cursadas');
+    function __construct(DisciplinaCursadaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

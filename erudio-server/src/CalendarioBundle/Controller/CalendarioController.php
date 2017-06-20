@@ -37,14 +37,15 @@ use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\Calendario;
+use CalendarioBundle\Service\CalendarioFacade;
 
 /**
- * @FOS\RouteResource("calendarios")
+ * @FOS\NamePrefix("calendarios")
  */
 class CalendarioController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.calendarios');
+    function __construct(CalendarioFacade $facade) {
+        parent::__construct($facade);
     }
 
     /**

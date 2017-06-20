@@ -37,14 +37,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Turma;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("turmas")
+ * @FOS\NamePrefix("turmas")
  */
 class TurmaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.curso.turmas');
+    function __construct(TurmaFacade $facade) {
+        parent::__construct($facade);
     }
         
     /**

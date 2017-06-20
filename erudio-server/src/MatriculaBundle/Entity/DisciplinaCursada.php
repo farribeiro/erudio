@@ -28,13 +28,14 @@
 
 namespace MatriculaBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use MatriculaBundle\Traits\CalculosMedia;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Disciplina;
 use CursoBundle\Entity\DisciplinaOfertada;
-use MatriculaBundle\Traits\CalculosMedia;
 
 /**
 * @ORM\Entity
@@ -241,7 +242,11 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     function getMedias() {
-        return $this->medias;
+        return $this->medias->matching(
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['numero' => 'ASC'])
+        );
     }
     
     function getMatricula() {

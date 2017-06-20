@@ -43,14 +43,8 @@ use VinculoBundle\Service\CargoFacade;
  */
 class CargoController extends AbstractEntityController {
     
-    private $cargoFacade;
-    
-    function __construct(CargoFacade $cargoFacade) {
-        $this->cargoFacade = $cargoFacade;
-    }
-    
-    function getFacade() {
-        return $this->cargoFacade;
+    function __construct(CargoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

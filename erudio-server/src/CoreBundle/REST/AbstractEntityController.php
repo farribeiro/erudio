@@ -49,16 +49,25 @@ abstract class AbstractEntityController extends Controller {
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
     const SERIALIZER_MAX_DEPTH = 4;
+    
     const LINK_HEADER = 'Link';
     const PAGE_PARAM = 'page';
     
+    private $entityFacade;
     private $viewHandler;
+    
+    function __construct(AbstractFacade $entityFacade, ViewHandlerInterface $viewHandler = null) {
+        $this->entityFacade = $entityFacade;
+        $this->viewHandler = $viewHandler;
+    }
     
     function setViewHandler(ViewHandlerInterface $viewHandler) {
         $this->viewHandler = $viewHandler;
     }
     
-    abstract function getFacade();
+    function getFacade() {
+        return $this->entityFacade;
+    }
     
     function getOne(Request $request, $id) {
         try {
@@ -169,17 +178,15 @@ abstract class AbstractEntityController extends Controller {
         return $this->handleView(View::create($errors, Response::HTTP_BAD_REQUEST));
     }
     
-    protected function configureContext($context, array $groups = 
-            [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]) {
+    protected function configureContext($context, 
+            array $groups = [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]) {
         $context->setGroups($groups);
         $context->setMaxDepth(self::SERIALIZER_MAX_DEPTH);
         return $context;
     }
     
     protected function handleView(View $view) {
-        return $this->viewHandler === null 
-                ? $this->get('fos_rest.view_handler')->handle($view)
-                : $this->viewHandler->handle($view);
+        return $this->viewHandler->handle($view);
     }
     
 }

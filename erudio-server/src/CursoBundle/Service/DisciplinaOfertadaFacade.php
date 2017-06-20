@@ -28,6 +28,7 @@
 
 namespace CursoBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\DisciplinaCursada;
@@ -37,12 +38,13 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
     
-    function getEntityClass() {
-        return 'CursoBundle:DisciplinaOfertada';
+    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        parent::__construct($doctrine);
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
     
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    function getEntityClass() {
+        return 'CursoBundle:DisciplinaOfertada';
     }
     
     function queryAlias() {

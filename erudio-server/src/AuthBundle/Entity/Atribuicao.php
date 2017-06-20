@@ -31,6 +31,7 @@ namespace AuthBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
+use PessoaBundle\Entity\Instituicao;
 
 /**
  * @ORM\Entity
@@ -70,7 +71,7 @@ class Atribuicao extends AbstractEditableEntity {
         return $this->instituicao;
     }
     
-    static function criarAtribuicao($usuario, $grupo, $instituicao) {
+    static function criarAtribuicao(Usuario $usuario, Grupo $grupo, Instituicao $instituicao) {
         $atribuicao = new Atribuicao();
         $atribuicao->usuario = $usuario;
         $atribuicao->grupo = $grupo;

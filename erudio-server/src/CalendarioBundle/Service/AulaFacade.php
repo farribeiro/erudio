@@ -32,7 +32,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use CalendarioBundle\Entity\Aula;
@@ -41,14 +41,8 @@ use CursoBundle\Entity\Turma;
 
 class AulaFacade extends AbstractFacade {
     
-    private $horarioDisciplinaFacade;
-    
-    function __construct(Registry $doctrine, Logger $logger) {
+    function __construct(Registry $doctrine, LoggerInterface $logger) {
         parent::__construct($doctrine, $logger);
-    }
-    
-    function setHorarioDisciplinaFacade(HorarioDisciplinaFacade $horarioDisciplinaFacade) {
-        $this->horarioDisciplinaFacade = $horarioDisciplinaFacade;
     }
     
     function getEntityClass() {
@@ -93,13 +87,12 @@ class AulaFacade extends AbstractFacade {
         $qb->join('a.disciplinaOfertada', 'disciplina')->join('a.dia', 'dia');    
     }
     
-    function gerarAulas($turmaId) {
-        $turma = $this->loadEntity($turmaId, 'CursoBundle:Turma');
+    function gerarAulas(Turma $turma, array $horariosTurma) {
         if ($turma->getStatus() != Turma::STATUS_CRIADO) { 
             throw new IllegalOperationException('As aulas desta turma já foram definidas');
         }
         $aulasCriadas = 0;
-        $horarios = new ArrayCollection($this->horarioDisciplinaFacade->findAll(['turma' => $turma]));
+        $horarios = new ArrayCollection($horariosTurma);
         $dias = $turma->getCalendario()->getDias()->matching(
             Criteria::create()->where(Criteria::expr()->andX(              
                 Criteria::expr()->eq('ativo', true), Criteria::expr()->eq('efetivo', true)
