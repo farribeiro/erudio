@@ -48,10 +48,12 @@ abstract class AbstractEntityController extends Controller {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
+    const SERIALIZER_DEFAULT_GROUPS = ['LIST', 'DETAILS'];
     const SERIALIZER_MAX_DEPTH = 4;
     
     const LINK_HEADER = 'Link';
     const PAGE_PARAM = 'page';
+    const VIEW_PARAM = 'view';
     
     private $entityFacade;
     private $viewHandler;
@@ -69,11 +71,15 @@ abstract class AbstractEntityController extends Controller {
         return $this->entityFacade;
     }
     
-    function getOne(Request $request, $id) {
+    function getOne(Request $request, $id, $viewGroup = null) {
+        $viewGroups = self::SERIALIZER_DEFAULT_GROUPS;
+        if ($viewGroup) {
+            $viewGroups[] = $viewGroup;
+        }
         try {
             $entidade = $this->getFacade()->find($id);
             $view = View::create($entidade, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
+            $this->configureContext($view->getContext(), $viewGroups);
         } catch(\Exception $ex) {
             $view = View::create(null, Response::HTTP_NOT_FOUND);
         }
@@ -82,12 +88,15 @@ abstract class AbstractEntityController extends Controller {
 
     function getList(Request $request, array $params) {
         $page = key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null;
+        $viewGroups = key_exists(self::VIEW_PARAM, $params) 
+                ? [self::SERIALIZER_GROUP_LIST, $params[self::VIEW_PARAM]]
+                : [self::SERIALIZER_GROUP_LIST];
         $resultados = $this->getFacade()->findAll($params, $page);
         $view = View::create($resultados, Response::HTTP_OK);
         if (!is_null($page)) {
             $this->addPageLinks($request, $view, $params, $page);
         }
-        $this->configureContext($view->getContext(), [self::SERIALIZER_GROUP_LIST]);
+        $this->configureContext($view->getContext(), $viewGroups);
         return $this->handleView($view);
     }
     
@@ -178,9 +187,8 @@ abstract class AbstractEntityController extends Controller {
         return $this->handleView(View::create($errors, Response::HTTP_BAD_REQUEST));
     }
     
-    protected function configureContext($context, 
-            array $groups = [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]) {
-        $context->setGroups($groups);
+    protected function configureContext($context, array $viewGroups = null) {
+        $context->setGroups($viewGroups ? $viewGroups : [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]);
         $context->setMaxDepth(self::SERIALIZER_MAX_DEPTH);
         return $context;
     }

@@ -54,12 +54,13 @@ class MatriculaFacade extends AbstractFacade {
     function parameterMap() {
         return array (
             'aluno' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
+                $qb->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
             },
             'aluno_nome' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+                $qb->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'aluno_dataNascimento' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.curso', 'curso')
@@ -80,6 +81,10 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             }
         );
+    }
+    
+    protected function prepareQuery(QueryBuilder $qb, $params) {
+        $qb->join('m.aluno', 'aluno');
     }
     
     function uniqueMap($matricula) {

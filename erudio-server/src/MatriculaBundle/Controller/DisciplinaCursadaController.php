@@ -53,23 +53,26 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
+    * @FOS\QueryParam(name = "view", nullable = true)
     * @FOS\Get("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
+    function getAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
+        return $this->getOne($request, $id, $paramFetcher->get('view'));
     }
     
     /**
     * @ApiDoc()
     * 
     * @FOS\Get("disciplinas-cursadas")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", nullable = true) 
     * @FOS\QueryParam(name = "dataCadastro", nullable = true) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "disciplinaOfertada", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
     * 
     */

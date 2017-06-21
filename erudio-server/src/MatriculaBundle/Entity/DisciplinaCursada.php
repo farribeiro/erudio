@@ -99,7 +99,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3)
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
     * @ORM\JoinColumn(name = "turma_disciplina_id")  
     */
@@ -135,7 +135,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"DETAILS", "medias"})
     * @JMS\VirtualProperty
     */
     function getMediaPreliminar() {
@@ -150,7 +150,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"DETAILS", "medias"})
     * @JMS\VirtualProperty
     */
     function getStatusPrevisto() {
@@ -192,6 +192,20 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
     }
     
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\MaxDepth(depth = 2)
+    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Media>")
+    * @JMS\VirtualProperty
+    */
+    function getMedias() {
+        return $this->medias->matching(
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['numero' => 'ASC'])
+        );
+    }
+    
     function emAberto() {
         return $this->status === self::STATUS_CURSANDO 
                 || $this->status === self::STATUS_EXAME 
@@ -216,6 +230,9 @@ class DisciplinaCursada extends AbstractEditableEntity {
             return $disciplina->getStatus();
         }
         $sistemaAvaliacao = $disciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        if ($disciplina->frequenciaTotal < $sistemaAvaliacao->getFrequenciaAprovacao()) {
+            return self::STATUS_REPROVADO;
+        }
         if ($disciplina->getStatus() === self::STATUS_EXAME) {
             $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
                     ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
@@ -239,14 +256,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     function desvincularEnturmacao() {
         $this->enturmacao = null;
         $this->disciplinaOfertada = null;
-    }
-    
-    function getMedias() {
-        return $this->medias->matching(
-            Criteria::create()->where(
-                Criteria::expr()->eq('ativo', true)
-            )->orderBy(['numero' => 'ASC'])
-        );
     }
     
     function getMatricula() {

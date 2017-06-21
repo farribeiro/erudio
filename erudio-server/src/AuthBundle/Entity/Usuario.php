@@ -31,9 +31,10 @@ namespace AuthBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Security\Core\User\UserInterface;
-use CoreBundle\ORM\AbstractEditableEntity;
+use Symfony\Component\Security\Core\User\UserInterface;;
 use Doctrine\Common\Collections\Criteria;
+use CoreBundle\ORM\AbstractEditableEntity;
+use AuthBundle\Service\MD5Encoder;
 
 /**
  * @ORM\Entity
@@ -104,7 +105,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     }
 
     function setPassword($password) {
-        $this->password = $password;
+        $this->password = md5($password);
     }
 
     function getNomeExibicao() {
