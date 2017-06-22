@@ -83,7 +83,7 @@ class MatriculaFacade extends AbstractFacade {
         );
     }
     
-    protected function prepareQuery(QueryBuilder $qb, $params) {
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('m.aluno', 'aluno');
     }
     
