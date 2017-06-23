@@ -83,8 +83,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.disciplinaOfertada', 'disciplinaOfertada')
-                   ->andWhere('disciplinaOfertada.id = :disciplinaOfertada')
+                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada')
                    ->setParameter('disciplinaOfertada', $value);
             }
         );

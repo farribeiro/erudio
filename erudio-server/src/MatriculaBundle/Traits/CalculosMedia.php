@@ -41,6 +41,27 @@ trait CalculosMedia {
      * @return float porcentagem da frequência do aluno nas aulas
      */
     function calcularFrequenciaTotal(DisciplinaCursada $disciplinaCursada) {
+        $frequenciaUnificada = $disciplinaCursada->getDisciplina()->getEtapa()->getFrequenciaUnificada();
+        return $frequenciaUnificada 
+                ? $this->calcularFrequenciaPorDia($disciplinaCursada) 
+                : $this->calcularFrequenciaPorAula($disciplinaCursada);
+    }
+    
+    /**
+     * 
+     * @param DisciplinaCursada $disciplinaCursada
+     * @return float porcentagem de frequência calculada
+     */
+    function calcularFrequenciaPorDia(DisciplinaCursada $disciplinaCursada) {
+        return 100;
+    }
+    
+    /**
+    * 
+    * @param DisciplinaCursada $disciplinaCursada
+    * @return float porcentagem de frequência calculada
+    */
+    function calcularFrequenciaPorAula(DisciplinaCursada $disciplinaCursada) {
         $somaFaltas = 0;
         foreach ($disciplinaCursada->getMedias() as $media) {
             $somaFaltas += $media->getFaltas();

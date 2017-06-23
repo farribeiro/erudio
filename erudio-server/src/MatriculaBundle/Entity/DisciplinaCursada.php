@@ -119,6 +119,11 @@ class DisciplinaCursada extends AbstractEditableEntity {
     /**
     * @JMS\Exclude
     */
+    private $frequenciaPreliminar;
+    
+    /**
+    * @JMS\Exclude
+    */
     private $statusPrevisto;
     
     function __construct(Matricula $matricula, Disciplina $disciplina) {
@@ -132,32 +137,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
         if (is_null($this->status)) {
             $this->status = self::STATUS_CURSANDO;
         }
-    }
-    
-    /**
-    * @JMS\Groups({"DETAILS", "medias"})
-    * @JMS\VirtualProperty
-    */
-    function getMediaPreliminar() {
-        if (!$this->mediaPreliminar) {
-            try {
-                $this->mediaPreliminar = $this->calcularMediaFinal($this);
-            } catch (\Exception $ex) {
-                return null;
-            }
-        }
-        return $this->mediaPreliminar;
-    }
-    
-    /**
-    * @JMS\Groups({"DETAILS", "medias"})
-    * @JMS\VirtualProperty
-    */
-    function getStatusPrevisto() {
-        if (!$this->statusPrevisto) {
-            $this->statusPrevisto = self::determinarStatus($this, true);
-        }
-        return $this->statusPrevisto;
     }
     
     /**
@@ -193,6 +172,16 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function emAberto() {
+        return $this->status === self::STATUS_CURSANDO 
+                || $this->status === self::STATUS_EXAME 
+                || is_null($this->mediaFinal);
+    }
+    
+    /**
     * @JMS\Groups({"medias"})
     * @JMS\MaxDepth(depth = 2)
     * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Media>")
@@ -206,10 +195,45 @@ class DisciplinaCursada extends AbstractEditableEntity {
         );
     }
     
-    function emAberto() {
-        return $this->status === self::STATUS_CURSANDO 
-                || $this->status === self::STATUS_EXAME 
-                || is_null($this->mediaFinal);
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getMediaPreliminar() {
+        if (!$this->mediaPreliminar) {
+            try {
+                $this->mediaPreliminar = $this->calcularMediaFinal($this);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+        return $this->mediaPreliminar;
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getFrequenciaPreliminar() {
+        if (!$this->frequenciaPreliminar) {
+            try {
+                $this->frequenciaPreliminar = $this->calcularFrequenciaTotal($this);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+        return $this->frequenciaPreliminar;
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getStatusPrevisto() {
+        if (!$this->statusPrevisto) {
+            $this->statusPrevisto = self::determinarStatus($this, true);
+        }
+        return $this->statusPrevisto;
     }
     
     function encerrar($status = null) {
@@ -225,12 +249,13 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     static function determinarStatus(DisciplinaCursada $disciplina, $preliminar = false) {
-        $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal(); 
+        $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal();
+        $frequenciaTotal = $preliminar ? $disciplina->getFrequenciaPreliminar() : $disciplina->getFrequenciaTotal();
         if (is_null($mediaFinal)) {
             return $disciplina->getStatus();
         }
         $sistemaAvaliacao = $disciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao();
-        if ($disciplina->frequenciaTotal < $sistemaAvaliacao->getFrequenciaAprovacao()) {
+        if ($frequenciaTotal < $sistemaAvaliacao->getFrequenciaAprovacao()) {
             return self::STATUS_REPROVADO;
         }
         if ($disciplina->getStatus() === self::STATUS_EXAME) {

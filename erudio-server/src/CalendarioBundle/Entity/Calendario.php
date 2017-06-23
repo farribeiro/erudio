@@ -76,7 +76,7 @@ class Calendario extends AbstractEditableEntity {
     
     /** 
     * @JMS\Exclude 
-    * @ORM\OneToMany(targetEntity = "Dia", mappedBy = "calendario", cascade = {"all"}) 
+    * @ORM\OneToMany(targetEntity = "Dia", mappedBy = "calendario", cascade = {"all"}, fetch = "EXTRA_LAZY") 
     */
     private $dias;
     
