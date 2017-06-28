@@ -26,15 +26,17 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CoreBundle\ORM\Exception;
+namespace CoreBundle\Exception;
 
-use CoreBundle\Exception\PublishedException;
-
-class UniqueViolationException extends PublishedException {
+/**
+* Classe de marcação, para indicar que a mensagem da exceção deve ser 
+* retornada ao usuário. Isto se aplica normalmente a exceções causadas pelo usuário
+* ao enviar dados inválidos ou tentar realizar uma operação não permitida. 
+*/
+class PublishedException extends \Exception {
     
-     function __construct($message = null) {
-        parent::__construct($message ? $message : 'Já existe um objeto salvo com estes dados');
+    function __construct($message) {
+        parent::__construct($message);
     }
     
 }
-

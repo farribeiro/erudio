@@ -29,6 +29,12 @@
 namespace CoreBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use CoreBundle\DependencyInjection\CoreExtension;
 
 class CoreBundle extends Bundle {
+    
+    function getContainerExtension() {
+        return new CoreExtension();
+    }
+    
 }

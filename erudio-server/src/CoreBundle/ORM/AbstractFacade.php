@@ -47,7 +47,7 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 50;
+    const PAGE_SIZE = 100;
     
     protected $orm;
     protected $logger;
@@ -128,14 +128,14 @@ abstract class AbstractFacade {
     * @param array $params
     * @return array entidades encontradas, ou um array vazio
     */
-    function findAll($params = [], $page = null) {
+    function findAll($params = [], $page = null, $limit = self::PAGE_SIZE) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
                 ->setFirstResult(self::PAGE_SIZE * $page)
                 ->getQuery()->getResult();
         }
-        return $this->buildQuery($params)->getQuery()->getResult();
+        return $this->buildQuery($params)->setMaxResults($limit)->getQuery()->getResult();
     }
 
     /**
@@ -317,8 +317,9 @@ abstract class AbstractFacade {
     * @return type
     */
     protected function buildQuery(array $params) {
-        $qb = $this->orm->getRepository($this->getEntityClass())
-            ->createQueryBuilder($this->queryAlias())
+        $qb = $this->orm->getEntityManager()->createQueryBuilder()
+            ->select($this->queryAlias())
+            ->from($this->getEntityClass(), $this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {

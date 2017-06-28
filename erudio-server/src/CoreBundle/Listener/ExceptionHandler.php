@@ -26,15 +26,31 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CoreBundle\ORM\Exception;
+namespace CoreBundle\Listener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use CoreBundle\Exception\PublishedException;
 
-class UniqueViolationException extends PublishedException {
+class ExceptionHandler implements EventSubscriberInterface {
     
-     function __construct($message = null) {
-        parent::__construct($message ? $message : 'Já existe um objeto salvo com estes dados');
+    static function getSubscribedEvents(): array {
+        return ['kernel.exception' => 'onException'];
+    }
+
+    function onException(GetResponseForExceptionEvent $event) {
+        $exception = $event->getException();
+        if (!$exception instanceof PublishedException) {
+            return;
+        }
+        $response = new JsonResponse([
+            'error' => [
+                'code' => JsonResponse::HTTP_BAD_REQUEST,
+                'message' => $exception->getMessage()
+            ]
+        ]);
+        $event->setResponse($response);
     }
     
 }
-

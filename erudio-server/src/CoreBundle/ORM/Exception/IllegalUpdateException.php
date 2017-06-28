@@ -28,7 +28,9 @@
 
 namespace CoreBundle\ORM\Exception;
 
-class IllegalUpdateException extends \Exception {
+use CoreBundle\Exception\PublishedException;
+
+class IllegalUpdateException extends PublishedException {
     
     const OBJECT_IS_READONLY = 1;
     const OBJECT_NOT_FOUND = 2;
@@ -37,8 +39,8 @@ class IllegalUpdateException extends \Exception {
     
     private $errorCode;
     
-    function __construct($errorCode, $specificMessage = null) {
-        parent::__construct($specificMessage ? $specificMessage : $this->createMessage($errorCode));
+    function __construct($errorCode, $message = null) {
+        parent::__construct($message ? $message : $this->createMessage($errorCode));
         $this->errorCode = $errorCode;
     }
     

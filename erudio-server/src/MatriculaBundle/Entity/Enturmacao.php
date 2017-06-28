@@ -83,6 +83,10 @@ class Enturmacao extends AbstractEditableEntity {
     function getAluno() {
         return $this->matricula->getAluno();
     }
+    
+    function getAno() {
+        return $this->turma->getAno();
+    }
      
     function getAnosDefasagem(\DateTime $dataReferencia = null) {
         $idadeEtapa = $this->turma->getEtapa()->getIdadeRecomendada();

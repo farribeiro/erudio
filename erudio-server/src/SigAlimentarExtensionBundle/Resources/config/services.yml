@@ -1,0 +1,6 @@
+services:
+       
+    SigAlimentarExtensionBundle\Controller\IndexController:
+        autowire: true
+        public: true
+        tags: ['controller.service_arguments']

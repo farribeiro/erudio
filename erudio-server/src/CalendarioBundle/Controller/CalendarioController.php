@@ -63,7 +63,7 @@ class CalendarioController extends AbstractEntityController {
     *   @FOS\Get("calendarios")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true)
-    *   @FOS\QueryParam(name = "instituicao", requirements="\d+", nullable = false) 
+    *   @FOS\QueryParam(name = "instituicao", requirements="\d+", nullable = true) 
     *   @FOS\QueryParam(name = "ano", requirements="\d+", nullable = true)
     *   @FOS\QueryParam(name = "calendarioBase", nullable = true)
     */

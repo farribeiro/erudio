@@ -41,7 +41,13 @@ api_reports:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
-    
+
+# Integrações
+integracao_sig:
+    resource: "@SigAlimentarExtensionBundle/Controller/"
+    type: rest
+    prefix: /integracoes
+   
 # Docs    
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

@@ -32,19 +32,23 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
 use CursoBundle\Entity\DisciplinaOfertada;
+use MatriculaBundle\Service\EnturmacaoFacade;
 
 class TurmaFacade extends AbstractFacade {
     
     private $disciplinaOfertadaFacade;
-    private $disciplinaCursadaFacade;
+    private $enturmacaoFacade;
     private $vagaFacade;
     
-    function __construct(RegistryInterface $doctrine, DisciplinaOfertadaFacade $disciplinaFacade, VagaFacade $vagaFacade) {
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade, 
+            DisciplinaOfertadaFacade $disciplinaFacade, VagaFacade $vagaFacade) {
         parent::__construct($doctrine);
         $this->disciplinaOfertadaFacade = $disciplinaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
         $this->vagaFacade = $vagaFacade;
     }
     
@@ -108,7 +112,15 @@ class TurmaFacade extends AbstractFacade {
            ->addOrderBy('etapa.ordem','ASC')
            ->addOrderBy('t.nome', 'ASC');
     }
-        
+    
+    protected function beforeCreate($turma) {
+        if ($turma->getEtapa()->getIntegral() && $turma->getPeriodo()) {
+            throw new IllegalOperationException(
+                'Turmas de etapa integral não devem ser vinculadas a um período do calendário'
+            );
+        }
+    }
+    
     protected function beforeRemove($turma) {
         if ($turma->getEnturmacoes()->count() > 0) {
             throw new IllegalUpdateException(
@@ -182,17 +194,10 @@ class TurmaFacade extends AbstractFacade {
         } 
     }
  
-    private function finalizar(Turma $turma) {
-        foreach($turma->getDisciplinas() as $ofertada) {
-            $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
-            foreach ($cursadas as $cursada) {
-                if ($cursada->emAberto()) {
-                    throw new IllegalUpdateException(
-                        'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
-                            . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
-                    );
-                }
-            }
+    function finalizar(Turma $turma) {
+        $turma->setStatus(Turma::STATUS_ENCERRADO);
+        foreach ($turma->getEnturmacoes() as $enturmacao) {
+            $this->enturmacaoFacade->finalizar($enturmacao);
         }
     }
     

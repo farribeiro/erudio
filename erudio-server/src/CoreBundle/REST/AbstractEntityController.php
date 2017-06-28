@@ -134,13 +134,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
-            $view = View::create($entidadeAtualizada, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
+        $view = View::create($entidadeAtualizada, Response::HTTP_OK);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     

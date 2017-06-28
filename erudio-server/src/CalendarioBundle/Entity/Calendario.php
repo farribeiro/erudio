@@ -30,6 +30,7 @@ namespace CalendarioBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -80,8 +81,33 @@ class Calendario extends AbstractEditableEntity {
     */
     private $dias;
     
+    /** 
+    * @JMS\Exclude 
+    * @ORM\OneToMany(targetEntity = "Periodo", mappedBy = "calendario", cascade = {"all"}, fetch = "EXTRA_LAZY") 
+    */
+    private $periodos;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("integer")
+    */
+    function getQuantidadeDiasEfetivos(Periodo $periodo = null) {
+        $dataInicio = $periodo ? $periodo->getDataInicio() : $this->dataInicio;
+        $dataTermino = $periodo ? $periodo->getDataTermino() : $this->dataTermino;
+        return $this->dias->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('efetivo', true),
+                Criteria::expr()->gte('data', $dataInicio),
+                Criteria::expr()->lte('data', $dataTermino)
+            ))
+        )->count();
+    }
+    
     function init() {
         $this->dias = new ArrayCollection();
+        $this->periodos = new ArrayCollection();
         if($this->calendarioBase instanceof Calendario) {
             $this->clonar($this->calendarioBase);
         } else {
@@ -110,7 +136,7 @@ class Calendario extends AbstractEditableEntity {
     }
     
     private function clonar(Calendario $calendario) {
-        foreach($calendario->getDias() as $d) {
+        foreach ($calendario->getDias() as $d) {
             $dia = new Dia($this, $d->getData());
             $dia->setEfetivo($d->getEfetivo());
             $dia->setLetivo($d->getLetivo());
@@ -122,6 +148,11 @@ class Calendario extends AbstractEditableEntity {
                 }
             }
             $this->dias->add($dia);
+        }
+        foreach ($calendario->getPeriodos() as $p) {
+            $periodo = new Periodo($this, $p->getNumero(), $p->getDataInicio(), $p->getDataTermino());
+            $periodo->init();
+            $this->periodos->add($periodo);
         }
     }
     
@@ -151,6 +182,10 @@ class Calendario extends AbstractEditableEntity {
 
     function getDias() {
         return $this->dias;
+    }
+    
+    function getPeriodos() {
+        return $this->periodos;
     }
     
     function setNome($nome) {

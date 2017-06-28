@@ -31,7 +31,7 @@ trait CalculosMedia {
             $somaNotas += $media->getValor();
             $somaPesos += $media->getPeso();
         }
-        return $somaNotas / $somaPesos;
+        return round($somaNotas / $somaPesos, 2);
     }
     
     /**
@@ -53,7 +53,15 @@ trait CalculosMedia {
      * @return float porcentagem de frequência calculada
      */
     function calcularFrequenciaPorDia(DisciplinaCursada $disciplinaCursada) {
-        return 100;
+        $calendario = $disciplinaCursada->getEnturmacao()->getTurma()->getCalendario();
+        $numeroAulas = $calendario->getQuantidadeDiasEfetivos(
+            $disciplinaCursada->getEnturmacao()->getTurma()->getPeriodo()
+        );
+        $somaFaltas = 0;
+        foreach ($disciplinaCursada->getMedias() as $media) {
+            $somaFaltas += $media->getFaltas();
+        }
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
     }
     
     /**
@@ -70,7 +78,7 @@ trait CalculosMedia {
         $duracaoAula = $disciplinaCursada->getEnturmacao()->getTurma()
                 ->getQuadroHorario()->getModelo()->getDuracaoAula();
         $numeroAulas = floor($cargaHoraria / ($duracaoAula / 60));
-        return 100 - ($somaFaltas * 100) / $numeroAulas;
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
     }
     
     /**

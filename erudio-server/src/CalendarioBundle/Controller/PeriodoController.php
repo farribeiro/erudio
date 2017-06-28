@@ -61,7 +61,7 @@ class PeriodoController extends AbstractEntityController {
     *   @ApiDoc()
     *  
     *   @FOS\Get("periodos")
-    *   @FOS\QueryParam(name = "media", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "numero", requirements="\d+", nullable = true) 
     *   @FOS\QueryParam(name = "calendario", requirements="\d+", nullable = true) 
     *   @FOS\QueryParam(name = "sistemaAvaliacao", requirements="\d+", nullable = true)
     */

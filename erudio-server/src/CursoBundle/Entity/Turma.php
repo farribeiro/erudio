@@ -101,6 +101,13 @@ class Turma extends AbstractEditableEntity {
     */
     private $calendario;
     
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Periodo")
+    * @ORM\JoinColumn(name = "calendario_periodo_id", nullable = true) 
+    */
+    private $periodo;
+    
     /** 
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
@@ -138,6 +145,10 @@ class Turma extends AbstractEditableEntity {
         $this->status = self::STATUS_CRIADO;
         $this->enturmacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
+    }
+    
+    function getAno() {
+        return $this->calendario->getAno();
     }
 
     function getDisciplinas() {
@@ -257,6 +268,10 @@ class Turma extends AbstractEditableEntity {
         return $this->calendario;
     }
     
+    function getPeriodo() {
+        return $this->periodo;
+    }
+    
     function getQuadroHorario() {
         return $this->quadroHorario;
     }
@@ -299,6 +314,10 @@ class Turma extends AbstractEditableEntity {
     
     function setQuadroHorario($quadroHorario) {
         $this->quadroHorario = $quadroHorario;
+    }
+    
+    function setPeriodo($periodo) {
+        $this->periodo = $periodo;
     }
     
 }

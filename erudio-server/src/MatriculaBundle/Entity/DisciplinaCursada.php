@@ -72,13 +72,15 @@ class DisciplinaCursada extends AbstractEditableEntity {
     private $disciplina;
     
     /**
-    * @JMS\Groups({"LIST"})  
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
     * @ORM\Column(name = "media_final")
     */
     private $mediaFinal;
     
     /**
-    * @JMS\Groups({"LIST"})  
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
     * @ORM\Column(name = "frequencia_total")
     */
     private $frequenciaTotal;
@@ -166,6 +168,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
+    * @JMS\Type("integer")
     */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
@@ -265,7 +268,8 @@ class DisciplinaCursada extends AbstractEditableEntity {
             $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
                     ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
         } else {
-            $status = self::STATUS_EXAME;
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+                    ? self::STATUS_APROVADO : self::STATUS_EXAME;
         }
         return $status;
     }

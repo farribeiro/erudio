@@ -49,6 +49,7 @@ class RegimeController extends AbstractEntityController {
     
     /**
     *   @ApiDoc()
+    *   @FOS\Get("regimes/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -57,10 +58,11 @@ class RegimeController extends AbstractEntityController {
     /**
     *  @ApiDoc()
     * 
+    *  @FOS\Get("regimes")
     *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *  @FOS\QueryParam(name = "nome", nullable = true) 
     */
-    function cgetAction(Request $request, ParamFetcherInterface $paramFetcher) {
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
     
