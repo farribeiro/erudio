@@ -53,7 +53,7 @@ class Atribuicao extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 2)
+    * @JMS\MaxDepth(depth = 3)
     * @JMS\Type("PessoaBundle\Entity\Instituicao")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
     */

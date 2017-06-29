@@ -47,7 +47,7 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 100;
+    const PAGE_SIZE = 150;
     
     protected $orm;
     protected $logger;
