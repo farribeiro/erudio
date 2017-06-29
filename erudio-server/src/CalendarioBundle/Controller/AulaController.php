@@ -81,13 +81,9 @@ class AulaController extends AbstractEntityController {
     *  @FOS\Post("turmas/{turmaId}/aulas")
     */
     function postBatchAction(Request $request, $turmaId) {
-        try {
-            $turma = $this->turmaFacade->find($turmaId);
-            $this->getFacade()->gerarAulas($turma, $this->horarioDisciplinaFacade->findAll(['turma' => $turma]));
-            $view = View::create(null, Response::HTTP_CREATED);
-        } catch (IllegalUpdateException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $turma = $this->turmaFacade->find($turmaId);
+        $this->getFacade()->gerarAulas($turma, $this->horarioDisciplinaFacade->findAll(['turma' => $turma]));
+        $view = View::create(null, Response::HTTP_CREATED);
         return $this->handleView($view);
     }
     

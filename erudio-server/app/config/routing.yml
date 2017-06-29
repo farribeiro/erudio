@@ -37,7 +37,7 @@ api_auth:
     type: rest
     prefix: /api
     
-api_reports:
+api_report:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report

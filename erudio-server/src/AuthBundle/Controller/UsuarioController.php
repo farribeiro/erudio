@@ -83,9 +83,6 @@ class UsuarioController extends AbstractEntityController {
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $usuario, $errors);
     }
     
@@ -96,9 +93,6 @@ class UsuarioController extends AbstractEntityController {
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->put($request, $id, $usuario, $errors);
     }
     

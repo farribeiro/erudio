@@ -81,9 +81,6 @@ class PermissaoController extends AbstractEntityController {
     * @ParamConverter("permissao", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Permissao $permissao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $permissao, $errors);
     }
     
@@ -94,14 +91,13 @@ class PermissaoController extends AbstractEntityController {
     * @ParamConverter("permissao", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Permissao $permissao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->put($request, $id, $permissao, $errors);
     }
     
     /**
     * @ApiDoc()
+    * 
+    * @FOS\Delete("permissoes/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

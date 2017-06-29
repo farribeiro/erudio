@@ -84,9 +84,6 @@ class AtribuicaoController extends AbstractEntityController {
     * @ParamConverter("atribuicao", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Atribuicao $atribuicao, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $atribuicao, $errors);
     }
     

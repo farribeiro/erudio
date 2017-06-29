@@ -59,7 +59,7 @@ class EventoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("eventos/{id}")
+    *   @FOS\Get("eventos")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "descricao", nullable = true) 

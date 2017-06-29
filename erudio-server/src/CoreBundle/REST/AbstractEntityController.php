@@ -28,10 +28,10 @@
 
 namespace CoreBundle\REST;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\NoResultException;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
@@ -44,7 +44,7 @@ use CoreBundle\ORM\Exception\UniqueViolationException;
 * Controlador REST que serve como base aos demais.
 * Oferece os métodos CRUD já implementados, usando a classe Facade retornada pelo método getFacade.
 */
-abstract class AbstractEntityController extends Controller {
+abstract class AbstractEntityController {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
@@ -80,8 +80,8 @@ abstract class AbstractEntityController extends Controller {
             $entidade = $this->getFacade()->find($id);
             $view = View::create($entidade, Response::HTTP_OK);
             $this->configureContext($view->getContext(), $viewGroups);
-        } catch(\Exception $ex) {
-            $view = View::create(null, Response::HTTP_NOT_FOUND);
+        } catch(NoResultException $ex) {
+            throw new NotFoundHttpException();
         }
         return $this->handleView($view);
     }
@@ -104,15 +104,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $entidadeCriada = $this->getFacade()->create($entidade);
-            $view = View::create($entidadeCriada, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        } catch (IllegalOperationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $entidadeCriada = $this->getFacade()->create($entidade);
+        $view = View::create($entidadeCriada, Response::HTTP_OK);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -120,13 +114,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $this->getFacade()->createBatch($entidades);
-            $view = View::create(null, Response::HTTP_NO_CONTENT);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->getFacade()->createBatch($entidades);
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -144,13 +134,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $this->getFacade()->updateBatch($entidades);
-            $view = View::create(null, Response::HTTP_NO_CONTENT);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        } 
+        $this->getFacade()->updateBatch($entidades);
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -159,9 +145,7 @@ abstract class AbstractEntityController extends Controller {
             $this->getFacade()->remove($id);
             $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
-            $view = View::create(null, Response::HTTP_NOT_FOUND);
-        } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new NotFoundHttpException();
         }
         return $this->handleView($view);
     }
