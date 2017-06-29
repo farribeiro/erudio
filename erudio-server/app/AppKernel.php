@@ -31,7 +31,7 @@ class AppKernel extends Kernel
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
             new ReportBundle\ReportBundle(),
-            new SigAlimentarExtensionBundle\SigAlimentarExtensionBundle()
+            new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

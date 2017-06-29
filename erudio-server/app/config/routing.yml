@@ -44,7 +44,7 @@ api_report:
 
 # Integrações
 integracao_sig:
-    resource: "@SigAlimentarExtensionBundle/Controller/"
+    resource: "@IntegracaoSigAlimentarBundle/Controller/"
     type: rest
     prefix: /integracoes
    

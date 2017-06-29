@@ -1,6 +1,6 @@
 <?php
 
-namespace SigAlimentarExtensionBundle\Model;
+namespace IntegracaoSigAlimentarBundle\Model;
 
 use PessoaBundle\Entity\UnidadeEnsino;
 

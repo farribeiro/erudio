@@ -26,17 +26,17 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace SigAlimentarExtensionBundle\Controller;
+namespace IntegracaoSigAlimentarBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use \FOS\RestBundle\View\ViewHandlerInterface;
+use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use MatriculaBundle\Service\EnturmacaoFacade;
 use PessoaBundle\Service\UnidadeEnsinoFacade;
-use SigAlimentarExtensionBundle\Model\MatriculaSig;
-use SigAlimentarExtensionBundle\Model\UnidadeEnsinoSig;
+use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
+use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
 
 /**
 * @FOS\Prefix("sig-alimentar")
