@@ -94,7 +94,8 @@
                 
                 //CRIA O HEADER
                 var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
-                var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+                //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+                var rest = Restangular;
                 rest.setFullResponse(true); $scope.btnText = 'CARREGANDO...';
 
                 //BUSCA O USUARIO
@@ -107,37 +108,41 @@
                         } else {
                             
                             //ANIMACAO INICIAL
-                            $scope.loginAnimation(); var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
-                            var roles = user.atribuicoes; var atribuicoes = [];
-                            
-                            //PREPARA PERMISSOES
-                            var unidadesPermissoes = [];
-                            if (roles.length > 0) {
-                                for (var i=0; i<roles.length; i++)
-                                {
-                                    unidadesPermissoes.push(roles[i].instituicao);
-                                    var index = i;
-                                    if (roles[i].grupo !== undefined) {
-                                        var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                        promise.then(function(response){
-                                            for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                            if (atribuicoes.length > 0) {
-                                                sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                            } else {
-                                                var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                                sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                            }
-                                        });
-                                    } else {
-                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                            $scope.loginAnimation(); 
+                            var user = response.data[0]; 
+                            var promiseU = rest.one('users',user.id).get();
+                            promiseU.then(function(responseU){
+                                sessionStorage.setItem('user', JSON.stringify(responseU.data));
+                                var roles = responseU.data.atribuicoes; var atribuicoes = [];
+                                //PREPARA PERMISSOES
+                                var unidadesPermissoes = [];
+                                if (roles.length > 0) {
+                                    for (var i=0; i<roles.length; i++)
+                                    {
+                                        unidadesPermissoes.push(roles[i].instituicao);
+                                        var index = i;
+                                        if (roles[i].grupo !== undefined) {
+                                            var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                            promise.then(function(response){
+                                                for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
+                                                if (atribuicoes.length > 0) {
+                                                    sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                } else {
+                                                    var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                                    sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                }
+                                            });
+                                        } else {
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                        }
+                                        if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
                                     }
-                                    if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
+                                } else {
+                                    $scope.setaSessao(user, sessionId);
                                 }
-                            } else {
-                                $scope.setaSessao(user, sessionId);
-                            }
+                            });
                         }
                     }
                 }, function(error){

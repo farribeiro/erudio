@@ -166,6 +166,7 @@
                 $scope.unidades = response.data;
                 if (!$scope.isAdmin) {
                     response.data.forEach(function(u) {
+                        console.log(u.id);
                         if($scope.unidade.id === u.id) {
                             $scope.matriculaMovimentacoes.unidadeEnsino = u.id;
                             $scope.nomeUnidadeBusca = u.nomeCompleto;

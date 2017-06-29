@@ -88,12 +88,12 @@
                         <label for="turma">Turma</label>
                     </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
-                        <i class="material-icons prefix">iso</i>
+                        <div ng-show="mostraMedia"><i class="material-icons prefix">iso</i>
                         <select id="media" data-ng-model="turmaBusca.media.id" data-ng-disabled="!medias.length">
                             <option selected></option> 
                             <option data-ng-selected="medias.length === 1" value="{{ media.id }}" data-ng-repeat="media in medias | orderBy: 'nome'">{{ media.nome }}</option>
                         </select>
-                        <label for="media">Média</label>
+                        <label for="media">Média</label></div>
                     </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="(Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')) && !frequenciaUnificada">
                         <i class="material-icons prefix">import_contacts</i>

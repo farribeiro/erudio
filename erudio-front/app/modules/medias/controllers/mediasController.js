@@ -83,9 +83,10 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
                             for (var i=0; i<$scope.atribuicoes.length; i++) {
                                 if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } 
@@ -101,11 +102,11 @@
         };
         
         //CARREGA MEDIAS
-        $scope.medias = [];
+        $scope.medias = []; $scope.mostraMedia = 1;
         $scope.buscarMedias = function (id) {
             var promise = Servidor.buscarUm('etapas',id);
             promise.then(function(response){
-                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.turmaBusca.media.id = null;
+                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.mostraMedia = response.data.sistemaAvaliacao.quantidadeMedias-1; $scope.turmaBusca.media.id = null;
                 if (response.data.frequenciaUnificada) { $scope.frequenciaUnificada = true; } else { $scope.frequenciaUnificada = false; }
                 var unidade = response.data.sistemaAvaliacao.regime.unidade; var medias = [];
                 var qtdeMedias = response.data.sistemaAvaliacao.quantidadeMedias;

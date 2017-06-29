@@ -75,6 +75,11 @@
                             <input id="codigoBuscaMatricula" type="text" length="11" class="validate counter numeros"  data-ng-model="matriculaBusca.codigo"/>
                             <label for="codigoBuscaMatricula">Código de Matrícula</label>
                         </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">perm_identity</i>
+                            <input id="nascAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.dataNascimento"/>
+                            <label for="nascAlunoMatricula">Data de Nascimento</label>
+                        </div>
                         <!--<div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
                             <i class="material-icons prefix">account_balance</i>
                             <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
