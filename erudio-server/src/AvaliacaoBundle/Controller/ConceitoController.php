@@ -31,20 +31,20 @@ namespace AvaliacaoBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\Conceito;
+use AvaliacaoBundle\Service\ConceitoFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes-qualitativas/conceitos")
+ * @FOS\NamePrefix("avaliacoes-qualitativas/conceitos")
  */
 class ConceitoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.conceitos');
+    function __construct(ConceitoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

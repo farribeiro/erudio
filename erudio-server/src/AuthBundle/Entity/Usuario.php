@@ -31,9 +31,9 @@ namespace AuthBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Security\Core\User\UserInterface;
-use CoreBundle\ORM\AbstractEditableEntity;
+use Symfony\Component\Security\Core\User\UserInterface;;
 use Doctrine\Common\Collections\Criteria;
+use CoreBundle\ORM\AbstractEditableEntity;
 use AuthBundle\Service\MD5Encoder;
 
 /**
@@ -74,45 +74,45 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     */
     private $atribuicoes;
     
-    public function eraseCredentials() {
+    function eraseCredentials() {
         
     }
 
-    public function init() {
+    function init() {
         $this->atribuicoes = new ArrayCollection();
     }
     
-    public function getSalt() {
+    function getSalt() {
         $parts = explode(':', $this->password);
         return isset($parts[1]) ? $parts[1] : null;
     }
 
-    public function getId() {
+    function getId() {
         return $this->id;
     }
     
-    public function getUsername() {
+    function getUsername() {
         return $this->username;
     }
 
-    public function setUsername($username) {
+    function setUsername($username) {
         $this->username = $username;
     }
 
-    public function getPassword() {
+    function getPassword() {
         $parts = explode(':', $this->password);
         return $parts[0];
     }
 
-    public function setPassword($password) {
-        $this->password = $password;
+    function setPassword($password) {
+        $this->password = md5($password);
     }
 
-    public function getNomeExibicao() {
+    function getNomeExibicao() {
         return $this->nomeExibicao;
     }
 
-    public function setNomeExibicao($nomeExibicao) {
+    function setNomeExibicao($nomeExibicao) {
         $this->nomeExibicao = $nomeExibicao;
     }
     
@@ -120,7 +120,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         return $this->pessoa;
     }
     
-    public function getRoles() {
+    function getRoles() {
         return array();
     }
 
@@ -129,23 +129,24 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     * @JMS\VirtualProperty
     * @JMS\Type("ArrayCollection<AuthBundle\Entity\Atribuicao>")
     */
-    public function getAtribuicoes() {
+    function getAtribuicoes() {
         return $this->atribuicoes->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }
     
-    public function equals(UserInterface $user) {
+    function equals(UserInterface $user) {
         return $user instanceof Usuario && $this->username === $user->getUsername();
     }
     
-    public static function criarUsuario($pessoa, $username) {
+    static function criarUsuario($pessoa, $username, $firstPassword = null) {
         $usuario = new Usuario();
         $usuario->username = $username;
         $usuario->nomeExibicao = $pessoa->getNome();
-        $password = substr(str_shuffle($username.str_replace(' ','',$pessoa->getNome())), 0, 6);            
-        $md5 = new MD5Encoder();
-        $usuario->password = $md5->encodePassword($password);
+        $password = $firstPassword 
+                ? $firstPassword
+                : substr(str_shuffle($username.str_replace(' ', '' , $pessoa->getNome())), 0, 6);
+        $usuario->password = md5($password);
         return $usuario;
     }
 }

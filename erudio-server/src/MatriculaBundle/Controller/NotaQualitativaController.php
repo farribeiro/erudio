@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\NotaQualitativa;
+use MatriculaBundle\Service\NotaQualitativaFacade;
 
 /**
-* @FOS\RouteResource("notas-qualitativas")
+* @FOS\NamePrefix("notas-qualitativas")
 */
 class NotaQualitativaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.notas_qualitativas');
+    function __construct(NotaQualitativaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

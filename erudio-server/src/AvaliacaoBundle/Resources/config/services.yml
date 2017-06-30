@@ -1,28 +1,17 @@
 services:
-    facade.avaliacao.avaliacoes_quantitativas:
-      class: AvaliacaoBundle\Service\AvaliacaoQuantitativaFacade
-      arguments: ["@doctrine"]
-      
-    facade.avaliacao.avaliacoes_qualitativas:
-      class: AvaliacaoBundle\Service\AvaliacaoQualitativaFacade
-      arguments: ["@doctrine"]
     
-    facade.avaliacao.habilidades:
-      class: AvaliacaoBundle\Service\HabilidadeFacade
-      arguments: ["@doctrine"]
-      
-    facade.avaliacao.conceitos:
-      class: AvaliacaoBundle\Service\ConceitoFacade
-      arguments: ["@doctrine"]
-      
-    facade.avaliacao.regimes:
-      class: AvaliacaoBundle\Service\RegimeFacade
-      arguments: ["@doctrine"]
-      
-    facade.avaliacao.sistemas_avaliacao:
-      class: AvaliacaoBundle\Service\SistemaAvaliacaoFacade
-      arguments: ["@doctrine"]
-      
-    facade.avaliacao.tipos:
-      class: AvaliacaoBundle\Service\TipoAvaliacaoFacade
-      arguments: ["@doctrine"]
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    AvaliacaoBundle\:
+        resource: '../../{Service,Listener}'
+       
+    AvaliacaoBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]
+    

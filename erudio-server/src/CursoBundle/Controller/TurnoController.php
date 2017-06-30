@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Turno;
+use CursoBundle\Service\TurnoFacade;
 
 /**
- * @FOS\RouteResource("turnos")
+ * @FOS\NamePrefix("turnos")
  */
 class TurnoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.curso.turnos');
+    function __construct(TurnoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

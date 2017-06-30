@@ -36,18 +36,20 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\Regime;
+use AvaliacaoBundle\Service\RegimeFacade;
 
 /**
- * @FOS\RouteResource("regimes")
+ * @FOS\NamePrefix("regimes")
  */
 class RegimeController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.regimes');
+    function __construct(RegimeFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
     *   @ApiDoc()
+    *   @FOS\Get("regimes/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -56,10 +58,11 @@ class RegimeController extends AbstractEntityController {
     /**
     *  @ApiDoc()
     * 
+    *  @FOS\Get("regimes")
     *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *  @FOS\QueryParam(name = "nome", nullable = true) 
     */
-    function cgetAction(Request $request, ParamFetcherInterface $paramFetcher) {
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
     

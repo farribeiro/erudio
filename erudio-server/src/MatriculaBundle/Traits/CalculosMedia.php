@@ -31,7 +31,7 @@ trait CalculosMedia {
             $somaNotas += $media->getValor();
             $somaPesos += $media->getPeso();
         }
-        return $somaNotas / $somaPesos;
+        return round($somaNotas / $somaPesos, 2);
     }
     
     /**
@@ -41,6 +41,35 @@ trait CalculosMedia {
      * @return float porcentagem da frequência do aluno nas aulas
      */
     function calcularFrequenciaTotal(DisciplinaCursada $disciplinaCursada) {
+        $frequenciaUnificada = $disciplinaCursada->getDisciplina()->getEtapa()->getFrequenciaUnificada();
+        return $frequenciaUnificada 
+                ? $this->calcularFrequenciaPorDia($disciplinaCursada) 
+                : $this->calcularFrequenciaPorAula($disciplinaCursada);
+    }
+    
+    /**
+     * 
+     * @param DisciplinaCursada $disciplinaCursada
+     * @return float porcentagem de frequência calculada
+     */
+    function calcularFrequenciaPorDia(DisciplinaCursada $disciplinaCursada) {
+        $calendario = $disciplinaCursada->getEnturmacao()->getTurma()->getCalendario();
+        $numeroAulas = $calendario->getQuantidadeDiasEfetivos(
+            $disciplinaCursada->getEnturmacao()->getTurma()->getPeriodo()
+        );
+        $somaFaltas = 0;
+        foreach ($disciplinaCursada->getMedias() as $media) {
+            $somaFaltas += $media->getFaltas();
+        }
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
+    }
+    
+    /**
+    * 
+    * @param DisciplinaCursada $disciplinaCursada
+    * @return float porcentagem de frequência calculada
+    */
+    function calcularFrequenciaPorAula(DisciplinaCursada $disciplinaCursada) {
         $somaFaltas = 0;
         foreach ($disciplinaCursada->getMedias() as $media) {
             $somaFaltas += $media->getFaltas();
@@ -49,7 +78,7 @@ trait CalculosMedia {
         $duracaoAula = $disciplinaCursada->getEnturmacao()->getTurma()
                 ->getQuadroHorario()->getModelo()->getDuracaoAula();
         $numeroAulas = floor($cargaHoraria / ($duracaoAula / 60));
-        return 100 - ($somaFaltas * 100) / $numeroAulas;
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
     }
     
     /**

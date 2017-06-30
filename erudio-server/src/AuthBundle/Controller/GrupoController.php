@@ -43,14 +43,8 @@ use AuthBundle\Service\GrupoFacade;
  */
 class GrupoController extends AbstractEntityController {
     
-    private $grupoFacade;
-    
-    function __construct(GrupoFacade $grupoFacade) {
-        $this->grupoFacade = $grupoFacade;
-    }
-    
-    function getFacade() {
-        return $this->grupoFacade;
+    function __construct(GrupoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -87,9 +81,6 @@ class GrupoController extends AbstractEntityController {
     * @ParamConverter("grupo", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Grupo $grupo, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $grupo, $errors);
     }
     
@@ -100,9 +91,6 @@ class GrupoController extends AbstractEntityController {
     * @ParamConverter("grupo", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Grupo $grupo, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->put($request, $id, $grupo, $errors);
     }
     

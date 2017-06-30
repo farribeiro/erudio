@@ -26,9 +26,17 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AssetsBundle;
+namespace CoreBundle\Exception;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-class AssetsBundle extends Bundle {
+/**
+* Classe de marcação, para indicar que a mensagem da exceção deve ser 
+* retornada ao usuário. Isto se aplica normalmente a exceções causadas pelo usuário
+* ao enviar dados inválidos ou tentar realizar uma operação não permitida. 
+*/
+class PublishedException extends \Exception {
+    
+    function __construct($message) {
+        parent::__construct($message);
+    }
+    
 }

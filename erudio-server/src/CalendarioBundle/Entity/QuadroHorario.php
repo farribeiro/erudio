@@ -92,9 +92,7 @@ class QuadroHorario extends AbstractEditableEntity {
     private $horarios;
     
     function init() {
-        if ($this->inicio < $this->turno->getInicio() || $this->inicio > $this->turno->getTermino()) {
-            throw new \Exception('turno ínvalido');
-        }
+        $this->validarHorarioInicio($this->inicio);
         $this->horarios = new ArrayCollection();         
         $duracaoAula = new \DateInterval('PT'.$this->modelo->getDuracaoAula().'M');
         $posicaoIntervalo = $this->modelo->getPosicaoIntervalo();
@@ -103,7 +101,7 @@ class QuadroHorario extends AbstractEditableEntity {
             $diaSemana->setQuadroHorario($this);
             $inicio = \DateTime::createFromFormat('H:i:s', $this->inicio->format('H:i:s'));
             for ($i = 1; $i <= $this->modelo->getQuantidadeAulas(); $i++) {
-                if ($i == $posicaoIntervalo) {
+                if ($i == $posicaoIntervalo) {                                                              
                     $inicio = \DateTime::createFromFormat('H:i:s', $inicio->format('H:i:s'));
                     $inicio->add($duracaoIntervalo);
                 }
@@ -114,6 +112,17 @@ class QuadroHorario extends AbstractEditableEntity {
             }   
         }
         $this->termino = $termino;
+    }
+   
+    function validarHorarioInicio(\DateTime $inicio) {
+        $inicio->setDate(2000, 1, 1);
+        $this->turno->getInicio()->setDate(2000, 1, 1);
+        $this->turno->getTermino()->setDate(2000, 1, 1);
+        if ($inicio < $this->turno->getInicio() || $inicio > $this->turno->getTermino()) {
+            throw new \Exception("Horário de início deve ser entre {$this->turno->getInicio()->format('H:i:s')} e"
+                . $this->turno->getTermino()->format('H:i:s'));
+        }
+        return true;
     }
     
     static function of($nome, $modelo, $turno, $unidadeEnsino) {

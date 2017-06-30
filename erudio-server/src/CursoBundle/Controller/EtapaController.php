@@ -39,14 +39,19 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\Etapa;
+use CursoBundle\Service\EtapaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("etapas")
+ * @FOS\NamePrefix("etapas")
  */
 class EtapaController extends AbstractEntityController {
   
-    function getFacade() {
-        return $this->get('facade.curso.etapas');
+    private $turmaFacade;
+    
+    function __construct(EtapaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
     
     /**
@@ -109,7 +114,7 @@ class EtapaController extends AbstractEntityController {
     function getOfertadasAction(Request $request, ParamFetcherInterface $paramFetcher) {
         $unidadeEnsino = $paramFetcher->get('unidadeEnsino', true);
         $curso = $paramFetcher->get('curso', true);
-        $turmas = new ArrayCollection($this->get('facade.curso.turmas')->findAll(
+        $turmas = new ArrayCollection($this->turmaFacade->findAll(
             ['unidadeEnsino' => $unidadeEnsino, 'curso' => $curso, 'encerrado' => false]
         ));
         $resultados = array_unique($turmas->map(function($t) { return $t->getEtapa(); })->toArray());

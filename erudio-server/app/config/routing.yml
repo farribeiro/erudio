@@ -1,4 +1,7 @@
 # API
+api_login_check:
+    path: /api/login_check
+
 api_pessoa:
     resource: "@PessoaBundle/Controller/"
     type: rest
@@ -34,11 +37,17 @@ api_auth:
     type: rest
     prefix: /api
     
-api_reports:
+api_report:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
-    
+
+# Integrações
+integracao_sig:
+    resource: "@IntegracaoSigAlimentarBundle/Controller/"
+    type: rest
+    prefix: /integracoes
+   
 # Docs    
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

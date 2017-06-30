@@ -39,18 +39,12 @@ use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
 
 /**
- * @FOS\NamePrefix("usuarios")
+ * @FOS\NamePrefix("users")
  */
 class UsuarioController extends AbstractEntityController {
     
-    private $usuarioFacade;
-    
-    function __construct(UsuarioFacade $usuarioFacade) {
-        $this->usuarioFacade = $usuarioFacade;
-    }
-    
-    function getFacade() {
-        return $this->usuarioFacade;
+    function __construct(UsuarioFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -58,7 +52,6 @@ class UsuarioController extends AbstractEntityController {
     * 
     * 
     * @FOS\Get("users/{id}")
-    * @FOS\Get("usuarios/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -75,7 +68,6 @@ class UsuarioController extends AbstractEntityController {
     * )
     * 
     * @FOS\Get("users")
-    * @FOS\Get("usuarios")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "username", nullable = true) 
     * @FOS\QueryParam(name = "nomeExibicao", nullable = true) 
@@ -88,13 +80,9 @@ class UsuarioController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Post("users")
-    * @FOS\Post("usuarios")
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $usuario, $errors);
     }
     
@@ -102,13 +90,9 @@ class UsuarioController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Put("users/{id}")
-    * @FOS\Put("usuarios/{id}")
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->put($request, $id, $usuario, $errors);
     }
     
@@ -116,7 +100,6 @@ class UsuarioController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Delete("users/{id}")
-    * @FOS\Delete("usuarios/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

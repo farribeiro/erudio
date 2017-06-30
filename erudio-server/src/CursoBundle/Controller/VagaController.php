@@ -35,15 +35,15 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use CursoBundle\Entity\Vaga;
+use CursoBundle\Service\VagaFacade;
 
 /**
- * @FOS\RouteResource("vagas")
+ * @FOS\NamePrefix("vagas")
  */
 class VagaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.curso.vagas');
+    function __construct(VagaFacade $facade) {
+        parent::__construct($facade);
     }
 
     /**

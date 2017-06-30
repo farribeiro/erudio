@@ -29,6 +29,7 @@
 namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use MatriculaBundle\Entity\Matricula;
@@ -54,12 +55,13 @@ class MatriculaFacade extends AbstractFacade {
     function parameterMap() {
         return array (
             'aluno' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
+                $qb->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
             },
             'aluno_nome' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+                $qb->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'aluno_dataNascimento' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->join('m.curso', 'curso')
@@ -78,7 +80,12 @@ class MatriculaFacade extends AbstractFacade {
             },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
-            }
+            },
+            'enturmado' => function(QueryBuilder $qb, $value) {
+                $operator = $value ? ' NOT ' : '';
+                $qb->leftJoin('m.enturmacoes', 'en', Expr\Join::WITH, 'en.ativo = true AND en.encerrado = false')
+                   ->andWhere("m.enturmacoes IS {$operator} EMPTY");
+            },
         );
     }
     
@@ -90,6 +97,10 @@ class MatriculaFacade extends AbstractFacade {
                 'status' => Matricula::STATUS_CURSANDO
             ]
         ];
+    }
+    
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('m.aluno', 'aluno');
     }
     
     protected function beforeCreate($matricula) {

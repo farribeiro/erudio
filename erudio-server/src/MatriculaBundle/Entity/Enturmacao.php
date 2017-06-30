@@ -48,13 +48,15 @@ class Enturmacao extends AbstractEditableEntity {
     private $encerrado = false;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "Matricula") 
     */
     private $matricula;
     
     /**  
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turma", inversedBy = "enturmacoes") 
     */
     private $turma;
@@ -67,6 +69,7 @@ class Enturmacao extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
     */
     private $vaga;
@@ -79,6 +82,10 @@ class Enturmacao extends AbstractEditableEntity {
     
     function getAluno() {
         return $this->matricula->getAluno();
+    }
+    
+    function getAno() {
+        return $this->turma->getAno();
     }
      
     function getAnosDefasagem(\DateTime $dataReferencia = null) {

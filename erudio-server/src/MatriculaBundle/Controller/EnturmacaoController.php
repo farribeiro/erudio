@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Enturmacao;
+use MatriculaBundle\Service\EnturmacaoFacade;
 
 /**
- * @FOS\RouteResource("enturmacoes")
+ * @FOS\NamePrefix("enturmacoes")
  */
 class EnturmacaoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.matricula.enturmacoes');
+    function __construct(EnturmacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

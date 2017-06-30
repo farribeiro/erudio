@@ -37,14 +37,15 @@ use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Frequencia;
+use MatriculaBundle\Service\FrequenciaFacade;
 
 /**
- * @FOS\RouteResource("frequencias")
+ * @FOS\NamePrefix("frequencias")
  */
 class FrequenciaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.frequencias');
+    function __construct(FrequenciaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

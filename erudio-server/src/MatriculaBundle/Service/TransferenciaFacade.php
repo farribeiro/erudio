@@ -28,24 +28,21 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException; 
 use MatriculaBundle\Entity\Transferencia;
 use MatriculaBundle\Entity\Matricula;
-use MatriculaBundle\Entity\DisciplinaCursada;
-use MatriculaBundle\Entity\Media;
 
 class TransferenciaFacade extends AbstractFacade {
     
     private $enturmacaoFacade;
     private $mediaFacade;
     
-    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade, MediaFacade $mediaFacade) {
+        parent::__construct($doctrine);
         $this->enturmacaoFacade = $enturmacaoFacade;
-    }
-    
-    function setMediaFacade(MediaFacade $mediaFacade) {
         $this->mediaFacade = $mediaFacade;
     }
     

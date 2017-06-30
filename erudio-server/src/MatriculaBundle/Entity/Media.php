@@ -62,6 +62,7 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column
     */
     private $peso;

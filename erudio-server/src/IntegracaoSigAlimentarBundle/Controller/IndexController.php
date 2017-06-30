@@ -26,40 +26,57 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AuthBundle\Service;
+namespace IntegracaoSigAlimentarBundle\Controller;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use AuthBundle\Entity\Usuario;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\View\ViewHandlerInterface;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use MatriculaBundle\Service\EnturmacaoFacade;
+use PessoaBundle\Service\UnidadeEnsinoFacade;
+use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
+use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
 
-class UserProvider implements UserProviderInterface {
+/**
+* @FOS\Prefix("sig-alimentar")
+*/
+class IndexController {
     
-    private $orm;
+    private $viewHandler;
+    private $enturmacaoFacade;
+    private $unidadeEnsinoFacade;
     
-    public function __construct (Registry $doctrine) {
-        $this->orm = $doctrine;
+    function __construct(ViewHandlerInterface $viewHandler, UnidadeEnsinoFacade $unidadeEnsinoFacade,
+            EnturmacaoFacade $enturmacaoFacade) {
+        $this->viewHandler = $viewHandler;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->unidadeEnsinoFacade = $unidadeEnsinoFacade;
     }
     
-    public function loadUserByUsername($username) {
-        $user = $this->orm->getRepository('AuthBundle:Usuario')->findOneBy(array('username' => $username));
-        if($user) {
-            return $user;
-        }
-        throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));  
+    /**
+    * @FOS\QueryParam(name = "unidade", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam()
+    */
+    function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
+        $unidade = $paramFetcher->get('unidade');
+        $params = $unidade ? ['turma_unidadeEnsino' => $unidade] : [];
+        $enturmacoes = $this->enturmacaoFacade->findAll($params, null, 5000);
+        $enturmacoesSig = array_map(function($e) {
+            return MatriculaSig::fromEnturmacao($e);
+        }, $enturmacoes);
+        return $this->viewHandler->handle(View::create(['dados' => $enturmacoesSig]));
     }
-
-    public function refreshUser(UserInterface $user) {
-        if (!$user instanceof Usuario) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
-        }
-        return $this->loadUserByUsername($user->getUsername());
-    }
-
-    public function supportsClass($class) {
-        return $class === 'AuthBundle\Entity\Usuario';
+    
+    /**
+    * @FOS\Get("/unidades-ensino")
+    */
+    function getUnidadesAction() {
+        $unidades = $this->unidadeEnsinoFacade->findAll();
+        $unidadesSig = array_map(function($u) {
+            return UnidadeEnsinoSig::fromUnidadeEnsino($u);
+        }, $unidades);
+        return $this->viewHandler->handle(View::create($unidadesSig));
     }
     
 }

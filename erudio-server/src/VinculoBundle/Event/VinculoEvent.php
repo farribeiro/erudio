@@ -29,8 +29,9 @@
 namespace VinculoBundle\Event;
 
 use VinculoBundle\Entity\Vinculo;
+use Symfony\Component\EventDispatcher\Event;
 
-class VinculoEvent {
+class VinculoEvent extends Event {
     
     const VINCULO_CRIADO = 'event.vinculo.vinculo_criado';
     const VINCULO_REMOVIDO = 'event.vinculo.vinculo_removido';

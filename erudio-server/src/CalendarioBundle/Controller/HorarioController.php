@@ -33,11 +33,12 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use CalendarioBundle\Service\HorarioFacade;
 
 class HorarioController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.horarios');
+    function __construct(HorarioFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

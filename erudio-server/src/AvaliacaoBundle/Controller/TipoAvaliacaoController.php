@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\TipoAvaliacao;
+use AvaliacaoBundle\Service\TipoAvaliacaoFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes/tipos")
+ * @FOS\NamePrefix("avaliacoes/tipos")
  */
 class TipoAvaliacaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.tipos');
+    function __construct(TipoAvaliacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

@@ -105,14 +105,13 @@ class Dia extends AbstractEditableEntity {
     }
     
     /**  
-        * @JMS\VirtualProperty 
-        * @JMS\Groups({"LIST"})   
-        */
+    * @JMS\VirtualProperty 
+    * @JMS\Groups({"LIST"})   
+    */
     function getEventos() {
-        return $this->eventos;
-        //return $this->eventos->matching(
-            //Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        //);
+        return $this->eventos->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
 
 }

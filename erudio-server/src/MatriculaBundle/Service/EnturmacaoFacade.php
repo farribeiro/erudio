@@ -28,24 +28,25 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
-use MatriculaBundle\Entity\DisciplinaCursada;
-use CursoBundle\Entity\Turma;
-use MatriculaBundle\Entity\Enturmacao;
-use CursoBundle\Service\VagaFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Entity\Enturmacao;
+use CursoBundle\Entity\Turma;
+use CursoBundle\Service\VagaFacade;
 
 class EnturmacaoFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
     private $vagaFacade;
     
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade, 
+            VagaFacade $vagaFacade) {
+        parent::__construct($doctrine);
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
-    }
-    
-    function setVagaFacade(VagaFacade $vagaFacade) {
         $this->vagaFacade = $vagaFacade;
     }
     
@@ -63,8 +64,11 @@ class EnturmacaoFacade extends AbstractFacade {
                 $qb->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
             },
             'turma' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.turma = :turma')->setParameter('turma', $value);
+            },
+            'turma_unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->join('e.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value);
+                   ->andWhere('turma.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             },
             'encerrado' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.encerrado = :encerrado')->setParameter('encerrado', $value);
@@ -74,7 +78,7 @@ class EnturmacaoFacade extends AbstractFacade {
     
     function uniqueMap($enturmacao) {
         return [
-            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma(), 'encerrado' => 0]
+            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma(), 'encerrado' => false]
         ];
     }
     
@@ -139,8 +143,32 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->liberarVaga($enturmacao);
     }
     
+    /**
+     * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
+     * de ensino, bem como suas disciplinas cursadas.
+     * 
+     * @param Enturmacao $enturmacao
+     */
+    function finalizar(Enturmacao $enturmacao) {
+        $disciplinas = $enturmacao->getDisciplinasCursadas();
+        foreach ($disciplinas as $disciplina) {
+            if ($disciplina->emAberto()) {
+                throw new IllegalUpdateException(
+                    IllegalUpdateException::ILLEGAL_STATE_TRANSITION,
+                    'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
+                        . $disciplina->getNomeExibicao()
+                );
+            }
+        }
+        $enturmacao->encerrar();
+        $this->orm->getManager()->merge($enturmacao);
+        $this->orm->getManager()->flush();
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')->orderBy('aluno.nome');
+        $qb->join('e.matricula', 'matricula')
+           ->join('matricula.aluno', 'aluno')
+           ->orderBy('aluno.nome');
     }
     
     protected function beforeCreate($enturmacao) {

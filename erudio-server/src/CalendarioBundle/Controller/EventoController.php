@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\Evento;
+use CalendarioBundle\Service\EventoFacade;
 
 /**
- * @FOS\RouteResource("eventos")
+ * @FOS\NamePrefix("eventos")
  */
 class EventoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.eventos');
+    function __construct(EventoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -58,7 +59,7 @@ class EventoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("eventos/{id}")
+    *   @FOS\Get("eventos")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "descricao", nullable = true) 

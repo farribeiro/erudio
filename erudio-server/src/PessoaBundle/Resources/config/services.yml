@@ -1,52 +1,17 @@
 services:
-    facade.pessoa.pessoas_fisicas:
-      class: PessoaBundle\Service\PessoaFisicaFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.instituicoes:
-      class: PessoaBundle\Service\InstituicaoFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.unidades_ensino:
-      class: PessoaBundle\Service\UnidadeEnsinoFacade
-      arguments: ["@doctrine"]
     
-    facade.pessoa.enderecos:
-      class: PessoaBundle\Service\EnderecoFacade
-      arguments: ["@doctrine"]
-     
-    facade.pessoa.cidades:
-      class: PessoaBundle\Service\CidadeFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.estados:
-      class: PessoaBundle\Service\EstadoFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.paises:
-      class: PessoaBundle\Service\PaisFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.telefones:
-      class: PessoaBundle\Service\TelefoneFacade
-      arguments: ["@doctrine"]
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
     
-    facade.pessoa.particularidades:
-      class: PessoaBundle\Service\ParticularidadeFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.necessidades_especiais:
-      class: PessoaBundle\Service\NecessidadeEspecialFacade
-      arguments: ["@doctrine"]
+    PessoaBundle\:
+        resource: '../../{Service,Listener}'
+       
+    PessoaBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]
     
-    facade.pessoa.estados_civis:
-      class: PessoaBundle\Service\EstadoCivilFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.racas:
-      class: PessoaBundle\Service\RacaFacade
-      arguments: ["@doctrine"]
-      
-    facade.pessoa.tipos_unidade_ensino:
-      class: PessoaBundle\Service\TipoUnidadeEnsinoFacade
-      arguments: ["@doctrine"]
