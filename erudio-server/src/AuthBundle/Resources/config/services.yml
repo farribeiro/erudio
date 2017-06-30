@@ -14,4 +14,8 @@ services:
         tags: ['controller.service_arguments']
         calls:
           - [setViewHandler, ["@fos_rest.view_handler"]]
+          
+    AuthBundle\Controller\AuthenticationController:
+        public: true
+        tags: ['controller.service_arguments']
     
