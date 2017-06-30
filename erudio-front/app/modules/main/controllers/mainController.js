@@ -78,7 +78,7 @@
 
         //ENVIA FOTO
         $scope.sendUpload = function () {
-            $('.upload-click').hide(); $('.upload-send').show();
+            /*$('.upload-click').hide(); $('.upload-send').show();
             var formData = new FormData();
             formData.append('file',$('#upload-file')[0].files[0]);
             formData.append('username',sessionStorage.getItem('username'));
@@ -88,7 +88,7 @@
                 complete: function (){
                     $('#modalAvatar').closeModal(); $('.upload-click').show(); $('.upload-send').hide(); $scope.searchAvatar();
                 }, cache: false, contentType: false, processData: false
-            });
+            });*/
         };
 
         //BUSCA AVATAR

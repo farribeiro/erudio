@@ -36,19 +36,19 @@
     <div class="row" ng-show="enturmacoesNotas.length" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;"><strong>
         <div class="col s3">Nome do Aluno</div>
         <div style="text-align: center;" data-ng-repeat="md in totalMedias track by $index" class="col s1">M{{ $index + 1 }}</div>
-        <div style="text-align: center;" class="col s2" ng-hide="mdfinal">Média Prevista</div>
-        <div style="text-align: center;" class="col s2" ng-show="mdfinal">Média Final</div>
-        <div style="text-align: center;" class="col s2" ng-hide="mdfreq">Frequência Prevista</div>
-        <div style="text-align: center;" class="col s2" ng-show="mdfreq">Frequência</div>
-        <div style="text-align: center;" class="col s2" ng-hide="mdfinal">Status Previsto</div>
-        <div style="text-align: center;" class="col s2" ng-show="mdfinal">Status</div>
+        <div style="text-align: center;" class="col s1" ng-hide="mdfinal">Média Prevista</div>
+        <div style="text-align: center;" class="col s1" ng-show="mdfinal">Média Final</div>
+        <div style="text-align: center;" class="col s1" ng-hide="mdfreq">Frequência Prevista</div>
+        <div style="text-align: center;" class="col s1" ng-show="mdfreq">Frequência</div>
+        <div style="text-align: center;" class="col s1" ng-hide="mdfinal">Status Previsto</div>
+        <div style="text-align: center;" class="col s1" ng-show="mdfinal">Status</div>
     </strong></div>
     <div class="row" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;" data-ng-repeat="enturmacao in enturmacoesNotas track by $index">
         <div class="col s3">{{ enturmacao.matricula.nomeAluno }}</div>
         <div data-ng-repeat="md in totalMedias track by $index" style="text-align: center;" class="col s1">{{ enturmacao.medias[$index].valor}}</div>
-        <div class="col s2" style="text-align: center;" ng-hide="mdfinal">{{ enturmacao.mediaPreliminar }}</div><div style="text-align: center;" class="col s2" ng-show="mdfinal">{{ enturmacao.mediaFinal }}</div>
-        <div style="text-align: center;" ng-hide="mdfreq" class="col s2">{{ enturmacao.frequenciaPreliminar }}%</div><div style="text-align: center;" ng-show="mdfreq" class="col s2">{{ enturmacao.frequenciaTotal }}%</div>
-        <div style="text-align: center;" ng-hide="mdfinal" class="col s2">{{ enturmacao.statusPrevisto }}</div><div style="text-align: center;" ng-show="mdfinal" class="col s2">{{ enturmacao.status }}</div>
+        <div class="col s1" style="text-align: center;" ng-hide="mdfinal">{{ enturmacao.mediaPreliminar }}</div><div style="text-align: center;" class="col s1" ng-show="mdfinal">{{ enturmacao.mediaFinal }}</div>
+        <div style="text-align: center;" ng-hide="mdfreq" class="col s1">{{ enturmacao.frequenciaPreliminar }}%</div><div style="text-align: center;" ng-show="mdfreq" class="col s1">{{ enturmacao.frequenciaTotal }}%</div>
+        <div style="text-align: center;" ng-hide="mdfinal" class="col s1">{{ enturmacao.statusPrevisto }}</div><div style="text-align: center;" ng-show="mdfinal" class="col s1">{{ enturmacao.status }}</div>
     </div>
     <div class="row" ng-hide="botoesEncerrar">
         <div ng-show="emAberto" class="col s12 right-align end-card">
