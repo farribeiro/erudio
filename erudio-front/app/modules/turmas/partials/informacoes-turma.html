@@ -100,7 +100,7 @@
                         </div>
                         <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin && !turma.id">
                             <i class="material-icons prefix">account_balance</i>
-                            <select id="unidade"  data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
+                            <select id="unidade" data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
                                 <option disabled selected></option>
                                 <option value="{{ unidade.id }}" data-ng-selected="verificaUnidade(unidade.id)" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
                             </select>
@@ -142,9 +142,9 @@
                         </div>                                
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">event</i>
-                            <select id="calendarioTurmaForm" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
+                            <select id="calendarioTurmaForm" data-ng-change="buscarPeriodos(turma.calendario.id, turma.etapa.id)" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
                                 <option value disabled selected></option>
-                                <option value="{{ calendario.id }}" data-ng-selected="verificaCalendario(calendario.id) || calendario.instituicao.id === instituicao" data-ng-repeat="calendario in calendarios">{{ calendario.nome | uppercase }}</option>
+                                <option value="{{ calendario.id }}" data-ng-selected="verificaCalendario(calendario.id)" data-ng-repeat="calendario in calendarios">{{ calendario.nome | uppercase }}</option>
                             </select>
                             <label for="calendarioTurmaForm">Calendário Escolar*</label>
                         </div>  
@@ -157,6 +157,14 @@
                                 <option value="{{ quadroHorario.id }}" data-ng-selected="quadroHorario.id === turma.quadroHorario.id" data-ng-repeat="quadroHorario in quadroHorariosCompativeis">{{ quadroHorario.nome | uppercase }}</option>
                             </select>
                             <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" data-ng-hide="integral">
+                            <i class="material-icons prefix">view_module</i>
+                            <select id="periodoTurmaFormulario" data-ng-model="turma.periodo.id"  data-ng-disabled="!isAdmin && turma.periodo.id" required>
+                                <option></option>
+                                <option value="{{ periodo.id }}" data-ng-selected="periodo.id === turma.periodo.id" data-ng-repeat="periodo in periodos">{{ periodo.numero }}º {{ periodoLabel }}</option>
+                            </select>
+                            <label for="periodoTurmaFormulario">Período*</label>
                         </div>
                     </div>
                     <div class="row" data-ng-hide="integral">

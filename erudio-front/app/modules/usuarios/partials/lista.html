@@ -93,8 +93,7 @@
                                 </thead>
                                 <tbody>
                                     <tr data-ng-repeat="usuario in usuarios | orderBy: 'nome' | filter: filtro">
-                                        <td class="center" data-ng-show="pessoas[$index].avatar.file"><img src="{{ main.baseUpload }}{{ pessoas[$index].avatar.file }}" alt="" class="circle responsive-img z-depth-2 pointer" style="width: 64px"></td>
-                                        <td class="center" data-ng-hide="pessoas[$index].avatar.file"><img src="app/modules/main/assets/images/{{main.profile}}.jpg" alt="" class="circle responsive-img z-depth-2 pointer" style="width: 64px"></td>
+                                        <td class="center"><img src="app/modules/main/assets/images/{{main.profile}}.jpg" alt="" class="circle responsive-img z-depth-2 pointer" style="width: 64px"></td>
                                         <td class="celula-link relative mobile-full">
                                             <div class="hide-on-small-only" data-ng-click="carregar(usuario, false, false, $index)" style="padding: 15px">{{ usuario.nomeExibicao }}</div>
                                             <div class="hide-on-med-and-up" data-ng-click="carregar(usuario, false, true, $index)" style="padding: 15px">{{ usuario.nomeExibicao }}</div>

@@ -71,7 +71,8 @@
         //INSERE O HEADER NA CHAMADA REST
         this.preparaRestangular = function () {
             var header = this.criarHeader();
-            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            var rest = Restangular;
             return rest;
         };
         
@@ -239,6 +240,7 @@
             var results = [];
             if (query) { results = $filter('filter')(items,{nome: query}); } else { results = items; }
             return results;
-        };
+        };        
+        
     }]);
 })();

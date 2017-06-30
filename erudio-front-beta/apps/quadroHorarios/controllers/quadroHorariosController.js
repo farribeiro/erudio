@@ -39,7 +39,13 @@
         //BUSCANDO QUADROS
         $scope.buscarQuadros = function () {
             var promise = Util.buscar('quadro-horarios',{page: $scope.pagina, unidadeEnsino: $scope.unidade.id});
-            promise.then(function(response){ $scope.objetos = response.data; });
+            promise.then(function(response){ 
+                $scope.objetos = response.data;
+                $scope.objetos.forEach(function(objeto, i) {
+                    var inicioArr = objeto.inicio.split(":"); var terminoArr = objeto.termino.split(":");
+                    objeto.inicio = inicioArr[0]+":"+inicioArr[1]; objeto.termino = terminoArr[0]+":"+terminoArr[1];
+                });
+            });
         };
         
         //BUSCANDO TEMPLATE DA LISTA GERAL E ESPECIFICA
@@ -56,16 +62,19 @@
         $scope.modalExclusão = function (event) {
             var confirm = Util.modalExclusao(event, 'Remover Quadro de Horário', 'Deseja remover este Quadro de Horário?', 'remover', $mdDialog);
             $mdDialog.show(confirm).then(function() { 
-                var remocao = Util.remover($scope.quadro, 'Quadro de Horário', 'f'); remocao.then(function(){ $scope.buscarQuadros(); });
+                var remocao = Util.remover($scope.quadro, 'Quadro de Horário', 'm'); remocao.then(function(){ $scope.buscarQuadros(); });
             }, function() {});
         };
+        
+        //SELECIONAR AUTOCOMPLETE
+        $scope.selecionar = function (item) { if (Util.isVazio(item.id)) { $scope.objetos = []; } else { $scope.unidade = item; $scope.buscarQuadros(); } };
         
         //PAGINANDO
         $scope.paginaProxima = function (){ $scope.pagina++; $scope.buscarQuadros(); };
         $scope.paginaAnterior = function (){ if ($scope.pagina > 0) { $scope.pagina = $scope.pagina - 1; $scope.buscarQuadros(); } };
         
         //INICIAR
-        Util.inicializar(); $scope.buscarUnidades();
+        Util.inicializar(); $scope.buscarUnidades(); $timeout(function(){$('md-autocomplete-wrap').removeClass('md-whiteframe-z1');},500);
         Util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
     }]);
 })();

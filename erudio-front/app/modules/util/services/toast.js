@@ -46,8 +46,10 @@
                 case 405:
                     Materialize.toast('Método não permitido. Contate a DITec caso o erro persista.', 4000);
                 break
+                case 400:
+                    Materialize.toast(item, 4000);
                 case 500:
-                    Materialize.toast('Erro interno do servidor. Contate a DITec caso o erro persista.', 4000);
+                    Materialize.toast(item, 4000);
                 break
             }
         };

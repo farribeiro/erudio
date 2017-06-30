@@ -1,6 +1,22 @@
 {
     "elements": {
-        "md-progress-linear": {}
+        "form-input": {},
+        "md-progress-linear": {},
+        "autocomplete": {},
+        "mapa": {
+            "attributes": {
+                "class": {}
+            }
+        },
+        "form-select": {},
+        "md-input-container": {}
     },
-    "attributes": {}
+    "attributes": {
+        "layout": {
+            "context": "div"
+        },
+        "layout-gt-sm": {
+            "context": "div"
+        }
+    }
 }

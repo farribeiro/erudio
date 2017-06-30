@@ -6,6 +6,7 @@
     appDirectives.directive('paginador', function (){ return { restrict: 'E', templateUrl: 'apps/templates/partials/paginador.html' }; });
     appDirectives.directive('opcaoLista', function (){ return { restrict: 'E', templateUrl: 'apps/templates/partials/opcaoLista.html' }; });
     appDirectives.directive('autocomplete', function (){ return { restrict: 'E', templateUrl: 'apps/templates/partials/autocomplete.html' }; });
+    appDirectives.directive('mapa', function (){ return { restrict: 'E', templateUrl: 'apps/templates/partials/mapa.html' }; });
     
     appDirectives.directive('formInput', function ($compile){ return { 
             restrict: 'E', 

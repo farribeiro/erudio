@@ -1,4 +1,4 @@
-<div layout-gt-sm="row">
+<div layout-gt-sm="row" data-ng-init="preencheCEP()">
     <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoCep" label="'CEP'" dica="'Apenas Números'" classe="'maskCEP'" maximo="'8'" tipo="'text'" nome="'cep'" model="instituicao.endereco" campo="cep"></form-input>
     <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoLogradouro" label="'Logradrouro'" tipo="'text'" nome="'logradouro'" model="instituicao.endereco" campo="logradouro"></form-input>
 </div>
@@ -21,4 +21,7 @@
             <md-option ng-repeat="cidade in cidades" value="{{ cidade.id }}">{{ cidade.nome }}</md-option>
         </md-select>
     </form-select>
-</div>  
+</div> 
+<div layout-gt-sm="row">
+    <mapa class="mapaWrapper" data-ng-init="initMapa(instituicao.endereco.latitude, instituicao.endereco.longitude)"></mapa>
+</div>

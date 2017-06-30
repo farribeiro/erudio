@@ -1295,7 +1295,7 @@
                     $scope.mostraLoader();
                     if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3) {
                         if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
-                        else { if ($scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); } }
+                        else { if ($scope.pessoa.certidaoNascimento !== undefined && $scope.pessoa.certidaoNascimento.length > 0 && $scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); } }
                     }
                     if ($scope.pessoa.dataNascimento && $scope.pessoa.dataNascimento !== undefined) {
                         $scope.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);

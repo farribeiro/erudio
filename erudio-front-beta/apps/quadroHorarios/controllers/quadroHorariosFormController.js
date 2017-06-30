@@ -3,56 +3,68 @@
     quadroHorariosForm.controller('QuadroHorarioFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', 'Shared', function($scope, Util, ErudioConfig, $routeParams, $timeout, Shared){
         
         //SETA O TITULO
-        Util.setTitulo('Etapas');
+        Util.setTitulo('Quadros de Horários');
         
-        //ETAPA EM USO
-        $scope.etapa = Util.getEstrutura('etapa'); $scope.curso = {id: null};
+        //QUADRO EM USO
+        $scope.quadro = Util.getEstrutura('quadroHorario'); $scope.turnos = [];
         
         //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações da Etapa'}];
+        $scope.subheaders =[{label: 'Informações do Quadro de Horário'}];
         
         //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('etapas','inputs') }];
+        $scope.inputs = [{ href: Util.getInputBlockCustom('quadroHorarios','inputs') }];
         
         //CRIAR FORMS
-        $scope.forms = [{ nome: 'etapaForm', subheaders: $scope.subheaders }];
+        $scope.forms = [{ nome: 'quadroForm', subheaders: $scope.subheaders }];
         
         //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/etapas/';
+        $scope.link = '/#!/quadro-horarios/';
         $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
         
-        //BUSCANDO CURSO
-        $scope.buscarEtapa = function () {
-            $scope.etapa.curso.id = Shared.getCursoEtapa();
+        //BUSCANDO QUADRO
+        $scope.buscarQuadro = function () {
             if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('etapas',$routeParams.id);
-                promise.then(function(response){ $scope.etapa = response.data; $timeout(function(){ Util.aplicarMascaras(); $scope.buscarCursos(); $scope.buscarModeloQuadro(); $scope.buscarModulos(); $scope.buscarSistemaAvaliacao(); },500); });
-            } else { $timeout(function(){ Util.aplicarMascaras(); $scope.buscarModeloQuadro(); $scope.buscarModulos(); $scope.buscarSistemaAvaliacao(); $scope.buscarCursos(); },500); }
+                var promise = Util.um('quadro-horarios',$routeParams.id);
+                promise.then(function(response){ $scope.quadro = response.data; $timeout(function(){ Util.aplicarMascaras(); },500); });
+            } else { $timeout(function(){ Util.aplicarMascaras(); },500); }
         };
         
-        //BUSCANDO CURSOS
-        $scope.buscarCursos = function () { var promise = Util.buscar('cursos',null); promise.then(function(response){ $scope.cursos = response.data; }); };
+        //BUSCAR UNIDADES
+        $scope.buscarUnidades = function (){
+            var promise = Util.buscar('unidades-ensino',null);
+            promise.then(function(response){ $scope.items = response.data; });
+        };
+        
+        //FILTRANDO AUTOCOMPLETE
+        $scope.filtrar = function (query){ return Util.filtrar(query, $scope.items); };
+        
+        //SELECIONAR AUTOCOMPLETE
+        $scope.selecionar = function (item) { if (Util.isVazio(item.id)) { $scope.quadro.unidadeEnsino.id = null; } else { $scope.quadro.unidadeEnsino.id = item.id; } };
+        
+        //BUSCANDO TURNOS
+        $scope.buscarTurnos = function () { var promise = Util.buscar('turnos',null); promise.then(function(response){ $scope.turnos = response.data; }); };
         
         //VALIDA CAMPO
         $scope.validaCampo = function () { Util.validaCampo(); };
         
-        //BUSCANDO MODALIDADES
-        $scope.buscarModulos = function () { var promise = Util.buscar('modulos',null); promise.then(function(response){ $scope.modulos = response.data; }); };
-        
-        //BUSCANDO SISTEMAS DE AVALIACAO
-        $scope.buscarSistemaAvaliacao = function () { var promise = Util.buscar('sistemas-avaliacao',null); promise.then(function(response){ $scope.sistemas = response.data; }); };
-        
         //BUSCANDO MODELO DE QUADRO DE HORARIO
         $scope.buscarModeloQuadro = function () { var promise = Util.buscar('modelo-quadro-horarios',null); promise.then(function(response){ $scope.quadros = response.data; }); };
             
-        //SALVAR UNIDADE
-        $scope.salvar = function () { if ($scope.validar('etapaForm')) { var resultado = Util.salvar($scope.etapa,'etapas'); resultado.then(function (){ Util.redirect($scope.fab.href); }); } };
+        //SALVAR QUADRO
+        $scope.salvar = function () { 
+            if ($scope.validar('quadroForm')) { 
+                $scope.quadro.inicio += ":00"; var diasSemana = angular.copy($scope.quadro.diasSemana);
+                $scope.quadro.diasSemana.forEach(function(dia,i){ if (dia.diaSemana) { dia.diaSemana = i+2; } else { $scope.quadro.diasSemana.splice(i,1); } });
+                var resultado = Util.salvar($scope.quadro,'quadro-horarios'); resultado.then(function (){ Util.redirect($scope.fab.href); }); 
+            }
+        };
         
         //VALIDAR FORM
         $scope.validar = function (formId) { return Util.validar(formId); };
         
         //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarEtapa();
-        Util.mudarImagemToolbar('etapas/assets/images/etapas.jpg');
+        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarQuadro(); $scope.buscarUnidades(); $scope.buscarTurnos();
+        $timeout(function(){$('md-autocomplete-wrap').removeClass('md-whiteframe-z1');},500); $scope.buscarModeloQuadro();
+        Util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
     }]);
 })();

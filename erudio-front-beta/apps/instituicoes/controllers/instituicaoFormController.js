@@ -34,8 +34,8 @@
                 promise.then(function(response){
                     $scope.instituicao = response.data; $scope.buscarEstados();
                     if ($scope.instituicao.telefones !== undefined) { $scope.getTelefones($scope.instituicao.telefones); }
-                    if (!Util.isVazio($scope.instituicao.endereco)) { $scope.getEndereco($scope.instituicao.endereco.id); }
-                    Util.aplicarMascaras(); $timeout(function(){ $('#instituicaoContatoNumero').find('input').change(function(){ $scope.adicionarTelefone(); }); },300);
+                    if (!Util.isVazio($scope.instituicao.endereco)) { $scope.getEndereco($scope.instituicao.endereco.id); } Util.aplicarMascaras();
+                    $timeout(function(){ $('#instituicaoContatoNumero').find('input').change(function(){ $scope.adicionarTelefone(); }); },300);
                 });
             } else { $timeout(function(){ Util.aplicarMascaras(); $('#instituicaoContatoNumero').find('input').change(function(){ $scope.adicionarTelefone(); }); },300); $scope.buscarEstados(); }
         };
@@ -115,6 +115,56 @@
                 $scope.telefones.splice(index,1);
                 if ($scope.telefones.length > 0) { $('md-divider.hide').show(); $('.md-subheader.hide').show(); } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
             });
+        };
+        
+        //INICIA MAPA
+        $scope.initMapa = function (lat,lng){
+            if (Util.isVazio(lat) || Util.isVazio(lng)) { lat = -26.930232; lng = -48.684180; }
+            $scope.mapa = L.map('mapa').setView([lat,lng],16); $scope.mapa.scrollWheelZoom.disable();
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: 'Erudio Map by &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                maxZoom: 24, id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoiY3Jpc3RpYW5vc2llYmVydCIsImEiOiJjajRlaXlseDQwNDNhMndydjNqYzlqOWtyIn0.MQqg-LSABfmy1v8-EIpBGg'
+            }).addTo($scope.mapa);
+            $scope.marker = L.marker([lat, lng]).addTo($scope.mapa);
+            $scope.mapa.on('click', $scope.adicionaMarcador);
+        };
+        
+        //ADICIONA MARCADOR NA TELA
+        $scope.adicionaMarcador = function (event) {
+            $scope.mapa.removeLayer($scope.marker);
+            $scope.marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo($scope.mapa);
+            $scope.marker.bindPopup('<div class="map-popup-content"><strong>Este é o endereço desejado?</strong><br /><br /><button id="btnMapaSim" class="material-btn">Sim</md-button><button class="material-btn">Não</md-button></div>').openPopup();
+            $("#btnMapaSim").on('click',function(ev){ ev.preventDefault(); $scope.confirmaLatLng(event); });
+        };
+        
+        //CONFIRMA LAT LNG
+        $scope.confirmaLatLng = function (event) {
+            var lt = parseFloat(event.latlng.lat).toFixed(6); var ln = parseFloat(event.latlng.lng).toFixed(6);
+            $scope.instituicao.endereco.latitude = parseFloat(lt); $scope.instituicao.endereco.longitude = parseFloat(ln); $scope.mapa.closePopup();
+        };
+        
+        //PREENCHE CEP
+        $scope.preencheCEP = function(){ console.log('ha'); $timeout(function(){ $("input[name=cep]").change(function(){ $scope.buscaCEP(); }); },500); };
+        
+        //BUSCA CEP
+        $scope.buscaCEP = function () {
+            if (!Util.isVazio($scope.instituicao.endereco.cep) && $scope.instituicao.endereco.cep.length === 8) {
+                $.getJSON("https://viacep.com.br/ws/"+$scope.instituicao.endereco.cep+"/json/?callback=?", function(dados) {
+                    console.log(dados);
+                    if (!Util.isVazio(dados.logradouro)) { $scope.instituicao.endereco.logradouro = dados.logradouro; }
+                    if (!Util.isVazio(dados.bairro)) { $scope.instituicao.endereco.bairro = dados.bairro; }
+                    if (!Util.isVazio(dados.uf)) { 
+                        var promise = Util.buscar('estados',{sigla: dados.uf});
+                        promise.then(function(response){ $scope.instituicao.endereco.cidade.estado.id = response.data.id; $scope.buscarCidades(); });
+                    }
+                    if (!Util.isVazio(dados.uf)) { 
+                        var promise = Util.buscar('estados',{sigla: dados.uf});
+                        promise.then(function(response){ $scope.instituicao.endereco.cidade.estado.id = response.data.id; $scope.buscarCidades(); });
+                    }
+                });
+            }
+            //$scope.instituicao.endereco.cep;
         };
         
         //INICIANDO
