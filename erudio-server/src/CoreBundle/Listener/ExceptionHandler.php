@@ -31,6 +31,7 @@ namespace CoreBundle\Listener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use CoreBundle\Exception\PublishedException;
 
 class ExceptionHandler implements EventSubscriberInterface {
@@ -41,16 +42,25 @@ class ExceptionHandler implements EventSubscriberInterface {
 
     function onException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
-        if (!$exception instanceof PublishedException) {
-            return;
+        if ($exception instanceof PublishedException) {
+            $event->setResponse(
+                $this->createResponse(JsonResponse::HTTP_BAD_REQUEST, $exception->getMessage())
+            );
         }
-        $response = new JsonResponse([
+        else if ($exception instanceof AuthenticationException) {
+            $event->setResponse(
+                $this->createResponse(JsonResponse::HTTP_UNAUTHORIZED, $exception->getMessage())
+            );
+        }
+    }
+    
+    function createResponse($httpCode, $message) {
+        return new JsonResponse([
             'error' => [
-                'code' => JsonResponse::HTTP_BAD_REQUEST,
-                'message' => $exception->getMessage()
+                'code' => $httpCode,
+                'message' => $message
             ]
-        ]);
-        $event->setResponse($response);
+        ], $httpCode);
     }
     
 }

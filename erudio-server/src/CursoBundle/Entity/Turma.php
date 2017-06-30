@@ -78,6 +78,7 @@ class Turma extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"})
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\JoinColumn(name = "unidade_ensino_id") 
     */
@@ -85,7 +86,8 @@ class Turma extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "Etapa") 
+    * @ORM\ManyToOne(targetEntity = "Etapa")
+    * @JMS\MaxDepth(depth = 1)
     */
     private $etapa;
     
@@ -97,6 +99,7 @@ class Turma extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Calendario")
     */
     private $calendario;
@@ -231,13 +234,14 @@ class Turma extends AbstractEditableEntity {
     * @JMS\VirtualProperty
     */
     function getNomeCompleto() {
-        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
+        $nome = $this->apelido ?  "{$this->nome} - {$this->apelido}" : $this->nome;
+        return $this->periodo ?
+            "{$nome} - {$this->periodo->getNumero()}º {$this->etapa->getUnidadeRegime()}" 
+            : $nome;
     }
     
     function getNomeExibicao() {
-        return $this->apelido 
-                ? "{$this->etapa->getNomeExibicao()} - {$this->apelido}" 
-                : "{$this->etapa->getNomeExibicao()} - {$this->nome}";
+        return $this->getNomeCompleto();
     }
     
     function getNome() {

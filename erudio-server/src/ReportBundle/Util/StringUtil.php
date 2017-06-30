@@ -19,8 +19,7 @@ class StringUtil {
             "/(ñ)/",
             "/(Ñ)/"
         ],
-        explode(" ","a A e E i I o O u U n N"), 
-        $string);
+        explode(" ","a A e E i I o O u U n N"), $string);
     }
     
 }

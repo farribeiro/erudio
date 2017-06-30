@@ -65,7 +65,8 @@ class Etapa extends AbstractEditableEntity {
     private $limiteAlunos;
     
     /** 
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Modulo") 
     */
     private $modulo;
@@ -77,7 +78,8 @@ class Etapa extends AbstractEditableEntity {
     private $curso;
     
     /**
-    * @JMS\Groups({"DETAILS"})       
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)   
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\ModeloQuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_modelo_id") 
     */
@@ -124,6 +126,10 @@ class Etapa extends AbstractEditableEntity {
     
     function isSistemaQualitativo() {
         return $this->getSistemaAvaliacao()->isQualitativo();
+    }
+    
+    function getUnidadeRegime() {
+        return $this->sistemaAvaliacao->getRegime()->getUnidade();
     }
     
     function getDisciplinas() {

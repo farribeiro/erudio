@@ -104,7 +104,11 @@ class TurmaFacade extends AbstractFacade {
                    ->setParameter('unidadeEnsino', $value);
             }
         );
-    }    
+    }
+    
+    protected function selectMap() {
+        return ['t', 'etapa'];
+    }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.etapa', 'etapa')

@@ -28,8 +28,8 @@
 
 namespace AuthBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use JMS\Serializer\Annotation as JMS;
@@ -54,12 +54,12 @@ class AuthenticationController {
     * @ParamConverter("credentials", converter="fos_rest.request_body")
     */
     function getTokenAction(Credentials $credentials) {
-        $user = $this->userManager->findOne([
-            'username' => $credentials->username, 
-            'password' => md5(base64_decode($credentials->password))
-        ]);
-        if(!$user) {
-            return new Response(null, Response::HTTP_UNAUTHORIZED);
+        $user = $this->userManager->findOne(['username' => $credentials->username]);
+        if (!$user) {
+            throw new AuthenticationException('Usuário não encontrado');
+        }
+        if ($user->getPassword() != md5(base64_decode($credentials->password))) {
+            throw new AuthenticationException('Senha incorreta');
         }
         return new JsonResponse(['token' => $this->tokenManager->create($user)]);
     }
