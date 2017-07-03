@@ -117,7 +117,7 @@ class EnturmacaoReportController extends Controller {
     */
     function quantitativoPorInstituicaoAction(Request $request) {
         try {
-            $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->find(
+            $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->findOneBy(
                 ['id' => $request->query->getInt('instituicao', 0), 'ativo' => true]
             );
             $curso = $request->query->getInt('curso', 0);

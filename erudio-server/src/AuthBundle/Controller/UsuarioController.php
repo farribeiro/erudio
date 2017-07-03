@@ -50,11 +50,11 @@ class UsuarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * 
-    * @FOS\Get("users/{id}")
+    * @FOS\QueryParam(name = "view", nullable = true)
+    * @FOS\Get("users/{id}", requirements = {"id": "\d+"})
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
+    function getAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
+        return $this->getOne($request, $id, $paramFetcher->get('view'));
     }
     
     /**
@@ -68,8 +68,9 @@ class UsuarioController extends AbstractEntityController {
     * )
     * 
     * @FOS\Get("users")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    * @FOS\QueryParam(name = "username", nullable = true) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", nullable = true) 
+    * @FOS\QueryParam(name = "username", nullable = true)
     * @FOS\QueryParam(name = "nomeExibicao", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {

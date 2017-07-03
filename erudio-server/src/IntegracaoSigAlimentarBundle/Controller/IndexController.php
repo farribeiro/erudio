@@ -55,11 +55,11 @@ class IndexController {
     }
     
     /**
-    * @FOS\QueryParam(name = "unidade", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
     * @FOS\QueryParam()
     */
     function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
-        $unidade = $paramFetcher->get('unidade');
+        $unidade = $paramFetcher->get('unidadeEnsino');
         $params = $unidade ? ['turma_unidadeEnsino' => $unidade] : [];
         $enturmacoes = $this->enturmacaoFacade->findAll($params, null, 5000);
         $enturmacoesSig = array_map(function($e) {

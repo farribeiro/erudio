@@ -120,8 +120,23 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         return $this->pessoa;
     }
     
+    /**
+    * @JMS\Groups({"ROLES"})
+    * @JMS\VirtualProperty
+    */
     function getRoles() {
-        return array();
+        $roleMap = $this->getAtribuicoes()->map(function($a) {
+            return $a->getGrupo()->getPermissoes()->map(function($p) {
+                return $p->getPermissao()->getNomeIdentificacao();
+            })->toArray();
+        })->toArray();
+        $roles = [];
+        array_walk_recursive($roleMap, function($r) use (&$roles) {
+            if (!in_array($r, $roles)) {
+                $roles[] = $r;
+            } 
+        });
+        return $roles;
     }
 
     /**

@@ -87,7 +87,7 @@ class Turma extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"})
     * @ORM\ManyToOne(targetEntity = "Etapa")
-    * @JMS\MaxDepth(depth = 1)
+    * @JMS\MaxDepth(depth = 2)
     */
     private $etapa;
     

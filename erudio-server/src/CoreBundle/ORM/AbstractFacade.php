@@ -328,7 +328,7 @@ abstract class AbstractFacade {
     * @return type
     */
     protected function buildQuery(array $params) {
-        $qb = $this->orm->getEntityManager()->createQueryBuilder()
+        $qb = $this->orm->getManager()->createQueryBuilder()
             ->select($this->selectMap())
             ->from($this->getEntityClass(), $this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
