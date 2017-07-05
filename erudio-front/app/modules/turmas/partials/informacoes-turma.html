@@ -167,10 +167,14 @@
                             <label for="periodoTurmaFormulario">Período*</label>
                         </div>
                     </div>
-                    <div class="row" data-ng-hide="integral">
-                        <div class="col s12" style="margin-bottom: 10px;">
-                            <div class="subtitulo-typo" style="font-size: 25px;">Disciplinas Ofertadas:</div>
-                            <div class="chip d{{ disciplina.id }}" id="{{ disciplina.id }}" style="cursor: pointer; width: initial; margin-right: 5px;" data-ng-repeat="disciplina in disciplinas" data-ng-click="situacaoDisciplina(disciplina)">{{ disciplina.nomeExibicao }}</div>
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6" data-ng-hide="integral">
+                            <i class="material-icons prefix">view_quilt</i>
+                            <select id="disciplinasTurmaFormulario" data-ng-model="agrupamentoSelecionado.id" data-ng-change="buscaDisciplinas(agrupamentoSelecionado.id)" data-ng-disabled="!isAdmin && agrupamentoSelecionado.id" required>
+                                <option></option>
+                                <option value="{{ agrupamento.id }}" data-ng-selected="agrupamento.id === agrupamentoSelecionado.id" data-ng-repeat="agrupamento in agrupamentos">{{ agrupamento.nome | uppercase }}</option>
+                            </select>
+                            <label for="disciplinasTurmaFormulario">Módulo*</label>
                         </div>
                     </div>
                     <div data-ng-show="verificarEscrita()" class="row end-card">

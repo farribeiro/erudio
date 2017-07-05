@@ -976,9 +976,9 @@
                             }, 250);
                         });
                     } else {                        
-                        var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                        var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
 			promise.then(function(response) {
-				var user = response.data[0];
+				var user = response.data;
 				$scope.atribuicoes = user.atribuicoes;
 				$timeout(function () {
                                     var hasGeral = false;
@@ -998,7 +998,7 @@
                                                 });
                                             } else {
                                                 if (i === $scope.atribuicoes.length-1) {
-                                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.buscarCursos(); }
+                                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; }//$scope.buscarCursos(); }
                                                     $timeout(function () { $('select').material_select('destroy'); $('select').material_select();$scope.fechaProgresso(); }, 500);
                                                 }
                                             }
