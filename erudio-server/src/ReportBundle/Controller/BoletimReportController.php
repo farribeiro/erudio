@@ -46,7 +46,7 @@ class BoletimReportController extends Controller {
     private $turmaFacade;
     private $enturmacaoFacade;
     private $conceitoFacade;
-    private  $logger;
+    private $logger;
             
     function __construct(TurmaFacade $turmaFacade, EnturmacaoFacade $enturmacaoFacade, 
             ConceitoFacade $conceitoFacade, LoggerInterface $logger) {
@@ -81,7 +81,7 @@ class BoletimReportController extends Controller {
                 'turma' => $turma,
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'boletins' => $this->gerarBoletim($enturmacao),
+                'boletins' => [$this->gerarBoletim($enturmacao)],
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->conceitoFacade->findAll() : [],
             ]);
@@ -109,7 +109,6 @@ class BoletimReportController extends Controller {
             $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             $enturmacoes = $turma->getEnturmacoes();
             $boletins = [];
-            $this->gerarBoletim($enturmacoes[0]);
             foreach ($enturmacoes as $e) {
                 $boletins[] = $this->gerarBoletim($e);
             }
@@ -132,15 +131,9 @@ class BoletimReportController extends Controller {
     }
     
     private function gerarBoletim(Enturmacao $enturmacao) { 
-        $disciplinas = $enturmacao->getDisciplinasCursadas();
-        $disciplinasCursadas = array();
-        foreach ($disciplinas as $disciplina) {
-            $status = $disciplina->getStatus();
-            if ($status == DisciplinaCursada::STATUS_CURSANDO) { array_push($disciplinasCursadas, $disciplina); }
-        }
         return [
             'matricula' => $enturmacao->getMatricula(), 
-            'disciplinas' => $disciplinasCursadas
+            'disciplinas' => $enturmacao->getDisciplinasCursadas()
         ];
     }
     

@@ -40,8 +40,9 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Periodo extends AbstractEditableEntity {
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(name = "media", nullable = false) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
+    * @ORM\Column(name = "media", nullable = false)
     */
     private $numero;
     
@@ -79,6 +80,7 @@ class Periodo extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @JMS\VirtualProperty
     */
     function getMedia() {

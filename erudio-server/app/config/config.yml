@@ -111,7 +111,7 @@ nelmio_cors:
             allow_credentials: true
             allow_origin: ['*']
             allow_headers: ['Content-Type', 'Origin', 'Accept', 'X-Requested-With', 'JWT-Authorization']
-            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'HEAD', 'OPTIONS']
             expose_headers: ['Content-Type', 'Link']
             max_age: 1209600
             hosts: []

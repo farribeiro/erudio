@@ -41,6 +41,12 @@ class Atribuicao extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"}) 
+    * @ORM\Column
+    */
+    private $apelido;
+    
+    /**
+    * @JMS\Groups({"LIST"}) 
     * @ORM\ManyToOne(targetEntity = "Usuario", inversedBy = "atribuicoes") 
     */
     private $usuario;
@@ -59,6 +65,14 @@ class Atribuicao extends AbstractEditableEntity {
     */
     private $instituicao;
     
+    function getApelido() {
+        return $this->apelido;
+    }
+
+    function setApelido($apelido) {
+        $this->apelido = $apelido;
+    }
+    
     function getUsuario() {
         return $this->usuario;
     }
@@ -71,11 +85,12 @@ class Atribuicao extends AbstractEditableEntity {
         return $this->instituicao;
     }
     
-    static function criarAtribuicao(Usuario $usuario, Grupo $grupo, Instituicao $instituicao) {
+    static function criarAtribuicao(Usuario $usuario, Grupo $grupo, Instituicao $instituicao, $apelido = null) {
         $atribuicao = new Atribuicao();
         $atribuicao->usuario = $usuario;
         $atribuicao->grupo = $grupo;
         $atribuicao->instituicao = $instituicao;
+        $atribuicao->apelido = $apelido ? $apelido : $grupo->getNome();
         return $atribuicao;
     }
     

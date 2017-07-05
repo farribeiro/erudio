@@ -3,7 +3,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
  *    @updated 30/06/2016                                                  *
- *    Pacote: Erudio                                                       *
+ *    Pacote: Erudio                                                    *
  *                                                                         *
  *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
  *                       DITEC - Diretoria de Tecnologias educacionais     *
@@ -26,24 +26,54 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace VinculoBundle\Event;
+namespace AuthBundle\Listener;
 
-use VinculoBundle\Entity\Alocacao;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use CoreBundle\Event\EntityEvent;
+use AuthBundle\Service\UsuarioFacade;
+use AuthBundle\Entity\Usuario;
+use PessoaBundle\Service\PessoaFisicaFacade;
 
-class AlocacaoEvent extends Event {
+/**
+* Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
+* não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
+*
+*/
+class CriarUsuarioListener implements EventSubscriberInterface {
     
-    const ALOCACAO_CRIADA = 'event.vinculo.alocacao_criada';
-    const ALOCACAO_REMOVIDA = 'event.vinculo.alocacao_removida';
+     private $usuarioFacade;
+     private $pessoaFacade;
     
-    private $alocacao;
-    
-    function __construct(Alocacao $alocacao) {
-        $this->alocacao = $alocacao;
+    function __construct(UsuarioFacade $usuarioFacade, PessoaFisicaFacade $pessoaFacade) {
+        $this->usuarioFacade = $usuarioFacade;
+        $this->pessoaFacade = $pessoaFacade;
     }
     
-    function getAlocacao() {
-        return $this->alocacao;
+    static function getSubscribedEvents() {
+        return [
+            'VinculoBundle:Vinculo:Created' => 'onVinculoCriado',
+            'MatriculaBundle:Matricula:Created' => 'onMatriculaCriada'
+        ];
+    }
+    
+    function onVinculoCriado(EntityEvent $event) {
+        $pessoa = $event->getEntity()->getFuncionario();
+        if (!$pessoa->getUsuario() || !$pessoa->getUsuario()->getAtivo()) {
+            $this->criarUsuario($pessoa, $pessoa->getCpfCnpj());
+        }
+    }
+    
+    function onMatriculaCriada(EntityEvent $event) {
+        $pessoa = $event->getEntity()->getAluno();
+        if (!$pessoa->getUsuario() || !$pessoa->getUsuario()->getAtivo()) {
+            $this->criarUsuario($pessoa, $event->getEntity()->getCodigo());
+        }
+    }
+    
+    private function criarUsuario($pessoa, $username) {
+        $usuario = $this->usuarioFacade->create(Usuario::criarUsuario($pessoa, $username));
+        $pessoa->setUsuario($usuario);
+        $this->pessoaFacade->update($pessoa->getId(), $pessoa);
     }
     
 }

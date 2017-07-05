@@ -137,7 +137,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
                 $this->getFacade()->encerrar($disciplina);
             }
             $view = View::create(null, Response::HTTP_NO_CONTENT);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);

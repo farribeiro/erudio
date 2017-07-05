@@ -26,11 +26,11 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace VinculoBundle\Listener;
+namespace AuthBundle\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use AuthBundle\Service\AtribuicaoFacade;
-use VinculoBundle\Event\AlocacaoEvent;
+use CoreBundle\Event\EntityEvent;
 
 /**
 * Remove a atribuição que foi gerada para o usuário da pessoa no ato da alocação,
@@ -46,11 +46,11 @@ class RemoverAtribuicaoListener implements EventSubscriberInterface {
     }
     
     static function getSubscribedEvents() {
-        return [AlocacaoEvent::ALOCACAO_REMOVIDA => 'execute'];
+        return ['VinculoBundle:Alocacao:Removed' => 'onAlocacaoRemovida'];
     }
     
-    function execute(AlocacaoEvent $event) {
-        $alocacao = $event->getAlocacao();
+    function onAlocacaoRemovida(EntityEvent $event) {
+        $alocacao = $event->getEntity();
         $atribuicoes = $this->atribuicaoFacade->findAll([
             'usuario' => $alocacao->getVinculo()->getFuncionario()->getUsuario(),
             'grupo' => $alocacao->getVinculo()->getCargo()->getGrupo(), 

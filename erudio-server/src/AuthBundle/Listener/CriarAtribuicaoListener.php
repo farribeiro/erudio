@@ -26,13 +26,13 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace VinculoBundle\Listener;
+namespace AuthBundle\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use CoreBundle\ORM\Exception\UniqueViolationException;
+use CoreBundle\Event\EntityEvent;
 use AuthBundle\Service\AtribuicaoFacade;
 use AuthBundle\Entity\Atribuicao;
-use VinculoBundle\Event\AlocacaoEvent;
 
 /**
  * Gera uma atribuição para o usuário da pessoa alocada, contendo as permissões
@@ -48,18 +48,19 @@ class CriarAtribuicaoListener implements EventSubscriberInterface {
     }
     
     static function getSubscribedEvents() {
-        return [AlocacaoEvent::ALOCACAO_CRIADA => 'execute'];
+        return ['VinculoBundle:Alocacao:Created' => 'onAlocacaoCriada'];
     }
     
-    function execute(AlocacaoEvent $event) {
-        $alocacao = $event->getAlocacao(); 
+    function onAlocacaoCriada(EntityEvent $event) {
+        $alocacao = $event->getEntity();
         $grupo = $alocacao->getVinculo()->getCargo()->getGrupo();
         if ($grupo) {
             try {
                 $atribuicao = Atribuicao::criarAtribuicao(
                     $alocacao->getVinculo()->getFuncionario()->getUsuario(), 
-                    $grupo, 
-                    $alocacao->getInstituicao()
+                    $grupo,
+                    $alocacao->getInstituicao(),
+                    $alocacao->getVinculo()->getCargo()->getNome()
                 );
                 $this->atribuicaoFacade->create($atribuicao, false);
             } catch (UniqueViolationException $ex) {

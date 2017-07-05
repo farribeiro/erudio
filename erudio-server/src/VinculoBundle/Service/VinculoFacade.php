@@ -32,8 +32,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\Event\EntityEvent;
 use VinculoBundle\Entity\Vinculo;
-use VinculoBundle\Event\VinculoEvent;
 
 class VinculoFacade extends AbstractFacade {
     
@@ -87,9 +87,9 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($vinculo) {
-         $this->eventDispatcher->dispatch(
-            VinculoEvent::VINCULO_CRIADO,
-            new VinculoEvent($vinculo)
+        $this->eventDispatcher->dispatch(
+            'VinculoBundle:Vinculo:Created',
+            new EntityEvent($vinculo, EntityEvent::ACTION_CREATED)
         );
     }
     

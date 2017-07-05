@@ -33,8 +33,8 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\Event\EntityEvent;
 use VinculoBundle\Entity\Alocacao;
-use VinculoBundle\Event\AlocacaoEvent;
 
 class AlocacaoFacade extends AbstractFacade {
     
@@ -87,13 +87,15 @@ class AlocacaoFacade extends AbstractFacade {
 
     protected function afterCreate($alocacao) {
         $this->eventDispatcher->dispatch(
-            AlocacaoEvent::ALOCACAO_CRIADA, new AlocacaoEvent($alocacao)
+            'VinculoBundle:Alocacao:Created', 
+            new EntityEvent($alocacao, EntityEvent::ACTION_CREATED)
         );
     }
     
     protected function afterRemove($alocacao) {
         $this->eventDispatcher->dispatch(
-            AlocacaoEvent::ALOCACAO_REMOVIDA, new AlocacaoEvent($alocacao)
+            'VinculoBundle:Alocacao:Removed', 
+            new EntityEvent($alocacao, EntityEvent::ACTION_REMOVED)
         );
     }
     

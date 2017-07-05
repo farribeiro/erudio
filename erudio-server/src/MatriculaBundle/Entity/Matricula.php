@@ -48,7 +48,7 @@ class Matricula extends AbstractEditableEntity {
           STATUS_TRANCADO = "TRANCADO",
           STATUS_ABANDONO = "ABANDONO",
           STATUS_FALECIDO = "FALECIDO";
-    
+  
     /**
     * @JMS\Groups({"LIST"})   
     * @ORM\Column
@@ -77,7 +77,7 @@ class Matricula extends AbstractEditableEntity {
     private $aluno;
     
     /**
-    * @JMS\Groups({"LIST"}) @JMS\Groups({"DETAILS"}) 
+    * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Curso") 
     */

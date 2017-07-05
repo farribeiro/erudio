@@ -64,12 +64,9 @@ class PessoaFisicaFacade extends AbstractFacade {
             'nomePai' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.nomePai LIKE :nomePai')->setParameter('nomePai', '%' . $value . '%');
             },
-            'avatar' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('pessoa.avatar = :avatar')->setParameter('avatar', '%' . $value . '%');
-            },
             'usuario' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.usuario = :usuario')->setParameter('usuario', $value);
-            },
+            }
         ];
     }
     

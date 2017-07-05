@@ -28,20 +28,23 @@
 
 namespace MatriculaBundle\Service;
 
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\Event\EntityEvent;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use MatriculaBundle\Entity\Matricula;
-use AuthBundle\Entity\Usuario;
-use AuthBundle\Service\UsuarioFacade;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MatriculaFacade extends AbstractFacade {
     
-    private $usuarioFacade;
+    private $eventDispatcher;
     
-    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
-        $this->usuarioFacade = $usuarioFacade;
+    function __construct(RegistryInterface $doctrine, LoggerInterface $logger, EventDispatcherInterface $eventDispatcher) {
+        parent::__construct($doctrine, $logger);
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     function getEntityClass() {
@@ -53,7 +56,7 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'aluno' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
             },
@@ -85,18 +88,16 @@ class MatriculaFacade extends AbstractFacade {
                 $operator = $value ? ' NOT ' : '';
                 $qb->leftJoin('m.enturmacoes', 'en', Expr\Join::WITH, 'en.ativo = true AND en.encerrado = false')
                    ->andWhere("m.enturmacoes IS {$operator} EMPTY");
-            },
-        );
+            }
+        ];
     }
     
     function uniqueMap($matricula) {
-        return [
-            [
-                'curso' => $matricula->getCurso()->getId(), 
-                'aluno' => $matricula->getAluno()->getId(), 
-                'status' => Matricula::STATUS_CURSANDO
-            ]
-        ];
+        return [[
+            'curso' => $matricula->getCurso()->getId(), 
+            'aluno' => $matricula->getAluno()->getId(), 
+            'status' => Matricula::STATUS_CURSANDO
+        ]];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
@@ -111,7 +112,11 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($matricula) {
-        $this->gerarUsuario($matricula);
+        $this->orm->getManager()->detach($matricula);
+        $this->eventDispatcher->dispatch(
+            'MatriculaBundle:Matricula:Created', 
+            new EntityEvent($matricula, EntityEvent::ACTION_CREATED)
+        );
     }
     
     protected function afterUpdate($matricula) {
@@ -140,21 +145,10 @@ class MatriculaFacade extends AbstractFacade {
             ->where('m.codigo LIKE :codigo')
             ->setParameter('codigo', $ano . $matricula->getCurso()->getId() . '%');
         $numero = $qb->getQuery()->getSingleScalarResult();
-        if(!$numero) {
+        if (!$numero) {
             $numero = $ano . $matricula->getCurso()->getId() . '00000';
         }
         $matricula->definirCodigo($numero + 1);
-    }
-    
-    private function gerarUsuario($matricula) {
-        $pessoa = $matricula->getAluno();
-        if (!$pessoa->getUsuario()) {
-            $usuario = Usuario::criarUsuario($pessoa, $matricula->getCodigo());
-            $this->usuarioFacade->create($usuario);
-            $matricula->getAluno()->setUsuario($usuario);
-            $this->orm->getManager()->merge($pessoa);
-            $this->orm->getManager()->flush();
-        }
     }
     
 }

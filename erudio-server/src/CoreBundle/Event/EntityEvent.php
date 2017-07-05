@@ -26,41 +26,31 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace VinculoBundle\Listener;
+namespace CoreBundle\Event;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use VinculoBundle\Event\VinculoEvent;
-use AuthBundle\Service\UsuarioFacade;
-use AuthBundle\Entity\Usuario;
-use PessoaBundle\Service\PessoaFisicaFacade;
+use CoreBundle\ORM\AbstractEntity;
+use Symfony\Component\EventDispatcher\Event;
 
-/**
-* Gera um usuário para a pessoa vinculada à uma instituição de ensino, caso ela ainda
-* não possua. Estes usuários recebem como login padrão o seu CPF para garantia da unicidade.
-*
-*/
-class CriarUsuarioListener implements EventSubscriberInterface {
+class EntityEvent extends Event {
     
-     private $usuarioFacade;
-     private $pessoaFacade;
+    const ACTION_CREATED = 'Created';
+    const ACTION_UPDATED = 'Updated';
+    const ACTION_REMOVED = 'Removed';
     
-    function __construct(UsuarioFacade $usuarioFacade, PessoaFisicaFacade $pessoaFacade) {
-        $this->usuarioFacade = $usuarioFacade;
-        $this->pessoaFacade = $pessoaFacade;
+    private $entity;
+    private $action;
+    
+    function __construct(AbstractEntity $entity, $action = self::ACTION_CREATED) {
+        $this->entity = $entity;
+        $this->action = $action;
     }
     
-    static function getSubscribedEvents() {
-        return [VinculoEvent::VINCULO_CRIADO => 'onVinculoCriado'];
+    function getEntity() {
+        return $this->entity;
     }
     
-    function onVinculoCriado(VinculoEvent $event) {
-        $pessoa = $event->getVinculo()->getFuncionario();
-        if (!$pessoa->getUsuario()) {
-            $usuario = Usuario::criarUsuario($pessoa, $pessoa->getCpfCnpj());
-            $this->usuarioFacade->create($usuario);
-            $pessoa->setUsuario($usuario);
-            $this->pessoaFacade->update($pessoa->getId(), $pessoa);
-        }
+    function getAction() {
+        return $this->action;
     }
     
 }

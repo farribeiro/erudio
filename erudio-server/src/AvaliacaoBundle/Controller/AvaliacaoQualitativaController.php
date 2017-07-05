@@ -50,7 +50,7 @@ class AvaliacaoQualitativaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("avaliacoes-qualitativas/{id}")
+    * @FOS\Get("avaliacoes-qualitativas/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);

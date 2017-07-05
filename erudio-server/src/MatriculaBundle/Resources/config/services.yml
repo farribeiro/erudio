@@ -14,9 +14,3 @@ services:
         tags: ['controller.service_arguments']
         calls:
           - [setViewHandler, ["@fos_rest.view_handler"]]
-    
-    MatriculaBundle\Service\MatriculaFacade:
-        class: MatriculaBundle\Service\MatriculaFacade
-        # Refatorar dependência para evento
-        calls:
-            - [setUsuarioFacade, ['@AuthBundle\Service\UsuarioFacade']]
