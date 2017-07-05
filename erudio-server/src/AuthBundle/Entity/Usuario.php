@@ -125,7 +125,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     }
 
     /**
-    * @JMS\Groups({"LIST"})
+    * @JMS\Groups({"DETAILS"})
     * @JMS\VirtualProperty
     * @JMS\Type("ArrayCollection<AuthBundle\Entity\Atribuicao>")
     */

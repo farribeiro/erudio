@@ -33,9 +33,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
+use Psr\Log\LoggerInterface;
 use CursoBundle\Service\TurmaFacade;
 use CursoBundle\Service\DisciplinaOfertadaFacade;
-use CalendarioBundle\Service\AulaFacade;
 use AvaliacaoBundle\Service\HabilidadeFacade;
 use AvaliacaoBundle\Service\ConceitoFacade;
 
@@ -43,37 +43,17 @@ class NotasReportController extends Controller {
     
     private $turmaFacade;
     private $disciplinaOfertadaFacade;
-    private $aulaFacade;
     private $habilidadeFacade;
     private $conceitoFacade;
+    private $logger;
     
     function __construct(TurmaFacade $turmaFacade, DisciplinaOfertadaFacade $disciplinaOfertadaFacade, 
-            AulaFacade $aulaFacade, HabilidadeFacade $habilidadeFacade, ConceitoFacade $conceitoFacade) {
+            HabilidadeFacade $habilidadeFacade, ConceitoFacade $conceitoFacade, LoggerInterface $logger) {
         $this->turmaFacade = $turmaFacade;
         $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
-        $this->aulaFacade = $aulaFacade;
         $this->habilidadeFacade = $habilidadeFacade;
         $this->conceitoFacade = $conceitoFacade;
-    }
-    
-    function getTurmaFacade() {
-        return $this->turmaFacade;
-    }
-
-    function getDisciplinaOfertadaFacade() {
-        return $this->disciplinaOfertadaFacade;
-    }
-
-    function getAulaFacade() {
-        return $this->aulaFacade;
-    }
-    
-    function getHabilidadeFacade() {
-        return $this->habilidadeFacade;
-    }
-
-    function getConceitoFacade() {
-        return $this->conceitoFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -84,7 +64,7 @@ class NotasReportController extends Controller {
         try {
             $auto = $request->query->get('auto', true);
             $media = $request->query->getInt('media', 1);
-            $disciplina = $this->getDisciplinaOfertadaFacade()->find(
+            $disciplina = $this->disciplinaOfertadaFacade->find(
                 $request->query->getInt('disciplina')
             );
             $diarios = [ $this->gerarDiario($disciplina, $media, $auto) ];
@@ -98,11 +78,11 @@ class NotasReportController extends Controller {
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'enturmacoes' => $turma->getEnturmacoes(),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                    ? $this->conceitoFacade->findAll() : [],
                 'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -115,7 +95,7 @@ class NotasReportController extends Controller {
         try {
             $auto = $request->query->get('auto', true);
             $media = $request->query->getInt('media', 1);
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             $diarios = [];
             foreach ($turma->getDisciplinas() as $disciplina) {
                 $diarios[] = $this->gerarDiario($disciplina, $media, $auto);
@@ -130,11 +110,11 @@ class NotasReportController extends Controller {
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'enturmacoes' => $turma->getEnturmacoes(),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                    ? $this->conceitoFacade->findAll() : [],
                 'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -155,7 +135,7 @@ class NotasReportController extends Controller {
             'professor' => $professor
         ];
         if ($this->isSistemaQualitativo($disciplina->getDisciplina()->getEtapa())) {
-            $diario['habilidades'] = $this->getHabilidadeFacade()->findAll([
+            $diario['habilidades'] = $this->habilidadeFacade->findAll([
                 'disciplina' => $disciplina->getDisciplina()->getId(),
                 'media' => $media
             ]);

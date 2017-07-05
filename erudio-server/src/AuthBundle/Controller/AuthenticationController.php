@@ -26,58 +26,50 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AuthBundle\Entity;
+namespace AuthBundle\Controller;
 
-use Doctrine\ORM\Mapping AS ORM;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEditableEntity;
-use PessoaBundle\Entity\Instituicao;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use AuthBundle\Service\UsuarioFacade;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="edu_acesso_atribuicao")
- */
-class Atribuicao extends AbstractEditableEntity {
+class AuthenticationController {
     
-    /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\ManyToOne(targetEntity = "Usuario", inversedBy = "atribuicoes") 
-    */
-    private $usuario;
-   
-    /**
-    * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Grupo")
-    */
-    private $grupo;
+    private $tokenManager;
+    private $userManager;
     
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3)
-    * @JMS\Type("PessoaBundle\Entity\Instituicao")
-    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
-    */
-    private $instituicao;
-    
-    function getUsuario() {
-        return $this->usuario;
+    function __construct(JWTTokenManagerInterface $tokeManager, UsuarioFacade $userManager) {
+        $this->tokenManager = $tokeManager;
+        $this->userManager = $userManager;
     }
     
-    function getGrupo() {
-        return $this->grupo;
-    }
-
-    function getInstituicao() {
-        return $this->instituicao;
-    }
-    
-    static function criarAtribuicao(Usuario $usuario, Grupo $grupo, Instituicao $instituicao) {
-        $atribuicao = new Atribuicao();
-        $atribuicao->usuario = $usuario;
-        $atribuicao->grupo = $grupo;
-        $atribuicao->instituicao = $instituicao;
-        return $atribuicao;
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("tokens")
+    * @ParamConverter("credentials", converter="fos_rest.request_body")
+    */
+    function getTokenAction(Credentials $credentials) {
+        $user = $this->userManager->findOne(['username' => $credentials->username]);
+        if (!$user) {
+            throw new AuthenticationException('Usuário não encontrado');
+        }
+        if ($user->getPassword() != md5(base64_decode($credentials->password))) {
+            throw new AuthenticationException('Senha incorreta');
+        }
+        return new JsonResponse(['token' => $this->tokenManager->create($user)]);
     }
     
 }
 
+class Credentials {  
+    /** @JMS\Type("string") */
+    public $username;
+    
+    /** @JMS\Type("string") */
+    public $password;
+}

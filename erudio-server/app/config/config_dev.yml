@@ -43,6 +43,6 @@ monolog:
         #    type:   chromephp
         #    level:  info
 
-
-#swiftmailer:
-#    delivery_address: me@example.com
+jms_serializer:
+    metadata:
+        cache: none

@@ -47,24 +47,28 @@ class ModeloQuadroHorario extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer") 
     * @ORM\Column(name = "quantidade_aulas", nullable = false) 
     */
     private $quantidadeAulas;
     
     /**
-    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer")
     * @ORM\Column(name = "duracao_aula", nullable = false) 
     */
     private $duracaoAula;
     
     /**
     * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer")
     * @ORM\Column(name = "duracao_intervalo", nullable = false) 
     */
     private $duracaoIntervalo;
     
     /**
-    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer") 
     * @ORM\Column(name = "posicao_intervalo", nullable = false) 
     */
     private $posicaoIntervalo;

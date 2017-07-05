@@ -47,7 +47,7 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 100;
+    const PAGE_SIZE = 150;
     
     protected $orm;
     protected $logger;
@@ -296,6 +296,17 @@ abstract class AbstractFacade {
     }
     
     /**
+    * Define a string padrão a ser usada na cláusula select da query de busca. 
+    * Importante ressaltar que os joins necessários para carregar entidades associadas 
+    * devem ser realizados na query, tipicamente por meio do método prepareQuery.
+    * 
+    * @return array mapa de regras de unicidade
+    */
+    protected function selectMap() {
+        return [$this->queryAlias()];
+    }
+    
+    /**
     * 
     * @param type $id
     * @param type $entityClass
@@ -318,7 +329,7 @@ abstract class AbstractFacade {
     */
     protected function buildQuery(array $params) {
         $qb = $this->orm->getEntityManager()->createQueryBuilder()
-            ->select($this->queryAlias())
+            ->select($this->selectMap())
             ->from($this->getEntityClass(), $this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);

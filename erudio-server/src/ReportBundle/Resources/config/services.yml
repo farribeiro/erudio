@@ -10,8 +10,6 @@ services:
         resource: '../../Controller'
         public: true
         tags: ['controller.service_arguments']
-        calls:
-          - [setContainer, ["@service_container"]]
     
     twig.report_extension:
         class: ReportBundle\Util\ReportTwigExtension
