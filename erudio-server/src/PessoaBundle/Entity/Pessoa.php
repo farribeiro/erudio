@@ -170,7 +170,7 @@ class Pessoa extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"DETAILS"})
     * @JMS\VirtualProperty
-    * @JMS\Type("ArrayCollection<Telefone>")
+    * @JMS\Type("ArrayCollection<PessoaBundle\Entity\Telefone>")
     */
     function getTelefones() {
         return $this->telefones->matching(
