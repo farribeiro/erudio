@@ -43,3 +43,8 @@
     <li class="divider"></li>
     <li data-ng-repeat="unidade in unidades"><a data-ng-click="selecionaUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
 </ul>
+
+<ul id='dropUnidadesAlunosBusca' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="aluno in alunos"><a data-ng-click="selecionaAluno(aluno)">{{ aluno.nomeAluno | uppercase }} - {{ aluno.aluno.dataNascimento | date:'dd/MM/yyyy'}} - {{ aluno.curso.nome }}</a></li>
+</ul>
