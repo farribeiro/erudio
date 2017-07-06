@@ -130,7 +130,7 @@ class BoletimReportController extends Controller {
         }
     }
     
-    private function gerarBoletim(Enturmacao $enturmacao) { 
+    private function gerarBoletim(Enturmacao $enturmacao) {
         return [
             'matricula' => $enturmacao->getMatricula(), 
             'disciplinas' => $enturmacao->getDisciplinasCursadas()

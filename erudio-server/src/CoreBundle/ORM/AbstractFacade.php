@@ -334,7 +334,7 @@ abstract class AbstractFacade {
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
+            if(!is_null($v) && $v !== '' && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }

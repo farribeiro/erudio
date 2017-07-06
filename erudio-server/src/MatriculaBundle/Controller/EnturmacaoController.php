@@ -62,7 +62,7 @@ class EnturmacaoController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
     *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "encerrado", nullable = false) 
+    *   @FOS\QueryParam(name = "encerrado", default = false) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
