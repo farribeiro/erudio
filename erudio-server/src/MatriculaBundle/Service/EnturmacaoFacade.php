@@ -72,14 +72,24 @@ class EnturmacaoFacade extends AbstractFacade {
             },
             'encerrado' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.encerrado = :encerrado')->setParameter('encerrado', $value);
+            },
+            'concluido' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.concluido = :concluido')->setParameter('concluido', $value);
+            },
+            'emAndamento' => function(QueryBuilder $qb, $value) {
+                $operador = $value ? ' = ' : ' <> ';
+                $qb->andWhere("e.concluido {$operador} false")->andWhere("e.encerrado {$operador} false");
             }
         ];
     }
     
     function uniqueMap($enturmacao) {
-        return [
-            ['matricula' => $enturmacao->getMatricula(), 'turma' => $enturmacao->getTurma(), 'encerrado' => false]
-        ];
+        return [[
+            'matricula' => $enturmacao->getMatricula(), 
+            'turma' => $enturmacao->getTurma(), 
+            'encerrado' => false,
+            'concluido' => false
+        ]];
     }
     
     /**
@@ -160,7 +170,7 @@ class EnturmacaoFacade extends AbstractFacade {
                 );
             }
         }
-        $enturmacao->encerrar();
+        $enturmacao->concluir();
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
     }

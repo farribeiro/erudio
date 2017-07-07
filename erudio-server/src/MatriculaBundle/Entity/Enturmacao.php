@@ -48,6 +48,12 @@ class Enturmacao extends AbstractEditableEntity {
     private $encerrado = false;
     
     /**  
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(type = "boolean", nullable = false) 
+    */
+    private $concluido = false;
+    
+    /**  
     * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "Matricula") 
@@ -80,12 +86,29 @@ class Enturmacao extends AbstractEditableEntity {
         $this->disciplinasCursadas = new ArrayCollection();
     }
     
+    /**  
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("boolean")
+    */
+    function isEmAndamento() {
+        return !$this->encerrado && !$this->concluido;
+    }
+    
     function getAluno() {
         return $this->matricula->getAluno();
     }
     
     function getAno() {
         return $this->turma->getAno();
+    }
+    
+    function getDisciplinasCursadas() {
+        return $this->disciplinasCursadas->matching(
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['disciplina' => 'ASC'])
+        );
     }
      
     function getAnosDefasagem(\DateTime $dataReferencia = null) {
@@ -97,12 +120,20 @@ class Enturmacao extends AbstractEditableEntity {
         return $idadeEtapa ? $idadeAluno->y - $idadeEtapa : 0;
     }
     
+    function concluir() {
+        $this->concluido = true;
+    }
+
+    function encerrar() {
+        $this->encerrado = true;
+    }
+    
     function getEncerrado() {
         return $this->encerrado;
     }
     
-    function setEncerrado($encerrado) {
-        $this->encerrado = $encerrado;
+    function getConcluido() {
+        return $this->concluido;
     }
     
     function getMatricula() {
@@ -116,16 +147,5 @@ class Enturmacao extends AbstractEditableEntity {
     function getVaga() {
         return $this->vaga;
     }
-    
-    function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas->matching(
-            Criteria::create()->where(
-                Criteria::expr()->eq('ativo', true)
-            )->orderBy(['disciplina' => 'ASC'])
-        );
-    }
 
-    function encerrar() {
-        $this->encerrado = true;
-    }
 }
