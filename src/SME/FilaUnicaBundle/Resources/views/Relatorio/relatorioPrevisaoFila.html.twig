@@ -1,0 +1,74 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block headerTitle %} Fila Única > Relatórios > Previsão da fila para o próximo ano {% endblock %}
+
+{% block page %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{path('fu_relatorio_formRelatorioInscricoes')}}">Inscrições</a></li>
+        <li><a href="{{path('fu_relatorio_formRelatorioVagas')}}">Vagas</a></li>
+        <li class="active"><a href="#">Previsão da Fila</a></li>
+    </ul>
+    <div class="row">
+        <div class="col-lg-6">
+            <button id="btnImprimir" type="button" class="btn btn-primary">Imprimir</button>
+        </div>
+    </div>
+    <div id="divRelatorio" style="padding-top: 1.1em;">
+        <form>
+            <input id="tituloRelatorio" name="tituloRelatorio" value="FILA ÚNICA - Previsão da Fila" class="form-control" style="font-weight: bold;" type="text" />
+        </form>
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Zoneamento</th>
+                    {% for anoEscolar in anosEscolares %}
+                        <th class="text-center">{{anoEscolar.nome}}</th>
+                    {% endfor %}
+                    <th class="text-center">Totais</th>
+                </tr>
+            </thead>
+            {% for zoneamento in zoneamentos %}
+                <tr>
+                    <td>{{zoneamento.nome}} - {{zoneamento.descricao}}</td>
+                    {% for anoEscolar in anosEscolares %}
+                        <td class="text-center">{{numerosInscricoes[zoneamento.id][anoEscolar.id]}}</td>
+                    {% endfor %}
+                    <td class="text-center">
+                        <strong>{{numerosInscricoes[zoneamento.id]['total']}}</strong>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>Totais do Município</td>
+                {% for anoEscolar in anosEscolares %}
+                    <td class="text-center">
+                        <strong>{{numerosInscricoes['total'][anoEscolar.id]}}</strong>
+                    </td>
+                {% endfor %}
+                <td></td>
+            </tr>
+            <tr>
+                <td>Total Geral</td>
+                    <td class="text-center">
+                        <strong>{{ totalGeral }}</strong>
+                    </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('lib/jquery/printThis.js')}}"></script>
+    <script type="text/javascript">
+        $("#btnImprimir").click( function() {
+            $("#divRelatorio").printThis({
+                importCSS: true,
+                printContainer: false,
+                pageTitle: "Relatório - Fila Única",
+                removeInline: false,
+                formValues: true
+            });
+        });
+    </script>
+{% endblock %}

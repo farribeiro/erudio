@@ -1,0 +1,45 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} DGP > Promoção > CI Geral > {{ci.numero}}/{{ci.ano}} {% endblock %}
+
+{% block modalBody %}
+    <form id="formPesquisaPromocao" action="{{path('dgp_promocao_ciGeral_pesquisarPromocoes', {'ci': ci.id})}}" method="post">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="ano">Ano:</label>
+                <input type='text' id="ano" name="ano" value="{{date()|date('Y')}}" class="form-control" />
+            </div>
+            <div class="col-lg-6">
+                <label for="cargo">Cargo:</label>
+                <div class="input-group" style="padding-top: 0;">
+                    <select id="cargo" name="cargo" class="form-control">
+                        <option></option>
+                        {% for cargo in cargos %}
+                            <option value="{{cargo.id}}" > {{cargo.nome}} </option>
+                        {% endfor %}
+                    </select>
+                    <span class="input-group-btn">
+                        <button id="btnBuscar" type="button" class="btn btn-primary">Buscar</button>
+                    </span>                 
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="divPromocoes"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#btnBuscar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: $("#formPesquisaPromocao").attr("action"),
+                data: $("#formPesquisaPromocao").serialize(),
+                success: function(retorno){
+                    $("#divPromocoes").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'IntranetBundle:Index:unidadeEscolar.html.twig' %}
+
+{% block headerTitle %}Gestão Escolar{% endblock %}
+
+{% block body %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Unidade</th>
+                <th>Tipo</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unidade in unidades %}
+                <tr>
+                    <td>{{unidade.pessoaJuridica.nome}}</td>
+                    <td>{{unidade.classe.nome}}</td>
+                    <td>
+                        <a href="{{url('intranet_selecionarUnidadeEscolar', {'unidade': unidade.id})}}">Acessar</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr> 
+                    <td class="text-center" colspan="3">Você não está cadastrado como gestor em nenhuma unidade.</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

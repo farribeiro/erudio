@@ -1,0 +1,15 @@
+SME\PresencaBundle\Entity\Presenca:
+  properties:
+    dataCadastro:
+      - NotBlank: { message: "O Campo <strong>DATA</strong> é obrigatório." }
+    turma:
+      - NotBlank: { message: "O Campo <strong>TURMA</strong> é obrigatório." }
+    turno:
+      - NotBlank: { message: "O Campo <strong>PERÍODO</strong> é obrigatório." }
+    qtdeAlunos:
+      - NotBlank: { message: "O Campo <strong>QUANTIDADE DE ALUNOS</strong> é obrigatório." }
+
+SME\PresencaBundle\Entity\BuscaPresenca:
+  properties:
+    entidade:
+      - NotBlank: { message: "O Campo <strong>DATA</strong> é obrigatório." }

@@ -1,0 +1,26 @@
+{% extends 'DGPBundle:Vinculo:formCadastroSimples.html.twig' %}
+
+{% block headerTitle %}Consulta de Vínculo{% endblock %}
+
+{% block body %}
+    {{parent()}}
+    <div class="panel panel-default" style="margin-top: 10px;">
+        <div class="panel-heading">
+            <strong>Alocações</strong>
+        </div>
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>Local de trabalho</th>
+                <th>Carga horária</th>
+            </tr>
+            {% for alocacao in vinculo.alocacoes %}
+                <tr>
+                    <td>{{alocacao.localTrabalho.pessoaJuridica.nome}}</td>
+                    <td>{{alocacao.cargaHoraria}}</td>
+                </tr>
+            {% else %}
+                <tr> <td class="text-center" colspan="2">O servidor não está alocado em nenhuma unidade ou secretaria.</td> </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

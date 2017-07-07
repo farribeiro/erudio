@@ -1,0 +1,183 @@
+{% block body %}
+	<div id="notifications_title" style="padding-bottom: inherit;">
+		<p class="nav_delete">
+			{% if error == false %}
+				<span class="glyphicon glyphicon-trash deleteAll" title="Excluir Tudo" style="cursor: pointer;"></span>
+			{% endif %}
+		</p>
+		<p class="nav_title">Notificações</p>
+		<p class="nav_notify">
+			{% if pagina > 1 %}
+				<span class="glyphicon glyphicon-chevron-left prevNotify" title="Página Anterior" style="cursor: pointer;"></span>
+			{% endif %}
+			{% if mostraProximo %}
+				<span class="glyphicon glyphicon-chevron-right nextNotify" title="Próxima Página" style="cursor: pointer;"></span>
+			{% endif %}
+		</p>
+	</div>
+	<div id="notifications">
+		{% if error %}
+			<div id="no_notifications">
+				Você não tem<br/>notificações<br />por enquanto.<br/><br/>:)
+			</div>
+		{% else %}
+			{% for notificacao in notificacoes %}
+				{% if notificacao.tipo == 'success' %}
+					<div class="notification alert alert-success-custom">
+						<div class="notification_icon">
+							<span class="glyphicon glyphicon-ok"></span>
+						</div>
+				{% elseif notificacao.tipo == 'danger' %}
+					<div class="notification alert alert-danger-custom">
+						<div class="notification_icon">
+							<span class="glyphicon glyphicon-remove"></span>
+						</div>
+				{% elseif notificacao.tipo == 'warning' %}
+					<div class="notification alert alert-warning-custom">
+						<div class="notification_icon">
+							<span class="glyphicon glyphicon-warning-sign"></span>
+						</div>
+				{% elseif notificacao.tipo == 'info' %}
+					<div class="notification alert alert-info-custom">
+						<div class="notification_icon">
+							<span class="glyphicon glyphicon-info-sign"></span>
+						</div>
+				{% else %}
+					<div class="notification">
+						<div class="notification_icon">
+							<span class="glyphicon glyphicon-home"></span>
+						</div>
+				{% endif %}
+					
+					<div class="notification_text">
+						{{ notificacao.texto | raw }}
+					</div>
+					
+					<div class="notification_actions">
+						<span class="glyphicon glyphicon-trash delete_notify" label="{{ notificacao.id }}" style="cursor: pointer;"></span>
+					</div>
+				</div>
+			{% endfor %}
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript">
+		$(document).ready(function (){			
+			{% if error == false %}
+				$('#notifications').jScrollPane({ mouseWheelSpeed: 20 });
+			{% endif %}
+			
+			$(".delete_notify").click(function (){
+				var notify_id = $(this).attr('label');
+				$.ajax({
+					url: '{{ path('intranet_excluir_notificacao') }}',
+					type: 'POST',
+					data: { id: notify_id, user_id: {{app.user.id}} },
+					success: function (data)
+					{
+						if (data != "error") {
+							$.ajax({
+								url: '{{ path('intranet_total_notificacoes') }}',
+								type: 'POST',
+								data: { user_id: {{app.user.id}} },
+								success: function (data)
+								{
+									if (data != "error") {
+										$(".notification_total").html(data);
+									} else {
+										
+									}
+								}
+							});
+							
+							$("#notification_area").html(data);
+						} else {
+							
+						}
+					}
+				});
+			});
+			
+			$(".deleteAll").click(function (){
+				var answer = confirm("Esta ação irá excluir todas notificações desta página. Prosseguir?");
+				if (answer) 
+				{
+					var ids = new Array();
+					var cont = 0;
+					$('.delete_notify').each(function (){
+						ids[cont] = $(this).attr('label');
+						cont = cont + 1;
+					});
+					
+					$.ajax({
+						url: '{{ path('intranet_excluir_notificacoes') }}',
+						type: 'POST',
+						data: { ids: JSON.stringify(ids), user_id: {{app.user.id}} },
+						success: function (data)
+						{
+							if (data != "error") {
+								$.ajax({
+									url: '{{ path('intranet_total_notificacoes') }}',
+									type: 'POST',
+									data: { user_id: {{app.user.id}} },
+									success: function (data)
+									{
+										if (data != "error") {
+											$(".notification_total").html(data);
+										} else {
+											
+										}
+									}
+								});
+								
+								$("#notification_area").html(data);
+							} else {
+								
+							}
+						}
+					});
+				}
+			});
+			
+			{% if mostraProximo %}
+				$(".nextNotify").click(function (){
+					var page = {{ pagina + 1 }};
+					$.ajax({
+						url: '{{ path('intranet_buscar_notificacoes', { 'id': app.user.id }) }}',
+						type: 'POST',
+						data: { page: page },
+						success: function (data)
+						{
+							if (data != "error") {
+								$("#notification_area").html(data);
+							} else {
+								
+							}
+						}
+					});
+				});
+			{% endif %}
+			
+			{% if pagina > 1 %}
+				$(".prevNotify").click(function (){
+					var page = {{ pagina - 1 }};
+					$.ajax({
+						url: '{{ path('intranet_buscar_notificacoes', { 'id': app.user.id }) }}',
+						type: 'POST',
+						data: { page: page },
+						success: function (data)
+						{
+							if (data != "error") {
+								$("#notification_area").html(data);
+							} else {
+								
+							}
+						}
+					});
+				});
+			{% endif %}
+		});
+	</script>
+{% endblock %}

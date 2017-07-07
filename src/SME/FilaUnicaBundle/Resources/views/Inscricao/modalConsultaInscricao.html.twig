@@ -1,0 +1,293 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} 
+    Inscrição {{inscricao.protocolo}} - {{inscricao.dataCadastro|date('d/m/Y')}} - {{inscricao.tipoInscricao.nome}} 
+    {% if inscricao.movimentacaoInterna %}
+        [M.I.]
+    {% elseif inscricao.processoJudicial %} 
+        [P.J.]
+    {% endif %}
+{% endblock %}
+
+{% block modalBody %}
+    <form id="formAlteracaoInscricao" action="{{url('fu_inscricao_alterar', {'inscricao': inscricao.id})}}">
+        {% if inscricao.processoJudicial %}
+            <div class="row">
+                <div class="col-lg-6">
+                    <label for="numeroOrdemJudicial">Número da Ordem Judicial:</label>
+                    <input type="text" id="numeroOrdemJudicial" name="numeroOrdemJudicial" value="{{inscricao.numeroOrdemJudicial}}" class="form-control" />
+                </div>
+                <div class="col-lg-6">
+                    <label for="dataProcessoJudicial">Data do Processo:</label>
+                    <input type="text" id="dataProcessoJudicial" name="dataProcessoJudicial" value="{{inscricao.dataProcessoJudicial|date('d/m/Y')}}" class="form-control datepickerSME" />
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="zoneamento">Zoneamento:</label>
+                <input type="text" id="zoneamento" readonly value="{{inscricao.zoneamento.nome}} - {{inscricao.zoneamento.descricao}}" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <label for="anoEscolar">Ano Escolar:</label>
+                <input type="text" id="anoEscolar" readonly value="{{inscricao.anoEscolar.nome}}" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <label for="periodoDia">Turno:</label>
+                {% if inscricao.tipoInscricao.id == 2 %}
+                    <select id="periodoDia" name="periodoDia" class="form-control" >
+                        {% for periodo in periodos %}
+                            <option value="{{periodo.id}}" {% if periodo.id == inscricao.periodoDia.id %}selected{% endif %} >
+                                {{periodo.nome}}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <input type="text" id="periodo" readonly value="" class="form-control" />
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-lg-6">
+                    <label for="unidadeDestino">Unidade Pretendida:</label>
+                    {% if  not alteracaoRestrita %}
+                        <select id="unidadeDestino" name="unidadeDestino" class="form-control" >
+                            {% for unidade in unidadesEscolares %}
+                                <option value="{{unidade.id}}" {% if unidade.id == inscricao.unidadeDestino.id %}selected{% endif %} >
+                                    {{unidade.nome}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" id="unidadeDestino" readonly value="{{inscricao.unidadeDestino.nome}}" class="form-control" />
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    <label for="unidadeDestinoAlternativa">Unidade Pretendida [2]:</label>
+                    <input type="text" id="unidadeDestinoAlternativa" readonly {% if inscricao.tipoInscricao.id == 2 %}value="{{inscricao.unidadeDestinoAlternativa.nome}}"{% endif %} class="form-control" />
+                </div>
+        </div>
+        {% if inscricao.vagaOfertada %}
+            <div class="row">
+                <div class="col-lg-12">
+                    {% if not inscricao.status.terminal %}
+                        <label class="text-danger" for="vagaOfertada">Em Chamada:</label>
+                        <input type="text" id="vagaOfertada" readonly value="{{inscricao.vagaOfertada.unidadeEscolar.nome}} - {{inscricao.vagaOfertada.periodoDia.nome}}" class="form-control alert-danger" />
+                    {% else %}
+                        <label for="vagaOfertada">Vaga Ofertada:</label>
+                        <input type="text" id="vagaOfertada" readonly value="{{inscricao.vagaOfertada.unidadeEscolar.nome}} - {{inscricao.vagaOfertada.periodoDia.nome}} ({{inscricao.status.nome}})" class="form-control" />
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" value="{{inscricao.crianca.nome}}" class="form-control" />
+            </div>
+            <div class="col-lg-6">
+                <label for="unidadeAtual">Matrícula Atual:</label>
+                {% if inscricao.unidadeOrigem %}
+                    <input type="text" id="anoEscolar" readonly value="{{inscricao.unidadeOrigem.entidade.pessoaJuridica.nome}}" class="form-control" />
+                {% else %} 
+                    <input type="text" id="anoEscolar" readonly value="Não Matriculado" class="form-control" />
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                {% if inscricao.crianca.cpfCnpj %}
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" readonly value="{{inscricao.crianca.cpfCnpj|cpf}}" class="form-control" />
+                {% else %}
+                    <label for="certidaoNascimento">Certidão Nascimento:</label>
+                    <input type="text" id="certidaoNascimento" readonly value="{{inscricao.crianca.certidaoNascimento}}" title="{{inscricao.crianca.termoCertidaoNascimento}} - {{inscricao.crianca.livroCertidaoNascimento}} - {{inscricao.crianca.folhaCertidaoNascimento}}" class="form-control" />
+                {% endif %}
+            </div>
+            <div class="col-lg-4">
+                <label for="dataNascimento">Data Nascimento:</label>
+                <input type="text" class="form-control datepickerSME" id="dataNascimento" name="dataNascimento" value="{{inscricao.crianca.dataNascimento|date('d/m/Y','UTC')}}"/>
+            </div>
+            <div class="col-lg-4">
+                <label for="email">E-mail:</label>
+                <input type="text" id="email" name="email" value="{{inscricao.crianca.email}}" class="form-control" />
+            </div>
+        </div>
+        {% if inscricao.tipoInscricao.id != constant('SME\\FilaUnicaBundle\\Entity\\TipoInscricao::TRANSFERENCIA') %}
+            <div class="row">
+                <div class="col-lg-4">
+                    <label for="situacaoFamiliar">Situação Familiar:</label>
+                    {% if not alteracaoRestrita %}
+                        <select id="situacaoFamiliar" name="situacaoFamiliar" class="form-control" {% if alteracaoRestrita %}disabled{% endif %} >
+                            {% for situacao in situacoesFamiliares %}
+                                <option value="{{situacao.id}}" {% if situacao.id == inscricao.situacaoFamiliar.id %}selected{% endif %} >
+                                    {{situacao.descricao}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" id="situacaoFamiliar" readonly value="{{inscricao.situacaoFamiliar.descricao}}" class="form-control" />
+                    {% endif %}
+                </div>
+                <div class="col-lg-4">
+                    <label for="rendaPerCapita">Renda Per Capita:</label>
+                    {% if not alteracaoRestrita %}
+                        <div class="input-group" style="padding-top: 0;">
+                            <input type="text" id="rendaPerCapita" readonly value="R$ {{inscricao.rendaPerCapita|number_format(2,',','.')}}" class="form-control" />
+                            <span class="input-group-btn">
+                                <button id="btnAlterarRendaFamiliar" type="button" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-edit" />
+                                </button>
+                            </span>
+                        </div>
+                    {% else %}
+                        <input type="text" id="rendaPerCapita" readonly value="R$ {{inscricao.rendaPerCapita|number_format(2,',','.')}}" class="form-control" />
+                    {% endif %}
+                </div>
+                <div class="col-lg-4">
+                    <label for="rendaPontuada">Pontuação:</label>
+                    <input type="text" id="rendaPontuada" readonly value="{{inscricao.calcularPontuacao|number_format(2,',','.')}}" class="form-control" />
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="nomeMae">Filiação - Mãe:</label>
+                <input type="text" id="nomeMae" name="nomeMae" value="{{inscricao.crianca.nomeMae}}" class="form-control" required />
+            </div>
+            <div class="col-lg-6">
+                <label for="nomePai">Filiação - Pai:</label>
+                <input type="text" id="nomePai" name="nomePai" value="{{inscricao.crianca.nomePai}}" class="form-control" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <label for="endereco">Endereço:</label>
+                <input type="text" id="endereco" name="endereco" value="{{inscricao.crianca.endereco.logradouro}}" class="form-control" required />
+            </div>
+            <div class="col-lg-4">
+                <label for="numero">Número:</label>
+                <input type="text" id="numero" name="numero" value="{{inscricao.crianca.endereco.numero}}" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="complemento">Complemento:</label>
+                <input type="text" id="complemento" name="complemento" value="{{inscricao.crianca.endereco.complemento}}" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <label for="Bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" value="{{inscricao.crianca.endereco.bairro}}" class="form-control" />
+            </div>
+            <div class="col-lg-4">
+                <label for="cep">CEP:</label>
+                <input type="text" id="cep" name="cep" value="{{inscricao.crianca.endereco.cep}}" class="form-control" />
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-lg-4">
+            <strong>Telefones:</strong>
+            <ul>
+                {% for telefone in inscricao.crianca.telefones %}
+                    <li>
+                        {{telefone.numeroFormatado}}  
+                        <a href="{{url('fu_inscricao_excluirTelefone', {'inscricao': inscricao.id, 'telefone': telefone.id})}}" class="ajaxAction">
+                            <span class="glyphicon glyphicon-remove" />
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="input-group" style="padding-top: 0;">
+                <input type="text" id="telefone" name="telefone" class="form-control" placeholder="4700000000" />
+                <span class="input-group-btn">
+                    <button id="btnIncluirTelefone" type="button" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-plus-sign" />
+                    </button>
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-8 border-r">
+            <strong>Responsáveis:</strong>
+            <ul>
+                {% for responsavel in inscricao.crianca.relacoes %}
+                    <li> 
+                        {{responsavel.parente.nome}} - {{responsavel.parente.cpfCnpj|cpf}}
+                        {% if responsavel.parentesco %} ({{responsavel.parentesco.nome}}) {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            {% if inscricao.status.id == constant('SME\\FilaUnicaBundle\\Entity\\Status::DESISTENTE_INSCRICAO') %}
+                <a target="_blank" class="btn btn-info btn-block" href="{{path('fu_inscricao_imprimirTermoDesistencia', {'inscricao': inscricao.id})}}">Termo Desistência</a>
+            {% else %}
+                <a target="_blank" class="btn btn-info btn-block" href="{{path('fu_inscricao_imprimirComprovante', {'inscricao': inscricao.id})}}">Comprovante 2ª Via</a>
+            {% endif %}
+        </div>
+        {% if not inscricao.status.terminal or is_granted('ROLE_INFANTIL_MEMBRO') %}
+            <div class="col-lg-4">
+                <button id="btnAtualizar" type="button" class="btn btn-success btn-block">Atualizar</button>
+            </div>
+        {% endif %}
+        {% if not inscricao.status.terminal and inscricao.status.id != constant('SME\\FilaUnicaBundle\\Entity\\Status::EM_CHAMADA') %}
+            <div class="col-lg-4">
+                <button id="btnCancelar" type="button" class="btn btn-danger btn-block">Cancelar</button>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxAction").click(function(ev) {
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            ev.preventDefault();
+        }); 
+       
+        $("#btnAtualizar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: $("#formAlteracaoInscricao").attr('action'),
+                data: $("#formAlteracaoInscricao").serialize(),
+                success: function(retorno){
+                    $("#divModal").html(retorno);  
+                }
+            });
+        });
+        
+        $("#btnCancelar").click( function() {
+            if(confirm('Deseja realmente cancelar esta solicitação de vaga? É necessária a assinatura de um responsável para este procedimento'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('fu_inscricao_cancelar', {'inscricao': inscricao.id})}}",
+                    success: function(retorno){
+                        $("#page").html(retorno);  
+                    }
+                });
+                $('#modalDialog').modal("hide");
+            }
+        });
+        
+        $("#btnIncluirTelefone").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "{{url('fu_inscricao_incluirTelefone', {'inscricao': inscricao.id})}}",
+                data: {"telefone": $("#telefone").val()},
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+        });
+    </script>
+{% endblock %}

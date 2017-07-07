@@ -1,0 +1,18 @@
+{% extends 'PublicacaoBundle:Index:menu.html.twig' %}
+
+{% block headerTitle %}Publicações SME > Publicar{% endblock %}
+
+{% block page %}
+    <div class="row">
+        <div id="page" class="col-lg-10">             
+            <h4>Pasta Raiz - Escolha um dos grupos para publicar</h4>
+            <small>Você não pode publicar arquivos na pasta raiz.</small>
+            <hr />
+            {% for grupo in grupos %}
+                <a class="folder_link" href="{{ path('publicacao_pasta', {'id': grupo.id}) }}"><div class="col-md-12 folder_item"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp; {{ grupo.nomeExibicao }}</div></a>
+            {% else %}
+                <h3>Não há pastas ou arquivos neste grupo/categoria.</h3>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

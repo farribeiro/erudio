@@ -1,0 +1,46 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Formações{% endblock %}
+
+{% block body %}
+    <a class="btn btn-primary" href="{{ path('dgp_formacao_cadastrar') }}">
+        <span class="glyphicon glyphicon-plus"></span> Nova Formação
+    </a>
+    {{ form_start(form, {'attr': {'id': 'formPesquisa'} }) }}
+    <div class="row">
+        <div class="col-lg-4">
+            {{form_label(form.nome)}}
+            {{form_widget(form.nome, {'attr': {'class': 'form-control'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.periodoConclusaoInicio)}}
+            {{form_widget(form.periodoConclusaoInicio, {'attr': {'class': 'form-control datepickerSME'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.periodoConclusaoFim)}}
+            {{form_widget(form.periodoConclusaoFim, {'attr': {'class': 'form-control datepickerSME'} })}}
+        </div>
+        <div class="col-lg-2" style="padding-top: 2em">
+            {{form_widget(form.btnPesquisar, {'attr': {'class': 'btn btn-primary'} })}}
+        </div>
+    </div>
+    <div id="chamados"></div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#{{form.btnPesquisar.vars.id}}").click(function(event) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "{{form.vars.action}}",
+                data: $("#formPesquisa").serialize(),
+                success: function(retorno) {
+                    $("#chamados").html(retorno);
+                }
+            });
+        });
+    </script>
+{% endblock %}

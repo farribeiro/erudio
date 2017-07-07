@@ -1,0 +1,56 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Entidades{% endblock %}
+
+{% block body %}
+    <table class="table table-hover tableEntities">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Classe</th>
+                <th class="text-center">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entidade in entidades %}
+                <tr>
+                    <td>{{entidade.nome}}</td>
+                    <td>{{entidade.email}}</td>
+                    <td>{{entidade.classe.nome}}</td>
+                    <td class="text-center">
+                        <a href="{{ path('dgp_entidade_alterar', {'entidade': entidade.id}) }}">
+                            <span title="Alterar" class="glyphicon glyphicon-edit"></span>
+                        </a> |
+                        <a class="detalhesEntidade" href="{{ path('dgp_entidade_listar_alocados', {'entidade': entidade.id}) }}">
+                            <span title="Alocações" class="glyphicon glyphicon-user"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+            
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModalAlocados" class="modal-dialog" style="width: 80%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $(".detalhesEntidade").click(function(ev){
+                ev.preventDefault();
+                $.ajax({
+                    type: "GET",
+                    url: $(this).attr("href"),
+                    success: function(retorno) {
+                        $("#divModalAlocados").html(retorno);
+                    }
+                });
+                $('#modalDialog').modal("show");
+            });
+        });
+    </script>
+{% endblock %}

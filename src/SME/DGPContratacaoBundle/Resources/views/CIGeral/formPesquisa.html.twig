@@ -1,0 +1,48 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > CI Geral > Pesquisa{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">Pesquisa</a></li>
+        <li><a href="{{path('dgp_ciGeral_formCadastro')}}">Cadastro</a></li>
+    </ul>
+    <form id="formPesquisaCI">
+        <div class="row">
+            <div class="col-lg-5">
+                <label for="processo">Processo: </label>
+                <select id="processo" name="processo" class="form-control" required>
+                    <option></option>
+                    {% for processo in processos %}
+                        <option value="{{processo.id}}">{{processo.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-5">
+                <label for="numero">Número: </label>
+                <input id="numero" name="numero" type="text" class="form-control"/>
+            </div>
+            <div class="col-lg-2">
+                <br />
+                <button id="btnPesquisar" type="button" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+    </form>
+    <div id="divCIs"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#btnPesquisar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: "{{path('dgp_ciGeral_pesquisar')}}",
+                data: $("#formPesquisaCI").serialize(),
+                success: function(retorno){
+                    $("#divCIs").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

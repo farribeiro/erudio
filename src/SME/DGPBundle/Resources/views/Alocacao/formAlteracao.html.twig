@@ -1,0 +1,85 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block body %}
+    {% if error != '' %}
+        {{ error }}
+    {% else %}
+        <div class="row" id="formErrors">
+            {{ erros | raw }}
+        </div>
+        {{ form_start(form, { 'attr': { 'id': 'alocacaoForm' }}) }}
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.localTrabalho) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.cargaHoraria) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.periodo) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.funcaoAtual) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.localLotacao) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.original) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.observacao) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.motivoEncaminhamento) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.btnSalvar) }}
+                </div>
+            </div>
+        {{ form_end(form) }}
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">			
+        $("#{{form.btnSalvar.vars.id}}").click(function(ev){
+            ev.preventDefault();
+            $.ajax({
+                url: "{{ path('dgp_vinculo_alocacao_alterar', { 'vinculo': vinculo.id, 'alocacao': alocacao.id }) }}",
+                type: "POST",
+                data: $("#alocacaoForm").serialize(),
+                success: function (data)
+                {
+                    if (data !== "error") {
+                        $.bootstrapGrowl("Alocação salva com sucesso", { type: 'success', delay: 3000 });
+                        $.ajax({
+                            url: "{{ path('dgp_vinculo_alocacao_listar', { 'vinculo': vinculo.id }) }}",
+                            type: "GET",
+                            success: function (data)
+                            {
+                                if (data !== "error") {
+                                    $(".ajaxAllocation{{vinculo.id}}").html(data).show();
+                                } else {
+                                    $.bootstrapGrowl("O sistema não pôde mostrar as alocações, aguarde um pouco e tente novamente.", { type: 'danger', delay: 3000 });
+                                }
+                            }
+                        });
+                    } else {
+                        
+                        $.bootstrapGrowl("Houve um problema na atualização, verifique se não houve estouro de carga horária", { type: "danger", delay: 5000 });
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

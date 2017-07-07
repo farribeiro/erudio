@@ -1,0 +1,7 @@
+parameters:
+    promocao.class: SME\DGPPromocaoBundle\Service\Promocao
+
+services:
+    dgp_promocao:
+      class: "%promocao.class%"
+      arguments: ["@doctrine"]

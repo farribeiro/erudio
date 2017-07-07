@@ -1,0 +1,53 @@
+login:
+    path: /login
+    defaults: { _controller: IntranetBundle:Acesso:login }
+    
+login_check:
+    path: /login_check
+    
+logout:
+    path: /logout
+
+intranet:
+    resource: "@IntranetBundle/Resources/config/routing.yml"
+    prefix: /
+
+dgp:
+    resource: "@DGPBundle/Resources/config/routing.yml"
+    prefix:   /dgp/ 
+ 
+fila_unica:
+    resource: "@FilaUnicaBundle/Resources/config/routing.yml"
+    prefix:   /fu/
+    
+protocolo:
+    resource: "@ProtocoloBundle/Resources/config/routing.yml"
+    prefix:   /protocolo/
+    
+suporte_tecnico:
+    resource: "@SuporteTecnicoBundle/Resources/config/routing.yml"
+    prefix: /suporte/
+    
+#publicacao:
+#    resource: "@PublicacaoBundle/Resources/config/routing.yml"
+#    prefix: /publicacao/
+    
+moodle:
+    resource: "@MoodleBundle/Resources/config/routing.yml"
+    prefix:   /
+
+public:
+    resource: "@PublicBundle/Resources/config/routing.yml"
+    prefix:   /user/public
+
+presenca:
+    resource: "@PresencaBundle/Resources/config/routing.yml"
+    prefix: /presenca/
+
+questionario:
+    resource: "@QuestionarioBundle/Resources/config/routing.yml"
+    prefix: /questionario/
+
+estagio:
+    resource: "@EstagioBundle/Resources/config/routing.yml"
+    prefix: /estagio/
