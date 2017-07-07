@@ -1,0 +1,27 @@
+{% if categoriaPai is null %}
+    <a class="folder_link" href="{{ path('publicacao_public_getGrupos') }}"><span style="position: absolute; right: 0px; top: 18px; padding: 20px; background: #ccc; cursor: pointer; color: black;" class="glyphicon glyphicon-chevron-left"></span></a>
+    <h3>Pasta {{ grupo.nome }}</h3>
+{% else %}
+    {% if categoriaPai.categoria is null %}
+        <a class="folder_link" href="{{ path('publicacao_public_getCategorias', {'grupo': grupo.id}) }}"><span style="position: absolute; right: 0px; top: 18px; padding: 20px; background: #ccc; color: black; cursor: pointer;" class="glyphicon glyphicon-chevron-left"></span></a>
+        <h3>Pasta {{ categoriaPai.nome }}</h3>
+    {% else %}
+        <a class="folder_link" href="{{ path('publicacao_public_getCategorias', {'grupo': categoriaPai.categoria.id}) }}"><span style="position: absolute; right: 0px; top: 18px; padding: 20px; color: black; background: #ccc; cursor: pointer;" class="glyphicon glyphicon-chevron-left"></span></a>
+        <h3>Pasta {{ categoriaPai.nome }}</h3>
+    {% endif %}
+{% endif %}
+<em>Clique na pastas e arquivos desejada para ver o seu conteúdo.</em>
+<hr />
+{% for categoria in categorias %}
+    <a class="folder_link" href="{{ path('publicacao_public_getCategorias', {'grupo': grupo.id}) }}?categoriaPai={{ categoria.id }}"><div style="border-bottom:1px solid #ccc; padding: 10px;" class="col-md-12 folder_item"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> &nbsp; {{ categoria.nomeExibicao }}</div></a>
+{% else %}
+    <h5>Não há pastas neste grupo/categoria.</h5>
+{% endfor %}
+<h3>Arquivos</h3>
+<hr />
+{% for documento in documentos %}
+    <a class="itemOpt" target="_blank" href="{{ path('publicacao_public_getDocumento', {'documento': documento.id}) }}"><div style="border-bottom:1px solid #ccc; padding: 10px;" class="col-md-12 text metro"> <span class="glyphicon glyphicon-save"></span> {{ documento.nomeExibicao }}</div></a>
+    </div> </div>
+{% else %}
+    <h5>Não há arquivos neste grupo/categoria.</h5>
+{% endfor %}

@@ -1,0 +1,26 @@
+<table class="table table-striped table-hover tableDGP">
+    <thead>
+        <tr>
+            <th>Unidade</td>
+            <th>Etapa</td>
+            <th>Modalidade</td>
+            <th>Turno</td>
+            <th>Qtde.</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vaga in vagas %}
+            <tr>
+                <td>{{ vaga.unidade.nome }}</td>
+                <td>{{ vaga.titulo }}</td>
+                <td>{{ vaga.disciplina }}</td>
+                <td>{{ vaga.turno.nome }}</td>                
+                <td>{{ vaga.totalVagas }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhuma vaga cadastrada</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

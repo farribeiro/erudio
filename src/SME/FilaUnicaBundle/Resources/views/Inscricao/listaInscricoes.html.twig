@@ -1,0 +1,79 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block body %}
+    <p class="text-info" style="padding-top: 5px;">
+        <em>{{inscricoes|length}} inscrições encontradas</em>
+    </p>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Protocolo</th>
+                <th>Criança</th>
+                <th>Zoneamento</th>
+                <th>Turma</th>
+                <th>Status</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscricao in inscricoes %}
+                <tr>
+                    <td>
+                        {{inscricao.tipoInscricao.nome}} 
+                        {% if inscricao.movimentacaoInterna %}
+                            [M.I.]
+                        {% elseif inscricao.processoJudicial %}
+                            [P.J.]
+                        {% endif %}
+                    </td>
+                    <td> 
+                        <span title="Criado por {{inscricao.atendente.nome}} em {{inscricao.dataCadastro|date('d/m/Y G:i:s')}}">{{inscricao.protocolo}}</span>
+                    </td>
+                    <td>{{inscricao.crianca.nome}}</td>
+                    <td>{{inscricao.zoneamento.nome}} - {{inscricao.zoneamento.descricao}}</td>
+                    <td>{{inscricao.anoEscolar.nome}}</td>
+                    {% if inscricao.pessoaUltimaModificacao is null %}
+                        <td>
+                            <span>{{inscricao.status.nome}}</span>
+                        </td>
+                    {% else %}
+                        <td>
+                            <span title="Atualizado por último em {{inscricao.dataModificacao|date('d/m/Y G:i:s')}} por {{inscricao.pessoaUltimaModificacao.nome}}">{{inscricao.status.nome}}</span>
+                        </td>
+                    {% endif %}
+                    <td>
+                        <a class="ajaxLink" href="{{path('fu_inscricao_consultar', {'inscricao': inscricao.id})}}">Gerenciar</a> 
+                        <a class="ajaxLink" href="{{path('fu_inscricao_exibirHistorico', {'inscricao': inscricao.id})}}">Histórico</a>
+                        <br /> <a target="_blank" href="{{path('fu_inscricao_imprimir', {'inscricao': inscricao.id})}}">Imprimir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-center" colspan="7"> <em>Nenhuma inscrição encontrada</em> </td>
+                </tr>
+            {% endfor %}
+         </tbody>
+    </table>
+
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 75%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxLink").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            $('#modalDialog').modal("show");
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

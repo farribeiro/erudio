@@ -1,0 +1,38 @@
+<table class="table table-striped table-hover tableDGP">
+    <thead>
+        <tr>
+            <th>Candidato</td>
+            <th>Unidade</td>
+            <th>Etapa/Modalidade</td>
+            <th>Período Observação</td>
+            <th>Período Intervenção</td>
+            <th>Turno</td>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inscricao in inscricoes %}
+            <tr>
+                <td>{{ inscricao.estagiario.nome }}</td>
+                <td>{{ inscricao.vaga.unidade.nome }}</td>
+                <td>{{ inscricao.vaga.titulo }} / {{ inscricao.vaga.disciplina }}</td>
+                {% if inscricao.inicioObservacao != '0000-00-00' and inscricao.fimObservacao != '0000-00-00' %}
+                    <td>{{ inscricao.inicioObservacao | date("d/m/Y") }} - {{ inscricao.fimObservacao | date("d/m/Y") }}</td>
+                {% else %}
+                    <td> - </td>
+                {% endif %}
+                {% if inscricao.inicio != '0000-00-00' and inscricao.fim != '0000-00-00' %}
+                    <td>{{ inscricao.inicio | date("d/m/Y") }} - {{ inscricao.fim | date("d/m/Y") }}</td>
+                {% else %}
+                    <td> - </td>
+                {% endif %}
+                <td>{{ turnos[inscricao.vaga.turno] }}</td>                
+                <td>{{ status[inscricao.aprovado] }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum estágio cadastrado para este nome.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

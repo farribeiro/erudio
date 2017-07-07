@@ -1,0 +1,41 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+{% endblock %}
+
+{% block headerTitle %}<a href="{{ path('categorias_index') }}"><button style="margin-top: -5px;" class="btn btn-danger">Voltar</button></a> Categorias de perguntas{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Editar categoria de perguntas</h3>
+            {{ form_start(form) }}
+                <div class="row nova-categoria">
+                    <div class="col-lg-12"><label for="CategoriaForm_nome">Nome da categoria: *</label></div>
+                    <div class="col-lg-12">
+                        {{ form_widget(form.nome) }}
+                    </div>
+                    <div class="col-lg-12"><label for="CategoriaForm_descricao">Descrição da categoria: *</label></div>
+                    <div class="col-lg-12">
+                        {{ form_widget(form.descricao) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        {{ form_row(form.Salvar) }}
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+           
+        });
+    </script>
+{% endblock %}

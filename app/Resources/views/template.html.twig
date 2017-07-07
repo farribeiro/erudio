@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <title>{% block pageTitle %}SME - Intranet{% endblock %}</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Intranet SME" />
+        {% block css %}
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/jquery/css/jquery-datetimepicker.css')}}" />
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/bootstrap/dist/css/bootstrap.css')}}" />
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/bootstrap/dist/css/bootstrap-theme.css')}}" />
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/bootstrap/dist/css/bootstrap-datepicker.css')}}" />
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/css/bootstrap-submenu.css')}}" />
+            <link rel="stylesheet" type="text/css" href="{{asset('bundles/intranet/css/style.css')}}"  media="screen and (min-width: 600px)" />
+            <link rel="stylesheet" type="text/css" href="{{asset('bundles/intranet/css/styleMobile.css')}}" media="screen and (max-width: 599px)" />
+            <link rel="stylesheet" type="text/css" href="{{asset('lib/css/jquery.jscrollpane.css')}}" />
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{asset('favicon.ico')}}" />
+    </head>
+    
+    <body class="fundo" label="{{app.user.id}}">  
+        <div id="contentWrapper">
+            <div id="menuSwitcher">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </div>
+            <div id="menu">
+                {% include 'menubar.html.twig' %}
+            </div>
+
+            <div id="viewContainer" class="viewContainer">
+                <div class="container">
+                    <h2 class="page-header">{% block headerTitle %}Intranet SME{% endblock %}</h2>
+                    <div id="notificationsDiv">
+                        <div id="notification_area" style="display: none;" label="{{ path('intranet_total_notificacoes') }}" alt="{{ path('intranet_buscar_notificacoes', { 'id': app.user.id }) }}" class="rounded">
+                                <div id="notifications_title">Notificações</div>
+                        </div>
+                    </div>
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            <!--
+                        <div class="footer">
+                            {% block footer %}{% endblock %}
+                        </div>
+                        -->
+
+            <div id="modalError" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header alert-danger">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Um erro ocorreu</h4>
+                        </div>
+                        <div id="error" class="modal-body text-center"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="divAjax" class="divAjax">
+                <img src="{{asset('bundles/intranet/images/ajaxLoading.gif')}}" />
+            </div>
+        </div>
+        
+        {% block javascript %}
+            <script type="text/javascript" src="{{asset('lib/jquery/jquery-1.9.0.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/jquery/jquery.mousewheel.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/jquery/jquery.jscrollpane.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/jquery/jquery-datetimepicker.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/jquery/jquery.maskedinput.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/handlebars/handlebars-1.3.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/bootstrap/dist/js/bootstrap-growl.min.js')}}"></script>
+            <script type="text/javascript" src="{{asset('lib/bootstrap/dist/js/bootbox.min.js')}}"></script>
+			<script type="text/javascript" src="http://chat.educacao.itajai.sc.gov.br/new/js/compiled/chat_popup.js"></script>
+            <script type="text/javascript" src="{{asset('bundles/intranet/js/menu.js')}}"></script>
+            <script type="text/javascript" src="{{asset('bundles/intranet/js/notification.js')}}"></script>
+            <script type="text/javascript" src="{{asset('bundles/intranet/js/javascript.js')}}"></script>
+            <script type="text/javascript">
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-66608178-1', 'auto');
+                ga('send', 'pageview');
+            </script>
+            <script type="text/javascript">
+                {% for message in app.session.flashbag.get('message') %}
+                    $.bootstrapGrowl("{{message}}", { type: 'info', delay: 5000 });
+                {% endfor %}
+                {% for error in app.session.flashbag.get('error') %}
+                    $("#error").html("{{error}}");
+                    $("#modalError").modal("show");
+                {% endfor %}
+                $(function() {
+                    $( ".datepickerSME" ).datetimepicker({
+                        'timepicker': false, 
+                        'format': 'd/m/Y', 
+                        'scrollInput': false
+                    });
+                    $(".datetimepickerSME").datetimepicker({'scrollInput': false});
+                    $.ajax({
+                        url: '{{ path('intranet_admin_buscaFoto', { 'id': app.user.id }) }}',
+                        type: 'GET',
+                        success: function (data){
+                            if (data !== 'error') {
+                                $('.photo').html('');
+                                $('.photo').html("<img src='" + data + "' class='img-circle' style='width: 100%;' />");
+                            }
+                        }
+                    });
+                    $(".datepickerSME").mask("99/99/9999");
+                });
+            </script>
+        {% endblock %}
+    </body>
+</html>

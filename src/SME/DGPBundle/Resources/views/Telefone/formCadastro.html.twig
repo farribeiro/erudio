@@ -1,0 +1,56 @@
+{% extends 'DGPBundle:Pessoa:cadastroPessoa.html.twig' %}
+
+{% set activeTab = '3' %}
+
+{% block headerTitle %}DGP > Pessoas > {{pessoa.nome}} > Telefones {% endblock %}
+
+{% block tabContent %}
+    {{ form_start(form, { 'attr': { 'id': 'telefoneForm' } }) }}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col-lg-4">
+                {{ form_row(form.numero) }}
+            </div>
+            <div class="col-lg-4">
+                {{ form_row(form.descricao) }}
+            </div>
+            <div class="col-lg-4">
+                {{ form_row(form.falarCom) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.btnSalvar, { 'attr': { 'class': 'btn btn-primary' } }) }}
+            </div>
+        </div>
+    {{ form_end(form) }}
+    <hr />
+    <table class="table table-striped table-hover tableDGP">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Descrição</th>
+                <th>Falar Com</th>
+                <th class="text-center">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for telefone in telefones %}
+                <tr>
+                    <td>{{ telefone.numero }}</td>
+                    <td>{{ telefone.descricao }}</td>
+                    <td>{{ telefone.falarCom }}</td>
+                    <td class="text-center">
+                        <a class="lnkExcluir" href="{{path('dgp_pessoa_telefone_excluir', {'pessoa': pessoa.id, 'telefone': telefone.id }) }}">
+                            <span title="Excluir" class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">A pessoa não possui nenhum telefone cadastrado</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

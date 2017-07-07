@@ -1,0 +1,84 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block body %}
+    <p class="text-info" style="padding-top: 5px;">
+        <em>{{vagas|length}} vagas encontradas</em>
+    </p>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th class="text-center">Cod.</th>
+                <th class="text-center">Unidade</th>
+                <th class="text-center">Ano Escolar</th>
+                <th class="text-center">Turno</th>
+                <th class="text-center">Em Chamada</th>
+                <th class="text-center">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vaga in vagas %}
+                <tr>
+                    <td>
+                        <span title="Criada em {{vaga.dataCadastro|date('d/m/Y G:i:s')}}">{{vaga.id}}</span>
+                    </td>
+                    <td>{{vaga.unidadeEscolar.nome}} | {{vaga.unidadeEscolar.zoneamento.nome}}</td>
+                    <td>{{vaga.anoEscolar.nome}}</td>
+                    <td>{{vaga.periodoDia.nome}}</td>
+                    <td>
+                        {% if vaga.inscricaoEmChamada %} 
+                            <a class="ajaxLink" href="{{url('fu_inscricao_consultar', {'inscricao': vaga.inscricaoEmChamada.id})}}">
+                                <span title="{{vaga.inscricaoEmChamada.dataChamada|date('d/m/Y G:i:s')}}"> {{vaga.inscricaoEmChamada.protocolo}} </span>
+                            </a> - {{vaga.inscricaoEmChamada.crianca.nome}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if vaga.inscricaoEmChamada %}
+                            <a class="ajaxLink" href="{{path('fu_inscricao_exibirHistorico', {'inscricao': vaga.inscricaoEmChamada.id})}}">Histórico</a>
+                            <br /> <a class="ajaxLink" href="{{path('fu_vaga_formGerencia', {'vaga': vaga.id})}}">Atualizar</a>
+                        {% elseif is_granted('ROLE_INFANTIL_MEMBRO') %}
+                            <a class="ajaxAction" href="{{path('fu_vaga_preencher', {'vaga': vaga.id})}}">Preencher</a>
+                            <br /> <a class="ajaxAction" href="{{path('fu_vaga_cancelar', {'vaga': vaga.id})}}">Cancelar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-center" colspan="6"> <em>Nenhuma vaga encontrada</em> </td>
+                </tr>
+            {% endfor %}
+         </tbody>
+    </table>
+
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 75%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxLink").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            $("#modalDialog").modal("show");
+            ev.preventDefault();
+        });
+        
+        $(".ajaxAction").click(function(ev) {
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("href"),
+                data: $("#formPesquisaVaga").serialize(),
+                success: function(retorno) {
+                    $("#divListaVagas").html(retorno);
+                }
+            });
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

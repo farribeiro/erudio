@@ -1,0 +1,138 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Servidor > Requerimentos > Ascensão Funcional{% endblock %}
+
+{% block page %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Promoção Horizontal</div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Protocolo</th>
+                        <th>Solicitado Em</th>
+                        <th>Status</th>
+                        <th class="text-center">Encerrado Em</th>
+                        <th class="text-center">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for promocao in promocoesHorizontais %}
+                        <tr>
+                            <td>{{promocao.protocolo}}</td>
+                            <td>{{ promocao.dataCadastro | date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if promocao.deferido %}
+                                    <span class="text-success">{{ promocao.status.nome }}</span>
+                                {% elseif promocao.indeferido or promocao.cancelado %}
+                                    <span class="text-danger">{{ promocao.status.nome }}</span>
+                                {% else %}
+                                    {{ promocao.status.nome }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ promocao.dataEncerramento ? promocao.dataEncerramento|date('d/m/Y') : '-' }}</td>
+                            <td class="text-center">
+                                <a class="lnkDetalhes" href="{{path('dgp_servidor_promocaoHorizontal_visualizar', {'promocao': promocao.id})}}">Detalhes</a>
+                                | <a target="_blank" href="{{path('dgp_servidor_promocaoHorizontal_imprimir', {'promocao': promocao.id})}}">Imprimir</a>
+                                {% if promocao.status.id == constant('SME\\DGPPromocaoBundle\\Entity\\Status::AGUARDANDO_ENTREGA') %}
+                                    | <a class="lnkCancelar" href="{{path('dgp_servidor_promocaoHorizontal_cancelar', {'promocao': promocao.id})}}">Desfazer</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="text-center" colspan="5">
+                                <em>Nenhuma solicitação cadastrada nesta categoria</em>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a class="btn btn-primary" href="{{path('dgp_servidor_promocaoHorizontal_cadastrar', {'vinculo': vinculo.id})}}">Novo Requerimento</a>
+        </div>
+    </div>
+                    
+    <div class="panel panel-default">
+        <div class="panel-heading">Promoção Vertical</div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Protocolo</th>
+                        <th>Solicitado Em</th>
+                        <th>Status</th>
+                        <th class="text-center">Encerrado Em</th>
+                        <th class="text-center">Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for promocao in promocoesVerticais %}
+                        <tr>
+                            <td>{{promocao.protocolo}}</td>
+                            <td>{{ promocao.dataCadastro | date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if promocao.deferido %}
+                                    <span class="text-success">{{ promocao.status.nome }}</span>
+                                {% elseif promocao.indeferido or promocao.cancelado %}
+                                    <span class="text-danger">{{ promocao.status.nome }}</span>
+                                {% else %}
+                                    {{ promocao.status.nome }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ promocao.dataInicio ? promocao.dataInicio|date('d/m/Y') : '-' }}</td>
+                            <td class="text-center">
+                                <a class="lnkDetalhes" href="{{path('dgp_servidor_promocaoVertical_visualizar', {'promocao': promocao.id})}}">Detalhes</a>
+                                | <a target="_blank" href="{{path('dgp_servidor_promocaoVertical_imprimir', {'promocao': promocao.id})}}">Imprimir</a>
+                                {% if promocao.status.id == constant('SME\\DGPPromocaoBundle\\Entity\\Status::AGUARDANDO_ENTREGA') %}
+                                    | <a class="lnkCancelar" href="{{path('dgp_servidor_promocaoVertical_cancelar', {'promocao': promocao.id})}}">Desfazer</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td class="text-center" colspan="5">
+                                <em>Nenhuma solicitação cadastrada nesta categoria</em>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a class="btn btn-primary" href="{{path('dgp_servidor_promocaoVertical_cadastrar', {'vinculo': vinculo.id})}}">Novo Requerimento</a>
+        </div>
+    </div>
+            
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 80%;">
+            {% embed '::templateModal.html.twig' %}
+                {% block modalTitle %}Detalhes{%endblock %}
+                {% block modalBody %}<div id="divDetalhes"></div>{%endblock %}
+            {% endembed %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".lnkDetalhes").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divDetalhes").html(retorno);
+                }
+            });
+            $('#modalDialog').modal("show");
+            ev.preventDefault();
+        });
+        
+        $(".lnkCancelar").click(function(ev) {
+            if(!confirm("Deseja realmente cancelar este requerimento?")) {
+                ev.preventDefault();
+            } else {
+                
+            }
+        });
+    </script>
+{% endblock %}
+

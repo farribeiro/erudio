@@ -1,0 +1,121 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Gerência de Vaga</h4>
+    </div>
+    <div class="modal-body">
+        <p>
+            <strong>Unidade:</strong> 
+            {{vaga.unidadeEscolar.nome}} | {{vaga.unidadeEscolar.zoneamento.nome}} - {{vaga.unidadeEscolar.zoneamento.descricao}}
+        </p>
+        <p>
+            <strong>Ano Escolar:</strong> 
+            {{vaga.anoEscolar.nome}}
+        </p>
+        <p>
+            <strong>Período:</strong> 
+            {{vaga.periodoDia.nome}}
+        </p>
+
+        {% if vaga.inscricaoEmChamada %}
+            <div style="border: #000 solid 1px; padding: 10px;">
+                <p>
+                    <strong> Inscrição em chamada:</strong>
+                    {{vaga.inscricaoEmChamada.protocolo}} - {{vaga.inscricaoEmChamada.crianca.nome}}
+                </p>
+                <form>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <button id="btnMatricula" type="button" class="btn btn-block btn-success">Confirmação de matrícula</button>
+                        </div>
+                        <div class="col-lg-4">
+                            <button id="btnDesistencia" type="button" class="btn btn-block btn-warning">Desistência da vaga</button>
+                        </div>
+                        <div class="col-lg-4">
+                            <button id="btnEliminacao" type="button" class="btn btn-block btn-danger">Eliminação</button>
+                        </div>
+                    </div>
+                    {% if is_granted('ROLE_INFANTIL_MEMBRO') %}
+                        <div class="row">
+                            <div class="col-lg-4"></div>
+                            <div class="col-lg-4">
+                                <button id="btnReverter" type="button" class="btn btn-block btn-primary">Retornar para fila</button>
+                            </div>
+                            <div class="col-lg-4">
+                                <button id="btnMovimentacao" type="button" class="btn btn-block btn-primary">Mover para outra vaga</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <p>
+                                    <strong>Vaga cadastrada por: </strong>
+                                    {{vaga.pessoaCadastro.nome}}
+                                </p>
+                                <p>
+                                    <strong>Chamada efetuada por: </strong>
+                                    {{ vaga.pessoaModificacao ? vaga.pessoaModificacao.nome }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#btnMatricula").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{url('fu_vaga_atualizar', {'vaga': vaga.id, 'status': matricula})}}",
+            success: function(retorno) {
+                $("#divListaVagas").html(retorno);
+            }
+        });
+        $("#modalDialog").modal("toggle");
+    });
+    
+    $("#btnDesistencia").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{url('fu_vaga_atualizar', {'vaga': vaga.id, 'status': cancelamento})}}",
+            success: function(retorno) {
+                $("#divListaVagas").html(retorno);
+            }
+        });
+        $("#modalDialog").modal("toggle");
+    });
+    
+    $("#btnEliminacao").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{url('fu_vaga_atualizar', {'vaga': vaga.id, 'status': eliminacao})}}",
+            success: function(retorno) {
+                $("#divListaVagas").html(retorno);
+            }
+        });
+        $("#modalDialog").modal("toggle");
+    });
+    
+    $("#btnReverter").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "{{url('fu_vaga_reverterChamada', {'vaga': vaga.id})}}",
+            success: function(retorno) {
+                $("#divListaVagas").html(retorno);
+            }
+        });
+        $("#modalDialog").modal("toggle");
+    });
+    
+    $("#btnMovimentacao").click(function() {
+        $.ajax({
+            type: "GET",
+            url: "{{url('fu_movimentacaoInterna_formMovimentacaoVaga', {'vaga': vaga.id})}}",
+            success: function(retorno) {
+                $("#divModal").html(retorno);
+            }
+        });
+    });
+</script>

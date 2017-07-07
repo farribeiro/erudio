@@ -1,0 +1,3 @@
+#PublicacaoBundle:
+#  maxSize: 50000
+#  root: "/var/www/sme/web/bundles/publicacoes"

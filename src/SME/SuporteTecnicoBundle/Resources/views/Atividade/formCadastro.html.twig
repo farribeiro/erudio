@@ -1,0 +1,55 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Atividades > Nova{% endblock %}
+
+{% block page %}
+    {{form_start(form)}}
+        <div class="row" id="formErrors"> {{ errors|raw }} </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_label(form.inicio)}}
+                {{form_widget(form.inicio, {'attr': {'class': 'form-control datetimepickerSME'} })}}
+            </div>
+            <div class="col-lg-6">
+                {{form_label(form.termino)}}
+                {{form_widget(form.termino, {'attr': {'class': 'form-control datetimepickerSME'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                {{form_label(form.tecnicos)}}
+                <br /> {{form_widget(form.tecnicos, {'attr': {'class': 'form-control multiselect'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                {{form_label(form.descricao)}}
+                {{form_widget(form.descricao, {'attr': {'class': 'form-control'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                {{form_widget(form.btnSalvar, {'attr': {'class': 'btn btn-primary'} })}}
+            </div>
+        </div>
+    {{form_end(form)}}
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('lib/bootstrap/dist/js/bootstrap-multiselect.js')}}" ></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.multiselect').multiselect({ 
+                maxHeight: 250,
+                enableCaseInsensitiveFiltering: true,
+                filterPlaceholder: "Pesquisar"
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" src="{{asset('lib/bootstrap/dist/css/bootstrap-multiselect.css')}}" ></script>
+{% endblock %}

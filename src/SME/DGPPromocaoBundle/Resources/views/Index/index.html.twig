@@ -1,0 +1,22 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Vínculos > {{vinculo.id}} > Promoções{% endblock %}
+
+{% block body %}
+    <div style="margin-bottom: 20px;" class="row">
+        <div class="col-md-12">
+            <strong>Servidor:</strong> {{vinculo.servidor.nome}} | <strong>Cargo:</strong> {{vinculo.cargo.nome}} | <strong>Carga Horária:</strong> {{vinculo.cargaHoraria}} horas
+        </div>
+    </div>
+    <ul class="nav nav-tabs">
+        <li {% if activeTab|default('1') == '1' %}class="active"{% endif %}> 
+            <a href="{{ path('dgp_promocaoHorizontal_listar', { 'vinculo': vinculo.id }) }}">Horizontal</a>
+        </li>
+        <li {% if activeTab == '2' %}class="active"{% endif %}>
+            <a href="{{ path('dgp_promocaoVertical_listar', { 'vinculo': vinculo.id }) }}">Vertical</a>
+        </li>
+    </ul>
+    <div id="tabContent" class="container">
+        {% block tabContent %}{% endblock %}
+    </div>
+{% endblock %}

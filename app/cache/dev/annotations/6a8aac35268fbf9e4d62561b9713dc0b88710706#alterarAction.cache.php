@@ -1,0 +1,1 @@
+<?php return unserialize('a:1:{i:0;O:47:"JMS\\SecurityExtraBundle\\Annotation\\PreAuthorize":2:{s:4:"expr";s:27:"hasRole(\'ROLE_SUPER_ADMIN\')";s:10:"publicOnly";b:1;}}');
