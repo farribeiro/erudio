@@ -61,14 +61,13 @@ class EnturmacaoFacade extends AbstractFacade {
     function parameterMap() {
         return [
             'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
+                $qb->andWhere('matricula = :matricula')->setParameter('matricula', $value);
             },
             'turma' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('e.turma = :turma')->setParameter('turma', $value);
+                $qb->andWhere('turma = :turma')->setParameter('turma', $value);
             },
             'turma_unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('e.turma', 'turma')
-                   ->andWhere('turma.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('turma.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             },
             'encerrado' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.encerrado = :encerrado')->setParameter('encerrado', $value);
@@ -77,10 +76,16 @@ class EnturmacaoFacade extends AbstractFacade {
                 $qb->andWhere('e.concluido = :concluido')->setParameter('concluido', $value);
             },
             'emAndamento' => function(QueryBuilder $qb, $value) {
-                $operador = $value ? ' = ' : ' <> ';
+                $operador = $value ? '=' : '<>';
                 $qb->andWhere("e.concluido {$operador} false")->andWhere("e.encerrado {$operador} false");
             }
         ];
+    }
+    
+    
+
+    protected function selectMap(): array {
+        return ['e', 'turma', 'matricula', 'aluno'];
     }
     
     function uniqueMap($enturmacao) {
@@ -176,8 +181,8 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('e.matricula', 'matricula')
-           ->join('matricula.aluno', 'aluno')
+        $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')
+           ->join('e.turma', 'turma')
            ->orderBy('aluno.nome');
     }
     
@@ -194,11 +199,7 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function afterRemove($enturmacao) {
-        if ((new \DateTime())->diff($enturmacao->getDataCadastro())->days < 1) {
-            $this->excluirDisciplinas($enturmacao);
-        } else {
-            $this->desvincularDisciplinas($enturmacao);
-        }
+        $this->desvincularDisciplinas($enturmacao);
         $enturmacao->getMatricula()->resetarEtapa();
         $this->orm->getManager()->flush();
         $this->liberarVaga($enturmacao);

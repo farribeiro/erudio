@@ -108,6 +108,7 @@ class Vinculo extends AbstractEditableEntity {
     }
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\VirtualProperty
     */
     function getAlocacoes() {

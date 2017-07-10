@@ -36,8 +36,4 @@ class EnderecoFacade extends AbstractFacade {
         return 'PessoaBundle:Endereco';
     }
     
-    function queryAlias() {
-        return 'e';
-    }
-    
 }

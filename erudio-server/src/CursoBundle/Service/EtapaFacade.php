@@ -47,8 +47,7 @@ class EtapaFacade extends AbstractFacade {
                 $qb->andWhere('e.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('e.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('e.curso = :curso')->setParameter('curso', $value);
             }
         ];
     }

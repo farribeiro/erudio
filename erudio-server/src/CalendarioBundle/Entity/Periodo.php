@@ -62,8 +62,9 @@ class Periodo extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "Calendario", inversedBy="periodos") 
-    * @ORM\JoinColumn(name = "calendario_id") 
+    * @ORM\JoinColumn(name = "calendario_id")
     */
     private $calendario;
     
@@ -79,6 +80,16 @@ class Periodo extends AbstractEditableEntity {
     }
     
     /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer")
+    * @JMS\VirtualProperty
+    */
+    function getQuantidadeDiasEfetivos() {
+        return $this->calendario->getQuantidadeDiasEfetivos($this);
+    }
+    
+    /**
+    * @deprecated Usar getNumero()
     * @JMS\Groups({"LIST"})
     * @JMS\Type("integer")
     * @JMS\VirtualProperty

@@ -106,7 +106,8 @@ class Dia extends AbstractEditableEntity {
     
     /**  
     * @JMS\VirtualProperty 
-    * @JMS\Groups({"LIST"})   
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("ArrayCollection<CalendarioBundle\Entity\DiaEvento>")
     */
     function getEventos() {
         return $this->eventos->matching(
