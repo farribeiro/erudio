@@ -111,12 +111,14 @@
                 if (response.data.frequenciaUnificada) { $scope.frequenciaUnificada = true; } else { $scope.frequenciaUnificada = false; }
                 var unidade = response.data.sistemaAvaliacao.regime.unidade; var medias = [];
                 var qtdeMedias = response.data.sistemaAvaliacao.quantidadeMedias;
-                for (var i=0; i<qtdeMedias; i++) { 
-                    var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
-                    if (i === qtdeMedias-1) { 
-                        $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                if (qtdeMedias > 1) {
+                    for (var i=0; i<qtdeMedias; i++) { 
+                        var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
+                        if (i === qtdeMedias-1) { 
+                            $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                        }
                     }
-                }
+                } else { $scope.turmaBusca.media.id = 1; }
             });
         };
         
@@ -174,7 +176,7 @@
             $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso();
             if ($scope.ativo === 'faltas') {
                 if ($scope.frequenciaUnificada) {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null) {
                         var promise = Servidor.buscar('medias/faltas', {'turma': $scope.turmaBusca.turma.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
@@ -184,7 +186,7 @@
                         });
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 } else {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
@@ -195,7 +197,7 @@
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 }
             } else {
-                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { 
