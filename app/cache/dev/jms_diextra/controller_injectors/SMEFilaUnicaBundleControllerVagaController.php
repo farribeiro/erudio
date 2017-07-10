@@ -10,9 +10,9 @@ namespace SME\FilaUnicaBundle\Controller;
 class VagaController__JMSInjector
 {
     public static function inject($container) {
-        require_once '/var/www/html/intranet/app/cache/dev/jms_diextra/proxies/SME-FilaUnicaBundle-Controller-VagaController.php';
+        require_once __DIR__ . '/../proxies/SME-FilaUnicaBundle-Controller-VagaController.php';
         $d = new \JMS\AopBundle\Aop\InterceptorLoader($container, array('SME\\FilaUnicaBundle\\Controller\\VagaController' => array('preencherAction' => array(0 => 'security.access.method_interceptor'))));
-        $instance = new \EnhancedProxy_e7e707bcb56d811aae0273bc300574aa9925fd56\__CG__\SME\FilaUnicaBundle\Controller\VagaController();
+        $instance = new \EnhancedProxyb7349af4_e7e707bcb56d811aae0273bc300574aa9925fd56\__CG__\SME\FilaUnicaBundle\Controller\VagaController();
         $instance->__CGInterception__setLoader($d);
         return $instance;
     }

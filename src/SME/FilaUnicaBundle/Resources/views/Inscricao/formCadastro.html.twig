@@ -412,7 +412,9 @@
 
             $("#btnRemoverComponenteRenda").click( function() {
                 var id = $("#componentesRenda tr").size();
-                $("#componentesRenda").children("#componenteRenda" + id).remove();
+                if (id > 1) {
+                    $("#componentesRenda").children("#componenteRenda" + id).remove();
+                }
             });
 
             $("#btnCalcular").click( function() {

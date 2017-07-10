@@ -1,15 +1,28 @@
 parameters:
     database_driver:   pdo_mysql
+
     database_host:     127.0.0.1
     database_port:     ~
-    database_name:     symfony
+    database_name:     intranet
     database_user:     root
     database_password: ~
+
+    database_host_moodle: 127.0.0.1
+    database_name_moodle: moodle
+    database_user_moodle: root
+    database_password_moodle: ~
+
+    database_host_erudio: 127.0.0.1
+    database_name_erudio: erudio
+    database_user_erudio: root
+    database_password_erudio: ~
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~
     mailer_password:   ~
 
-    locale:            en
+    locale:            pt_br
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    file_store_path: /publicacoes
