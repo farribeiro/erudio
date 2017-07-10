@@ -61,7 +61,7 @@
         
         //REINICIA A BUSCA
         $scope.reiniciarBusca = function () {
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; }
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; } $scope.umaMediaEtapa = true;
             $scope.nomeUnidade = null; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.etapas = []; $scope.disciplinasTurma = [];
             $scope.notasBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.turmas = []; $scope.medias = [];
             $timeout(function () { $('select').material_select('destroy'); $('select').material_select(); }, 100);
@@ -102,10 +102,11 @@
         };
         
         //CARREGA MEDIAS
-        $scope.medias = []; $scope.mostraMedia = 1;
+        $scope.medias = []; $scope.mostraMedia = 1; $scope.umaMediaEtapa = true;
         $scope.buscarMedias = function (id) {
             var promise = Servidor.buscarUm('etapas',id);
             promise.then(function(response){
+                if (response.data.sistemaAvaliacao.quantidadeMedias === 1) { $scope.umaMediaEtapa = true; } else { $scope.umaMediaEtapa = false; }
                 $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.mostraMedia = response.data.sistemaAvaliacao.quantidadeMedias-1; $scope.turmaBusca.media.id = null;
                 if (response.data.frequenciaUnificada) { $scope.frequenciaUnificada = true; } else { $scope.frequenciaUnificada = false; }
                 var unidade = response.data.sistemaAvaliacao.regime.unidade; var medias = [];
