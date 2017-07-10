@@ -10,9 +10,9 @@ namespace SME\ProtocoloBundle\Controller;
 class ServidorController__JMSInjector
 {
     public static function inject($container) {
-        require_once '/var/www/html/intranet/app/cache/dev/jms_diextra/proxies/SME-ProtocoloBundle-Controller-ServidorController.php';
+        require_once __DIR__ . '/../proxies/SME-ProtocoloBundle-Controller-ServidorController.php';
         $b = new \JMS\AopBundle\Aop\InterceptorLoader($container, array('SME\\ProtocoloBundle\\Controller\\ServidorController' => array('visualizarAction' => array(0 => 'security.access.method_interceptor'), 'imprimirAction' => array(0 => 'security.access.method_interceptor'))));
-        $instance = new \EnhancedProxy_f9daf9f7257328e51dd595c9857ea2af80b1c8c7\__CG__\SME\ProtocoloBundle\Controller\ServidorController();
+        $instance = new \EnhancedProxyb7349af4_f9daf9f7257328e51dd595c9857ea2af80b1c8c7\__CG__\SME\ProtocoloBundle\Controller\ServidorController();
         $instance->__CGInterception__setLoader($b);
         return $instance;
     }

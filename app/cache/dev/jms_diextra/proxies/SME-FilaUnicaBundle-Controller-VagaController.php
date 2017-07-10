@@ -1,6 +1,6 @@
 <?php
 
-namespace EnhancedProxy_e7e707bcb56d811aae0273bc300574aa9925fd56\__CG__\SME\FilaUnicaBundle\Controller;
+namespace EnhancedProxyb7349af4_e7e707bcb56d811aae0273bc300574aa9925fd56\__CG__\SME\FilaUnicaBundle\Controller;
 
 /**
  * CG library enhanced proxy class.
