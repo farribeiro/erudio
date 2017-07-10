@@ -66,7 +66,7 @@ class TurmaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('t.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
@@ -81,8 +81,7 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere("t.status ${operator} :encerrado")->setParameter('encerrado', Turma::STATUS_ENCERRADO);
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('etapa.curso', 'curso')                   
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('etapa.curso = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
@@ -91,19 +90,15 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
             },
             'quadroHorario' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.quadroHorario', 'quadroHorario')
-                    ->andWhere('quadroHorario.id = :quadroHorario')->setParameter('quadroHorario', $value);
+                $qb->andWhere('t.quadroHorario = :quadroHorario')->setParameter('quadroHorario', $value);
             },
             'agrupamento' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.agrupamento', 'agrupamento')
-                    ->andWhere('agrupamento.id = :agrupamento')->setParameter('agrupamento', $value);
+                $qb->andWhere('t.agrupamento = :agrupamento')->setParameter('agrupamento', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')
-                   ->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('t.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             }
-        );
+        ];
     }
     
     protected function selectMap() {

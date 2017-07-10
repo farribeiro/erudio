@@ -128,10 +128,8 @@ class Media extends AbstractEditableEntity {
                 : [];
     }
     
-    function removeNota($nota) {
-        if($this->notas->contains($nota)) {  
-            $this->notas->removeElement($nota);
-        }        
+    function removeNota($nota) {   
+        $this->notas->removeElement($nota);
     }
     
     function resetar() {

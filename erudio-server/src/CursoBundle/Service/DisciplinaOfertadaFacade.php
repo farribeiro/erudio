@@ -54,12 +54,10 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
     function parameterMap() {
         return array (
             'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value);
+                $qb->andWhere('d.turma = :turma')->setParameter('turma', $value);
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.disciplina', 'disciplina')
-                   ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
+                $qb->andWhere('d.disciplina = :disciplina')->setParameter('disciplina', $value);
             }
         );
     }

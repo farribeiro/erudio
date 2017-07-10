@@ -44,12 +44,10 @@ class CursoOfertadoFacade extends AbstractFacade {
     function parameterMap() {
         return [
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.curso', 'curso')                   
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('c.curso = :curso')->setParameter('curso', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')
+                $qb->andWhere('c.unidadeEnsino = :unidadeEnsino')
                    ->setParameter('unidadeEnsino', $value);
             }
         ];
