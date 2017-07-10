@@ -1746,7 +1746,7 @@
                             $scope.fechaLoader();
                         } else {
                             response.data.forEach(function(res, i){
-                                if (res.encerrado) { $scope.matriculas.push(m); }
+                                if (!res.isEmAndamento) { $scope.matriculas.push(m); }
                             });
                             //$scope.matriculas = response.data;
                             $scope.fechaLoader();
