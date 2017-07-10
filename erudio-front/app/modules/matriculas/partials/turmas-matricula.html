@@ -43,7 +43,6 @@
                             <th class="col s2">Curso</th>
                             <th class="col s2" style="padding-left: 0.7rem">Etapa</th>
                             <th class="col s2" style="padding-left: 0.5rem">Turma</th>
-                            <th class="col s2" style="padding-left: 0.5rem">Status</th>
                         </tr>
                     </thead>
                 </table>
@@ -54,10 +53,6 @@
                             <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.matricula.curso.nome}}</span>
                             <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.etapa.nomeExibicao}}</span>
                             <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.nomeCompleto}}</span>
-                            <span class="col s1">
-                                <span data-ng-show="enturmacao.encerrado">ENCERRADO</span>
-                                <span data-ng-hide="enturmacao.encerrado">ATIVO</span>
-                            </span>
                             <span class="col s2 right-align">                                
                                 <i data-ng-show="escrita" data-ng-click="prepararRemoverEnturmacao(enturmacao)" class="material-icons right delete-icon">delete</i>
                                 <i data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)" id="btn-ent{{enturmacao.id}}" class="material-icons right">keyboard_arrow_down</i>
@@ -71,6 +66,7 @@
                                         <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias">{{media.numero}}ªM</th>
                                         <th>MF</th>
                                         <th>Faltas</th>
+                                        <th>Status</th>
                                     </tr>                                        
                                 </thead>
                                 <tbody>
@@ -80,8 +76,10 @@
                                             <span class="clickable underline" data-ng-hide="media.valor">ND</span>
                                             <span class="clickable underline" data-ng-show="media.valor">{{media.valor}}</span>
                                         </td>
-                                        <td>ND</td>
-                                        <td>{{disciplina.faltas}}</td>
+                                        <td data-ng-hide="disciplina.mediaFinal">{{ disciplina.mediaPreliminar }}</td>
+                                        <td data-ng-show="disciplina.mediaFinal">{{ disciplina.mediaFinal }}</td>
+                                        <td data-ng-repeat="media in disciplina.medias"><span>{{ media.faltas }}</span></td>
+                                        <td>{{ disciplina.status }}</td>
                                     </tr>
                                 </tbody>
                             </table>

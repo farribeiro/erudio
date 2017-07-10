@@ -2306,10 +2306,14 @@
                     $scope.enturmacoes[index].matricula.disciplinas = response.data;
                     $scope.enturmacoes[index].matricula.disciplinas.forEach(function(cursada) {
                         $scope.requisicoes++;
+                        if (cursada.mediaPreliminar === undefined) {
+                            cursada.mediaPreliminar = 'ND';
+                        }
                         var promise = Servidor.buscar('medias', {disciplinaCursada: cursada.id});
                         promise.then(function(response) {
                             cursada.medias = response.data;
                             $scope.requisicoes--;
+                            $scope.fechaProgresso();
                         });
                         $scope.requisicoes++;
                         var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
@@ -2325,6 +2329,7 @@
                             $scope.fechaProgresso();
                         });
                     });
+                    $scope.fechaProgresso();
                 });
             });
         };
@@ -2392,6 +2397,7 @@
                 $scope.requisicoes--;
                 $scope.fechaProgresso();
             });
+            $scope.fechaProgresso();
         };
         
         $scope.reativarMatricula = function(matricula) {
