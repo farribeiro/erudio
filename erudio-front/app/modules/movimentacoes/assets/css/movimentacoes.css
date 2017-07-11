@@ -237,6 +237,13 @@ td, th {
 .active_label { position: absolute !important; top: -14px !important; font-size: 12px !important; height: 18px; }
 .select-item { padding-top: 5px; padding-bottom: 5px; }
 
+.modal-title-banner-matricula{
+    background: url('../images/removeBanner.jpg') center bottom;
+    background-size: 100% 100%;
+    height: 260px;
+    position: relative;
+}
+
 @media only screen and (min-width : 993px) {    
     .btn-voltar-mobile {
         top: 92px !important;

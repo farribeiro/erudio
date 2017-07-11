@@ -1,6 +1,7 @@
 {
     "elements": {
-        "div": {}
+        "div": {},
+        "matricula-controle": {}
     },
     "attributes": {}
 }
