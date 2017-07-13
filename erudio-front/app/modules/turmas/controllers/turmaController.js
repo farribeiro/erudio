@@ -334,7 +334,7 @@
                         } break;
                     case 'fecharTurma':
                         if ($scope.turma.id) {
-                            $scope.disciplinaTurma = {id: null};
+                            $scope.disciplinaTurma = {id: null}; $scope.endTurma = true;
                             $scope.mostraForm = false; $scope.mostraQuadroHorario = false; $scope.enturmandoAlunos = false; $scope.voltarAlunos = false;
                             $scope.mostraEnturmacoes = false; $scope.mostraProfessores = false; $scope.alunoPresenca = false; $scope.adicionarAlunos = false;
                             $scope.fechaTurma = true;
@@ -846,7 +846,7 @@
             /* CARREGA TURMA PARA EDIÇÃO */
             $scope.carregarTurma = function (turma, opcao) {
                 //window.scrollTo(0, 0);
-                $scope.periodos = []; $('#turmaForm').show(); $('#form').addClass('active'); $scope.trocarTab('form');
+                $scope.periodos = []; $('#turmaForm').show(); $('#form').addClass('active'); $scope.trocarTab('form'); $scope.endTurma = false;
                 $('#nome').focus(); $('div').find('.unidade-banner').removeClass('topo-pagina');
                 Servidor.verificaLabels(); $scope.mostraEnturmacoes = false;
                 $scope.opcaoForm = 'turma'; $scope.mostraLoader();
