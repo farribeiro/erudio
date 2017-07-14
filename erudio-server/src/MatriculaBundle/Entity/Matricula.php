@@ -155,7 +155,7 @@ class Matricula extends AbstractEditableEntity {
     * @JMS\MaxDepth(depth = 1)
     */
     function getEtapaAtual() {
-        return $this->etapa ? $this->etapa : $this->redefinirEtapa();
+        return $this->etapa;
     }
 
     function getUnidadeEnsino() {

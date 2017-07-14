@@ -82,12 +82,6 @@ class EnturmacaoFacade extends AbstractFacade {
         ];
     }
     
-    
-
-    protected function selectMap(): array {
-        return ['e', 'turma', 'matricula', 'aluno'];
-    }
-    
     function uniqueMap($enturmacao) {
         return [[
             'matricula' => $enturmacao->getMatricula(), 
@@ -179,10 +173,18 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
     }
+     
+    protected function selectMap() {
+        return ['e', 'turma', 'matricula', 'aluno', 'vaga', 'etapa', 'unidadeEnsino'];
+    }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('e.matricula', 'matricula')->join('matricula.aluno', 'aluno')
+        $qb->join('e.matricula', 'matricula')
+           ->join('matricula.aluno', 'aluno')
            ->join('e.turma', 'turma')
+           ->join('turma.etapa', 'etapa')
+           ->join('turma.unidadeEnsino', 'unidadeEnsino')
+           ->leftJoin('e.vaga', 'vaga')
            ->orderBy('aluno.nome');
     }
     
@@ -194,6 +196,7 @@ class EnturmacaoFacade extends AbstractFacade {
     
     protected function afterCreate($enturmacao) {
         $enturmacao->getMatricula()->redefinirEtapa();
+        $this->orm->getManager()->flush();
         $this->vincularDisciplinas($enturmacao);
         $this->ocuparVaga($enturmacao);
     }

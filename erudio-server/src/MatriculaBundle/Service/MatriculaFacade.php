@@ -67,16 +67,13 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->leftJoin('m.etapa', 'etapa')
-                   ->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
+                $qb->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             },
             'codigo' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.codigo LIKE :codigo')->setParameter('codigo', '%' . $value . '%');
@@ -100,8 +97,17 @@ class MatriculaFacade extends AbstractFacade {
         ]];
     }
     
+    protected function selectMap() {
+        return ['m', 'aluno', 'curso', 'unidadeEnsino', 'etapa', 'tipoUnidadeEnsino', 'instituicao'];
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('m.aluno', 'aluno');
+        $qb->join('m.aluno', 'aluno')
+           ->join('m.unidadeEnsino', 'unidadeEnsino')
+           ->join('m.curso', 'curso')
+           ->join('unidadeEnsino.tipo', 'tipoUnidadeEnsino')
+           ->leftJoin('unidadeEnsino.instituicaoPai', 'instituicao')
+           ->leftJoin('m.etapa', 'etapa');
     }
     
     protected function beforeCreate($matricula) {

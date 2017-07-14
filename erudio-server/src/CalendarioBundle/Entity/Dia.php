@@ -61,7 +61,7 @@ class Dia extends AbstractEditableEntity {
     
     /** 
     * @JMS\Exclude
-    * @ORM\ManyToOne(targetEntity = "Calendario") 
+    * @ORM\ManyToOne(targetEntity = "Calendario", inversedBy = "dias") 
     */
     private $calendario;
     

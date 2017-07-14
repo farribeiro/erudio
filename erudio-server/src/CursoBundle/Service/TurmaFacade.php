@@ -81,10 +81,10 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere("t.status ${operator} :encerrado")->setParameter('encerrado', Turma::STATUS_ENCERRADO);
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('etapa.curso = :curso')->setParameter('curso', $value);
+                $qb->andWhere('curso = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+                $qb->andWhere('etapa = :etapa')->setParameter('etapa', $value);
             },
             'etapa_ordem' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
@@ -93,20 +93,25 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere('t.quadroHorario = :quadroHorario')->setParameter('quadroHorario', $value);
             },
             'agrupamento' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.agrupamento = :agrupamento')->setParameter('agrupamento', $value);
+                $qb->andWhere('agrupamento = :agrupamento')->setParameter('agrupamento', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             }
         ];
     }
     
     protected function selectMap() {
-        return ['t', 'etapa'];
+        return ['t', 'etapa', 'unidadeEnsino', 'turno', 'curso', 'sistemaAvaliacao', 'agrupamento'];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.etapa', 'etapa')
+           ->join('t.unidadeEnsino', 'unidadeEnsino')
+           ->join('t.turno', 'turno')
+           ->leftJoin('t.agrupamento', 'agrupamento')
+           ->join('etapa.curso', 'curso')
+           ->join('etapa.sistemaAvaliacao', 'sistemaAvaliacao')
            ->addOrderBy('etapa.curso','ASC')
            ->addOrderBy('etapa.ordem','ASC')
            ->addOrderBy('t.nome', 'ASC');
