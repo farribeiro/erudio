@@ -277,20 +277,22 @@
 
         $scope.enturmarAluno = function () {
             if($scope.turmas.length === 1) { $scope.turma = $scope.turmas[0]; }
-            var enturmacao = {
-                'matricula':{ 'id': $scope.transferencia.matricula.id },
-                'turma': {'id': parseInt($scope.turma.id) }
-            };
-            var promise = Servidor.finalizar(enturmacao, 'enturmacoes', 'Enturmaçao');
-            promise.then(function(response) {
-                $scope.enturmacao = response.data;
-//                $scope.desativarDisciplinasCursadas();
-                if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual) {
-                    $scope.salvarDisciplinasCursadas();
-                } else {
-//                    $scope.clonarDisciplinasCursadas();
-                }
-            });
+            $timeout(function(){
+                var enturmacao = {
+                    'matricula':{ 'id': $scope.transferencia.matricula.id },
+                    'turma': {'id': parseInt($scope.turma.id) }
+                };
+                var promise = Servidor.finalizar(enturmacao, 'enturmacoes', 'Enturmaçao');
+                promise.then(function(response) {
+                    $scope.enturmacao = response.data;
+    //                $scope.desativarDisciplinasCursadas();
+                    if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual) {
+                        $scope.salvarDisciplinasCursadas();
+                    } else {
+    //                    $scope.clonarDisciplinasCursadas();
+                    }
+                });
+            },500);
         };
 
         $scope.salvarDisciplinasCursadas = function() {
@@ -1073,6 +1075,7 @@
                     if (--$scope.requisicoes === 0) {
                         if ($scope.turmas.length) {
                             $timeout(function(){
+                                $scope.turma.id = $scope.turmas[0].id;
                                 if ($scope.aceitandoTransferencia) {
                                     $('#selectTurmaTransferencia').material_select();
                                 } else {
