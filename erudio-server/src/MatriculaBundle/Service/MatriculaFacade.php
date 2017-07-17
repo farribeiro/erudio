@@ -40,11 +40,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MatriculaFacade extends AbstractFacade {
     
-    private $eventDispatcher;
-    
-    function __construct(RegistryInterface $doctrine, LoggerInterface $logger, EventDispatcherInterface $eventDispatcher) {
-        parent::__construct($doctrine, $logger);
-        $this->eventDispatcher = $eventDispatcher;
+    function __construct(RegistryInterface $doctrine, LoggerInterface $logger, 
+            EventDispatcherInterface $eventDispatcher) {
+        parent::__construct($doctrine, $logger, $eventDispatcher);
     }
     
     function getEntityClass() {

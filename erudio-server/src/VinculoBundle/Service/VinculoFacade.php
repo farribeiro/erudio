@@ -37,11 +37,8 @@ use VinculoBundle\Entity\Vinculo;
 
 class VinculoFacade extends AbstractFacade {
     
-    private $eventDispatcher;
-    
     function __construct(RegistryInterface $orm, EventDispatcherInterface $eventDispatcher) {
-        parent::__construct($orm);
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($orm, null, $eventDispatcher);
     }
     
     function getEntityClass() {
