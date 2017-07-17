@@ -36,7 +36,7 @@ use CoreBundle\Exception\PublishedException;
 
 class ExceptionHandler implements EventSubscriberInterface {
     
-    static function getSubscribedEvents(): array {
+    static function getSubscribedEvents() {
         return ['kernel.exception' => 'onException'];
     }
 
@@ -46,8 +46,7 @@ class ExceptionHandler implements EventSubscriberInterface {
             $event->setResponse(
                 $this->createResponse(JsonResponse::HTTP_BAD_REQUEST, $exception->getMessage())
             );
-        }
-        else if ($exception instanceof AuthenticationException) {
+        } else if ($exception instanceof AuthenticationException) {
             $event->setResponse(
                 $this->createResponse(JsonResponse::HTTP_UNAUTHORIZED, $exception->getMessage())
             );
