@@ -158,14 +158,10 @@ class ValeTransporteReport extends RequerimentoReport
         $this->MultiCell(800, 16, '                Assinatura do(a) Requerente                    Ass. e carimbo do Gestor da Unidade Escolar', 0, 'C');
 
         $this->Ln(15);
-        $dia = date("d");
-        $mes = RequerimentoReport::mesNumericoParaExtenso( date("m") );
-        $ano = date("Y");
-        $this->MultiCell(800, 16, "Itajaí, $dia de $mes de $ano", 0, 'R');
+        $this->dataCadastro(800,16);
 
-        if ($via == 1 || $via == 3) {
-            $this->caixaProtocolo();
-        }
+        $this->caixaProtocolo();
+        
     }
     
 }

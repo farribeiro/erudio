@@ -114,15 +114,11 @@ class LicencaPremioReport extends RequerimentoReport
         $this->MultiCell(540, 16, '                Assinatura do(a) Requerente                    Ass. e carimbo do Gestor da Unidade Escolar', 0, 'C');
 
         $this->Ln(50);
-        $dia = date("d");
-        $mes = self::mesNumericoParaExtenso( date("m") );
-        $ano = date("Y");
-        $this->MultiCell(540, 14, "Itajaí, $dia de $mes de $ano", 0, 'R');
+        $this->dataCadastro();
 
-        if ($via == 1 || $via == 3) {
-            $this->Ln(30);
-            $this->caixaProtocolo();
-        }
+        $this->Ln(30);
+        $this->caixaProtocolo();
+
     }
 
 }
