@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\AgrupamentoDisciplina;
+use CursoBundle\Service\AgrupamentoDisciplinaFacade;
 
 /**
- * @FOS\RouteResource("agrupamentos-disciplinas")
+ * @FOS\NamePrefix("agrupamentos-disciplinas")
  */
 class AgrupamentoDisciplinaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.curso.agrupamentos_disciplina');
+    function __construct(AgrupamentoDisciplinaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

@@ -39,36 +39,40 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 /**
- * @FOS\RouteResource("disciplinas-cursadas")
+ * @FOS\NamePrefix("disciplinas-cursadas")
  */
 class DisciplinaCursadaController extends AbstractEntityController {
 
-    public function getFacade() {
-        return $this->get('facade.matricula.disciplinas_cursadas');
+    function __construct(DisciplinaCursadaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
     * @ApiDoc()
     * 
+    * @FOS\QueryParam(name = "view", nullable = true)
     * @FOS\Get("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
+    function getAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
+        return $this->getOne($request, $id, $paramFetcher->get('view'));
     }
     
     /**
     * @ApiDoc()
     * 
     * @FOS\Get("disciplinas-cursadas")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", nullable = true) 
     * @FOS\QueryParam(name = "dataCadastro", nullable = true) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "disciplinaOfertada", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
     * 
     */
@@ -113,6 +117,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
             $disciplina = $this->getFacade()->find($id);
             $this->getFacade()->encerrar($disciplina);
             $view = View::create($disciplina);
+            $this->configureContext($view->getContext());
         } catch (Exception $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -132,7 +137,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
                 $this->getFacade()->encerrar($disciplina);
             }
             $view = View::create(null, Response::HTTP_NO_CONTENT);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->handleView($view);

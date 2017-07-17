@@ -57,7 +57,7 @@
             $scope.excluirDisciplina = false; // VARIAVEL DE CONTROLE DE EXCLUSAO DE DISCIPLINA DA TURMA
             $scope.role = 'TURMA'; // NOME DA PERMISSAO
             $scope.permissao = true; // CONTROLE DE EXIBICAO DO MÓDULO
-            $scope.isAdmin = Servidor.verificaAdmin() || !sessionStorage.getItem('unidade');
+            $scope.isAdmin = Servidor.verificaAdmin(); //|| !sessionStorage.getItem('unidade');
             $scope.instituicao = parseInt(sessionStorage.getItem('instituicao'));
             $scope.dataInicioQuadroHorario = '';
             $scope.aulaGerada = false;
@@ -81,7 +81,7 @@
             $scope.formTurma = false; // VARIAVEL DE CONTROLE DE EXIBICAO DO FORMULÁRIO DA TURMA
             $scope.opcaoForm = ''; // VARIAVEL DE CONTROLE DO FORM
             $scope.disciplinaProfessor = { 'id': null, 'professores': [{'id': null}] }; // ESTRUTURA DE DISCIPLINA DA TURMA
-            $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {id: null}, 'limiteAlunos': null, 'turno': {id: null}, 'etapa': {id: null}, 'unidadeEnsino': {id: null}, 'quadroHorario': {id: null} }; // ESTRUTURA DE TURMA
+            $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {id: null}, 'limiteAlunos': null, 'turno': {id: null}, 'etapa': {id: null}, 'unidadeEnsino': {id: null}, 'quadroHorario': {id: null}, 'periodo': {id: null} }; // ESTRUTURA DE TURMA
             $scope.cursoTurma = {'id': null}; // ESTRUTURA DO CURSO DA TURMA
             $scope.TurmaService = TurmaService;
             $scope.MatriculaService = MatriculaService;
@@ -111,36 +111,33 @@
             //FECHAR TURMA
             $scope.fecharTurma = function (){
                 $scope.mostraProgresso();
-                var promise = Servidor.finalizar({nome:null},'disciplinas-ofertadas/'+$scope.disciplinaTurma.id+'/media-final');
+                var promise = Servidor.finalizar({nome:null},'disciplinas-ofertadas/'+$scope.disciplinaTurma.id+'/media-final', null);
                 promise.then(function(response){
                     Servidor.customToast("Média calculada com sucesso.");
                     $scope.buscarAlunos($scope.disciplinaTurma.id);
+                }, function (error) {
+                    Servidor.customToast(error.message);
                 });
             };
             
+            $scope.agrupamentoSelecionado = {id: null};
             //BUSCA DISCIPLINA OFERTADA
             $scope.buscaDisciplinaOfertada = function (etapa) {
-                var promise = Servidor.buscarUm('etapas',etapa);
-                promise.then(function(response){
-                    if (!response.data.integral) {
-                        $scope.integral = false;
-                        if ($scope.turma.id !== undefined) {
-                            var promiseDisciplinas = Servidor.buscar('disciplinas',{etapa: $scope.turma.etapa.id});
-                            promiseDisciplinas.then(function(response){
-                                $scope.disciplinas = response.data;
-                                var promiseDisciplinasOfertada = Servidor.buscar('disciplinas-ofertadas',{turma: $scope.turma.id});
-                                promiseDisciplinasOfertada.then(function(response){
-                                    $scope.disciplinasOfertadas = response.data;
-                                    $timeout(function(){ for (var i=0; i<$scope.disciplinasOfertadas.length; i++) { $('.d'+$scope.disciplinasOfertadas[i].disciplina.id).addClass('light-blue accent-2'); } },500);
-                                });
-                            });
-                            $timeout(function(){$('.chip').click(function(){ $scope.situacaoDisciplinaEdit($(this).attr('id')); });},500);
-                        } else {
-                            var promiseDisciplinas = Servidor.buscar('disciplinas',{etapa: $scope.turma.etapa.id});
-                            promiseDisciplinas.then(function(response){ $scope.disciplinas = response.data; });
-                        }
+                if (!etapa.integral) {
+                    var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa});
+                    promise.then(function (response){
+                        $scope.agrupamentos = response.data;
+                        $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                    });
+                }
+            };
 
-                    }
+            //BUSCA DISCIPLINAS
+            $scope.buscaDisciplinas = function (id) {
+                $scope.agrupamentoSelecionado.id = id; $scope.disciplinasOfertadas = [];
+                var promise = Servidor.buscarUm('agrupamentos-disciplinas',id);
+                promise.then(function (response){ 
+                    response.data.disciplinas.forEach(function(d){ $scope.disciplinasOfertadas.push({ disciplina: {id: d.id} }); });
                 });
             };
 
@@ -337,7 +334,7 @@
                         } break;
                     case 'fecharTurma':
                         if ($scope.turma.id) {
-                            $scope.disciplinaTurma = {id: null};
+                            $scope.disciplinaTurma = {id: null}; $scope.endTurma = true;
                             $scope.mostraForm = false; $scope.mostraQuadroHorario = false; $scope.enturmandoAlunos = false; $scope.voltarAlunos = false;
                             $scope.mostraEnturmacoes = false; $scope.mostraProfessores = false; $scope.alunoPresenca = false; $scope.adicionarAlunos = false;
                             $scope.fechaTurma = true;
@@ -346,7 +343,7 @@
                                 $scope.disciplinasTurma = response.data;
                                 $timeout(function () { 
                                     $('#disciplinaNota').material_select('destroy'); $('#disciplinaNota').material_select(); $('#disciplina').material_select('destroy'); $('#disciplina').material_select();
-                                    $('#disciplina').change(function(){ $scope.buscarAlunos($(this).val()); });
+                                    //$('#disciplina').change(function(){ $scope.buscarAlunos($(this).val()); });
                                 }, 100);
                             });
                             $scope.editando = true;
@@ -356,36 +353,36 @@
                 };
             };
             
+            $scope.encerrarTurma = function (){ 
+                $scope.turma.status = "ENCERRADO";
+                var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
+                promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); $scope.fecharFormulario(); }, function (){ console.log('teste'); $scope.fechaProgresso(); });
+            };
+            
             //BUSCA ALUNOS
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mediasPorAluno = []; $scope.statusAlunos = [];
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mediasPorAluno = []; $scope.statusAlunos = []; $scope.botoesEncerrar = true;
             $scope.buscarAlunos = function (disciplina) {
-                $scope.disciplinaTurma.id = disciplina;
-                $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso(); $scope.nomeAtual = ''; $scope.statusAlunos = [];
-                var promise = Servidor.buscar('medias', {'disciplinaOfertada': disciplina});
-                promise.then(function (response) {
-                    $scope.totalMedias = []; for (var i=0; i<$scope.turma.etapa.sistemaAvaliacao.quantidadeMedias; i++) { $scope.totalMedias.push(i+1); }
-                    //console.log($scope.totalMedias);
-                    for (var i=0; i<response.data.length; i++) {
-                        if (response.data[i].valor === undefined) { response.data[i].valor = 'N/A'; }
-                        if (response.data[i].disciplinaCursada.matricula.nomeAluno === $scope.nomeAtual) {
-                            $scope.mediasPorAluno[response.data[i].numero] = response.data[i];
-                        } else {
-                            if ($scope.mediasPorAluno.length-1 === $scope.turma.etapa.sistemaAvaliacao.quantidadeMedias) {
-                                $scope.enturmacoesNotas.push($scope.mediasPorAluno); $scope.mediasPorAluno = [];
-                                var promisePrevista  = Servidor.buscarUm('disciplinas-cursadas',$scope.enturmacoesNotas[$scope.enturmacoesNotas.length-1][1].disciplinaCursada.id);
-                                promisePrevista.then(function(response){
-                                    var array = [response.data.mediaPreliminar, response.data.status]; $scope.statusAlunos.push(array);
-                                });
-                            } else { $scope.nomeAtual = response.data[i].disciplinaCursada.matricula.nomeAluno; }
-                            $scope.mediasPorAluno[response.data[i].numero] = response.data[i];
-                        }
-                        
-                        if (i < response.data.length-1) {
-                           
-                        }
+                $scope.disciplinaTurma.id = disciplina; $scope.mdfinal = false; $scope.mdstatus = false; $scope.mdfreq = false; $scope.emAberto = false;
+                $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso(); $scope.nomeAtual = ''; $scope.statusAlunos = []; $scope.botoesEncerrar = true;
+                var promise = Servidor.buscar('disciplinas-cursadas', {'disciplinaOfertada': disciplina, 'view': 'medias'});
+                promise.then(function(response){
+                    $scope.totalMedias = []; for (var j=0; j<$scope.turma.etapa.sistemaAvaliacao.quantidadeMedias; j++) { $scope.totalMedias.push(j); }
+                    var frequenciaAprovacao = parseFloat($scope.turma.etapa.sistemaAvaliacao.frequenciaAprovacao);
+                    $scope.contadorMediasFaltantes = 0; var exameCounter = 0;
+                    for(var i=0; i<response.data.length; i++) {
+                        if (response.data[i].emAberto) { $scope.emAberto = true; }
+                        if (response.data[i].mediaFinal !== undefined) { $scope.mdfinal = true; }
+                        if (response.data[i].status !== undefined) { $scope.mdstatus = true; }
+                        if (response.data[i].frequenciaTotal !== undefined) { $scope.mdfreq = true; }
+                        if (response.data[i].status === "EM_EXAME" && exameCounter === 0) { $scope.totalMedias.push(4); exameCounter++; }
+                        response.data[i].medias.forEach(function(media, j){ if (media.valor === undefined) { media.valor = "N/A"; $scope.contadorMediasFaltantes++; } });
+                        if (response.data[i].mediaPreliminar === undefined) { response.data[i].mediaPreliminar = "N/A"; }
+                        if (response.data[i].statusPrevisto === "EM_EXAME") { response.data[i].statusPrevisto = "EXAME"; }
+                        var frequencia = response.data[i].frequenciaPreliminar;
+                        if (response.data[i].statusPrevisto === "REPROVADO" && frequencia < frequenciaAprovacao) { response.data[i].statusPrevisto = "REPROVADO POR FALTA"; }
                     }
-                    $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
-                    if (response.data.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
+                    $scope.enturmacoesNotas = response.data;
+                    $timeout(function(){ $scope.botoesEncerrar = false; },500);
                 });
             };
 
@@ -517,15 +514,27 @@
 
             $scope.selecionaUnidade = function(unidade) {
                 if (unidade.tipo === undefined) { unidade.tipo = {sigla:''}; }
-                $scope.nomeUnidade = unidade.tipo.sigla + ' ' + unidade.nome;
+                $scope.nomeUnidade = unidade.nomeCompleto;
                 if($scope.editando) {
-                    $scope.turma.unidadeEnsino = unidade;
-                    $scope.buscarCalendarios(unidade.id);
-                    $scope.buscarQuadroHorarios(unidade.id);
-		    $scope.buscarCursos();
+                    if ($scope.turma.unidadeEnsino.id !== unidade.id) {
+                        $scope.nomeUnidade = unidade.nomeCompleto;
+                        $scope.turma.unidadeEnsino = unidade;
+                        $scope.buscarCalendarios(unidade.id);
+                        $scope.buscarQuadroHorarios(unidade.id);
+                        $scope.buscarCursos();
+                    } else if ($scope.unidade.id !== unidade.id) {
+                        $scope.nomeUnidade = unidade.nomeCompleto;
+                        $scope.turma.unidadeEnsino = unidade;
+                        $scope.buscarCalendarios(unidade.id);
+                        $scope.buscarQuadroHorarios(unidade.id);
+                        $scope.buscarCursos();
+                    }
                 } else {
-                    $scope.unidade = unidade;
-    		    $scope.buscarCursos();
+                    if ($scope.unidade.id !== unidade.id) {
+                        $scope.nomeUnidade = unidade.nomeCompleto;
+                        $scope.unidade = unidade;
+                        $scope.buscarCursos();
+                    }
                 }
                 $timeout(function(){Servidor.verificaLabels(); },100);
             };
@@ -540,7 +549,7 @@
                             var promise = Servidor.buscar('unidades-ensino', {'nome': nomeUnidade});
                             promise.then(function (response) {
                                 $scope.unidades = response.data;
-                                $timeout(function () {
+                               $timeout(function () {
                                     $('#unidade').material_select('destroy');
                                     $('#unidade').material_select();
                                     $scope.fechaProgresso(); }, 500);
@@ -563,16 +572,16 @@
                                 $('#unidade').material_select();
                                 $scope.fechaProgresso(); }, 500);
                         });*/
-			var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+			var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
 			promise.then(function(response) {
-				var user = response.data[0];
+				var user = response.data;
 				$scope.atribuicoes = user.atribuicoes;
 				$timeout(function () {
                                     var hasGeral = false;
 				    for (var i=0; i<$scope.atribuicoes.length; i++) {
 					//if ($scope.atribuicoes[i] !== undefined) {
                                         if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); }// else { $scope.isAdmin = true; }
-                                        else { $scope.isAdmin = true; }
+                                        else { $scope.isAdmin = true; console.log($scope.atribuicoes[i]); }
                                         if (i === $scope.atribuicoes.length-1) {
                                             if ($scope.isAdmin) {
                                                 /*var promise = Servidor.buscar('unidades-ensino', {'nome': nomeUnidade});
@@ -624,17 +633,31 @@
 
             /* CARREGA O SELECT DE UNIDADES */
             $scope.buscarUnidades = function () {
-                if ($scope.nomeUnidade !== undefined && $scope.nomeUnidade !== null) {
-                    if ($scope.nomeUnidade.length > 4) {
-                        $scope.mostraProgresso();
-                        $scope.verificaAlocacao($scope.nomeUnidade);
+                //if (!$scope.editando) {
+                    if ($scope.nomeUnidade !== undefined && $scope.nomeUnidade !== null) {
+                        if ($scope.nomeUnidade.length > 4) {
+                            $scope.mostraProgresso();
+                            $scope.verificaAlocacao($scope.nomeUnidade);
+                        } else {
+                            $scope.unidades = [];
+                        }
                     } else {
-                        $scope.unidades = [];
+                        $scope.mostraProgresso();
+                        $scope.verificaAlocacao(null);
                     }
-                } else {
-                    $scope.mostraProgresso();
-                    $scope.verificaAlocacao(null);
-                }
+                /*} else {
+                    if (nome !== undefined && nome !== null) {
+                        if (nome.length > 4) {
+                            $scope.mostraProgresso();
+                            $scope.verificaAlocacao(nome);
+                        } else {
+                            $scope.unidades = [];
+                        }
+                    } else {
+                        $scope.mostraProgresso();
+                        $scope.verificaAlocacao(null);
+                    }
+                }*/
             };
 
             /* CARREGA O SELECT DE CURSOS */
@@ -671,7 +694,7 @@
                                 $('#etapa').material_select('destroy');
                                 $('#etapa').material_select();
                             }               
-                        }, 50);
+                        }, 200);
                     });
                 }
             };
@@ -689,25 +712,33 @@
 
             /* CARREGA ARRAY DE CALENDARIOS */
             $scope.buscarCalendarios = function (unidade) {
-                var uni = JSON.parse(sessionStorage.getItem('unidade'));
-                if (!unidade) { unidade = uni.id; } 
-                unidade = ($scope.isAdmin) ? unidade : uni.id;
-                var promise = Servidor.buscar('calendarios', {instituicao: unidade});
-                promise.then(function (response) {
-                    $scope.calendarios = response.data;
-                    if ($scope.calendarios.length > 1) {
-                        $scope.calendarios.forEach(function(calendario) {
-                            if (calendario.instituicao.id === $scope.instituicao) {
-                                $scope.turma.calendario = calendario;
-                            }
-                        });
-                    } else {
-                        $scope.turma.calendario = $scope.calendarios[0];
-                    }
+                /*var uni = JSON.parse(sessionStorage.getItem('unidade'));
+                if (!unidade) { unidade = uni.id; }
+                unidade = ($scope.isAdmin) ? unidade : uni.id;*/
+                if ($scope.turma.unidadeEnsino.id !== null) { 
+                    unidade = $scope.turma.unidadeEnsino.id;
+                    var promise = Servidor.buscar('calendarios', {instituicao: unidade});
+                    promise.then(function (response) {
+                        $scope.calendarios = response.data;
+                        if ($scope.calendarios.length > 1) {
+                            $scope.calendarios.forEach(function(calendario) {
+                                if (calendario.instituicao.id === $scope.instituicao) {
+                                    $scope.turma.calendario = calendario;
+                                }
+                            });
+                        } else {
+                            $scope.turma.calendario = $scope.calendarios[0];
+                        }
+                        $timeout(function() {
+                            $('#calendarioTurmaForm').material_select();
+                        }, 500);
+                    });
+                } else {
                     $timeout(function() {
                         $('#calendarioTurmaForm').material_select();
                     }, 500);
-                });
+                }
+                
             };
 
             /* CARREGA ARRAY DE QUADRO DE HORARIOS */
@@ -724,7 +755,8 @@
                     }
                     $timeout(function() {
                         $('#quadroHorarioTurmaFormulario').material_select();
-			$('#cursoE').material_select('destroy'); $('#cursoE').material_select(); $scope.fechaProgresso();
+			//$('#cursoE').material_select('destroy');
+                        $('#cursoE').material_select(); $scope.fechaProgresso();
                     }, 500);
                 });
             };
@@ -732,42 +764,45 @@
             /* VALIDAÇÃO DE FORMULÁRIO */
             $scope.validar = function (id) { if (Servidor.validar(id)) { return true; } };
 
+            $scope.statusTurma = function(){ var retorno = true; if ($scope.turma.status === 'ENCERRADO') { retorno = false; } return retorno; };
+
             /* SALVAR TURMA */
             $scope.finalizar = function () {
                 if ($scope.integral) {
                     if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
                         var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
-                        promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); $scope.fecharFormulario(); });
+                        promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); $scope.fecharFormulario(); }, function (error) { Servidor.customToast(error.message); $scope.fechaProgresso(); $scope.fecharFormulario(); });
+                        $scope.fechaProgresso(); $scope.fecharFormulario();
                     } else {
                         Servidor.customToast("Campos obrigatórios não preenchidos");
                         $scope.fechaProgresso();
                     }
                 } else {
-                    if ($scope.disciplinasOfertadas.length > 0) {
-                        for (var i=0; i<$scope.disciplinasOfertadas.length; i++) {
-                            var ofertada = angular.copy($scope.disciplina); ofertada.id = $scope.disciplinasOfertadas[i]; $scope.disciplinasOfertadas[i] = {disciplina: ofertada};
-                            if (i === $scope.disciplinasOfertadas.length-1) {
-                                if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
-                                    var novo = false;
-                                    if ($scope.turma.id === undefined) { novo = true; }
-                                    var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
-                                    promise.then(function (response) { 
-                                        $scope.turma = response.data; $scope.fechaProgresso();
-                                        if (novo) { var disciPromise = Servidor.finalizar({disciplinasOfertadas:$scope.disciplinasOfertadas},'turmas/'+$scope.turma.id+'/disciplinas-ofertadas','Disciplinas'); $scope.fecharFormulario(); }
-                                    });
-                                } else {
-                                    Servidor.customToast("Campos obrigatórios não preenchidos");
-                                    $scope.fechaProgresso();
-                                }
-                            }
+                    //if ($scope.disciplinasOfertadas.length > 0) {
+                        $scope.turma.periodo.id = parseInt($scope.turma.periodo.id);
+                        if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id && $scope.turma.periodo.id && $scope.agrupamentoSelecionado.id) {
+                            var novo = false;
+                            if ($scope.turma.id === undefined) { novo = true; }
+                            var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
+                            promise.then(function (response) { 
+                                $scope.turma = response.data; $scope.fechaProgresso();
+                                if (novo) { var disciPromise = Servidor.finalizar({disciplinasOfertadas:$scope.disciplinasOfertadas},'turmas/'+$scope.turma.id+'/disciplinas-ofertadas','Disciplinas'); $scope.fecharFormulario(); }
+                                $scope.fechaProgresso(); $scope.fecharFormulario();
+                            }, function (error) {
+                                Servidor.customToast(error.message);
+                                $scope.fechaProgresso(); $scope.fecharFormulario();
+                            });
+                        } else {
+                            Servidor.customToast("Campos obrigatórios não preenchidos");
+                            $scope.fechaProgresso();
                         }
-                    } else { Servidor.customToast("A etapa desta turma não possui disciplinas, escolha-as."); $scope.fechaProgresso(); }
+                    //} else { Servidor.customToast("A etapa desta turma não possui disciplinas, escolha-as."); $scope.fechaProgresso(); }
                 }
                 /*$scope.mostraLoader();
                 if (!etapaId) {
                     etapaId = $scope.etapa.id;
                 }
-                var promise = Servidor.buscar('disciplinas', {etapa: $scope.turma.etapa.id});
+                var promise = Servidor.buscar('disciplinas', {etapa: $sprcope.turma.etapa.id});
                 promise.then(function(response) {
                     if(response.data.length) {
                         $scope.turma.unidadeEnsino = {id: $scope.turma.unidadeEnsino.id};
@@ -794,55 +829,60 @@
                     }
                 });    */                    
             };
+            
+            $scope.buscarPeriodos = function(calendarioId,etapaId){
+                var promise = Servidor.buscarUm('etapas',etapaId);
+                promise.then(function(response){
+                    if (!response.data.integral) { $scope.integral = false; }
+                    $scope.periodoLabel = response.data.sistemaAvaliacao.regime.unidade; $scope.mostraPeriodo = true;
+                    var promisePeriodos = Servidor.buscar('periodos',{calendario: calendarioId});
+                    promisePeriodos.then(function(response){ 
+                        $scope.periodos = response.data;
+                        $timeout(function(){ $("#periodoTurmaFormulario").material_select('destroy'); $("#periodoTurmaFormulario").material_select(); },500);
+                    });
+                }); 
+            };
 
             /* CARREGA TURMA PARA EDIÇÃO */
             $scope.carregarTurma = function (turma, opcao) {
-                window.scrollTo(0, 0);
-                $('#turmaForm').show(); $('#form').addClass('active'); $scope.trocarTab('form');
+                //window.scrollTo(0, 0);
+                $scope.periodos = []; $('#turmaForm').show(); $('#form').addClass('active'); $scope.trocarTab('form'); $scope.endTurma = false;
                 $('#nome').focus(); $('div').find('.unidade-banner').removeClass('topo-pagina');
                 Servidor.verificaLabels(); $scope.mostraEnturmacoes = false;
                 $scope.opcaoForm = 'turma'; $scope.mostraLoader();
-                if (turma) { $scope.disciplinas = []; $scope.integral = true;
-                    $('#alunos').removeClass('botao-desabilitado'); $('#professores').removeClass('botao-desabilitado');
-                    $('#grade').removeClass('botao-desabilitado'); $('#alunos').addClass('yellow waves-effect');
-                    $('#professores').addClass('green waves-effect'); $('#quadro').addClass('blue white-text waves-effect');
-                    $('.material-icons').removeClass('cor-botao-desabilitado');
+                if (turma) { 
+                    $scope.disciplinas = []; $scope.integral = true;
+                    $('#alunos').removeClass('botao-desabilitado'); $('#professores').removeClass('botao-desabilitado'); $('#grade').removeClass('botao-desabilitado'); $('#alunos').addClass('yellow waves-effect');
+                    $('#professores').addClass('green waves-effect'); $('#quadro').addClass('blue white-text waves-effect'); $('.material-icons').removeClass('cor-botao-desabilitado');
                     $scope.acao = "Editar";
                     var promise = Servidor.buscarUm('turmas', turma.id);
                     promise.then(function (result) {
-                        $scope.quadroHorariosCompativeis = [];
-                        $scope.quadroHorariosCompativeis.push(result.data.quadroHorario);
+                        $scope.quadroHorariosCompativeis = []; $scope.quadroHorariosCompativeis.push(result.data.quadroHorario);
                         $scope.turma = result.data; $('#tabAlunos, #tabQuadro, #tabProfessores').removeClass('disabled');
                         $timeout(function () {
-                            $scope.unidade.id = $scope.turma.unidadeEnsino.id; $scope.cursoTurma.id = $scope.turma.etapa.curso.id;
-                            $scope.curso.id = $scope.turma.etapa.curso.id; $scope.etapa.id = $scope.turma.etapa.id;
-                            $scope.buscarEtapas($scope.turma.etapa.curso.id);
-                            if (!$scope.turma.etapa.integral) { $scope.buscaDisciplinaOfertada($scope.turma.etapa.id); }
-                            $scope.nomeUnidade = $scope.turma.unidadeEnsino.nome;                            
-                            $scope.editando = true; $('#voltar').show();
-                            $scope.mostraForm = true; $scope.formTurma = true;
-                            $scope.buscarCalendarios($scope.turma.unidadeEnsino.id);
-                            $scope.buscarQuadroHorarios();
-                            $scope.buscarTurnos();
-                            if (opcao) {
-                                $scope.trocarTab(opcao);
-                                $scope.origemBotao = false;
-                            } else {
-                                $scope.origemBotao = true;
-                            }
-                            $timeout(function () {
-                                $('#nome').focus(); $('#unidade, #curso, #etapaForm').material_select('destroy');
-                                $('#unidade, #curso, #etapaForm').material_select();
-                                Servidor.verificaLabels(); $scope.fechaLoader();
-                            }, 300);
+                            $scope.unidade.id = $scope.turma.unidadeEnsino.id; 
+                            var promise = Servidor.buscarUm('etapas',$scope.turma.etapa.id);
+                            promise.then(function(response){
+                                $scope.cursoTurma.id = response.data.curso.id;
+                                $scope.curso.id = response.data.curso.id; $scope.etapa.id = $scope.turma.etapa.id;
+                                $scope.buscarEtapas(response.data.curso.id);
+                                //if (!response.data.integral) { $scope.buscaDisciplinaOfertada(response.data.id); $scope.buscarPeriodos(result.data.calendario.id, result.data.etapa.id); }
+                                if (!response.data.integral) { $scope.buscarPeriodos($scope.turma.calendario.id, response.data.id); $scope.integral = false; }
+                                $scope.nomeUnidade = $scope.turma.unidadeEnsino.nomeCompleto;
+                                $scope.editando = true; $('#voltar').show(); $scope.mostraForm = true; $scope.formTurma = true;
+                                $scope.buscarCalendarios($scope.turma.unidadeEnsino.id);
+                                $scope.buscarQuadroHorarios(); $scope.buscarTurnos();
+                                if (opcao) { $scope.trocarTab(opcao); $scope.origemBotao = false; } else { $scope.origemBotao = true; }
+                                $timeout(function () { $('#nome').focus(); $('select').material_select('destroy'); $('select').material_select(); Servidor.verificaLabels(); $scope.fechaLoader(); }, 800);
+                            });
                         }, 500);
                     });
                 } else {
                     $scope.acao = "Cadastrar"; $('#alunos').removeClass('yellow waves-effect'); $scope.disciplinas = []; $scope.integral = true;
                     $('#professores').removeClass('green waves-effect'); $('#quadro').removeClass('blue waves-effect');
                     $('#alunos').addClass('botao-desabilitado'); $('#professores').addClass('botao-desabilitado');
-                    $('#quadro').addClass('botao-desabilitado'); $('.ico-btn-turma').addClass('cor-botao-desabilitado');
-                    $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {'id': null}, 'turno': {'id': null}, 'etapa': {'id': $scope.turmaBusca.etapa.id, curso: {'id': $scope.turmaBusca.curso.id}}, 'unidadeEnsino': {'id': $scope.unidade.id}, 'quadroHorario': {'id': null} };
+                    $('#quadro').addClass('botao-desabilitado'); $('.ico-btn-turma').addClass('cor-botao-desabilitado'); //$("#calendarioTurmaForm").attr('disabled','');
+                    $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {'id': null}, 'turno': {'id': null}, 'etapa': {'id': $scope.turmaBusca.etapa.id, curso: {'id': $scope.turmaBusca.curso.id}}, 'unidadeEnsino': {'id': $scope.unidade.id}, 'quadroHorario': {'id': null}, 'periodo': {id: null} };
                     $timeout(function(){
                         $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
                     },100);
@@ -851,22 +891,16 @@
                         $scope.editando = true; $('#voltar').show();
                         $scope.mostraForm = true; $scope.formTurma = true;
                         if ($scope.turmaBusca.etapa.id !== undefined && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.etapa.id !== "") { $scope.buscaDisciplinaOfertada($scope.turmaBusca.etapa.id); }
-                        $scope.buscarCalendarios();
-                        $scope.buscarQuadroHorarios();
-                        $scope.buscarTurnos();
-			$scope.buscarUnidades();
-                        if (opcao) {
-                            $scope.trocarTab(opcao);
-                            $scope.origemBotao = false;
-                        } else {
-                            $scope.origemBotao = true;
-                        }
-                        $timeout(function () {
-                            $('#nome').focus(); $('#unidade, #curso, #etapaForm').material_select('destroy');
-                            $(' #unidade, #curso, #etapaForm').material_select();
-                        }, 300);
+                        $scope.buscarCalendarios(); $scope.buscarQuadroHorarios(); $scope.buscarTurnos();
+			if ($scope.isAdmin) { $scope.buscarUnidades(); }
+                        if (opcao) { $scope.trocarTab(opcao); $scope.origemBotao = false; } else { $scope.origemBotao = true; }
+                        $timeout(function () { $('#nome').focus(); $('select').material_select('destroy'); $('select').material_select(); }, 1000);
                     }, 500);
                 }                
+            };
+
+            $scope.calendarioPreenchido = function() {
+                console.log($scope.turma.id);
             };
 
             /* BUSCA DISCIPLINAS DE ACORDO COM OS VINCULOS */
@@ -1285,7 +1319,7 @@
                 } else {
                     $scope.enturmarAlunosDireto = false;
                 }
-                var promise = Servidor.buscarUm('turmas', turma.id);
+               var promise = Servidor.buscarUm('turmas', turma.id);
                 promise.then(function (response) {
                     $scope.turma = response.data;
                     var promise = Servidor.buscar('vagas', {turma: $scope.turma.id});
@@ -1417,8 +1451,20 @@
 
             $scope.enturmarMatriculas = function() {
                 $scope.mostraLoader();
-                $scope.requisicoes = 0;
-                var promise = Servidor.buscar('vagas', {turma: $scope.turma.id});
+                $scope.matriculas.forEach(function(m) {
+                    if ($('#'+m.codigo+'turma').prop('checked')) {
+                        var promise = Servidor.finalizar({
+                            matricula: {id: m.id},
+                            turma: {id: $scope.turma.id}
+                        }, 'enturmacoes', '');
+                        promise.then(function(response) {
+                            $scope.fechaLoader();
+                            $scope.buscarMatriculas($scope.matriculaBusca, true);
+                        });
+                    }
+                });
+                //$scope.buscarEnturmacoes($scope.turma, false);
+                /*var promise = Servidor.buscar('vagas', {turma: $scope.turma.id});
                 promise.then(function(response) {
                     var vagas = response.data;
                     $scope.matriculas.forEach(function(m) {
@@ -1441,7 +1487,7 @@
                                         promise.then(function() {
                                             if (--$scope.requisicoes === 0) {
                                                 $scope.fechaLoader();
-                                                $scope.buscarEnturmacoes($scope.turma, true);
+                                                
                                             }
                                         });
                                     }
@@ -1449,7 +1495,7 @@
                             });
                         }
                     });
-                });
+                });*/
             };
 
             $scope.separarAprovadosReprovados = function() {
@@ -1649,23 +1695,26 @@
                 promise.then(function(response) {
                     $scope.disciplinasOfertadas = response.data;
                 });
-                $scope.matriculaBusca.curso = $scope.turma.etapa.curso.id;
-                $scope.matriculaBusca.unidade = $scope.turma.unidadeEnsino.id;
-                $scope.mostraLoader();
-                $scope.adicionarAlunos = true;
-                var promise = Servidor.buscar('matriculas', {'status': 'CURSANDO', 'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
-                    'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso});
-                promise.then(function (response) {
-                    if(response.data.length){
-                        $scope.matriculasVerificar = response.data;
-//                            $scope.fechaLoader();
-//                            $scope.verificarDisciplinasCursadas();
-                        $scope.alunosCompativeisSelecionados = 0;
-                        $scope.enturmacoesEncerradas(response.data);                        
-                    }else{
-                        $scope.fechaLoader();
-                        Servidor.customToast('Nenhuma matricula encontrada.');
-                    }
+                var promise = Servidor.buscarUm('etapas',$scope.turma.etapa.id);
+                promise.then(function(response){                    
+                    $scope.matriculaBusca.curso = response.data.curso.id;
+                    $scope.matriculaBusca.unidade = $scope.turma.unidadeEnsino.id;
+                    $scope.mostraLoader();
+                    $scope.adicionarAlunos = true;
+                    var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
+                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso});
+                    promise.then(function (response) {
+                        if(response.data.length){
+                            $scope.matriculasVerificar = response.data;
+    //                            $scope.fechaLoader();
+    //                            $scope.verificarDisciplinasCursadas();
+                            $scope.alunosCompativeisSelecionados = 0;
+                            $scope.enturmacoesEncerradas(response.data);
+                        }else{
+                            $scope.fechaLoader();
+                            Servidor.customToast('Nenhuma matricula encontrada.');
+                        }
+                    });
                 });
             };
 
@@ -1686,23 +1735,34 @@
 
             $scope.enturmacoesEncerradas = function(matriculas) {
                 var compativeis = [];
-                $scope.requisicoes = 0;
+                $scope.requisicoes = 0; $scope.matriculas = [];
                 matriculas.forEach(function(m) {
                     $scope.requisicoes++;
-                    var promise = Servidor.buscar('enturmacoes', {matricula: m.id, encerrado: 0});
+                    //var promise = Servidor.buscar('enturmacoes', {matricula: m.id, encerrado: 0});
+                    var promise = Servidor.buscar('enturmacoes', {matricula: m.id});
                     promise.then(function(response) {
-                        if (!response.data.length) {
-                            compativeis.push(m);
-                        }
-                        if (--$scope.requisicoes === 0) {
-                            if (compativeis.length) {
-                                $scope.alunosDisciplinasCompativeis(compativeis);
+                        if (response.data.length === 0) {
+                            $scope.matriculas.push(m);
+                            $scope.fechaLoader();
+                        } else {
+                            response.data.forEach(function(res, i){
+                                if (!res.isEmAndamento) { $scope.matriculas.push(m); }
+                            });
+                            //$scope.matriculas = response.data;
+                            $scope.fechaLoader();
+                            /*if (!response.data.length) {
+                                compativeis.push(m);
+                            }
+                            if (--$scope.requisicoes === 0) {
+                                if (compativeis.length) {
+                                    $scope.alunosDisciplinasCompativeis(compativeis);
+                                } else {
+                                    $scope.fechaLoader();
+                                    Servidor.customToast('Nenhuma matrícula compatível encontrada.');
+                                }
                             } else {
                                 $scope.fechaLoader();
-                                Servidor.customToast('Nenhuma matrícula compatível encontrada.');
-                            }
-                        } else {
-                            $scope.fechaLoader();
+                            }*/
                         }
                     });
                 });
@@ -3093,7 +3153,8 @@
                     $('#modal-justificativa').openModal();
                 }, 100);
             };
-
+            
+            $scope.nomeUnidade2 = null;
             $scope.buscarDisciplinasCursadas = function (id, etapa) {
                 var promise = Servidor.buscar('matriculas/' + id + '/disciplinas-cursadas', {'etapa': etapa});
                 promise.then(function (response) {
@@ -3149,7 +3210,8 @@
                     'turno': {id: null},
                     'etapa': {id: null},
                     'unidadeEnsino': {id: null},
-                    'quadroHorario': {id: null}
+                    'quadroHorario': {id: null},
+                    'periodo': {id: null}
                 };
                 $scope.frequencia = {
                     'turma': {id: null},
@@ -3190,6 +3252,9 @@
 
             /*Volta a pagina fechando o formulario*/
             $scope.fecharFormulario = function () {
+                $scope.turma = { 'nome': '', 'apelido': '', 'calendario': {id: null}, 'limiteAlunos': null, 'turno': {id: null}, 'etapa': {id: null}, 'unidadeEnsino': {id: null}, 'quadroHorario': {id: null}, 'periodo': {id: null} }; // ESTRUTURA DE TURMA
+                $scope.enturmacoesNotas = [];
+                $scope.nomeUnidade2 = null;
                 $scope.mostraProfessores = false;
                 $scope.ativaTab = false;
                 $scope.formTurma = false;

@@ -28,6 +28,7 @@
 
 namespace CursoBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\DisciplinaCursada;
@@ -37,12 +38,13 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
     
-    function getEntityClass() {
-        return 'CursoBundle:DisciplinaOfertada';
+    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        parent::__construct($doctrine);
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
     
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+    function getEntityClass() {
+        return 'CursoBundle:DisciplinaOfertada';
     }
     
     function queryAlias() {
@@ -52,12 +54,10 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
     function parameterMap() {
         return array (
             'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value);
+                $qb->andWhere('d.turma = :turma')->setParameter('turma', $value);
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.disciplina', 'disciplina')
-                   ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
+                $qb->andWhere('d.disciplina = :disciplina')->setParameter('disciplina', $value);
             }
         );
     }

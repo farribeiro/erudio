@@ -62,6 +62,7 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column
     */
     private $peso;
@@ -127,10 +128,8 @@ class Media extends AbstractEditableEntity {
                 : [];
     }
     
-    function removeNota($nota) {
-        if($this->notas->contains($nota)) {  
-            $this->notas->removeElement($nota);
-        }        
+    function removeNota($nota) {   
+        $this->notas->removeElement($nota);
     }
     
     function resetar() {

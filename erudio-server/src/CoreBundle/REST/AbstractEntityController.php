@@ -28,10 +28,10 @@
 
 namespace CoreBundle\REST;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\NoResultException;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
@@ -44,41 +44,59 @@ use CoreBundle\ORM\Exception\UniqueViolationException;
 * Controlador REST que serve como base aos demais.
 * Oferece os métodos CRUD já implementados, usando a classe Facade retornada pelo método getFacade.
 */
-abstract class AbstractEntityController extends Controller {
+abstract class AbstractEntityController {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
-    const SERIALIZER_MAX_DEPTH = 3;
+    const SERIALIZER_DEFAULT_GROUPS = ['LIST', 'DETAILS'];
+    const SERIALIZER_MAX_DEPTH = 4;
+    
     const LINK_HEADER = 'Link';
     const PAGE_PARAM = 'page';
+    const VIEW_PARAM = 'view';
     
+    private $entityFacade;
     private $viewHandler;
+    
+    function __construct(AbstractFacade $entityFacade, ViewHandlerInterface $viewHandler = null) {
+        $this->entityFacade = $entityFacade;
+        $this->viewHandler = $viewHandler;
+    }
     
     function setViewHandler(ViewHandlerInterface $viewHandler) {
         $this->viewHandler = $viewHandler;
     }
     
-    abstract function getFacade();
+    function getFacade() {
+        return $this->entityFacade;
+    }
     
-    function getOne(Request $request, $id) {
+    function getOne(Request $request, $id, $viewGroup = null) {
+        $viewGroups = self::SERIALIZER_DEFAULT_GROUPS;
+        if ($viewGroup) {
+            $viewGroups[] = $viewGroup;
+        }
         try {
             $entidade = $this->getFacade()->find($id);
             $view = View::create($entidade, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
-        } catch(\Exception $ex) {
-            $view = View::create(null, Response::HTTP_NOT_FOUND);
+            $this->configureContext($view->getContext(), $viewGroups);
+        } catch(NoResultException $ex) {
+            throw new NotFoundHttpException();
         }
         return $this->handleView($view);
     }
 
     function getList(Request $request, array $params) {
         $page = key_exists(self::PAGE_PARAM, $params) ? $params[self::PAGE_PARAM] : null;
+        $viewGroups = key_exists(self::VIEW_PARAM, $params) 
+                ? [self::SERIALIZER_GROUP_LIST, $params[self::VIEW_PARAM]]
+                : [self::SERIALIZER_GROUP_LIST];
         $resultados = $this->getFacade()->findAll($params, $page);
         $view = View::create($resultados, Response::HTTP_OK);
         if (!is_null($page)) {
             $this->addPageLinks($request, $view, $params, $page);
         }
-        $this->configureContext($view->getContext(), [self::SERIALIZER_GROUP_LIST]);
+        $this->configureContext($view->getContext(), $viewGroups);
         return $this->handleView($view);
     }
     
@@ -86,15 +104,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $entidadeCriada = $this->getFacade()->create($entidade);
-            $view = View::create($entidadeCriada, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        } catch (IllegalOperationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $entidadeCriada = $this->getFacade()->create($entidade);
+        $view = View::create($entidadeCriada, Response::HTTP_OK);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -102,13 +114,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $this->getFacade()->createBatch($entidades);
-            $view = View::create(null, Response::HTTP_NO_CONTENT);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->getFacade()->createBatch($entidades);
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -116,13 +124,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
-            $view = View::create($entidadeAtualizada, Response::HTTP_OK);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
+        $view = View::create($entidadeAtualizada, Response::HTTP_OK);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -130,13 +134,9 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        try {
-            $this->getFacade()->updateBatch($entidades);
-            $view = View::create(null, Response::HTTP_NO_CONTENT);
-            $this->configureContext($view->getContext());
-        } catch (UniqueViolationException $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
-        } 
+        $this->getFacade()->updateBatch($entidades);
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
@@ -145,9 +145,7 @@ abstract class AbstractEntityController extends Controller {
             $this->getFacade()->remove($id);
             $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch(NoResultException $ex) {
-            $view = View::create(null, Response::HTTP_NOT_FOUND);
-        } catch(\Exception $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new NotFoundHttpException();
         }
         return $this->handleView($view);
     }
@@ -169,17 +167,14 @@ abstract class AbstractEntityController extends Controller {
         return $this->handleView(View::create($errors, Response::HTTP_BAD_REQUEST));
     }
     
-    protected function configureContext($context, array $groups = 
-            [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]) {
-        $context->setGroups($groups);
+    protected function configureContext($context, array $viewGroups = null) {
+        $context->setGroups($viewGroups ? $viewGroups : [self::SERIALIZER_GROUP_LIST, self::SERIALIZER_GROUP_DETAILS]);
         $context->setMaxDepth(self::SERIALIZER_MAX_DEPTH);
         return $context;
     }
     
     protected function handleView(View $view) {
-        return $this->viewHandler === null 
-                ? $this->get('fos_rest.view_handler')->handle($view)
-                : $this->viewHandler->handle($view);
+        return $this->viewHandler->handle($view);
     }
     
 }

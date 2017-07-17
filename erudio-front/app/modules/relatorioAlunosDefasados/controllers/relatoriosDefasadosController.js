@@ -83,9 +83,10 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('RELATORIOS')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(promise.then(function(response){
-                        var user = response.data[0];
+                        var user = response.data;
                         for (var i=0; i<user.atribuicoes.length; i++) {
                             if (user.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(user.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
                             if (i === user.atribuicoes.length-1) {

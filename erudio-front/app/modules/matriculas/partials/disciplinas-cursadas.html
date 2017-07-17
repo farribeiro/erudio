@@ -26,7 +26,7 @@
 
 <div class="row" >
     <div class="col s12 m12 l12">
-        <!-- <div class="card-panel" data-ng-show="etapas.length">
+        <div class="card-panel" data-ng-show="etapas.length">
             <div class="row">
                 <div class="col s12" style="padding-top: 15px">
                     <div class="col s1" style="padding-left: 0px;">
@@ -81,8 +81,8 @@
                     </div>
                 </li>
             </ul>
-        </div> -->
-        <div class="card-panel" data-ng-show="escrita && !enturmacoes.length">
+        </div>
+        <!--<div class="card-panel" data-ng-show="escrita && !enturmacoes.length">
             <div class="row">                
                 <h4 style="padding: 1rem 0 0 1rem"> Escolher Etapa</h4>                
                 <div class="input-field col s12 m12 l12">
@@ -93,18 +93,18 @@
                     </select>
                     <label for="etapaFormMatricula" class="ajuste-select-top-label">Etapa que irá cursar*</label>
                 </div>
-                <div data-ng-show="disciplinasCursadas.length"><!--disciplinasOfertadas-->
+                <div data-ng-show="disciplinasCursadas.length"><!--disciplinasOfertadas
                     <small data-ng-show="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Etapa Integral, selecione as disciplinas optativas.</em></small>
                     <small data-ng-hide="etapaCurso.integral" class="obriga-campos"><em style="margin-left: -20px;" >Desmarque as disciplinas opcionais que não serão cursadas.</em></small>
                     <p data-ng-repeat="disciplina in disciplinasCursadas" style="margin: 5px">
-                        <input type="checkbox" class="filled-in" id="disc{{disciplina.disciplina.id}}" data-ng-click="selecionaDisciplina(disciplina)" checked="true"/><!--data-ng-checked="etapaCurso.integral"-->
+                        <input type="checkbox" class="filled-in" id="disc{{disciplina.disciplina.id}}" data-ng-click="selecionaDisciplina(disciplina)" checked="true"/><!--data-ng-checked="etapaCurso.integral"
                         <label for="disc{{disciplina.disciplina.id}}">{{disciplina.disciplina.nomeExibicao | uppercase}}</label><br/>
                     </p>
                 </div>
-                <!--<div class="col s12 right-align end-card">
+                <div class="col s12 right-align end-card">
                     <a data-ng-click="salvarDisciplinasCursadas()"class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>
-                </div>-->
+                </div>
             </div>
         </div>
-    </div>
+    </div>-->
 </div>

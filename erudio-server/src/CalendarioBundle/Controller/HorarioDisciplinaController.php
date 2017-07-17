@@ -40,14 +40,15 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\HorarioDisciplina;
+use CalendarioBundle\Service\HorarioDisciplinaFacade;
 
 /**
- * @FOS\RouteResource("horarios-disciplinas")
+ * @FOS\NamePrefix("horarios-disciplinas")
  */
 class HorarioDisciplinaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.horarios_disciplinas');
+    function __construct(HorarioDisciplinaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

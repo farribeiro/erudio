@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\ModeloQuadroHorario;
+use CalendarioBundle\Service\ModeloQuadroHorarioFacade;
 
 /**
- * @FOS\RouteResource("modelo-quadro-horarios")
+ * @FOS\NamePrefix("modelo-quadro-horarios")
  */
 class ModeloQuadroHorarioController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.modelos_quadro_horario');
+    function __construct(ModeloQuadroHorarioFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

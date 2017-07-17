@@ -1,8 +1,5 @@
-parameters:
-    user_provider.class: AuthBundle\Service\UserProvider
-    md5_encoder.class: AuthBundle\Service\MD5Encoder
-
 services:
+    
     _defaults:
         autowire: true
         autoconfigure: true
@@ -17,10 +14,8 @@ services:
         tags: ['controller.service_arguments']
         calls:
           - [setViewHandler, ["@fos_rest.view_handler"]]
+          
+    AuthBundle\Controller\AuthenticationController:
+        public: true
+        tags: ['controller.service_arguments']
     
-    user_provider:
-      class: "%user_provider.class%"
-      arguments: ["@doctrine"]
-      
-    md5_encoder:
-      class: "%md5_encoder.class%"

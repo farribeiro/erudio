@@ -28,6 +28,7 @@
 
 namespace CalendarioBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CalendarioBundle\Entity\HorarioDisciplina;
@@ -36,7 +37,8 @@ class HorarioDisciplinaFacade extends AbstractFacade {
     
     private $aulaFacade;
     
-    function setAulaFacade(AulaFacade $aulaFacade) {
+    function __construct(RegistryInterface $doctrine, AulaFacade $aulaFacade) {
+        parent::__construct($doctrine);
         $this->aulaFacade = $aulaFacade;
     }
     

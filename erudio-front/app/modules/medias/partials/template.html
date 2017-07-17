@@ -88,12 +88,12 @@
                         <label for="turma">Turma</label>
                     </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
-                        <i class="material-icons prefix">iso</i>
+                        <div data-ng-hide="umaMediaEtapa"><i class="material-icons prefix">iso</i>
                         <select id="media" data-ng-model="turmaBusca.media.id" data-ng-disabled="!medias.length">
                             <option selected></option> 
                             <option data-ng-selected="medias.length === 1" value="{{ media.id }}" data-ng-repeat="media in medias | orderBy: 'nome'">{{ media.nome }}</option>
                         </select>
-                        <label for="media">Média</label>
+                        <label for="media">Média</label></div>
                     </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="(Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')) && !frequenciaUnificada">
                         <i class="material-icons prefix">import_contacts</i>
@@ -160,14 +160,6 @@
                         </select>
                         <label for="turmaNota">Turma</label>
                     </div>
-                    <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
-                        <i class="material-icons prefix">iso</i>
-                        <select id="mediaNota" data-ng-model="turmaBusca.media.id" data-ng-disabled="!medias.length">
-                            <option selected></option> 
-                            <option data-ng-selected="medias.length === 1" value="{{ media.id }}" data-ng-repeat="media in medias | orderBy: 'nome'">{{ media.nome }}</option>
-                        </select>
-                        <label for="mediaNota">Média</label>
-                    </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="(Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA'))">
                         <i class="material-icons prefix">import_contacts</i>
                         <select id="disciplinaNota" data-ng-model="turmaBusca.disciplina.id" data-ng-disabled="!disciplinasTurma.length">
@@ -175,6 +167,14 @@
                             <option data-ng-selected="disciplinasTurma.length === 1" value="{{ disciplina.id }}" data-ng-repeat="disciplina in disciplinasTurma | orderBy: 'nome'">{{ disciplina.nomeExibicao }}</option>
                         </select>
                         <label for="disciplinaNota">Disciplina</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                        <div data-ng-hide="umaMediaEtapa"><i class="material-icons prefix">iso</i>
+                        <select id="mediaNota" data-ng-model="turmaBusca.media.id" data-ng-disabled="!medias.length">
+                            <option selected></option> 
+                            <option data-ng-selected="medias.length === 1" value="{{ media.id }}" data-ng-repeat="media in medias | orderBy: 'nome'">{{ media.nome }}</option>
+                        </select>
+                        <label for="mediaNota">Média</label></div>
                     </div>
                     <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px;">
                         <a data-ng-click="reiniciarBusca()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>

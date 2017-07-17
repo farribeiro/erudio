@@ -42,15 +42,9 @@ use VinculoBundle\Service\VinculoFacade;
  * @FOS\NamePrefix("vinculos")
  */
 class VinculoController extends AbstractEntityController {
-    
-    private $vinculoFacade;
-    
-    function __construct(VinculoFacade $vinculoFacade) {
-        $this->vinculoFacade = $vinculoFacade;
-    }
-    
-    function getFacade() {
-        return $this->vinculoFacade;
+
+    function __construct(VinculoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

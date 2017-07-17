@@ -29,6 +29,7 @@
 namespace CoreBundle\ORM;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -47,14 +48,17 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 50;
+    const PAGE_SIZE = 150;
     
     protected $orm;
     protected $logger;
+    protected $eventDispatcher;
     
-    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null) {
+    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null, 
+            EventDispatcherInterface $eventDispatcher = null) {
         $this->orm = $doctrine;
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     abstract function getEntityClass();
@@ -128,14 +132,14 @@ abstract class AbstractFacade {
     * @param array $params
     * @return array entidades encontradas, ou um array vazio
     */
-    function findAll($params = [], $page = null) {
+    function findAll($params = [], $page = null, $limit = self::PAGE_SIZE) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
                 ->setFirstResult(self::PAGE_SIZE * $page)
                 ->getQuery()->getResult();
         }
-        return $this->buildQuery($params)->getQuery()->getResult();
+        return $this->buildQuery($params)->setMaxResults($limit)->getQuery()->getResult();
     }
 
     /**
@@ -296,6 +300,17 @@ abstract class AbstractFacade {
     }
     
     /**
+    * Define a string padrão a ser usada na cláusula select da query de busca. 
+    * Importante ressaltar que os joins necessários para carregar entidades associadas 
+    * devem ser realizados na query, tipicamente por meio do método prepareQuery.
+    * 
+    * @return array mapa de regras de unicidade
+    */
+    protected function selectMap() {
+        return [$this->queryAlias()];
+    }
+    
+    /**
     * 
     * @param type $id
     * @param type $entityClass
@@ -317,12 +332,13 @@ abstract class AbstractFacade {
     * @return type
     */
     protected function buildQuery(array $params) {
-        $qb = $this->orm->getRepository($this->getEntityClass())
-            ->createQueryBuilder($this->queryAlias())
+        $qb = $this->orm->getManager()->createQueryBuilder()
+            ->select($this->selectMap())
+            ->from($this->getEntityClass(), $this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
+            if(!is_null($v) && $v !== '' && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }

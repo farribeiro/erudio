@@ -34,6 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use CursoBundle\Service\CursoFacade;
 use CursoBundle\Service\CursoOfertadoFacade;
 use MatriculaBundle\Service\EnturmacaoFacade;
@@ -43,24 +44,14 @@ class AlunoReportController extends Controller {
     private $cursoFacade;
     private $cursoOfertadoFacade;
     private $enturmacaoFacade;
+    private $logger;
     
     function __construct(CursoFacade $cursoFacade, CursoOfertadoFacade $cursoOfertadoFacade, 
-            EnturmacaoFacade $enturmacaoFacade) {
+            EnturmacaoFacade $enturmacaoFacade, LoggerInterface $logger) {
         $this->cursoFacade = $cursoFacade;
         $this->cursoOfertadoFacade = $cursoOfertadoFacade;
         $this->enturmacaoFacade = $enturmacaoFacade;
-    }
-    
-    function getCursoFacade() {
-        return $this->cursoFacade;
-    }
-
-    function getCursoOfertadoFacade() {
-        return $this->cursoOfertadoFacade;
-    }
-
-    function getEnturmacaoFacade() {
-        return $this->enturmacaoFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -78,8 +69,8 @@ class AlunoReportController extends Controller {
     */
     function defasadosNominalPorCursoAction(Request $request) {
         try {
-            $curso = $this->getCursoFacade()->find($request->query->getInt('curso'));
-            $ofertados = $this->getCursoOfertadoFacade()->findAll(['curso' => $curso->getId()]);
+            $curso = $this->cursoFacade->find($request->query->getInt('curso'));
+            $ofertados = $this->cursoOfertadoFacade->findAll(['curso' => $curso->getId()]);
             $relatorios = [];
             foreach ($ofertados as $c) {
                 $relatorios[] = $this->gerarRelatorioDefasados($c);
@@ -89,7 +80,7 @@ class AlunoReportController extends Controller {
                 'relatorios' => $relatorios
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -109,22 +100,27 @@ class AlunoReportController extends Controller {
     */
     function defasadosNominalPorCursoOfertadoAction(Request $request) {
         try {
-            $cursoOfertado = $this->getCursoOfertadoFacade()->find($request->query->getInt('curso'));
+            $cursoOfertado = $this->cursoOfertadoFacade->find($request->query->getInt('curso'));
             $relatorio = $this->gerarRelatorioDefasados($cursoOfertado);
             return $this->render('reports/aluno/defasadosNominal.pdf.twig', [
                 'instituicao' => $cursoOfertado->getUnidadeEnsino(),
                 'relatorios' => [$relatorio]
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
     
+    /**
+     * 
+     * @param type $cursoOfertado
+     * @return type
+     */
     private function gerarRelatorioDefasados($cursoOfertado) {
         $relatorio = ['unidadeEnsino' => $cursoOfertado->getUnidadeEnsino(), 'alunosPorEtapa' => []];
         foreach ($cursoOfertado->getCurso()->getEtapas() as $etapa) {
-            $enturmacoes = $this->getEnturmacaoFacade()->getAlunosDefasados($cursoOfertado, $etapa);
+            $enturmacoes = $this->enturmacaoFacade->getAlunosDefasados($cursoOfertado, $etapa);
             if (count($enturmacoes)) {
                 $relatorio['alunosPorEtapa'][$etapa->getNomeExibicao()] = $enturmacoes;
             }

@@ -56,7 +56,7 @@ class PermissaoGrupo extends AbstractEntity {
     
     /**
     * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Grupo")
+    * @ORM\ManyToOne(targetEntity = "Grupo", inversedBy = "permissoes")
     */
     private $grupo;
     

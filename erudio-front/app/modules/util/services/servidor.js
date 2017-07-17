@@ -66,7 +66,8 @@
         /* Prepara a chamada restangular */
         this.preparaRestangular = function () {
             var header = this.criarHeader();
-            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            var rest = Restangular;
             return rest;
         };
 
@@ -177,7 +178,7 @@
                     } else {
                         result = false;
                     }
-                }, function(error) { Toast.show('','', error.status); });
+                }, function(error) { Toast.show(error.data.error.message,'', error.data.error.code); });
             } else {
                 var promise = this.buscarPromise(endereco);
                 result = promise.post(objeto);
@@ -187,7 +188,7 @@
                     } else {
                         result = false;
                     }
-                }, function(error) { Toast.show('','', error.status); });
+                }, function(error) { Toast.show(error.data.error.message,'', error.data.error.code); });
             }
             return result;
         };
@@ -196,8 +197,8 @@
             resultado = $http({
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
-                data: objeto,
-                headers: {'X-WSSE': this.criarHeader()}
+                data: objeto
+                //headers: {'X-WSSE': this.criarHeader()}
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -213,8 +214,8 @@
             resultado = $http({
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
-                data: objeto,
-                headers: {'X-WSSE': this.criarHeader()}
+                data: objeto
+                //headers: {'X-WSSE': this.criarHeader()}
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -231,7 +232,8 @@
                 method: "DELETE",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
-                headers: {'Content-Type': 'application/json', 'X-WSSE': this.criarHeader()}
+                //headers: {'Content-Type': 'application/json', 'X-WSSE': this.criarHeader()}
+                headers: {'Content-Type': 'application/json'}
             });
             return resultado;
         };

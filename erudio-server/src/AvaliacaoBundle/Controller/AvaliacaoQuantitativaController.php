@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\AvaliacaoQuantitativa;
+use AvaliacaoBundle\Service\AvaliacaoQuantitativaFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes-quantitativas")
+ * @FOS\NamePrefix("avaliacoes-quantitativas")
  */
 class AvaliacaoQuantitativaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.avaliacoes_quantitativas');
+    function __construct(AvaliacaoQuantitativaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

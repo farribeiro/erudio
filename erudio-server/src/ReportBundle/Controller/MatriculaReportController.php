@@ -34,18 +34,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use MatriculaBundle\Service\MatriculaFacade;
 
 class MatriculaReportController extends Controller {
     
     private $matriculaFacade;
+    private $logger;
     
-    function __construct(MatriculaFacade $matriculaFacade) {
+    function __construct(MatriculaFacade $matriculaFacade, LoggerInterface $logger) {
         $this->matriculaFacade = $matriculaFacade;
-    }
-
-    function getMatriculaFacade() {
-        return $this->matriculaFacade;
+        $this->logger= $logger;
     }
     
     /**
@@ -63,7 +62,7 @@ class MatriculaReportController extends Controller {
     */
     function atestadoAction(Request $request) {
         try {
-           $matricula = $this->getMatriculaFacade()->find($request->query->getInt('matricula'));
+           $matricula = $this->matriculaFacade->find($request->query->getInt('matricula'));
            $enturmacoes = $matricula->getEnturmacoesAtivas();
            $etapa = count($enturmacoes) 
                    ? $enturmacoes->first()->getTurma()->getEtapa()->getNomeExibicao() 
@@ -74,7 +73,7 @@ class MatriculaReportController extends Controller {
                 'etapa' => $etapa
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }

@@ -29,6 +29,7 @@
 namespace MatriculaBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
+use MatriculaBundle\Entity\Enturmacao;
 
 /**  
 * Classe para encapsular número de faltas em etapas de frequência unificada 
@@ -41,23 +42,47 @@ class RegistroFaltas {
     * @JMS\MaxDepth(depth = 3) 
     * @JMS\Type("MatriculaBundle\Entity\Enturmacao") 
     */
-    public $enturmacao;
+    private $enturmacao;
     
     /** 
      * @JMS\Groups({"LIST"})
      * @JMS\Type("integer") 
      */
-    public $media;
+    private $media;
     
     /** 
      * @JMS\Groups({"LIST"})
      * @JMS\Type("integer") 
      */
-    public $faltas;
+    private $faltas;
     
     function __construct($enturmacao = null, $media = 1, $faltas = 0) {
         $this->enturmacao = $enturmacao;
         $this->media = $media;
+        $this->faltas = $faltas;
+    }
+    
+    function getEnturmacao() {
+        return $this->enturmacao;
+    }
+
+    function getMedia() {
+        return $this->media;
+    }
+
+    function getFaltas() {
+        return $this->faltas;
+    }
+
+    function setEnturmacao(Enturmacao $enturmacao) {
+        $this->enturmacao = $enturmacao;
+    }
+
+    function setMedia($media) {
+        $this->media = $media;
+    }
+
+    function setFaltas($faltas) {
         $this->faltas = $faltas;
     }
     

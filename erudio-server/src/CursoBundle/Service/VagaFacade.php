@@ -44,17 +44,14 @@ class VagaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'turma' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('t.turma = :turma')->setParameter('turma', $value);
-            },
-            'solicitacaoVaga' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('t.solicitacaoVaga = :solicitacaoVaga')->setParameter('solicitacaoVaga', $value);
             },
             'enturmacao' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('t.enturmacao = :enturmacao')->setParameter('enturmacao', $value);
             }
-        );
+        ];
     }
     
     function liberar(Vaga $vaga) {

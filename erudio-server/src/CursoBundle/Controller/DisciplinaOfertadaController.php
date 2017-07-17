@@ -37,14 +37,19 @@ use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\DisciplinaOfertada;
+use CursoBundle\Service\DisciplinaOfertadaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("disciplinas-ofertadas")
+ * @FOS\NamePrefix("disciplinas-ofertadas")
  */
 class DisciplinaOfertadaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
+    private $turmaFacade;
+    
+    function __construct(DisciplinaOfertadaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
 
     
@@ -102,7 +107,7 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     *  @ParamConverter("batch", converter="fos_rest.request_body")
     */
     function postBatchAction(Request $request, $turma, DisciplinaOfertadaCollection $batch, ConstraintViolationListInterface $errors) {
-        $turmaDisciplina = $this->get('facade.curso.turmas')->find($turma);
+        $turmaDisciplina = $this->turmaFacade->find($turma);
         foreach ($batch->disciplinasOfertadas as $d) {
             $d->setTurma($turmaDisciplina);
         }

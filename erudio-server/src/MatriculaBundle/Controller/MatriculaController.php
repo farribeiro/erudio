@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Matricula;
+use MatriculaBundle\Service\MatriculaFacade;
 
 /**
  * @FOS\RouteResource("matriculas")
  */
 class MatriculaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.matricula.matriculas');
+    function __construct(MatriculaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -61,12 +62,14 @@ class MatriculaController extends AbstractEntityController {
     * @FOS\Get("matriculas")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "codigo", nullable = true) 
-    * @FOS\QueryParam(name = "aluno_nome", nullable = true) 
+    * @FOS\QueryParam(name = "aluno_nome", nullable = true)
+    * @FOS\QueryParam(name = "aluno_dataNascimento", nullable = true)
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "aluno", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "enturmado", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

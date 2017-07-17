@@ -43,14 +43,8 @@ use VinculoBundle\Service\AlocacaoFacade;
  */
 class AlocacaoController extends AbstractEntityController {
     
-    private $alocacaoFacade;
-    
-    function __construct(AlocacaoFacade $alocacaoFacade) {
-        $this->alocacaoFacade = $alocacaoFacade;
-    }
-    
-    function getFacade() {
-        return $this->alocacaoFacade;
+    function __construct(AlocacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

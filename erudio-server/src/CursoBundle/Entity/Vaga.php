@@ -41,7 +41,7 @@ class Vaga extends AbstractEditableEntity {
         
     /**        
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "Turma")
+    * @ORM\ManyToOne(targetEntity = "Turma", inversedBy = "vagas")
     */
     private $turma;
     

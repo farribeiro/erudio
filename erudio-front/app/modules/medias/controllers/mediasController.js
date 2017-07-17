@@ -61,7 +61,7 @@
         
         //REINICIA A BUSCA
         $scope.reiniciarBusca = function () {
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; }
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; } $scope.umaMediaEtapa = true;
             $scope.nomeUnidade = null; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.etapas = []; $scope.disciplinasTurma = [];
             $scope.notasBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.turmas = []; $scope.medias = [];
             $timeout(function () { $('select').material_select('destroy'); $('select').material_select(); }, 100);
@@ -83,9 +83,10 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
                             for (var i=0; i<$scope.atribuicoes.length; i++) {
                                 if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } 
@@ -101,20 +102,23 @@
         };
         
         //CARREGA MEDIAS
-        $scope.medias = [];
+        $scope.medias = []; $scope.mostraMedia = 1; $scope.umaMediaEtapa = true;
         $scope.buscarMedias = function (id) {
             var promise = Servidor.buscarUm('etapas',id);
             promise.then(function(response){
-                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.turmaBusca.media.id = null;
+                if (response.data.sistemaAvaliacao.quantidadeMedias === 1) { $scope.umaMediaEtapa = true; } else { $scope.umaMediaEtapa = false; }
+                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.mostraMedia = response.data.sistemaAvaliacao.quantidadeMedias-1; $scope.turmaBusca.media.id = null;
                 if (response.data.frequenciaUnificada) { $scope.frequenciaUnificada = true; } else { $scope.frequenciaUnificada = false; }
                 var unidade = response.data.sistemaAvaliacao.regime.unidade; var medias = [];
                 var qtdeMedias = response.data.sistemaAvaliacao.quantidadeMedias;
-                for (var i=0; i<qtdeMedias; i++) { 
-                    var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
-                    if (i === qtdeMedias-1) { 
-                        $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                if (qtdeMedias > 1) {
+                    for (var i=0; i<qtdeMedias; i++) { 
+                        var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
+                        if (i === qtdeMedias-1) { 
+                            $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                        }
                     }
-                }
+                } else { $scope.turmaBusca.media.id = 1; }
             });
         };
         
@@ -172,7 +176,7 @@
             $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso();
             if ($scope.ativo === 'faltas') {
                 if ($scope.frequenciaUnificada) {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null) {
                         var promise = Servidor.buscar('medias/faltas', {'turma': $scope.turmaBusca.turma.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
@@ -182,7 +186,7 @@
                         });
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 } else {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
@@ -193,7 +197,7 @@
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 }
             } else {
-                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { 

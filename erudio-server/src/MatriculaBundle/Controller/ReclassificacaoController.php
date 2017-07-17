@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Reclassificacao;
+use MatriculaBundle\Service\ReclassificacaoFacade;
 
 /**
- * @FOS\RouteResource("reclassificacoes")
+ * @FOS\NamePrefix("reclassificacoes")
  */
 class ReclassificacaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.reclassificacoes');
+    function __construct(ReclassificacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

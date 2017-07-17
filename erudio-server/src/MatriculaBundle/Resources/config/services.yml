@@ -1,68 +1,16 @@
 services:
-    facade.matricula.matriculas:
-        class: MatriculaBundle\Service\MatriculaFacade
-        arguments: ["@doctrine"]
+    
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    MatriculaBundle\:
+        resource: '../../{Service,Listener}'
+       
+    MatriculaBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
         calls:
-            - [setUsuarioFacade, ['@AuthBundle\Service\UsuarioFacade']]
-          
-    facade.matricula.disciplinas_cursadas:
-        class: MatriculaBundle\Service\DisciplinaCursadaFacade
-        arguments: ["@doctrine"]
-        calls:
-            - [setMediaFacade, ["@facade.matricula.medias"]]
-            
-    facade.matricula.enturmacoes:
-        class: MatriculaBundle\Service\EnturmacaoFacade
-        arguments: ["@doctrine", "@logger"]
-        calls:
-            - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
-            - [setVagaFacade, ["@facade.curso.vagas"]]
-        
-    facade.matricula.medias:
-        class: MatriculaBundle\Service\MediaFacade
-        arguments: ["@doctrine", "@logger"]
-      
-    facade.matricula.notas_quantitativas:
-        class: MatriculaBundle\Service\NotaQuantitativaFacade
-        arguments: ["@doctrine"]
-      
-    facade.matricula.notas_qualitativas:
-        class: MatriculaBundle\Service\NotaQualitativaFacade
-        arguments: ["@doctrine"]
-      
-    facade.matricula.notas_habilidades:
-        class: MatriculaBundle\Service\NotaHabilidadeFacade
-        arguments: ["@doctrine"]
-      
-    facade.matricula.frequencias:
-        class: MatriculaBundle\Service\FrequenciaFacade
-        arguments: ["@doctrine"]
-        
-    facade.matricula.movimentacoes_turma:
-        class: MatriculaBundle\Service\MovimentacaoTurmaFacade
-        arguments: ["@doctrine"]
-        calls:
-            - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
-          
-    facade.matricula.transferencias:
-        class: MatriculaBundle\Service\TransferenciaFacade
-        arguments: ["@doctrine"]
-        calls:
-            - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
-            - [setMediaFacade, ["@facade.matricula.medias"]]
-          
-    facade.matricula.desligamentos:
-        class: MatriculaBundle\Service\DesligamentoFacade
-        arguments: ["@doctrine"]
-        calls:
-            - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
-          
-    facade.matricula.reclassificacoes:
-        class: MatriculaBundle\Service\ReclassificacaoFacade
-        arguments: ["@doctrine"]
-        calls:
-            - [setEnturmacaoFacade, ["@facade.matricula.enturmacoes"]]
-          
-    facade.matricula.uniformes:
-        class: MatriculaBundle\Service\UniformeFacade
-        arguments: ["@doctrine"]
+          - [setViewHandler, ["@fos_rest.view_handler"]]

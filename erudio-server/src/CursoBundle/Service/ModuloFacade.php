@@ -47,8 +47,7 @@ class ModuloFacade extends AbstractFacade {
                 $qb->andWhere('m.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('m.curso = :curso')->setParameter('curso', $value);
             }
         ];
     }

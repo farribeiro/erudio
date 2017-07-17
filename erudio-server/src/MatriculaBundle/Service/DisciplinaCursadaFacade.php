@@ -28,6 +28,7 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Matricula;
@@ -42,7 +43,8 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     
     private $mediaFacade;
     
-    function setMediaFacade(MediaFacade $mediaFacade) {
+    function __construct(RegistryInterface $doctrine, MediaFacade $mediaFacade) {
+        parent::__construct($doctrine);
         $this->mediaFacade = $mediaFacade;
     }
     
@@ -81,8 +83,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.disciplinaOfertada', 'disciplinaOfertada')
-                   ->andWhere('disciplinaOfertada.id = :disciplinaOfertada')
+                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada')
                    ->setParameter('disciplinaOfertada', $value);
             }
         );

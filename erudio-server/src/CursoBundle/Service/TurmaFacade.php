@@ -28,34 +28,32 @@
 
 namespace CursoBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use CursoBundle\Entity\Vaga;
 use CursoBundle\Entity\Turma;
 use CursoBundle\Entity\DisciplinaOfertada;
-use MatriculaBundle\Service\DisciplinaCursadaFacade;
+use MatriculaBundle\Service\EnturmacaoFacade;
 
 class TurmaFacade extends AbstractFacade {
     
     private $disciplinaOfertadaFacade;
-    private $disciplinaCursadaFacade;
+    private $enturmacaoFacade;
     private $vagaFacade;
+    
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade, 
+            DisciplinaOfertadaFacade $disciplinaFacade, VagaFacade $vagaFacade) {
+        parent::__construct($doctrine);
+        $this->disciplinaOfertadaFacade = $disciplinaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->vagaFacade = $vagaFacade;
+    }
     
     function getEntityClass() {
         return 'CursoBundle:Turma';
-    }
-    
-    function setDisciplinaOfertadaFacade(DisciplinaOfertadaFacade $disciplinaOfertadaFacade) {
-        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
-    }
-    
-    function setDisciplinaCursadaFacade(DisciplinaCursadaFacade $disciplinaCursadaFacade) {
-        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
-    }
-    
-    function setVagaFacade(VagaFacade $vagaFacade) {
-        $this->vagaFacade = $vagaFacade;
     }
     
     function removerAgrupamento(Turma $turma) {
@@ -68,7 +66,7 @@ class TurmaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('t.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
@@ -83,38 +81,50 @@ class TurmaFacade extends AbstractFacade {
                 $qb->andWhere("t.status ${operator} :encerrado")->setParameter('encerrado', Turma::STATUS_ENCERRADO);
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('etapa.curso', 'curso')                   
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('curso = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+                $qb->andWhere('etapa = :etapa')->setParameter('etapa', $value);
             },
             'etapa_ordem' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('etapa.ordem = :ordemEtapa')->setParameter('ordemEtapa', $value);
             },
             'quadroHorario' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.quadroHorario', 'quadroHorario')
-                    ->andWhere('quadroHorario.id = :quadroHorario')->setParameter('quadroHorario', $value);
+                $qb->andWhere('t.quadroHorario = :quadroHorario')->setParameter('quadroHorario', $value);
             },
             'agrupamento' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.agrupamento', 'agrupamento')
-                    ->andWhere('agrupamento.id = :agrupamento')->setParameter('agrupamento', $value);
+                $qb->andWhere('agrupamento = :agrupamento')->setParameter('agrupamento', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('t.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')
-                   ->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             }
-        );
-    }    
+        ];
+    }
+    
+    protected function selectMap() {
+        return ['t', 'etapa', 'unidadeEnsino', 'turno', 'curso', 'sistemaAvaliacao', 'agrupamento'];
+    }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
         $qb->join('t.etapa', 'etapa')
+           ->join('t.unidadeEnsino', 'unidadeEnsino')
+           ->join('t.turno', 'turno')
+           ->leftJoin('t.agrupamento', 'agrupamento')
+           ->join('etapa.curso', 'curso')
+           ->join('etapa.sistemaAvaliacao', 'sistemaAvaliacao')
            ->addOrderBy('etapa.curso','ASC')
            ->addOrderBy('etapa.ordem','ASC')
            ->addOrderBy('t.nome', 'ASC');
     }
-        
+    
+    protected function beforeCreate($turma) {
+        if ($turma->getEtapa()->getIntegral() && $turma->getPeriodo()) {
+            throw new IllegalOperationException(
+                'Turmas de etapa integral não devem ser vinculadas a um período do calendário'
+            );
+        }
+    }
+    
     protected function beforeRemove($turma) {
         if ($turma->getEnturmacoes()->count() > 0) {
             throw new IllegalUpdateException(
@@ -188,17 +198,10 @@ class TurmaFacade extends AbstractFacade {
         } 
     }
  
-    private function finalizar(Turma $turma) {
-        foreach($turma->getDisciplinas() as $ofertada) {
-            $cursadas = $this->disciplinaCursadaFacade->findAll(['disciplinaOfertada' => $ofertada]);
-            foreach ($cursadas as $cursada) {
-                if ($cursada->emAberto()) {
-                    throw new IllegalUpdateException(
-                        'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
-                            . $cursada->getNomeExibicao(), IllegalUpdateException::ILLEGAL_STATE_TRANSITION
-                    );
-                }
-            }
+    function finalizar(Turma $turma) {
+        $turma->setStatus(Turma::STATUS_ENCERRADO);
+        foreach ($turma->getEnturmacoes() as $enturmacao) {
+            $this->enturmacaoFacade->finalizar($enturmacao);
         }
     }
     

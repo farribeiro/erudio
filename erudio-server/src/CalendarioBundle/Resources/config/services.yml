@@ -1,48 +1,16 @@
 services:
-    facade.calendario.calendarios:
-        class: CalendarioBundle\Service\CalendarioFacade
-        arguments: ["@doctrine"]
     
-    facade.calendario.dias:
-        class: CalendarioBundle\Service\DiaFacade
-        arguments: ["@doctrine"]
-        
-    facade.calendario.eventos:
-        class: CalendarioBundle\Service\EventoFacade
-        arguments: ["@doctrine"]
-        
-    facade.calendario.dias_evento:
-        class: CalendarioBundle\Service\DiaEventoFacade
-        arguments: ["@doctrine"]
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
     
-    facade.calendario.quadros_horario:
-        class: CalendarioBundle\Service\QuadroHorarioFacade
-        arguments: ["@doctrine"]
-    
-    facade.calendario.horarios:
-        class: CalendarioBundle\Service\HorarioFacade
-        arguments: ["@doctrine"]
-    
-    facade.calendario.horarios_disciplinas:
-        class: CalendarioBundle\Service\HorarioDisciplinaFacade
-        arguments: ["@doctrine"]
+    CalendarioBundle\:
+        resource: '../../{Service,Listener}'
+       
+    CalendarioBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
         calls:
-            - [setAulaFacade, ["@facade.calendario.aulas"]]
-      
-    facade.calendario.modelos_quadro_horario:
-        class: CalendarioBundle\Service\ModeloQuadroHorarioFacade
-        arguments: ["@doctrine"]  
-      
-    facade.calendario.aulas:
-      class: CalendarioBundle\Service\AulaFacade
-      arguments: ["@doctrine", "@logger"]
-      calls:
-        - [setHorarioDisciplinaFacade, ["@facade.calendario.horarios_disciplinas"]]
-        
-    facade.calendario.observacoes_aula:
-      class: CalendarioBundle\Service\AulaObservacaoFacade
-      arguments: ["@doctrine"]
-      
-    facade.calendario.periodos:
-        class: CalendarioBundle\Service\Periodo
-        arguments: ["@doctrine"]
+          - [setViewHandler, ["@fos_rest.view_handler"]]

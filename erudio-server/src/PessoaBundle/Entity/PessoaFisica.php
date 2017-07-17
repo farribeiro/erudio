@@ -29,7 +29,6 @@
 namespace PessoaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use PessoaBundle\Entity\Pessoa;
 use PessoaBundle\Entity\EstadoCivil;
@@ -359,7 +358,7 @@ class PessoaFisica extends Pessoa {
         $this->carteiraTrabalhoEstado = $carteiraTrabalhoEstado;
     }
     
-    function setParticularidades(ArrayCollection $particularidades) {
+    function setParticularidades($particularidades) {
         $this->particularidades = $particularidades;
     }
     

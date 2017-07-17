@@ -104,7 +104,8 @@
             'status': null,
             'codigo': null,
             'curso': null,
-            'unidade': null
+            'unidade': null,
+            'dataNascimento': null
         };
 
         $scope.disciplinaId = null;
@@ -191,7 +192,7 @@
                 'certidaoFormatada': null
             };
             $scope.matriculaBusca = {
-                'aluno': null, 'status': null,
+                'aluno': null, 'status': null, 'dataNascimento': null,
                 'codigo': null, 'curso': null, 'unidade': null
             };
         };
@@ -244,6 +245,7 @@
                         }
                     }
                 });
+                $('#nascAlunoMatricula').mask('99/99/9999');
                 $('.dropdown').dropdown({
                     inDuration: 300,
                     outDuration: 225,
@@ -415,11 +417,14 @@
                     }
                 }
                 if (matricula.codigo !== '' || matricula.aluno !== '' || matricula.unidade !== null || matricula.curso !== null || matricula.status !== null) {
-                    $scope.mostraProgresso();
+                    $scope.mostraProgresso(); var dataNasc = null;
+                    if (matricula.dataNascimento !== null) {
+                        dataNasc = dateTime.converterDataServidor(matricula.dataNascimento);
+                    }
                     //if(!$scope.isAdmin && (matricula.aluno || matricula.codigo)) { matricula.unidade = null; }
                     if ($scope.unidade.id === "") { matricula.unidade = null; } else { matricula.unidade = $scope.unidade.id; }
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
-                        'curso': matricula.curso, 'status': matricula.status});
+                        'curso': matricula.curso, 'status': matricula.status, 'aluno_dataNascimento': dataNasc});
                     promise.then(function (response) {
                         $('#btn-cadastro-matricula').show();
                         if (response.data.length === 0) {
@@ -971,9 +976,9 @@
                             }, 250);
                         });
                     } else {                        
-                        var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                        var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
 			promise.then(function(response) {
-				var user = response.data[0];
+				var user = response.data;
 				$scope.atribuicoes = user.atribuicoes;
 				$timeout(function () {
                                     var hasGeral = false;
@@ -993,7 +998,7 @@
                                                 });
                                             } else {
                                                 if (i === $scope.atribuicoes.length-1) {
-                                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; $scope.buscarCursos(); }
+                                                    if ($scope.unidades.length === 1) { $scope.unidade = $scope.unidades[0]; }//$scope.buscarCursos(); }
                                                     $timeout(function () { $('select').material_select('destroy'); $('select').material_select();$scope.fechaProgresso(); }, 500);
                                                 }
                                             }
@@ -1404,7 +1409,8 @@
                 'status': null,
                 'codigo': null,
                 'curso': null,
-                'unidade': $scope.matriculaBusca.unidade
+                'unidade': $scope.matriculaBusca.unidade,
+                'dataNascimento': null
             };
             if ($scope.isAdmin) {
                 $scope.matriculaBusca.unidade = null;
@@ -2113,6 +2119,7 @@
                         var enturmacoesAtivas = $scope.enturmacoes.filter(function(enturmacao) {
                             return !enturmacao.encerrado;
                         });
+                        $timeout(function(){ $('.collapsible').collapsible(); },500);
                         /*var promise = Servidor.buscar('disciplinas-cursadas', {matricula: $scope.matricula.id, status:'CURSANDO'});
                         promise.then(function(response) {
                             var disciplinasAtivas = response.data;
@@ -2181,8 +2188,7 @@
                             }
                         });  */                          
                     });
-                //break
-                //case 'disciplinas':
+                    
                     $scope.camposNovaEtapa = false;
                     $scope.mostraDisciplinas = true;
                     var promise = Servidor.buscar('etapas-ofertadas', {'curso': $scope.matricula.curso.id, 'unidadeEnsino': $scope.matricula.unidadeEnsino.id});
@@ -2212,6 +2218,38 @@
                                 }
                             });
                         });*/
+                    });
+                break
+                case 'disciplinas':
+                    $scope.camposNovaEtapa = false;
+                    $scope.mostraDisciplinas = true;
+                    var promise = Servidor.buscar('etapas-ofertadas', {'curso': $scope.matricula.curso.id, 'unidadeEnsino': $scope.matricula.unidadeEnsino.id});
+                    promise.then(function (response) {
+                        var etapas = response.data;
+                        $scope.possiveisEtapas = response.data;
+                        $timeout(function() { $('select').material_select(); }, 50);
+                        $scope.etapas = etapas;
+                        $scope.requisicoes = 0;
+                        etapas.forEach(function(e) {
+                            $scope.requisicoes++;
+                            var promise = Servidor.buscar('disciplinas-cursadas', {matricula: $scope.matricula.id, etapa: e.id});
+                            promise.then(function(response) {
+                                if (response.data.length) {
+                                    e.disciplinasCursadas = response.data;
+                                    var promise = Servidor.buscarUm('etapas', e.id);
+                                    promise.then(function(response) {
+                                        response.data.disciplinasCursadas = e.disciplinasCursadas;
+                                        $scope.etapas.push(response.data);
+                                        if (--$scope.requisicoes === 0) {
+                                            //$scope.camposNovaEtapa = $scope.verificaCadastroDisciplinas($scope.etapas);
+                                            $timeout(function(){ $('.collapsible').collapsible({ accordion : false });}, 50);
+                                        }
+                                    });
+                                } else {
+                                    $scope.requisicoes--;
+                                }
+                            });
+                        });
                     });
                 break
                 case 'pdf':
@@ -2252,38 +2290,46 @@
         };
 
         $scope.buscarMediasFrequenciasAluno = function(index) {
-            var botao = $('#btn-ent'+$scope.enturmacoes[index].id);
-            if (botao.text() === "keyboard_arrow_down") {
-                botao.text("keyboard_arrow_up");
-            } else {
-                botao.text("keyboard_arrow_down");
-            }
-            if ($scope.enturmacoes[index].matricula.disciplinas !== undefined) { return; }
-            $scope.requisicoes++;
-            var promise = Servidor.buscar('disciplinas-cursadas', {enturmacao: $scope.enturmacoes[index].id});
-            promise.then(function(response) {
-                $scope.requisicoes--;
-                $scope.enturmacoes[index].matricula.disciplinas = response.data;
-                $scope.enturmacoes[index].matricula.disciplinas.forEach(function(cursada) {
-                    $scope.requisicoes++;
-                    var promise = Servidor.buscar('medias', {disciplinaCursada: cursada.id});
-                    promise.then(function(response) {
-                        cursada.medias = response.data;
-                        $scope.requisicoes--;
-                    });
-                    $scope.requisicoes++;
-                    var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
-                    promise.then(function(response) {                        
-                        cursada.faltas = 0;
-                        var frequencias = response.data;
-                        frequencias.forEach(function(frequencia) {
-                            if (frequencia.status === 'FALTA') {
-                                cursada.faltas++;
-                            }
+            var promise = Servidor.buscarUm('enturmacoes',$scope.enturmacoes[index].id);
+            promise.then(function(response){
+                var botao = $('#btn-ent'+$scope.enturmacoes[index].id);
+                if (botao.text() === "keyboard_arrow_down") {
+                    botao.text("keyboard_arrow_up");
+                } else {
+                    botao.text("keyboard_arrow_down");
+                }
+                if ($scope.enturmacoes[index].matricula.disciplinas !== undefined) { return; }
+                $scope.requisicoes++;
+                var promise = Servidor.buscar('disciplinas-cursadas', {enturmacao: $scope.enturmacoes[index].id});
+                promise.then(function(response) {
+                    $scope.requisicoes--;
+                    $scope.enturmacoes[index].matricula.disciplinas = response.data;
+                    $scope.enturmacoes[index].matricula.disciplinas.forEach(function(cursada) {
+                        $scope.requisicoes++;
+                        if (cursada.mediaPreliminar === undefined) {
+                            cursada.mediaPreliminar = 'ND';
+                        }
+                        var promise = Servidor.buscar('medias', {disciplinaCursada: cursada.id});
+                        promise.then(function(response) {
+                            cursada.medias = response.data;
+                            $scope.requisicoes--;
+                            $scope.fechaProgresso();
                         });
-                        $scope.requisicoes--;
-                        $scope.fechaProgresso();
+                        $scope.requisicoes++;
+                        var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
+                        promise.then(function(response) {                        
+                            cursada.faltas = 0;
+                            var frequencias = response.data;
+                            frequencias.forEach(function(frequencia) {
+                                if (frequencia.status === 'FALTA') {
+                                    cursada.faltas++;
+                                }
+                            });
+                            $scope.requisicoes--;
+                            $scope.fechaProgresso();
+                        });
                     });
+                    $scope.fechaProgresso();
                 });
             });
         };
@@ -2295,44 +2341,48 @@
             } else {
                 botao.text("keyboard_arrow_down");
             }
-            $scope.etapas[indice].disciplinasCursadas.forEach(function(cursada) {
-                if (cursada.porcentagem === undefined) {
-                    var promise = Servidor.buscarUm('disciplinas-cursadas', cursada.id);
-                    promise.then(function(response) {
-                        Servidor.buscar('medias', {disciplinaCursada: cursada.id}).then(function(response) {
-                            cursada.medias = response.data;
-                        });
-                        if(response.data.enturmacao !== undefined) {
-                            cursada.enturmacao = response.data.enturmacao;
-                            Servidor.buscar('frequencias', {disciplina: cursada.id}).then(function(response) {
-                                cursada.faltas = 0;
-                                cursada.presencas = 0;
-                                var frequencias = response.data;
-                                frequencias.forEach(function(frequencia) {
-                                    if(frequencia.status === 'PRESENCA') {
-                                        cursada.presencas++;
-                                    }
-                                });
-                                promise = Servidor.buscar('turmas/'+cursada.enturmacao.turma.id+'/aulas', {disciplina: cursada.disciplinaOfertada.id});
-                                promise.then(function(response) {
-                                    var aulas = response.data.length;
-                                    if (aulas) {
-                                        cursada.porcentagem = ((cursada.presencas * 100) / aulas)+'%';
-                                        if(cursada.porcentagem.length > 5) {
-                                            cursada.porcentagem = cursada.porcentagem.slice(0, 5)+'%';
-                                        }
-                                    } else {
-                                        cursada.porcentagem = "ND";
-                                    }
-                                    $scope.fechaProgresso();
-                                });
+            if ($scope.etapas[indice].disciplinasCursadas !== undefined) {
+                $scope.etapas[indice].disciplinasCursadas.forEach(function(cursada) {
+                    if (cursada.porcentagem === undefined) {
+                        var promise = Servidor.buscarUm('disciplinas-cursadas', cursada.id);
+                        promise.then(function(response) {
+                            Servidor.buscar('medias', {disciplinaCursada: cursada.id}).then(function(response) {
+                                cursada.medias = response.data;
                             });
-                        } else {
-                            cursada.porcentagem = "ND";
-                        }
-                    });
-                }
-            });
+                            if(response.data.enturmacao !== undefined) {
+                                cursada.enturmacao = response.data.enturmacao;
+                                Servidor.buscar('frequencias', {disciplina: cursada.id}).then(function(response) {
+                                    cursada.faltas = 0;
+                                    cursada.presencas = 0;
+                                    var frequencias = response.data;
+                                    frequencias.forEach(function(frequencia) {
+                                        if(frequencia.status === 'PRESENCA') {
+                                            cursada.presencas++;
+                                        }
+                                    });
+                                    if (cursada.enturmacao.turma !== undefined && cursada.disciplinaOfertada !== undefined) {
+                                        promise = Servidor.buscar('turmas/'+cursada.enturmacao.turma.id+'/aulas', {disciplina: cursada.disciplinaOfertada.id});
+                                        promise.then(function(response) {
+                                            var aulas = response.data.length;
+                                            if (aulas) {
+                                                cursada.porcentagem = ((cursada.presencas * 100) / aulas)+'%';
+                                                if(cursada.porcentagem.length > 5) {
+                                                    cursada.porcentagem = cursada.porcentagem.slice(0, 5)+'%';
+                                                }
+                                            } else {
+                                                cursada.porcentagem = "ND";
+                                            }
+                                            $scope.fechaProgresso();
+                                        });
+                                    }
+                                });
+                            } else {
+                                cursada.porcentagem = "ND";
+                            }
+                        });
+                    }
+                });
+            }
         };
 
         $scope.buscarSistemaAvaliacao = function(etapa) {
@@ -2347,6 +2397,7 @@
                 $scope.requisicoes--;
                 $scope.fechaProgresso();
             });
+            $scope.fechaProgresso();
         };
         
         $scope.reativarMatricula = function(matricula) {

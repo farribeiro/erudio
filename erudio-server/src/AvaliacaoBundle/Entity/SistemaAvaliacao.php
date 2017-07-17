@@ -61,21 +61,30 @@ class SistemaAvaliacao extends AbstractEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    *  @ORM\ManyToOne(targetEntity = "Regime") 
+    * @ORM\ManyToOne(targetEntity = "Regime") 
     */
     private $regime;
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column(name = "quantidade_medias", type = "integer", nullable = false) 
     */
     private $quantidadeMedias;
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
     * @ORM\Column(name = "nota_aprovacao", nullable = false) 
     */
     private $notaAprovacao;
+    
+    /** 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
+    * @ORM\Column(name = "frequencia_minima", nullable = false) 
+    */
+    private $frequenciaAprovacao;
     
     /** 
     * @JMS\Groups({"LIST"})
@@ -85,12 +94,14 @@ class SistemaAvaliacao extends AbstractEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(name = "peso_exame") 
+    * @JMS\Type("integer")
+    * @ORM\Column(name = "peso_exame")
     */
     private $pesoExame = 0;
     
     /** 
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
     * @ORM\Column(name = "nota_aprovacao_exame") 
     */
     private $notaAprovacaoExame;
@@ -121,6 +132,14 @@ class SistemaAvaliacao extends AbstractEntity {
     
     function getNotaAprovacao() {
         return $this->notaAprovacao;
+    }
+    
+    function getFrequenciaAprovacao() {
+        return $this->frequenciaAprovacao;
+    }
+
+    function setFrequenciaAprovacao($frequenciaAprovacao) {
+        $this->frequenciaAprovacao = $frequenciaAprovacao;
     }
 
     function setNotaAprovacao($notaAprovacao) {

@@ -39,13 +39,13 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Endereco extends AbstractEditableEntity {
     
     /**
-    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\Column(nullable = false) 
     */
     private $logradouro;
     
     /**
-    * @JMS\Groups({"DETAILS"}) 
+    * @JMS\Groups({"LIST"}) 
     * @ORM\Column(nullable = false) 
     */
     private $numero;
@@ -69,7 +69,7 @@ class Endereco extends AbstractEditableEntity {
     private $bairro;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"LIST"})
     * @ORM\ManyToOne(targetEntity="Cidade") 
     */
     private $cidade;
