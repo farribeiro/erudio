@@ -89,6 +89,14 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         );
     }
     
+    function uniqueMap($disciplina) {
+        return [[
+            'matricula' => $disciplina->getMatricula(),
+            'disciplina' => $disciplina->getDisciplina(),
+            'status' => DisciplinaCursada::STATUS_CURSANDO
+        ]];
+    }
+    
     function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa) {
         return $this->orm->getRepository($this->getEntityClass())->createQueryBuilder('d')
             ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
@@ -107,7 +115,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($disciplinaCursada) {
-        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_CURSANDO) {
+        if ($disciplinaCursada->getStatus() === DisciplinaCursada::STATUS_CURSANDO) {
             $this->gerarMedias($disciplinaCursada);
         }
     }
