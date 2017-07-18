@@ -38,9 +38,9 @@ class TermoPosseReport extends PDFDocument {
         $mes = strtolower(DateTimeUtil::mesPorExtenso($this->vinculo->getDataPosse()->format('m')));
         $ano = NumberUtil::numeroPorExtenso($this->vinculo->getDataPosse()->format('y'));
         $tipo = $this->vinculo->getTipoVinculo()->getId() === TipoVinculo::EFETIVO ? 'efetivo' : 'comissão';
-        $this->MultiCell(0, 8, '      Aos ' . $dia . ' dias do mês de '. $mes . ' de dois mil e ' . $ano . ', na Secretaria Municipal de Administração, compareceu o(a) Sr.(a) ' .
+        $this->MultiCell(0, 8, '      Aos ' . $dia . ' dias do mês de '. $mes . ' de dois mil e ' . $ano . ', na Secretaria Municipal de Educação, compareceu o(a) Sr.(a) ' .
             //mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8') . ', CPF nº ' . $this->vinculo->getServidor()->getCpfCnpj() . ' a fim de tomar posse no cargo de provimento em comissão de' . $tipo . ' de ' . mb_strtoupper($this->vinculo->getCargo()->getNome(), 'UTF-8') .
-                mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8') . ', CPF nº ' . $this->vinculo->getServidor()->getCpfCnpj() . ' a fim de tomar posse no cargo de provimento em comissão de ' . mb_strtoupper($this->vinculo->getCargo()->getNome(), 'UTF-8') .
+                mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8') . ', CPF nº ' . $this->vinculo->getServidor()->getCpfCnpj() . ' a fim de tomar posse no cargo de provimento em comissão de' . $tipo . ' de ' . mb_strtoupper($this->vinculo->getCargo()->getNome(), 'UTF-8') .
             //', da SECRETARIA MUNICIPAL DE EDUCAÇÃO, nomeado(a) pela Portaria nº ' . $this->vinculo->getPortaria() . 
             //', de ' . DateTimeUtil::dataPorExtenso($this->vinculo->getDataNomeacao()) . ', publicada na Edição nº ' . $this->vinculo->getEdicaoJornalNomeacao() .
             //' do Jornal do Município, a qual satisfez as exigências expressas nos artigos 10, 18 e 19, da Lei n.º 2.960, de 03 de abril de 1995, e prestou o seguinte compromisso:', 0, 'J');
@@ -57,17 +57,17 @@ class TermoPosseReport extends PDFDocument {
         /*$this->MultiCell(0, 8, '         Do que, para constar eu, ' . AssinaturasUtil::SECRETARIO_ADMINISTRACAO . 
             ', Secretário Municipal de Administração de Itajaí, lavrou o presente termo, que vai assinado por mim e pelo(a) Sr.(a) ' . 
             mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8') . '.', 0, 'J');*/
-        $this->MultiCell(0, 8, '         O servidor apresentou, ainda, os documentos exigidos por lei, do que, para constar, eu, ' . AssinaturasUtil::SECRETARIO_ADMINISTRACAO . 
-            ', Secretário Municipal de Administração de Itajaí, lavrei o presente termo, que vai assinado por mim e pelo(a) Sr.(a) ' . 
+        $this->MultiCell(0, 8, '         O(a) servidor(a) apresentou, ainda, os documentos exigidos por lei, do que, para constar, eu, ' . AssinaturasUtil::SECRETARIO_EDUCACAO . 
+            ', Secretária Municipal de Educação de Itajaí, lavrei o presente termo, que vai assinado por mim e pelo(a) Sr.(a) ' . 
             mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8') . '.', 0, 'J');
         
         $this->SetMargins(15, 0, 10);
         $this->Ln(30);
         $this->SetFont(self::FONT_TIMES, 'B', 14);
-        $this->Cell(90, 8, mb_strtoupper(AssinaturasUtil::SECRETARIO_ADMINISTRACAO, 'UTF-8'), 0, 0, 'C');
+        $this->Cell(90, 8, mb_strtoupper(AssinaturasUtil::SECRETARIO_EDUCACAO, 'UTF-8'), 0, 0, 'C');
         $this->Cell(90, 8, mb_strtoupper($this->vinculo->getServidor()->getNome(), 'UTF-8'), 0, 1, 'C');
         $this->SetFont(self::FONT_TIMES, 'B', 10);
-        $this->Cell(90, 4, 'Secretário Municipal de Administração', 0, 0, 'C');
+        $this->Cell(90, 4, 'Secretário Municipal de Educação', 0, 0, 'C');
         $this->Cell(90, 4, 'Empossado(a)', 0, 1, 'C');
         $this->Ln(30);
         $this->SetFont(self::FONT_TIMES, 'B', 14);
