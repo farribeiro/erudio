@@ -222,11 +222,16 @@ class Turma extends AbstractEditableEntity {
     }
     
     /**
-    * @JMS\Groups({"LIST"})
+    * @JMS\Groups({"DETAILS", "contagem_enturmacoes"})
     * @JMS\VirtualProperty
     */
     function getQuantidadeAlunos() {
-        return $this->getEnturmacoes()->count();
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->count();
     }
     
     /**

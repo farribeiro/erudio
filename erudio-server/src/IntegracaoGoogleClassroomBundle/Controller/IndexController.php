@@ -26,40 +26,57 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CoreBundle\Listener;
+namespace IntegracaoSigAlimentarBundle\Controller;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use CoreBundle\Exception\PublishedException;
+use FOS\RestBundle\Controller\Annotations as FOS;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\View\ViewHandlerInterface;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use MatriculaBundle\Service\EnturmacaoFacade;
+use PessoaBundle\Service\UnidadeEnsinoFacade;
+use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
+use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
 
-class ExceptionHandler implements EventSubscriberInterface {
+/**
+* @FOS\Prefix("sig-alimentar")
+*/
+class IndexController {
     
-    static function getSubscribedEvents() {
-        return ['kernel.exception' => 'onException'];
-    }
-
-    function onException(GetResponseForExceptionEvent $event) {
-        $exception = $event->getException();
-        if ($exception instanceof PublishedException) {
-            $event->setResponse(
-                $this->createResponse(JsonResponse::HTTP_BAD_REQUEST, $exception->getMessage())
-            );
-        } else if ($exception instanceof AuthenticationException) {
-            $event->setResponse(
-                $this->createResponse(JsonResponse::HTTP_UNAUTHORIZED, $exception->getMessage())
-            );
-        }
+    private $viewHandler;
+    private $enturmacaoFacade;
+    private $unidadeEnsinoFacade;
+    
+    function __construct(ViewHandlerInterface $viewHandler, UnidadeEnsinoFacade $unidadeEnsinoFacade,
+            EnturmacaoFacade $enturmacaoFacade) {
+        $this->viewHandler = $viewHandler;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->unidadeEnsinoFacade = $unidadeEnsinoFacade;
     }
     
-    function createResponse($httpCode, $message) {
-        return new JsonResponse([
-            'error' => [
-                'code' => $httpCode,
-                'message' => $message
-            ]
-        ], $httpCode);
+    /**
+    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam()
+    */
+    function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
+        $unidade = $paramFetcher->get('unidadeEnsino');
+        $params = $unidade ? ['turma_unidadeEnsino' => $unidade] : [];
+        $enturmacoes = $this->enturmacaoFacade->findAll($params, null, 5000);
+        $enturmacoesSig = array_map(function($e) {
+            return MatriculaSig::fromEnturmacao($e);
+        }, $enturmacoes);
+        return $this->viewHandler->handle(View::create(['dados' => $enturmacoesSig]));
+    }
+    
+    /**
+    * @FOS\Get("/unidades-ensino")
+    */
+    function getUnidadesAction() {
+        $unidades = $this->unidadeEnsinoFacade->findAll();
+        $unidadesSig = array_map(function($u) {
+            return UnidadeEnsinoSig::fromUnidadeEnsino($u);
+        }, $unidades);
+        return $this->viewHandler->handle(View::create($unidadesSig));
     }
     
 }

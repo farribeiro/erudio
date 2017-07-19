@@ -29,6 +29,7 @@
 namespace CoreBundle\ORM;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,10 +52,13 @@ abstract class AbstractFacade {
     
     protected $orm;
     protected $logger;
+    protected $eventDispatcher;
     
-    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null) {
+    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null, 
+            EventDispatcherInterface $eventDispatcher = null) {
         $this->orm = $doctrine;
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     abstract function getEntityClass();

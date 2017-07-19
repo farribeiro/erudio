@@ -61,7 +61,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"}) 
     * @JMS\MaxDepth(depth = 2)
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    * @ORM\ManyToOne(targetEntity = "Matricula", inversedBy = "disciplinasCursadas") 
     */
     private $matricula;
     

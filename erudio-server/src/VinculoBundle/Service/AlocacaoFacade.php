@@ -38,11 +38,8 @@ use VinculoBundle\Entity\Alocacao;
 
 class AlocacaoFacade extends AbstractFacade {
     
-    private $eventDispatcher;
-    
     function __construct(RegistryInterface $orm, EventDispatcherInterface $eventDispatcher) {
-        parent::__construct($orm);
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($orm, null, $eventDispatcher);
     }
     
     function getEntityClass() {

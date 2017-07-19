@@ -31,7 +31,7 @@ namespace CalendarioBundle\Service;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Psr\Log\LoggerInterface;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
@@ -41,7 +41,7 @@ use CursoBundle\Entity\Turma;
 
 class AulaFacade extends AbstractFacade {
     
-    function __construct(Registry $doctrine, LoggerInterface $logger) {
+    function __construct(RegistryInterface $doctrine, LoggerInterface $logger) {
         parent::__construct($doctrine, $logger);
     }
     

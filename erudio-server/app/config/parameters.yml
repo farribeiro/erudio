@@ -1,13 +1,15 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: 10.10.1.191
+    database_host: localhost
     database_port: 3306
     database_name: erudio
+    database_user: root
+    database_password:
     database_user: gestao
     database_password: teste
-    mailer_transport: gmail
+    mailer_transport: ~
     mailer_host: null
-    mailer_user: educacaoitajai
-    mailer_password: warningeducacao
-    secret: 'W!a@r#n$i%n&g'
+    mailer_user: educacao
+    mailer_password: null
+    secret: 'abcd1234'
     jms_serializer.camel_case_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy

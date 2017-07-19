@@ -17,8 +17,8 @@ monolog:
             type:  rotating_file
             max_files: 30
             path:   "%kernel.logs_dir%/%kernel.environment%.log"
-            level:  info
-            channels: [!event]
+            level:  INFO
+            channels: ["!event"]
         console:
             type:   console
             bubble: false
@@ -36,12 +36,12 @@ monolog:
             channels: ["doctrine"]
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
-        #firephp:
-        #    type:   firephp
-        #    level:  info
-        #chromephp:
-        #    type:   chromephp
-        #    level:  info
+#        firephp:
+#            type:   firephp
+#            level:  info
+#        chromephp:
+#            type:   chromephp
+#            level:  info
 
 jms_serializer:
     metadata:

@@ -56,7 +56,7 @@ class Enturmacao extends AbstractEditableEntity {
     /**  
     * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 2)
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    * @ORM\ManyToOne(targetEntity = "Matricula", inversedBy = "enturmacoes") 
     */
     private $matricula;
     
@@ -69,14 +69,13 @@ class Enturmacao extends AbstractEditableEntity {
     
     /**  
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "enturmacao", fetch = "EXTRA_LAZY")
+    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "enturmacao")
     */
     private $disciplinasCursadas;
     
     /**
-    * @JMS\Groups({"DETAILS"})
-    * @JMS\MaxDepth(depth = 1)
-    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao") 
+    * @JMS\Exclude
+    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao")
     */
     private $vaga;
     

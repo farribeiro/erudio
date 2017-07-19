@@ -37,11 +37,8 @@ use VinculoBundle\Entity\Vinculo;
 
 class VinculoFacade extends AbstractFacade {
     
-    private $eventDispatcher;
-    
     function __construct(RegistryInterface $orm, EventDispatcherInterface $eventDispatcher) {
-        parent::__construct($orm);
-        $this->eventDispatcher = $eventDispatcher;
+        parent::__construct($orm, null, $eventDispatcher);
     }
     
     function getEntityClass() {
@@ -87,6 +84,7 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function afterCreate($vinculo) {
+        $this->orm->getManager()->detach($vinculo);
         $this->eventDispatcher->dispatch(
             'VinculoBundle:Vinculo:Created',
             new EntityEvent($vinculo, EntityEvent::ACTION_CREATED)

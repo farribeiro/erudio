@@ -61,7 +61,8 @@ class TurmaController extends AbstractEntityController {
     *  @ApiDoc()
     * 
     * @FOS\Get("turmas")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", default = null)
     * @FOS\QueryParam(name = "nome", nullable = true) 
     * @FOS\QueryParam(name = "apelido", nullable = true)
     * @FOS\QueryParam(name = "encerrado", default = false) 
