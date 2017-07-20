@@ -481,18 +481,21 @@
                     Servidor.customToast('Selecione uma unidade para realizar a busca de turmas'); $scope.fechaLoader(); $scope.turmas = [];
                 } else if ($scope.unidade.id) {
                     $timeout(function () { $('#unidade, #etapa, #curso').material_select('destroy'); $('#unidade, #etapa, #curso').material_select(); }, 100);
-                    var promise = Servidor.buscar('turmas', {'unidadeEnsino': $scope.unidade.id, 'etapa': $scope.turmaBusca.etapa.id, 'curso': $scope.turmaBusca.curso.id});
+                    var url = 'turmas?unidadeEnsino='+$scope.unidade.id;
+                    if ($scope.turmaBusca.etapa.id !== null) { url += '&etapa='+$scope.turmaBusca.etapa.id; }
+                    if ($scope.turmaBusca.curso.id !== null) { url += '&curso='+$scope.turmaBusca.curso.id; }
+                    var promise = Servidor.buscar(url+'&view=contagem_enturmacoes',null);
                     promise.then(function (response) {
                         $scope.turmas = response.data;
                         for (var i =0; i<$scope.turmas.length; i++) {
-                            var promise = Servidor.buscar('vagas', {'turma': $scope.turmas[i].id});
+                            /*var promise = Servidor.buscar('vagas', {'turma': $scope.turmas[i].id});
                             var turma = $scope.turmas[i];
                             promise.then(function(response){
                                 var vagas = response.data;
                                 for (var j=0; j<vagas.length; j++) {
                                     if (vagas[j].solicitacaoVaga !== undefined) { turma.quantidadeAlunos++; }
                                 }
-                            });
+                            });*/
                         }
                         $scope.abrirResultadosBusca = true;
                         if ($scope.turmas.length > 0) {
