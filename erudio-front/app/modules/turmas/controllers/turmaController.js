@@ -1329,8 +1329,6 @@
                     var solicitacoes = 0;
                     promise.then(function(response){
                         var vagas = response.data;
-                        for (var j=0; j<vagas.length; j++) { if (vagas[j].solicitacaoVaga !== undefined) { solicitacoes++; } }
-                        $scope.turma.quantidadeAlunos = $scope.turma.quantidadeAlunos + solicitacoes;
                         $scope.adicionarAlunos = true;
                         $('#enturmarAlunos').show();
                         $scope.mostraEnturmacoes = true;
