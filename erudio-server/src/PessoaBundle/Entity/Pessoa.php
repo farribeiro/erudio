@@ -48,6 +48,7 @@ use AuthBundle\Entity\Usuario;
 *  "Instituicao" = "Instituicao",
 *  "UnidadeEnsino" = "UnidadeEnsino"
 * })
+* @JMS\Discriminator(disabled = true)
 */
 class Pessoa extends AbstractEditableEntity {
     
