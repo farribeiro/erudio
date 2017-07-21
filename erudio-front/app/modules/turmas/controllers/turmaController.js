@@ -1328,6 +1328,7 @@
                     var promise = Servidor.buscar('vagas', {turma: $scope.turma.id});
                     var solicitacoes = 0;
                     promise.then(function(response){
+                        //Testando Commit
                         var vagas = response.data;
                         $scope.adicionarAlunos = true;
                         $('#enturmarAlunos').show();
