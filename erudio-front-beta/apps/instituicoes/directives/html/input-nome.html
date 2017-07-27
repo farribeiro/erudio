@@ -1,0 +1,8 @@
+<md-input-container class="md-icon-float" md-block flex-gt-sm>
+    <label for="nome">Nome</label>
+    <md-icon class="material-icons">account_circle</md-icon>
+    <input required ng-model="instituicao.nome" type="text" name="nome" />
+    <div ng-messages="instituicoesForm.nome.$error">
+        <div ng-message="required">Este campo é obrigatório.</div>
+    </div>
+</md-input-container>

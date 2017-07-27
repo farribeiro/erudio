@@ -12,6 +12,6 @@
     </md-card>
 </div>
 
-<botao-adicionar></botao-adicionar>
+<botao-adicionar ng-show="escrita"></botao-adicionar>
 <div class="empty-state" data-ng-hide="objetos.length">Nenhum item encontrado. :(</div>
 <paginador data-ng-show="objetos.length"></paginador>

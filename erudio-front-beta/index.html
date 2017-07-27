@@ -53,24 +53,37 @@
                             <md-menu md-position-mode="target-right target">
                                 <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
                                 <md-menu-content class="main-menu" width="2">
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>Perfil</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>Sobre</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>O que mudou?</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>Configurações</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>Sair</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>{{ mudou }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
                                 </md-menu-content>
                             </md-menu>
                         </div>
-                        <span flex></span>
+                        <span flex>
+                            <div class="user-area" flex layout-gt-sm="column">
+                                <div class="nome-usuario" md-truncate>{{ userAtivo }}</div>
+                                <form-select grid="flex-gt-sm" identidade="formAttr" label="''" nome="'atribuicao'" obrigatorio="required">
+                                    <md-select class="md-select-alocacao no-margin" ng-model="attrAtual.attr.id" ng-change="carregarAtribuicao(attrAtual.attr.id)">
+                                        <md-option style="font-size: 14px;" value="">Selecione uma alocação</md-option>
+                                        <md-option ng-repeat="atribuicao in atribuicoes.atribuicoes" class="select-alocacao" value="{{ atribuicao.id }}">
+                                            <span ng-show="atribuicao.apelido">{{ atribuicao.apelido }}</span><span ng-hide="atribuicao.apelido">{{ atribuicao.grupo.nome }}</span><br />
+                                            <small class="text-alocacao">{{ atribuicao.instituicao.nomeCompleto }}</small>
+                                        </md-option>
+                                    </md-select>
+                                </form-select>
+                            </div>
+                        </span>
                     </md-toolbar>
                     
                     <!-- MENU -->
-                    <md-content>
+                    <md-content id="menu-lateral" ng-init="ajustaMenus()">
                         <ul class="menu" flex ng-repeat="menu in menus track by $index">
                             <li ng-click="menuToggle($index)" class="menu-titulo">{{ menu.categoria }}</li>
                             <md-divider></md-divider>
                             <ul class="submenu submenu{{$index}}" ng-show="menu.temSubmenu" >
-                                <li ng-repeat="link in menu.links" class="submenu-item"><a data-titulo="{{ link.label }}" class="link-submenu" href="{{ link.href }}">{{ link.label }}</a></li>
+                                <li ng-show="verificaPermissao(link.permissao)" ng-repeat="link in menu.links" class="submenu-item"><a data-titulo="{{ link.label }}" class="link-submenu" href="{{ link.href }}">{{ link.label }}</a></li>
                                 <md-divider></md-divider>
                             </ul>
                         </ul>
@@ -78,6 +91,12 @@
                 </md-sidenav>
                 
                 <md-content class="w100 conteudo">
+                    <div ng-show="cortinaAlocacao" class="sem-alocacao-cortina"></div>
+                    <div ng-show="cortinaAlocacao" class="sem-alocacao-texto">Para utilizar o sistema, por favor, selecione uma alocação.</div>
+                    <div class="sem-permissao-cortina"></div>
+                    <div class="sem-permissao-texto">Você não tem permissão para acessar esta área do sistema.</div>
+                    <md-progress-circular class="md-accent loader" md-diameter="40" ></md-progress-circular>
+                    
                     <!-- TOOLBAR COM IMAGEM -->
                     <md-toolbar class="md-tall content-bar">
                         <div class="md-toolbar-tools">
@@ -97,7 +116,10 @@
                     </md-toolbar>
                     
                     <!-- CONTEUDO -->
-                    <md-content class="bottom-fix static" flex ng-view></md-content>
+                    <md-content id="conteudoArea" class="bottom-fix static" flex ng-view></md-content>
+                </md-content>
+                <md-content class="forbidden" layout="row" layout-align="center center">
+                    Ops, você não tem permissão para acessar esta página.
                 </md-content>
             </section>
         </md-content>
@@ -107,13 +129,21 @@
         <script src="apps/appDirectives.js"></script>
         <script src="apps/home/controllers/modulesController.js"></script>
         <script src="util/erudioConfig.js"></script>
+        <script src="util/authService.js"></script>
+        <script src="util/restService.js"></script>
         <script src="util/utilController.js"></script>
         <script src="util/structureController.js"></script>
         <script src="util/validatorController.js"></script>
         <script src="util/sharedProperties.js"></script>
+        
+        
         <script src="apps/home/controllers/homeController.js"></script>
+        
         <script src="apps/instituicoes/controllers/instituicaoController.js"></script>
+        <script src="apps/instituicoes/directives/instituicaoDirectives.js"></script>
         <script src="apps/instituicoes/controllers/instituicaoFormController.js"></script>
+        <script src="apps/instituicoes/services/InstituicaoService.js"></script>
+        
         <script src="apps/tiposUnidade/controllers/tipoUnidadeController.js"></script>
         <script src="apps/tiposUnidade/controllers/tipoUnidadeFormController.js"></script>
         <script src="apps/unidades/controllers/unidadeController.js"></script>
@@ -134,5 +164,8 @@
         <script src="apps/modelosGradeHorario/controllers/modeloGradeHorarioFormController.js"></script>
         <script src="apps/quadroHorarios/controllers/quadroHorariosController.js"></script>
         <script src="apps/quadroHorarios/controllers/quadroHorariosFormController.js"></script>
+        <script src="apps/calendarios/controllers/calendarioController.js"></script>
+        <script src="apps/calendarios/controllers/calendarioFormController.js"></script>
+        <script src="apps/calendarios/controllers/calendarioViewController.js"></script>
     </body>
 </html>

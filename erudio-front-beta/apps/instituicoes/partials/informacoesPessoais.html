@@ -1,8 +1,8 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="instituicaoNome" label="'Nome da Instituição'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="instituicao" campo="nome" erro="'instituicoesForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="instituicaoSigla" label="'Sigla'" tipo="'text'" nome="'sigla'" model="instituicao" campo="sigla"></form-input>
+    <input-instituicao type="text" model="nome" required="true"></input-instituicao>
+    <input-instituicao type="text" model="sigla"></input-instituicao>
 </div>
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="instituicaoCNPJ" maximo="14" classe="'maskCNPJ'" dica="'Apenas Números'" label="'CNPJ'" tipo="'text'" nome="'cpfCnpj'" model="instituicao" campo="cpfCnpj"></form-input>
-    <form-input grid="flex-gt-sm" identidade="instituicaoEmail" maximo="100" minimo="10" padrao="'/^.+@.+\..+$/'" troca="validaCampo()" label="'E-Mail'" tipo="'email'" obrigatorio="required" nome="'email'" model="instituicao" campo="email" erro="'instituicoesForm.email.$error'" mensagem="'required,Este campo é obrigatório|pattern,Formato de E-Mail inválido.'"></form-input>
+    <input-instituicao type="text" model="cpfCnpj"></input-instituicao>
+    <input-instituicao type="text" model="email" required="true"></input-instituicao>
 </div>

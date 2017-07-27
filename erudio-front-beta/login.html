@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Erudio</title>
+        <!-- META -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="#000">
+        <link rel="icon" href="assets/images/erudio.png">
+        <link rel="stylesheet" href="lib/material/angular-material.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
+        
+        <!-- JQUERY -->
+        <script src="lib/js/jquery/jquery.js"></script>
+        <script src="lib/js/jquery/jquery.mask.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment.js"></script>
+        <script type="text/javascript" src="lib/js/jquery/moment-timezone.js"></script>
+        
+        <!-- ANGULAR -->
+        <script src="lib/angular/angular.min.js"></script>
+        <script src="lib/angular/angular-route.js"></script>
+        <script src="lib/angular/angular-animate.min.js"></script>
+        <script src="lib/angular/angular-aria.min.js"></script>
+        <script src="lib/angular/angular-messages.min.js"></script>
+        <script src="lib/angular/angular-translate.min.js"></script>
+        <script src="lib/angular/angular-translate-loader-static-files.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/underscore-min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/restangular.min.js"></script>
+        <script type="text/javascript" src="lib/js/angular/angular-md5.js"></script>
+        <script type="text/javascript" src="lib/js/angular/sha1.js"></script>
+        
+        <!-- ANGULAR MATERIAL -->
+        <script src="lib/material/angular-material.min.js"></script>
+    </head>
+    <body ng-app="ErudioLogin" ng-cloak class="corpoLogin">
+        <!-- BARRA DE PROGRESSO 
+        <md-progress-linear class="md-warn progresso" md-mode="indeterminate"></md-progress-linear>
+        <div class="cortina"></div>-->
+        <div layout="row" layout-wrap class="login-area">
+            <div flex="0" flex-gt-sm="33"></div>
+            <div flex="100" flex-gt-sm="33" ng-controller="LoginController" class="relative">
+                <md-card class="valign-login">
+                    <div class="cortinaBranca"></div>
+                    <md-progress-linear ng-show="progresso" class="md-warn" md-mode="indeterminate"></md-progress-linear>
+                    <md-card-title-text class="login-wrap">
+                        <img src="assets/images/logoBlue.png" alt="Erudio" class="logoLogin" />
+                    </md-card-title-text>
+                    <md-card-title-text class="login-wrap">
+                        <span class="title-login">Seja bem vindo!</span><br />
+                        <small class="sub-text-login">Digite suas credenciais.</small>
+                    </md-card-title-text>
+                    <md-card-content>
+                        <form id="authForm" name="authForm">
+                            <form-input grid="flex-gt-sm" identidade="username" label="'CPF'" model="auth" obrigatorio="required" campo="username" tipo="'text'" nome="'username'" erro="'authForm.username.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+                            <form-input grid="flex-gt-sm" identidade="password" label="'Senha'" model="auth" obrigatorio="required" campo="password" tipo="'password'" nome="'password'" erro="'authForm.password.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+                        </form>
+                    </md-card-content>
+                    <md-card-actions layout="row" layout-align="end center">
+                        <md-button class="md-primary" ng-click="autenticar()">ENTRAR</md-button>
+                    </md-card-actions>
+                </md-card>
+            </div>
+            <div flex="0" flex-gt-sm="33"></div>
+            <div layout-gt-sm="row" class="valign-helper">
+                <md-button>Esqueci minha senha</md-button>
+                <md-button>Tutoriais</md-button>
+            </div>
+        </div>
+        
+        
+        <!-- CONTROLLERS -->
+        <script src="util/erudioConfig.js"></script>
+        <script src="util/utilController.js"></script>
+        <script src="util/authService.js"></script>
+        <script src="util/structureController.js"></script>
+        <script src="util/validatorController.js"></script>
+        <script src="apps/appDirectives.js"></script>
+        <script src="apps/login/controllers/loginController.js"></script>
+    </body>
+</html>

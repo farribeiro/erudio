@@ -1,13 +1,8 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="instituicaoContatoNumero" label="'Número com DDD'" model="telefone" campo="numero" tipo="'text'" nome="'numero'" classe="'maskTelefone input-ajuste'" dica="'Apenas Números'"></form-input>
-    <form-select grid="flex-gt-sm" identidade="instituicaoContatoDescricao" label="'Descrição'" nome="'tipoTelefone'">
-        <md-select ng-model="telefone.descricao" ng-change='adicionarTelefone()'>
-            <md-option value=""></md-option>
-            <md-option ng-repeat="tipoTelefone in tiposTelefone track by $index" value="{{ tipoTelefone }}">{{ tipoTelefone }}</md-option>
-        </md-select>
-    </form-select>
+    <input-instituicao-telefone type="text" model="numero"></input-instituicao-telefone>
+    <select-instituicao-telefone type="select" model="descricao" items="tiposTelefone"></select-instituicao-telefone>
 </div>
-<div layout-gt-sm="column">
+<div layout-gt-sm="column" ng-show="telefones.length">
     <md-divider class="hide"></md-divider>
     <md-subheader class="md-no-sticky hide not-header">Telefones</md-subheader>
     <md-list class="md-dense">

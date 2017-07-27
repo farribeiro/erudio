@@ -1,4 +1,4 @@
-<md-button hide show-gt-sm ng-repeat="opcao in opcoes" ng-click="executarOpcao($event, opcao, objeto)" class="md-icon-button" aria-label="{{ opcao.tooltip }}">
+<md-button ng-if="validarEscrita(opcao.opcao)" hide show-gt-sm ng-repeat="opcao in opcoes" ng-click="executarOpcao($event, opcao, objeto)" class="md-icon-button" aria-label="{{ opcao.tooltip }}">
     <md-tooltip md-direction="top">{{ opcao.tooltip }}</md-tooltip>
     <md-icon class="material-icons">{{ opcao.icone }}</md-icon>
 </md-button>

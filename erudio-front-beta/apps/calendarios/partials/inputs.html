@@ -1,0 +1,25 @@
+<div layout-gt-sm="column" ng-show="mostraAutocomplete" style="margin-bottom: 20px;">
+    <label class="autocomplete-label">Unidade de Ensino</label>
+    <autocomplete class="w100"></autocomplete>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="calendarioNome" label="'Nome do Calendário'" model="calendario" obrigatorio="required" campo="nome" tipo="'text'" nome="'nome'" classe="'input-ajuste'" erro="'calendariosForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <form-select grid="flex-gt-sm" identidade="calendarioBase" label="'Calendário Base'" nome="'base'" obrigatorio="required" erro="'calendariosForm.base.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-disabled="disabledSelect" ng-model="calendario.calendarioBase.id" required >
+            <md-option value=""></md-option>
+            <md-option ng-repeat="calendario in calendarios track by $index" value="{{ calendario.id }}">{{ calendario.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>
+<div layout-gt-sm="row">
+    <form-input grid="flex-gt-sm" identidade="calendarioInicio" label="'Data de Início'" model="calendario" obrigatorio="required" campo="dataInicio" tipo="'text'" nome="'inicio'" classe="'maskData'" dica="'Apenas Números'" erro="'calendariosForm.inicio.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <form-input grid="flex-gt-sm" identidade="calendarioTermino" label="'Data de Término'" model="calendario" obrigatorio="required" campo="dataTermino" tipo="'text'" nome="'termino'" classe="'maskData'" dica="'Apenas Números'" erro="'calendariosForm.termino.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+</div>
+<div layout-gt-sm="row">
+    <form-select grid="flex-gt-sm" identidade="calendarioSistemaAvaliacao" label="'Sistema de Avaliação'" nome="'sistemaAvaliacao'" obrigatorio="required" erro="'calendariosForm.sistemaAvaliacao.$error'" mensagem="'required,Este campo é obrigatório'">
+        <md-select ng-disabled="disabledSelect" ng-model="calendario.sistemaAvaliacao.id" required >
+            <md-option value=""></md-option>
+            <md-option ng-repeat="sistema in sistemas track by $index" value="{{ sistema.id }}">{{ sistema.nome }}</md-option>
+        </md-select>
+    </form-select>
+</div>

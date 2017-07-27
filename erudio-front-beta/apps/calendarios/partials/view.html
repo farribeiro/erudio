@@ -1,0 +1,47 @@
+<div style="border-bottom: 1px solid #eee; text-align: center; font-size: 2rem; padding: 10px 0 10px 0;">
+    {{ nomeMes }} / {{ ano }}
+</div>
+<table class="w100 calendar-table">
+    <thead hide show-gt-sm><th>Domingo</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></thead>
+    <thead hide-gt-sm><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></thead>
+    <tbody>
+        <tr ng-repeat="semana in mesCalendario">
+            <td ng-class="classeTipoDia(semana[0])" md-truncate>
+                {{ semana[0].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[0].eventos[0].evento.nome" class="evento-calendario">{{ semana[0].eventos[0].evento.nome }}</div>
+            </td>
+            <td ng-class="classeTipoDia(semana[1])" ng-click="abrirDia(semana[1])" md-truncate>
+                {{ semana[1].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[1].eventos[0].evento.nome" class="evento-calendario">{{ semana[1].eventos[0].evento.nome }}</div>
+                <!--<md-button hide show-gt-sm ng-show="{{ semana[1].eventos.length }}" class="md-icon-button botao-calendario" aria-label="Mais"><md-icon class="material-icons">expand_more</md-icon></md-button>-->
+                <span hide-gt-sm><md-icon ng-show="{{ semana[1].eventos.length }}" class="material-icons botao-calendario-mobile">star</md-icon></span>
+            </td>
+            <td ng-class="classeTipoDia(semana[2])" ng-click="abrirDia(semana[2])" md-truncate>
+                {{ semana[2].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[2].eventos[0].evento.nome" class="evento-calendario">{{ semana[2].eventos[0].evento.nome }}</div>
+                <span hide-gt-sm><md-icon ng-show="{{ semana[2].eventos.length }}" class="material-icons botao-calendario-mobile">star</md-icon></span>
+            </td>
+            <td ng-class="classeTipoDia(semana[3])" ng-click="abrirDia(semana[3])" md-truncate>
+                {{ semana[3].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[3].eventos[0].evento.nome" class="evento-calendario">{{ semana[3].eventos[0].evento.nome }}</div>
+                <span hide-gt-sm><md-icon ng-show="{{ semana[3].eventos.length }}" class="material-icons botao-calendario-mobile">star</md-icon></span>
+            </td>
+            <td ng-class="classeTipoDia(semana[4])" ng-click="abrirDia(semana[4])" md-truncate>
+                {{ semana[4].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[4].eventos[0].evento.nome" class="evento-calendario">{{ semana[4].eventos[0].evento.nome }}</div>
+                <span hide-gt-sm><md-icon ng-show="{{ semana[4].eventos.length }}" class="material-icons botao-calendario-mobile">star</md-icon></span>
+            </td>
+            <td ng-class="classeTipoDia(semana[5])" ng-click="abrirDia(semana[5])" md-truncate>
+                {{ semana[5].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[5].eventos[0].evento.nome" class="evento-calendario">{{ semana[5].eventos[0].evento.nome }}</div>
+                <span hide-gt-sm><md-icon ng-show="{{ semana[5].eventos.length }}" class="material-icons botao-calendario-mobile">star</md-icon></span>
+            </td>
+            <td ng-class="classeTipoDia(semana[6])" class="no-calendar-right-border" md-truncate>
+                {{ semana[6].data | date:'dd' }}<br />
+                <div hide show-gt-sm ng-show="semana[6].eventos[0].evento.nome" class="evento-calendario">{{ semana[6].eventos[0].evento.nome }}</div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<paginador></paginador>
+<botao-voltar></botao-voltar>

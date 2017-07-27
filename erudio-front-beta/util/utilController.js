@@ -1,7 +1,7 @@
 (function (){
-    var util = angular.module('util',['structure', 'validator', 'angular-md5', 'angular-sha1', 'erudioConfig', 'ngMaterial']);
+    var util = angular.module('util',['structure', 'validator', 'angular-md5', 'angular-sha1', 'erudioConfig', 'ngMaterial', 'auth']);
     
-    util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', '$filter', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast, $filter) {
+    util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', '$filter', '$http', 'Auth', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast, $filter, $http, Auth) {
         
         //SETA TITULO DA TOOLBAR
         this.setTitulo = function (titulo) { $('.titulo-toolbar').html(titulo); };
@@ -21,6 +21,9 @@
         //BUSCA O ENDERECO DO TEMPLATE DE FORM
         this.getTemplateForm = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'form.html'; };
         
+        //BUSCA O ENDERECO DO TEMPLATE DE LEITURA
+        this.getTemplateLeitura = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'leitura.html'; };
+        
         //BUSCA BLOCO DE INPUT CUSTOM
         this.getInputBlockCustom = function (modulo, arquivo) { return ErudioConfig.dominio+'/apps/'+modulo+'/partials/'+arquivo+'.html'; };
         
@@ -38,6 +41,7 @@
             $('.maskCargaHoraria').mask('999999');
             $('.maskHora').mask('99:99');
             $('.maskDoisNumeros').mask('99');
+            $('.maskData').mask('99/99/9999');
         };
         
         //VALIDA CAMPO
@@ -45,40 +49,6 @@
             $('input').change(function(){ if (!$(this).hasClass('ng-invalid')) { $(this).parent().parent().find('.message-list').removeAttr('style'); } });
             $('md-select').blur(function(){ if (!$(this).hasClass('ng-invalid')) { $(this).parent().parent().find('.message-list').removeAttr('style'); } });
         };
-        
-        // BUSCAR PROMISE
-        this.buscarPromise = function(endereco) {
-            var rest = this.preparaRestangular();
-            rest.setFullResponse(true);
-            return rest.all(endereco);
-        };
-        
-        //PREPARA HEADER X-WSSE
-        this.criarHeader = function () {
-            var username = sessionStorage.getItem('username'); var key = sessionStorage.getItem('key');
-            var created = moment().format(); var nonce = this.guid(); var nonceSend = btoa(nonce);
-            var digest = btoa(sha1.hash(nonce + created + key));
-            var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
-            return header;
-        };
-        
-        //GERADOR DE NONCE
-        this.guid = function () {
-            function s4() { return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1); }
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-        };
-
-        //INSERE O HEADER NA CHAMADA REST
-        this.preparaRestangular = function () {
-            var header = this.criarHeader();
-            //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
-            var rest = Restangular;
-            return rest;
-        };
-        
-        //CONTROLE DA TELA DE PROGRESSO
-        this.abreProgresso = function () { $('.progresso').show(); $('.cortina').show(); };
-        this.fechaProgresso = function () { $('.progresso').hide(); $('.cortina').hide(); };
         
         //MOSTRA MODAL DE EXCLUSAO
         this.modalExclusao = function(event, title, content, label, $mdDialog) {
@@ -101,31 +71,6 @@
         //BUSCAR CIDADES
         this.getCidades = function (estado) { return this.buscar('cidades',{ estado: estado }); };
         
-        //BUSCA POR LISTA
-        this.buscar = function(endereco, opcoes) {
-            this.abreProgresso(); var rest = this.preparaRestangular(); rest.setFullResponse(true);
-            var retorno = rest.all(endereco).getList(opcoes);
-            retorno.then(function(){ $('.progresso').hide(); $('.cortina').hide(); }); return retorno;
-        };
-        
-        //BUSCAR POR ID
-        this.um = function(endereco, id) {
-            this.abreProgresso(); var rest = this.preparaRestangular(); rest.setFullResponse(true);
-            var retorno = rest.one(endereco, id).get();
-            retorno.then(function(){ $('.progresso').hide(); $('.cortina').hide(); }); return retorno;
-        };
-        
-        //HELPER PARA ORIENTACAO DAS PALAVRAS
-        this.orientarLabel = function (label, orientacao){ var retorno = ''; if (orientacao === "m") { retorno = label+"o"; } else if (orientacao === "f") { retorno = label+"a"; } else { retorno = label+"e"; } return retorno; };
-        
-        //REMOVER OBJETO
-        this.remover = function (objeto, label, orientacao) {
-            var result = objeto.remove();
-            var sufix = this.orientarLabel('removid', orientacao);
-            result.then(function (data){ if (label !== null && label !== '') { $mdToast.show($mdToast.simple().textContent(label+' '+sufix)); } });
-            return result;
-        };
-        
         //VERIFICA VARIAVEL VAZIA
         this.isVazio = function (value) { if (value === null || value === undefined || value === "") { return true; } else { return false; } };
         
@@ -134,6 +79,9 @@
         
         //VERIFICA SE É CADASTRO OU EDICAO
         this.isNovo = function (value) { if (value === 'novo') { return true; } else { return false; } };
+        
+        //VERIIFCA SE É NOVO OBJETO
+        this.isNovoObjeto = function (obj) { if (this.isVazio(obj.id)) { return true; } else { return false; } };
         
         //BUSCA ESTRUTURA DE OBJETO 
         this.getEstrutura = function (tipo) { return Structure.getObjeto(tipo); };
@@ -191,29 +139,6 @@
         //CUSTOM TOAST
         this.toast = function (msg) { $mdToast.show($mdToast.simple().textContent(msg)); };
         
-        //SALVAR
-        this.salvar = function(objeto,endereco,label,gen) {
-            var result = []; var artigo = 'e';
-            if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
-            if (objeto !== null && objeto.id) {
-                if (objeto.route === undefined || objeto.route === null) { objeto.route = endereco; } result = objeto.put();
-                result.then(function (data){
-                    if (data.status >= 200 || data.status <= 204) {
-                        if (label !== null && label !== '' && label !== undefined) { $mdToast.show($mdToast.simple().textContent(label+' modificad'+artigo+' com sucesso.')); }
-                    } else { result = false; }
-                }, function(error) {});
-            } else {
-                var promise = this.buscarPromise(endereco);
-                result = promise.post(objeto);
-                result.then(function(data) {
-                    if (data.status >= 200 || data.status <= 204) {
-                        if (label !== null && label !== '' && label !== undefined) { $mdToast.show($mdToast.simple().textContent(label+' salv'+artigo+' com sucesso.')); }
-                    } else { result = false; }
-                }, function(error) {});
-            }
-            return result;
-        };
-        
         //REDIRECIONAR
         this.redirect = function (link) { window.location = link; };
         
@@ -240,7 +165,82 @@
             var results = [];
             if (query) { results = $filter('filter')(items,{nome: query}); } else { results = items; }
             return results;
-        };        
+        };
         
+        //VERIFICAR PERMISSAO
+        this.verificaPermissao = function (role) {
+            role = 'ROLE_'+role; var attr = JSON.parse(sessionStorage.getItem('atribuicoes')); var roles = attr.roles;
+            var retorno = roles.includes(role);
+            if (!retorno) { retorno = roles.includes("ROLE_SUPER_ADMIN"); }
+            return retorno;
+        };
+        
+        //VERIFICA ESCRITA
+        this.verificaEscrita = function (role) {
+            role = 'ROLE_'+role; var attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+            this.retornoEscrita = false;
+            for (var i=0; i<attr.atribuicoes.length; i++) {
+                for (var j=0; j<attr.atribuicoes[i].grupo.permissoes.length; j++) {
+                    if (attr.atribuicoes[i].grupo.permissoes[j].permissao.nomeIdentificacao === role || attr.atribuicoes[i].grupo.permissoes[j].permissao.nomeIdentificacao === "ROLE_SUPER_ADMIN") {
+                        if (attr.atribuicoes[i].grupo.permissoes[j].tipoAcesso === "E") { this.retornoEscrita = true; }
+                    }
+                }
+            }
+            return this.retornoEscrita;
+        };
+        
+        //VERIFICA ADMIN
+        this.isAdmin = function () { return this.verificaPermissao("SUPER_ADMIN"); };
+        
+        //VALIDA ESCRITA
+        this.validarEscrita = function (opcao, opcoes, escrita) {
+            this.validacaoEscrita = false;
+            for (var i=0; i<opcoes.length; i++) { if (opcoes[i].opcao === opcao && opcoes[i].validarEscrita === true) { this.validacaoEscrita = escrita; } else { this.validacaoEscrita === true; } }
+            return this.validacaoEscrita;
+        };
+        
+        //ELIMINA MENUS
+        this.ajustaMenus = function () {
+            var size = 0; var sizeHidden = 0;
+            $(".submenu").each(function(j){
+                size = $(this).find('li').length; sizeHidden = 0;
+                $(this).find('li').each(function(i){
+                    if ($(this).hasClass('ng-hide')) { sizeHidden++; }
+                    if (i+1 === size) { if (size === sizeHidden) { $(this).parents().eq(1).find('.menu-titulo').hide(); } else { $(this).parents().eq(1).find('.menu-titulo').css('opacity', 1); } }
+                });
+            }).promise().done(function(){ $('#menu-lateral').fadeIn(150); });
+        };
+        
+        //HABILITA CORTINA SEM PERMISSAO
+        this.semPermissao = function () { $('.sem-permissao-cortina, .sem-permissao-texto').show(); };
+        
+        //REMOVE CORTINA SEM PERMISSAO
+        this.comPermissao = function () { $('.sem-permissao-cortina, .sem-permissao-texto').hide(); };
+        
+        //CONVERTE DATA PT-BR PARA EN
+        this.converteData = function (strData) { var arrData = strData.split('/'); return arrData[2] + '-' + arrData[1] + '-' + arrData[0]; };
+        
+        //CONVERTE DATA EN PARA PT-BR
+        this.formataData = function (strData) { var arrData = strData.split('-'); return arrData[2] + '/' + arrData[1] + '/' + arrData[0]; };
+        
+        //DESABILITA TODO O FORM
+        this.desabilitaForm = function (formId) { $(formId+" input").prop("disabled",true); };
+        
+        //BUSCA DIAS NO MES
+        this.diasNoMes = function (mes,ano) { return new Date(ano, mes+1, 0).getDate(); };
+        
+        //RETORNA NOME DO MES
+        this.nomeMeses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+        this.nomeMes = function (mes){ return this.nomeMeses[mes]; };
+        this.nomeMesAbreviado = function (mes){ var nome = this.nomeMeses[mes]; return nome.substring(0,3); };
+        
+        //RETORNA NOME DO DIA
+        this.nomeDias = ["Segunda-Feira","Terça-Feira","Quarta-Feira","Quinta-Feira","Sexta-Feira","Sábado","Domingo"];
+        this.nomeDia = function (dia) { return this.nomeDias[dia]; };
+        this.nomeDiaReduzido = function (dia) { var nome = this.nomeDias[dia]; return nome.replace('-feira',''); };
+        this.nomeDiaAbreviado = function (dia) { var nome = this.nomeDias[dia]; return nome.substring(0,3); };
+        
+        //MOSTRAR LISTA
+        //this.enterList = function (elem) { $(elem).each(function(i){ setTimeout(function(){ $(elem).eq(i).addClass('mostrar'); },175); }); };
     }]);
 })();
