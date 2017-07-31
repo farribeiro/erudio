@@ -2011,7 +2011,36 @@
                 $scope.buscarTransferencias();
             } else if ($scope.tipoMovimentacao === 'turma') {
                 $scope.buscarMovimentacoesTurma();
+            } else if ($scope.tipoMovimentacao === 'desligamentos') {
+                $scope.buscarDesligamentosTurma();
             }
+        };
+        
+        /*Busca Movimentacoes de turma*/
+        $scope.buscarDesligamentosTurma = function () {
+            $scope.mostraProgresso();
+            var promise = Servidor.buscar('desligamentos', {'matricula': $scope.matricula.id});
+            promise.then(function (response) {
+                if (response.data.length > 0) {
+                    response.data.forEach(function (m) {
+                        var promise = Servidor.buscarUm('desligamentos', m.id);
+                        promise.then(function (response) {
+                            var objetoMovimentacaoTurma = {
+                                'id': m.id,
+                                'tipo': 'DESLIGAMENTO',
+                                'data': response.data.dataCadastro,
+                                'justificativa': response.data.justificativa
+                            };
+                            $scope.movimentacoes.push(objetoMovimentacaoTurma);
+                            $timeout(function(){ $('.tooltipped').tooltip({delay: 50});},75);
+                            $scope.fechaProgresso();
+                        });
+                    });
+                } else {
+                    Servidor.customToast('Nenhuma movimentação registrada');
+                }
+            });
+            $scope.fechaProgresso();
         };
 
         /*Abrir modal justificativa*/
@@ -2591,6 +2620,12 @@
                 promise.then(function (response) {
                     $scope.movimentacao = response.data;
                     $('#modal-transferecia').openModal();
+                });
+            } else if (movimentacao.tipo === 'DESLIGAMENTO') {
+                var promise = Servidor.buscarUm('desligamentos', movimentacao.id);
+                promise.then(function (response) {
+                    $scope.movimentacao = response.data;
+                    $('#modalMovimenta').openModal();
                 });
             } else {
                 var promise = Servidor.buscarUm('movimentacoes-turma', movimentacao.id);

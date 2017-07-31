@@ -771,6 +771,7 @@
 
             /* SALVAR TURMA */
             $scope.finalizar = function () {
+                delete $scope.turma.periodo;
                 if ($scope.integral) {
                     if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
                         var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
