@@ -380,6 +380,7 @@
         };
 
         $scope.prepararAceitar = function(transferencia) {
+            console.log(transferencia);
             var promise = Servidor.buscar('enturmacoes', {matricula: transferencia.matricula.id, encerrado: 0});
             promise.then(function(response) {
                 $scope.enturmacao = response.data[0];
@@ -599,19 +600,11 @@
             $scope.etapa.id = null;
             $scope.turmas = [];
             $scope.turma = {id: null};
-            var promiseEtapa = Servidor.buscarUm('etapas', $scope.transferencia.matricula.etapaAtual.id);
-            promiseEtapa.then(function(responseEtapa){
-                var etapa = responseEtapa.data;
-                var promise = Servidor.buscar('etapas', {curso: etapa.curso.id});
-                promise.then(function(response) {
+            if ($scope.transferencia.matricula.etapaAtual.id === null || $scope.transferencia.matricula.etapaAtual.id === undefined || $scope.transferencia.matricula.etapaAtual.id === "") {
+                var promiseEtapa = Servidor.buscar('etapas', null);
+                promiseEtapa.then(function(responseEtapa){
                     var etapas = response.data;
                     if ($scope.aceitandoTransferencia) {
-    //                    $scope.etapas.forEach(function(etapa) {
-    //                        if (etapa.ordem === $scope.transferencia.matricula.etapaAtual.ordem) {
-    //                            $scope.buscarTurmas(etapa.id);
-    //                            $scope.selecionarEtapa(etapa.id);
-    //                        }
-    //                    });
                         if($scope.transferencia.matricula.etapaAtual !== undefined && $scope.transferencia.matricula.etapaAtual) {
                             $scope.etapas = [];
                             etapas.forEach(function(e) {
@@ -627,7 +620,37 @@
                         $scope.etapas = etapas;
                     }
                 });
-            });
+            } else {
+                var promiseEtapa = Servidor.buscarUm('etapas', $scope.transferencia.matricula.etapaAtual.id);
+                promiseEtapa.then(function(responseEtapa){
+                    var etapa = responseEtapa.data;
+                    var promise = Servidor.buscar('etapas', {curso: etapa.curso.id});
+                    promise.then(function(response) {
+                        var etapas = response.data;
+                        if ($scope.aceitandoTransferencia) {
+        //                    $scope.etapas.forEach(function(etapa) {
+        //                        if (etapa.ordem === $scope.transferencia.matricula.etapaAtual.ordem) {
+        //                            $scope.buscarTurmas(etapa.id);
+        //                            $scope.selecionarEtapa(etapa.id);
+        //                        }
+        //                    });
+                            if($scope.transferencia.matricula.etapaAtual !== undefined && $scope.transferencia.matricula.etapaAtual) {
+                                $scope.etapas = [];
+                                etapas.forEach(function(e) {
+                                    if(e.ordem >= $scope.transferencia.matricula.etapaAtual.ordem) {
+                                        $scope.etapas.push(e);
+                                    }
+                                });
+                            } else {
+                                $scope.etapas = etapas;
+                            }
+                            $scope.inicializarControladorSelect();
+                        } else {
+                            $scope.etapas = etapas;
+                        }
+                    });
+                });
+            }
         };
 
         $scope.preparaRecusar = function(transferencia){

@@ -123,13 +123,20 @@
             $scope.agrupamentoSelecionado = {id: null};
             //BUSCA DISCIPLINA OFERTADA
             $scope.buscaDisciplinaOfertada = function (etapa) {
-                if (!etapa.integral) {
-                    var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa});
-                    promise.then(function (response){
-                        $scope.agrupamentos = response.data;
-                        $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
-                    });
-                }
+                var promise = Servidor.buscarUm('etapas',etapa);
+                promise.then(function(response){
+                    var etapa = response.data;
+                    if (!etapa.integral) {
+                        $scope.mostraPeriodo = true; $scope.integral = false;
+                        var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa});
+                        promise.then(function (response){
+                            $scope.agrupamentos = response.data;
+                            $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                        });
+                    } else {
+                        $scope.mostraPeriodo = false; $scope.integral = true;
+                    }
+                });
             };
 
             //BUSCA DISCIPLINAS

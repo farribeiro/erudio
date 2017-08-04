@@ -41,7 +41,7 @@
 <i data-ng-show="editando || !voltarAlunos" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
 
 <!-- Botão Voltar (Enturmacoes) -->
-<div data-ng-click="buscarEnturmacoes(turma, true)" data-ng-show="voltarAlunos" class="btn-voltar hide-on-med-and-down">
+<div data-ng-click="prepararVoltar(turma)" data-ng-show="voltarAlunos" class="btn-voltar hide-on-med-and-down">
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar aos alunos da turma"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div> 
 <i data-ng-show="voltarAlunos" class="material-icons btn-voltar hide-on-large-only" data-ng-click="buscarEnturmacoes(turma, true)">arrow_back</i>
