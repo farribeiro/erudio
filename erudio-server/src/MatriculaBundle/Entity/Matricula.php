@@ -100,13 +100,19 @@ class Matricula extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "matricula", cascade = {"all"}, fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "EtapaCursada", mappedBy = "matricula", fetch="EXTRA_LAZY") 
+    */
+    private $etapasCursadas;
+    
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "matricula", fetch="EXTRA_LAZY") 
     */
     private $disciplinasCursadas;
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Enturmacao", mappedBy = "matricula", cascade = {"all"}, fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "Enturmacao", mappedBy = "matricula", fetch="EXTRA_LAZY") 
     */
     private $enturmacoes;
     
@@ -187,8 +193,16 @@ class Matricula extends AbstractEditableEntity {
         }
     }
     
+    function getEtapasCursadas() {
+        return $this->etapasCursadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
     function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+        return $this->disciplinasCursadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
 
     function getEnturmacoes() {
