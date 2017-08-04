@@ -94,6 +94,13 @@ class Enturmacao extends AbstractEditableEntity {
         return !$this->encerrado && !$this->concluido;
     }
     
+    function isAprovado() {
+        return $this->concluido && !$this->getDisciplinasCursadas()->exists(function($d) {
+            return $d->getStatus() != DisciplinaCursada::STATUS_APROVADO &&
+                   $d->getStatus() != DisciplinaCursada::STATUS_DISPENSADO;
+        });
+    }
+    
     function getAluno() {
         return $this->matricula->getAluno();
     }

@@ -26,57 +26,59 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace IntegracaoSigAlimentarBundle\Controller;
+namespace MatriculaBundle\Service;
 
-use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\View\ViewHandlerInterface;
-use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\EnturmacaoFacade;
-use PessoaBundle\Service\UnidadeEnsinoFacade;
-use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
-use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
+use CursoBundle\Entity\Etapa;
+use MatriculaBundle\Entity\Matricula;
+use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Entity\EtapaCursada;
 
-/**
-* @FOS\Prefix("sig-alimentar")
-*/
-class IndexController {
+class EtapaCursadaFacade extends AbstractFacade {
+   
+    private $disciplinaCursadaFacade;
     
-    private $viewHandler;
-    private $enturmacaoFacade;
-    private $unidadeEnsinoFacade;
-    
-    function __construct(ViewHandlerInterface $viewHandler, UnidadeEnsinoFacade $unidadeEnsinoFacade,
-            EnturmacaoFacade $enturmacaoFacade) {
-        $this->viewHandler = $viewHandler;
-        $this->enturmacaoFacade = $enturmacaoFacade;
-        $this->unidadeEnsinoFacade = $unidadeEnsinoFacade;
+    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        parent::__construct($doctrine);
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
     }
     
-    /**
-    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam()
-    */
-    function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
-        $unidade = $paramFetcher->get('unidadeEnsino');
-        $params = $unidade ? ['turma_unidadeEnsino' => $unidade] : [];
-        $enturmacoes = $this->enturmacaoFacade->findAll($params, null, 5000);
-        $enturmacoesSig = array_map(function($e) {
-            return MatriculaSig::fromEnturmacao($e);
-        }, $enturmacoes);
-        return $this->viewHandler->handle(View::create(['dados' => $enturmacoesSig]));
+    function getEntityClass() {
+        return 'MatriculaBundle:EtapaCursada';
+    }
+
+     function queryAlias() {
+        return 'e';
     }
     
-    /**
-    * @FOS\Get("/unidades-ensino")
-    */
-    function getUnidadesAction() {
-        $unidades = $this->unidadeEnsinoFacade->findAll();
-        $unidadesSig = array_map(function($u) {
-            return UnidadeEnsinoSig::fromUnidadeEnsino($u);
-        }, $unidades);
-        return $this->viewHandler->handle(View::create($unidadesSig));
+    function parameterMap() {
+        return [
+            'matricula' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('matricula = :matricula')->setParameter('matricula', $value);
+            }
+        ];
+    }
+    
+    function isCompleta(Matricula $matricula, Etapa $etapa) {
+        $disciplinasCursadas = $this->disciplinaCursadaFacade->findByMatriculaAndEtapa($matricula, $etapa, false);
+        $quantidadeDisciplinas = count($etapa->getDisciplinas());
+        if ($quantidadeDisciplinas > count($disciplinasCursadas)) {
+            return false;
+        }
+        $quantidadeAprovacoes = count(array_unique(
+            array_map(
+                array_filter($disciplinasCursadas, function($d) {
+                    return $d->getStatus() != DisciplinaCursada::STATUS_REPROVADO;
+                }),
+                function($d) {
+                    return $d->getDisciplina();
+                }
+            )
+        ));
+        return $quantidadeDisciplinas === $quantidadeAprovacoes 
+                ? EtapaCursada::STATUS_APROVADO : EtapaCursada::STATUS_REPROVADO;
     }
     
 }

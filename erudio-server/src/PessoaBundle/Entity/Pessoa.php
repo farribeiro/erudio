@@ -112,15 +112,23 @@ class Pessoa extends AbstractEditableEntity {
         $this->telefones = new ArrayCollection();
     }
     
-    public function getNome() {
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getCodigo() {
+        return (9 + $this->id) . ($this->getDataCadastro()->getTimestamp() % 90 + 10);
+    }
+    
+    function getNome() {
         return $this->nome;
     }
 
-    public function setNome($nome) {
+    function setNome($nome) {
         $this->nome = $nome;
     }
     
-    public function getCodigoInep() {
+    function getCodigoInep() {
         return $this->codigoInep;
     }
     
@@ -128,27 +136,27 @@ class Pessoa extends AbstractEditableEntity {
         $this->codigoInep = $codigoInep;
     }
 
-    public function getCpfCnpj() {
+    function getCpfCnpj() {
         return $this->cpfCnpj;
     }
 
-    public function setCpfCnpj($cpfCnpj) {
+    function setCpfCnpj($cpfCnpj) {
         $this->cpfCnpj = $cpfCnpj;
     }
 
-    public function getDataNascimento() {
+    function getDataNascimento() {
         return $this->dataNascimento;
     }
 
-    public function setDataNascimento(\DateTime $dataNascimento = null) {
+    function setDataNascimento(\DateTime $dataNascimento = null) {
         $this->dataNascimento = $dataNascimento;
     }
 
-    public function getEmail() {
+    function getEmail() {
         return $this->email;
     }
 
-    public function setEmail($email) {
+    function setEmail($email) {
         $this->email = $email;
     }
     

@@ -37,8 +37,6 @@ use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
-use CoreBundle\ORM\Exception\UniqueViolationException;
 
 /**
 * Controlador REST que serve como base aos demais.

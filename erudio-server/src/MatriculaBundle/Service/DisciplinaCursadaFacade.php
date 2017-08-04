@@ -97,15 +97,40 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         ]];
     }
     
-    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa) {
+    function findAprovadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findFinalizadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_REPROVADO,
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findEmAndamento(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa, $status = null) {
+        $statusIn = $status ? $status : [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ];
         return $this->orm->getRepository($this->getEntityClass())->createQueryBuilder('d')
             ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
             ->where('d.ativo = true')
             ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', [
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO
-            ])
+            ->andWhere('d.status IN (:status)')->setParameter('status', $statusIn)
             ->andWhere('etapa.id = :etapa')->setParameter('etapa', $etapa->getId())
             ->getQuery()->getResult();
     }
