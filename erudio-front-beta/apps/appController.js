@@ -9,7 +9,7 @@
         //CRIANDO ROTAS
         $routeProvider
             .when('/',{ templateUrl: 'apps/home/partials/template.html', controller: 'HomeController' })
-            .when('/instituicoes',{ templateUrl: 'apps/instituicoes/partials/index.html', controller: 'InstituicaoController' })
+            .when('/instituicoes',{ templateUrl: 'apps/instituicoes/partials/index.html', controller: 'InstituicaoController', controllerAs: 'ctrl' })
             .when('/instituicoes/:id',{ templateUrl: 'apps/instituicoes/partials/form.html', controller: 'InstituicaoFormController' })
             .when('/tipos-unidade',{ templateUrl: 'apps/tiposUnidade/partials/index.html', controller: 'TipoUnidadeController' })
             .when('/tipos-unidade/:id',{ templateUrl: 'apps/tiposUnidade/partials/form.html', controller: 'TipoUnidadeFormController' })
@@ -34,6 +34,7 @@
             .when('/calendarios',{ templateUrl: 'apps/calendarios/partials/index.html', controller: 'CalendarioController' })
             .when('/calendarios/:id',{ templateUrl: 'apps/calendarios/partials/form.html', controller: 'CalendarioFormController' })
             .when('/calendarios/view/:id',{ templateUrl: 'apps/calendarios/partials/view.html', controller: 'CalendarioViewController' })
+            .when('/teste',{ templateUrl: 'apps/teste/partials/teste.html', controller: 'TESTE', controllerAs: 'ctrl' })
             .otherwise({ redirectTo: '/404' })
         ;
         
@@ -56,6 +57,7 @@
         $scope.titulo = 'Erudio';
         $scope.atribuicoes = [];
         $scope.cortinaAlocacao = true;
+        $('.loader').hide();
         
         //ATRIBUTOS
         $scope.attrAtual = { attr:{id:null}, alocacao:{id:null} };

@@ -201,6 +201,10 @@ input-instituicao, input-instituicao-telefone, select-instituicao-telefone, inpu
     display: block;
 }
 
+.card-lista {
+    width: 25% !important;
+}
+
 /*LOGIN*/
 @media screen and (min-width: 960px) {
     .corpoLogin {

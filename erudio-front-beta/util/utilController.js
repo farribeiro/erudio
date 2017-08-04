@@ -3,6 +3,8 @@
     
     util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', '$filter', '$http', 'Auth', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast, $filter, $http, Auth) {
         
+        this.teste = function(){ console.log('teste'); };
+        
         //SETA TITULO DA TOOLBAR
         this.setTitulo = function (titulo) { $('.titulo-toolbar').html(titulo); };
         
