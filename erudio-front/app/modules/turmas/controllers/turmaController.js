@@ -1344,6 +1344,7 @@
                         promise.then(function (response) {
                             $scope.enturmacoes = response.data;
                             if ($scope.enturmacoes.length === 0) {
+                                enturmando = false;
                                 $scope.mensagem = ' Clique no botão + para enturmar';
                                 $scope.semEnturmacoes = true;
                                 $scope.adicionarAlunos = true;
