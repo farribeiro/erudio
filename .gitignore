@@ -4,4 +4,6 @@ erudio-server/web/bundles
 erudio-server/composer.lock
 erudio-server/app/config/parameters.yml
 erudio-server/nbproject
+erudio-front-beta/nbproject
+erudio-front/nbproject
 
