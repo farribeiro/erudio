@@ -147,7 +147,7 @@
                     }
                 }, function(error){
                     //SENHA ERRADA
-                    $scope.btnText = 'ENTRAR'; if (error.status === 403){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
+                    $scope.btnText = 'ENTRAR'; if (error.data.error.code === 401){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
                 });
             } else { $scope.btnText = 'ENTRAR'; Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000); }
         };
