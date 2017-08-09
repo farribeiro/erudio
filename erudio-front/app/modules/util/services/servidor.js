@@ -52,7 +52,7 @@
         };
 
         /* Prepara a autenticação */
-        this.criarHeader = function () {
+        /*this.criarHeader = function () {
             var username = sessionStorage.getItem('username');
             var key = sessionStorage.getItem('key');
             var created = moment().format();
@@ -61,13 +61,23 @@
             var digest = btoa(sha1.hash(nonce + created + key));
             var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
             return header;
-        };
+        };*/
 
         /* Prepara a chamada restangular */
-        this.preparaRestangular = function () {
+        /*this.preparaRestangular = function () {
             var header = this.criarHeader();
             //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
             var rest = Restangular;
+            return rest;
+        };*/
+            
+        //PREPARA HEADER X-WSSE
+        this.criarHeader = function () { var token = sessionStorage.getItem('token'); var header = "Bearer "+token; return header; };
+
+        //INSERE O HEADER NA CHAMADA REST
+        this.preparaRestangular = function() {
+            var header = this.criarHeader();
+            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
             return rest;
         };
 
