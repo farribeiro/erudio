@@ -197,8 +197,17 @@
         };
         
         //GERAR BOLETIM
-        $scope.gerarBoletim = function () {
-            window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
+        $scope.gerarBoletim = function (url) {
+            $scope.mostraProgresso();
+            //window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
+            if (url !== undefined){
+                var promise = Servidor.getPDF(url,'_blank');
+            } else {
+                var promise = Servidor.getPDF(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
+            }
+            promise.then(function(){
+                $scope.fechaProgresso();
+            });
             //if ($("#individual").is(":checked") && $scope.turmaBusca.aluno.id !== null) { window.open(ErudioConfig.urlServidor+'/report/boletim?enturmacao='+$scope.turmaBusca.aluno.id,'_blank');
             //} else { window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank'); }
         };

@@ -58,6 +58,13 @@
             } else { $scope.mostraProgresso(); $scope.verificaAlocacao(null); }
         };
         
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+        
         //SELECIONA UNIDADE DE ENSINO
         $scope.selecionaUnidade = function(unidade) {
             if (unidade !== null && unidade !== undefined) {

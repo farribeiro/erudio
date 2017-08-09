@@ -42,6 +42,13 @@
         }
         $scope.isAdmin = Servidor.verificaAdmin();
 
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+
         //VERIFICA SE HÁ ALOCAÇÃO SELECIONADA
         $scope.verificaAlocacao = function (nomeUnidade) {
             if ($scope.isAdmin) {

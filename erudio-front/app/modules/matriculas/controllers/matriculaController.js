@@ -158,6 +158,13 @@
 
         $scope.editandoo = false;
 
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+
         // Vai para o módulo de pessoas
         $scope.intraForms = function () {
             PessoaService.aluno = true;

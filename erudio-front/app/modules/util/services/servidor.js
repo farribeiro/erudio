@@ -71,6 +71,16 @@
             return rest;
         };*/
             
+        //GET PDF
+        this.getPDF = function(url){
+            var token = "Bearer "+sessionStorage.getItem('token');
+            return $http.get(url,{headers: {"JWT-Authorization":token},responseType: 'arraybuffer'}).success(function(data){
+                var file = new Blob([data],{type: 'application/pdf'});
+                var fileURL = URL.createObjectURL(file);
+                window.open(fileURL);
+            });
+        };
+        
         //PREPARA HEADER X-WSSE
         this.criarHeader = function () { var token = sessionStorage.getItem('token'); var header = "Bearer "+token; return header; };
 
