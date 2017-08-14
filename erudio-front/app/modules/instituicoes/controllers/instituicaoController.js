@@ -179,8 +179,9 @@
                 var resultadoEndereco = Servidor.finalizar(endereco,'enderecos','Instituição(Endereço)');
                 if (resultadoEndereco) {
                     var novoEndereco = resultadoEndereco.$object;
+                    console.log(novoEndereco);
                     $timeout(function(){
-                        $scope.instituicao.endereco = { 'id':novoEndereco.id };
+                        $scope.instituicao.endereco = { id:novoEndereco.id };
                         $timeout(function(){                            
                             var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
                             if (result) { 
@@ -229,7 +230,7 @@
                                 }
                             }
                         },500);
-                    },500);
+                    },1000);
                 }
             }
         };
@@ -241,10 +242,10 @@
         
         /* Validando Formulário */
         $scope.validar = function (id) {
-            var result = Servidor.validar(id);            
-            if ($scope.instituicao.cpfCnpj && $scope.instituicao.cpjCnpj !== undefined) { var res = Servidor.validarCnpj($scope.instituicao.cpfCnpj); } else { $scope.instituicao.cpjCnpj = null; res = true; }
+            var result = Servidor.validar(id);
+            if ($scope.instituicao.cpfCnpj !== null && $scope.instituicao.cpfCnpj !== '' && $scope.instituicao.cpfCnpj !== undefined) { var res = Servidor.validarCnpj($scope.instituicao.cpfCnpj); } else { $scope.instituicao.cpfCnpj = null; res = true; }
             if (result && res) { 
-                $scope.instituicao.cpfCnpj = cnpj;
+                //$scope.instituicao.cpfCnpj = cnpj;
                 return true; 
             }
         }; 
