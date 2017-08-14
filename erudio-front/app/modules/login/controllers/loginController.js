@@ -90,7 +90,7 @@
             
             //SÓ PROSSEGUE QUANDO USER E SENHA ESTÃO PREENCHIDOS
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
-                let auth = { username: $scope.usuario, password: btoa($scope.senha) };                
+                varauth = { username: $scope.usuario, password: btoa($scope.senha) };                
                 //CRIA O HEADER
                 var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
                 //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
@@ -184,7 +184,7 @@
             
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
                 
-                let auth = { username: $scope.usuario, password: $scope.senha };
+                varauth = { username: $scope.usuario, password: $scope.senha };
                 //CRIA O HEADER
                 var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
                 //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
