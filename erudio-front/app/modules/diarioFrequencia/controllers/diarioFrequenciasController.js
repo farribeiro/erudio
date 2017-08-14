@@ -48,6 +48,11 @@
             var promise = Servidor.getPDF(url);
             promise.then(function(){ $scope.fechaProgresso(); });
         };
+        
+        $scope.mostraProgresso = function () { $scope.progresso = true; $scope.mostraLoader(); };
+        $scope.fechaProgresso = function () { $scope.progresso = false; $scope.fechaLoader(); };
+        $scope.mostraLoader = function () { $scope.loader = true; };
+        $scope.fechaLoader = function () { $scope.loader = false; };
 
         //VERIFICA SE HÁ ALOCAÇÃO SELECIONADA
         $scope.verificaAlocacao = function (nomeUnidade) {

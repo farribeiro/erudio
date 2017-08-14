@@ -143,7 +143,7 @@
             </div>
         </div>
         <div data-ng-if="ativo === 'instituicao'" class="col s12 right-align save" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
-            <a target="_blank" href="{{config.urlRelatorios}}/espelho-media?turma={{turmaBusca.turma.id}}&media={{turmaBusca.media.id}}" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+            <a target="_blank" ng-click="getPDF(config.urlRelatorios+'/espelho-media?turma='+turmaBusca.turma.id+'&media='+turmaBusca.media.id)" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
         </div>        
     </div>
     

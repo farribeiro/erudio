@@ -217,8 +217,8 @@
             resultado = $http({
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
-                data: objeto
-                //headers: {'X-WSSE': this.criarHeader()}
+                data: objeto,
+                headers: {'JWT-Authorization': this.criarHeader()}
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -234,8 +234,8 @@
             resultado = $http({
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
-                data: objeto
-                //headers: {'X-WSSE': this.criarHeader()}
+                data: objeto,
+                headers: {'JWT-Authorization': this.criarHeader() }
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -252,8 +252,8 @@
                 method: "DELETE",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
-                //headers: {'Content-Type': 'application/json', 'X-WSSE': this.criarHeader()}
-                headers: {'Content-Type': 'application/json'}
+                headers: {'Content-Type': 'application/json', 'JWT-Authorization': this.criarHeader()}
+                //headers: {'Content-Type': 'application/json'}
             });
             return resultado;
         };
