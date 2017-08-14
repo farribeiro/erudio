@@ -759,7 +759,7 @@
                     Servidor.customToast('Não há transferencias.');
                     return $scope.reiniciarBusca();
                 }
-                $scope.transferencias.forEach(function(t) {
+                /*$scope.transferencias.forEach(function(t) {
                     var promise = Servidor.buscar('disciplinas-cursadas', {matricula: t.matricula.id, encerrado:0});
                     promise.then(function(response) {
                         if(response.data.length) {
@@ -771,7 +771,7 @@
                             t.matricula.etapaAtual = {id:null, nomeExibicao: ''};
                         }
                     });
-                });
+                });*/
                 $('.tooltipped').tooltip('remove');
                 $timeout(function () {
                     $('.tooltipped').tooltip({delay: 50});
