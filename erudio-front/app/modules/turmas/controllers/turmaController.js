@@ -128,7 +128,7 @@
                     var etapa = response.data;
                     if (!etapa.integral) {
                         $scope.mostraPeriodo = true; $scope.integral = false;
-                        var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa});
+                        var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
                         promise.then(function (response){
                             $scope.agrupamentos = response.data;
                             $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
@@ -778,8 +778,8 @@
 
             /* SALVAR TURMA */
             $scope.finalizar = function () {
-                delete $scope.turma.periodo;
                 if ($scope.integral) {
+                    delete $scope.turma.periodo;
                     if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
                         var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
                         promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); $scope.fecharFormulario(); }, function (error) { Servidor.customToast(error.message); $scope.fechaProgresso(); $scope.fecharFormulario(); });
@@ -790,6 +790,7 @@
                     }
                 } else {
                     //if ($scope.disciplinasOfertadas.length > 0) {
+                    console.log($scope.turma);
                         $scope.turma.periodo.id = parseInt($scope.turma.periodo.id);
                         if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id && $scope.turma.periodo.id && $scope.agrupamentoSelecionado.id) {
                             var novo = false;
