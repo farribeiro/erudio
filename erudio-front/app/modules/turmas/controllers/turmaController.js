@@ -1217,8 +1217,11 @@
             /* REMOÇÃO DE TURMA */
             $scope.remover = function () {
                 $scope.mostraProgresso();
-                Servidor.remover($scope.turmaRemover, 'Turma');
-                $timeout(function () { $scope.buscarTurmas(); $scope.fechaProgresso(); }, 1000);
+                var promise = Servidor.buscarUm('turmas',$scope.turmaRemover.id);
+                promise.then(function(response){
+                    Servidor.remover(response.data, 'Turma');
+                    $timeout(function () { $scope.buscarTurmas(); $scope.fechaProgresso(); }, 1000);
+                });
             };
 
             /* CONTROLE DE SELECT */
