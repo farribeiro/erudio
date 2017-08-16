@@ -37,18 +37,18 @@
         <div class="col s6">
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">my_location</i>
-                <input id="cep" type="text" length="8" class="validate counter cep" data-ng-model="pessoa.endereco.cep" data-ng-change="buscaCEP(pessoa.endereco.cep)" data-ng-disabled="!escrita"/>
-                <label for="cep">C.E.P</label>
+                <input id="cep" type="text" length="8" class="validate counter cep" data-ng-model="pessoa.endereco.cep" data-ng-disabled="!escrita" required/>
+                <label for="cep">C.E.P*</label>
             </div>
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">directions</i>
-                <input id="logradouro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.logradouro" data-ng-disabled="!escrita" required />
+                <input id="logradouro" type="text" class="validate" data-ng-model="pessoa.endereco.logradouro" data-ng-disabled="!escrita" required />
                 <label for="logradouro">LOGRADOURO*</label>
             </div>                
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">filter_1</i>
-                <input id="numero" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" length="10" class="validate counter" data-ng-model="pessoa.endereco.numero" data-ng-disabled="!escrita"/>
-                <label for="numero">NÚMERO</label>
+                <input id="numero"  type="text" length="10" class="validate counter" data-ng-model="pessoa.endereco.numero" data-ng-disabled="!escrita" required/>
+                <label for="numero">NÚMERO*</label>
             </div>                  
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">receipt</i>
@@ -57,8 +57,8 @@
             </div>      
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">location_on</i>
-                <input id="bairro" data-ng-change="buscaCoordenadasPorEnderecoCompleto()" type="text" class="validate" data-ng-model="pessoa.endereco.bairro" data-ng-disabled="!escrita" />
-                <label for="bairro">BAIRRO</label>
+                <input id="bairro" type="text" class="validate" data-ng-model="pessoa.endereco.bairro" data-ng-disabled="!escrita" required />
+                <label for="bairro">BAIRRO*</label>
             </div>                            
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">location_on</i> 

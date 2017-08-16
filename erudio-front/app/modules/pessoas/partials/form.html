@@ -60,7 +60,7 @@
                             <div class="row ajuste-margin-bottom-0">
                                 <div class=" input-field col s12 m12 l6">
                                     <i class="material-icons prefix">cake</i>
-                                    <input id="dataNascimentoAluno" type="text" class="data" data-ng-model="pessoa.dataNascimento" data-ng-disabled="!escrita">
+                                    <input id="dataNascimentoAluno" type="text" class="data" data-ng-model="pessoa.dataNascimento" data-ng-disabled="!escrita" required>
                                     <label for="dataNascimentoAluno" id="nomeGrande">Data de Nascimento*</label>
                                 </div>                   
                                 <div class="input-field col s12 m12 l6">
@@ -76,21 +76,21 @@
                             <div class="row ajuste-margin-bottom-0">
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">perm_identity</i>
-                                    <select id="alunoRaca" style="display: none;" data-ng-model="pessoa.raca.id" data-ng-disabled="!escrita">                                
+                                    <select id="alunoRaca" style="display: none;" data-ng-model="pessoa.raca.id" data-ng-disabled="!escrita" required>                                
                                         <option disabled></option>
                                         <option value="{{raca.id}}" data-ng-selected="verificaRaca(raca.id)" data-ng-repeat="raca in racas">{{ raca.nome}}</option>
                                     </select>
-                                    <label for="alunoRaca">Raça/Etnia</label>
+                                    <label for="alunoRaca">Raça/Etnia*</label>
                                 </div>                     
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">public</i>
-                                    <select style="display: none;" data-ng-model="pessoa.nacionalidade" id="nacionalidade" data-ng-disabled="!escrita">
+                                    <select style="display: none;" data-ng-model="pessoa.nacionalidade" id="nacionalidade" data-ng-disabled="!escrita" required>
                                         <option disabled selected></option>
                                         <option value="BRASILEIRO" data-ng-selected="tipoNacionalidade('BRASILEIRO')">BRASILEIRO</option>
                                         <option value="ESTRANGEIRO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO')">ESTRANGEIRO</option>
                                         <option value="ESTRANGEIRO_NATURALIZADO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO_NATURALIZADO')">ESTRANGEIRO NATURALIZADO</option>
                                     </select>
-                                    <label for="nacionalidade">Nacionalidade</label>
+                                    <label for="nacionalidade">Nacionalidade*</label>
                                 </div>                          
                                 <div class="input-field col s12 m12 l6" data-ng-show="pessoa.nacionalidade === 'BRASILEIRO'">
                                     <i class="material-icons prefix">place</i>
@@ -100,32 +100,32 @@
                                 </div>
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">wc</i>
-                                    <select id="estadoCivil" style="display: none;" data-ng-model="pessoa.estadoCivil.id" data-ng-disabled="!escrita">                                
+                                    <select id="estadoCivil" style="display: none;" data-ng-model="pessoa.estadoCivil.id" data-ng-disabled="!escrita" required>                                
                                         <option value="{{ estadoCivil.id}}" data-ng-selected="verificaEstadoCivil(estadoCivil.id)" data-ng-repeat="estadoCivil in estadosCivis">{{ estadoCivil.nome}}</option>
                                     </select>
-                                    <label for="estadoCivil">Estado Civil</label>                            
+                                    <label for="estadoCivil">Estado Civil*</label>                            
                                 </div>
                                 <div class="row ajuste-margin-bottom ">
                                     <div class="input-field col s12 m12 l6">
                                         <i class="material-icons prefix">perm_identity</i>
-                                        <input id="nomeMaeCadastro" type="text" class="validate" data-ng-model="pessoa.nomeMae" data-ng-disabled="!escrita"  />
-                                        <label for="nomeMaeCadastro" id="nomeGrande">Nome da Mãe</label>
+                                        <input id="nomeMaeCadastro" type="text" class="validate" data-ng-model="pessoa.nomeMae" data-ng-disabled="!escrita" required />
+                                        <label for="nomeMaeCadastro" id="nomeGrande">Filiação 1*</label>
                                     </div>                                    
                                     <div class="input-field col s12 m12 l6">
                                         <i class="material-icons prefix">perm_identity</i>
                                         <input id="nomePai" type="text" class="validate" data-ng-model="pessoa.nomePai" data-ng-disabled="!escrita" />
-                                        <label for="nomePai">Nome do Pai</label>
+                                        <label for="nomePai">Filiação 2</label>
                                     </div>
                                     <div data-ng-hide="outroResponsavel">
                                         <div class="input-field col s12 m12 l6">
                                             <i class="material-icons prefix">wc</i>
-                                            <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita">
+                                            <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita" required>
                                                 <option disabled></option>
-                                                <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae" selected>Mãe</option>
-                                                <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Pai</option>
+                                                <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae" selected>Filiação 1</option>
+                                                <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Filiação 2</option>
                                                 <option data-ng-selected="pessoa.responsavelNome && pessoa.nomePai !== pessoa.responsavelNome && pessoa.nomeMae !== pessoa.responsavelNome" value="outro">Outro</option>
                                             </select>
-                                            <label for="responsavel">Responsável</label>                            
+                                            <label for="responsavel">Responsável*</label>                            
                                         </div>
                                     </div>
                                     <div data-ng-show="pessoaResponsavel === 'outro'">

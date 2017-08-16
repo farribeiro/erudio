@@ -1313,9 +1313,9 @@
                     if ($scope.pessoa.dataExpedicaoCertidaoNascimento) {
                         $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
                     }
-                    if ($scope.telaNumero === 1) {
+                    //if ($scope.telaNumero === 1) {
                         if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
-                            if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                                 var endereco = Restangular.copy($scope.pessoa.endereco);
                                 if (Servidor.validar('validate-endereco')) {
                                     endereco.route = 'enderecos';
@@ -1326,15 +1326,16 @@
                                         $scope.finalizarPessoa();
                                     });
                                 } else {
-                                    return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                    $scope.fechaLoader();
+                                    return Servidor.customToast("Os campos de endereço são obrigatórios.");
                                 }
-                            } else {
+                            /*} else {
                                 delete $scope.pessoa.endereco;
                                 $scope.finalizarPessoa();
-                            }
+                            }*/
                         } else {
-                            if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
-                                if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            //if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
+                                //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                                     var endereco = Restangular.copy($scope.pessoa.endereco);
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
@@ -1345,22 +1346,23 @@
                                             $scope.finalizarPessoa();
                                         });
                                     } else {
-                                        return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                        $scope.fechaLoader();
+                                        return Servidor.customToast("Os campos de endereço são obrigatórios.");
                                     }
-                                } else {
+                                /*} else {
                                     delete $scope.pessoa.endereco;
                                     $scope.finalizarPessoa();
-                                }
-                            } else {
+                                }*/
+                            /*} else {
                                 $scope.finalizarPessoa();
-                            }
+                            }*/
                         }
-                    } else {
+                    /*} else {
                         if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                             delete $scope.pessoa.endereco;
                         }
                         $scope.finalizarPessoa();
-                    }
+                    }*/
                 };
             };
 
