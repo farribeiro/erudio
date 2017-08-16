@@ -1417,8 +1417,14 @@
 
 
             $scope.validarPessoa = function (id) {
+                var retorno = false;
                 if (Servidor.validar(id)) {
-                    return true;
+                    retorno = true;
+                    if ($scope.pessoa.naturalidade.id === undefined) {
+                        Servidor.customToast('Selecione uma cidade no campo naturalidade.');
+                        retorno = false;
+                    }
+                    return retorno;
                 }
             };
 

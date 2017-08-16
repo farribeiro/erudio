@@ -77,7 +77,7 @@
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">perm_identity</i>
                                     <select id="alunoRaca" style="display: none;" data-ng-model="pessoa.raca.id" data-ng-disabled="!escrita" required>                                
-                                        <option disabled></option>
+                                        <option></option>
                                         <option value="{{raca.id}}" data-ng-selected="verificaRaca(raca.id)" data-ng-repeat="raca in racas">{{ raca.nome}}</option>
                                     </select>
                                     <label for="alunoRaca">Raça/Etnia*</label>
@@ -85,7 +85,7 @@
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">public</i>
                                     <select style="display: none;" data-ng-model="pessoa.nacionalidade" id="nacionalidade" data-ng-disabled="!escrita" required>
-                                        <option disabled selected></option>
+                                        <option></option>
                                         <option value="BRASILEIRO" data-ng-selected="tipoNacionalidade('BRASILEIRO')">BRASILEIRO</option>
                                         <option value="ESTRANGEIRO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO')">ESTRANGEIRO</option>
                                         <option value="ESTRANGEIRO_NATURALIZADO" data-ng-selected="tipoNacionalidade('ESTRANGEIRO_NATURALIZADO')">ESTRANGEIRO NATURALIZADO</option>
@@ -120,8 +120,8 @@
                                         <div class="input-field col s12 m12 l6">
                                             <i class="material-icons prefix">wc</i>
                                             <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita" required>
-                                                <option disabled></option>
-                                                <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae" selected>Filiação 1</option>
+                                                <option>&nbsp;</option>
+                                                <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae">Filiação 1</option>
                                                 <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Filiação 2</option>
                                                 <option data-ng-selected="pessoa.responsavelNome && pessoa.nomePai !== pessoa.responsavelNome && pessoa.nomeMae !== pessoa.responsavelNome" value="outro">Outro</option>
                                             </select>
