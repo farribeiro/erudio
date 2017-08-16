@@ -1705,7 +1705,7 @@
             $scope.buscarMatriculas = function (matricula) {
                 $scope.matriculas = [];
                 $scope.matriculasVerificar = [];
-                var promise = Servidor.buscar('disciplinas-ofertadas', {turma: $scope.turma.id});
+                /*var promise = Servidor.buscar('disciplinas-ofertadas', {turma: $scope.turma.id});
                 promise.then(function(response) {
                     $scope.disciplinasOfertadas = response.data;
                 });
@@ -1714,22 +1714,23 @@
                     $scope.matriculaBusca.curso = response.data.curso.id;
                     $scope.matriculaBusca.unidade = $scope.turma.unidadeEnsino.id;
                     $scope.mostraLoader();
-                    $scope.adicionarAlunos = true;
+                    $scope.adicionarAlunos = true;*/
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
-                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso});
+                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso, 'enturmado': 0});
                     promise.then(function (response) {
                         if(response.data.length){
-                            $scope.matriculasVerificar = response.data;
+                            $scope.matriculas = response.data;
+                            //$scope.matriculasVerificar = response.data;
     //                            $scope.fechaLoader();
     //                            $scope.verificarDisciplinasCursadas();
-                            $scope.alunosCompativeisSelecionados = 0;
-                            $scope.enturmacoesEncerradas(response.data);
+                            //$scope.alunosCompativeisSelecionados = 0;
+                            //$scope.enturmacoesEncerradas(response.data);
                         }else{
                             $scope.fechaLoader();
                             Servidor.customToast('Nenhuma matricula encontrada.');
                         }
                     });
-                });
+                /*});*/
             };
 
             $scope.selecionarTodasMatriculasCompativeis = function() {
