@@ -1318,7 +1318,9 @@
                     if ($scope.telaNumero === 1) {
                         if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
                             //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                                var endereco = Restangular.copy($scope.pessoa.endereco);
+                            var header = Servidor.criarToken();
+                                var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
+                                var endereco = rest.copy($scope.pessoa.endereco);
                                 if (Servidor.validar('validate-endereco')) {
                                     endereco.route = 'enderecos';
                                     var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
@@ -1341,10 +1343,10 @@
                                     var endereco = Restangular.copy($scope.pessoa.endereco);
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
-                                        var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
+                                        var promise = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço');
                                         promise.then(function (response) {
-                                            $scope.pessoa.endereco.id = response.id;
-                                            $scope.endereco.id = response.id;
+                                            $scope.pessoa.endereco.id = response.data.id;
+                                            $scope.endereco.id = response.data.id;
                                             $scope.finalizarPessoa();
                                         });
                                     } else {
@@ -1532,14 +1534,11 @@
                             var endereco = Servidor.recuperaCep();
                             if (endereco[0]) {
                                 $scope.pessoa.endereco.logradouro = endereco[0];
-                            } else {
-                                $scope.pessoa.endereco.logradouro = '';
                             }
                             if (endereco[1]) {
                                 $scope.pessoa.endereco.bairro = endereco[1];
-                            } else {
-                                $scope.pessoa.endereco.bairro = '';
                             }
+                            
                             /* Buscando Estado */
                             if (endereco[3]) {
                                 var promise = Servidor.buscar('estados', {'sigla': endereco[3]});
@@ -1563,9 +1562,7 @@
                                                 $scope.pessoa.endereco.cidade = cidade[0].plain();
                                                 $scope.cidadeId = cidade[0].id;
                                                 $timeout(function () {
-                                                    $scope.buscaCoordenadasPorEndereco();
-                                                    $('#cidade').material_select('destroy');
-                                                    $('#cidade').material_select();
+                                                    //$scope.buscaCoordenadasPorEndereco();
                                                     Servidor.verificaLabels();
                                                     $scope.fechaProgresso();
                                                     if (!$scope.pessoa.id) {
@@ -1574,6 +1571,8 @@
                                                         } else {
                                                             $("#numero").focus();
                                                         }
+                                                        $('#cidade').material_select('destroy');
+                                                        $('#cidade').material_select();
                                                     }
                                                 }, 500);
                                             });
@@ -1586,7 +1585,6 @@
                                 });
                             } else {
                                 $scope.fechaLoader();
-                                $scope.endereco.cidade.estado.id = '';
                                 $('#estado').material_select();
                             }
                         }, 500);

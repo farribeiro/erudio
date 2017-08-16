@@ -37,7 +37,7 @@
         <div class="col s6">
             <div class="input-field col s12 m12 l12">
                 <i class="material-icons prefix">my_location</i>
-                <input id="cep" type="text" length="8" class="validate counter cep" data-ng-model="pessoa.endereco.cep" data-ng-disabled="!escrita" required/>
+                <input id="cep" type="text" length="8" class="validate counter cep" data-ng-change="buscaCEP(pessoa.endereco.cep)" data-ng-model="pessoa.endereco.cep" data-ng-disabled="!escrita" required/>
                 <label for="cep">C.E.P*</label>
             </div>
             <div class="input-field col s12 m12 l12">
