@@ -1007,6 +1007,8 @@
                     }
                     if ($scope.pessoa.responsavelNome !== $scope.pessoa.nomeMae && $scope.pessoa.responsavelNome !== $scope.pessoa.nomePai) {
                         $scope.pessoaResponsavel = 'outro';
+                    } else {
+                        $scope.pessoaResponsavel = $scope.pessoa.responsavelNome;
                     }
                     
                     $scope.cadastrarPessoa(salvo, novo);
@@ -1313,7 +1315,7 @@
                     if ($scope.pessoa.dataExpedicaoCertidaoNascimento) {
                         $scope.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
                     }
-                    //if ($scope.telaNumero === 1) {
+                    if ($scope.telaNumero === 1) {
                         if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
                             //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                                 var endereco = Restangular.copy($scope.pessoa.endereco);
@@ -1341,8 +1343,8 @@
                                         endereco.route = 'enderecos';
                                         var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
                                         promise.then(function (response) {
-                                            $scope.pessoa.endereco.id = response.data.id;
-                                            $scope.endereco.id = response.data.id;
+                                            $scope.pessoa.endereco.id = response.id;
+                                            $scope.endereco.id = response.id;
                                             $scope.finalizarPessoa();
                                         });
                                     } else {
@@ -1357,12 +1359,15 @@
                                 $scope.finalizarPessoa();
                             }*/
                         }
-                    /*} else {
+                    } else {
                         if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            $scope.fechaLoader();
+                            return Servidor.customToast("Os campos de endereço são obrigatórios.");
+                        } else {
                             delete $scope.pessoa.endereco;
+                            $scope.finalizarPessoa();
                         }
-                        $scope.finalizarPessoa();
-                    }*/
+                    }
                 };
             };
 
