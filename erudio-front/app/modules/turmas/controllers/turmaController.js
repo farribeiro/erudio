@@ -790,7 +790,6 @@
                     }
                 } else {
                     //if ($scope.disciplinasOfertadas.length > 0) {
-                    console.log($scope.turma);
                         $scope.turma.periodo.id = parseInt($scope.turma.periodo.id);
                         if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id && $scope.turma.periodo.id && $scope.agrupamentoSelecionado.id) {
                             var novo = false;
