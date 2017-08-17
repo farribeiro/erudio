@@ -364,7 +364,7 @@
             $scope.estadoId = estado.id; $scope.instituicao.endereco.cidade.estado = estado;
             $scope.cidadeId = null; $scope.instituicao.endereco.cidade.id = null;
             $scope.instituicao.endereco.cidade.nome = null; $scope.buscaCidades();
-            $timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
+            //$timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
         };
         
         /* Seleciona select de cidade */
@@ -373,14 +373,14 @@
             for (var i=0; i<$scope.cidades.length;i++) { if ($scope.cidades[i].id === parseInt($scope.cidadeId)) { cidade = $scope.cidades[i]; } }
             $scope.instituicao.endereco.cidade = cidade; $scope.instituicao.endereco.bairro = null;
             $scope.instituicao.endereco.logradouro = null;
-            $timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
+            //$timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
         };
         
         /* Busca estados  - SelectBox */
         $scope.buscaEstados = function () {
             Servidor.buscarEstados().getList().then(function(response){ 
                 $scope.estados = response.plain();
-                $timeout(function (){ $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); },500);
+                $timeout(function (){ $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); },1000);
             });                            
         };
         
@@ -389,7 +389,7 @@
             var promise = Servidor.buscar('cidades',{'estado': $scope.instituicao.endereco.cidade.estado.id });
             promise.then(function(response){
                 $scope.cidades = response.data;
-                $timeout(function (){ $('#cidadeInstituicao').material_select('destroy'); $('#cidadeInstituicao').material_select(); },500);
+                $timeout(function (){ $('#cidadeInstituicao').material_select('destroy'); $('#cidadeInstituicao').material_select(); },1000);
             });
         };          
         
@@ -442,7 +442,7 @@
                                 $scope.estadoId = estado[0].id; $scope.cidadeId = null;
                                 $scope.instituicao.endereco.cidade.id = null; $scope.instituicao.endereco.cidade.nome = null;
                                 $scope.buscaCidades();
-                                $timeout(function() { $('#estado').material_select('destroy'); $('#estado').material_select(); }, 50);
+                                $timeout(function() { $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); }, 50);
                                 if (endereco[2]) {
                                     /* Buscando Cidade */
                                     var promise = Servidor.buscar('cidades',{'nome': endereco[2],'estado': $scope.instituicao.endereco.cidade.estado.id });
@@ -451,9 +451,10 @@
                                         $timeout(function(){
                                             $scope.buscaCoordenadasPorEndereco();
                                             $('#cidade').material_select('destroy'); $('#cidade').material_select();
+                                            $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select();
                                             Servidor.verificaLabels();
                                             if(!$scope.instituicao.id){ if(!$scope.instituicao.endereco.bairro){ $("#logradouro").focus(); }else{ $("#numero").focus(); } }
-                                        },50);
+                                        },500);
                                     });
                                 } else {
                                     $scope.cidadeId = null;                                    
