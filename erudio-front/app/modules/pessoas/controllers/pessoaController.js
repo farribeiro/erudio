@@ -1318,9 +1318,9 @@
                     if ($scope.telaNumero === 1) {
                         if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
                             //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                            var header = Servidor.criarToken();
-                                var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
-                                var endereco = rest.copy($scope.pessoa.endereco);
+                            //var header = Servidor.criarToken();
+                               // var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
+                                var endereco = Restangular.copy($scope.pessoa.endereco);
                                 if (Servidor.validar('validate-endereco')) {
                                     endereco.route = 'enderecos';
                                     var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
@@ -1343,7 +1343,9 @@
                                     var endereco = Restangular.copy($scope.pessoa.endereco);
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
-                                        var promise = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço');
+                                        var promise = null;
+                                        if (endereco.id === undefined || endereco.id === null) { promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço'); }
+                                        else { var promise = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço'); }
                                         promise.then(function (response) {
                                             $scope.pessoa.endereco.id = response.data.id;
                                             $scope.endereco.id = response.data.id;
