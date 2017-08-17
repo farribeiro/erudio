@@ -452,7 +452,10 @@
         this.validarCnpj = function (cnpj) {
             if (cnpj !== null && cnpj !== undefined) {
                 //cnpj = cnpj.toString();
-                console.log(cnpj);
+                cnpj = cnpj.replace(/[.]/g,"");
+                cnpj = cnpj.replace(/[//]/g,"");
+                cnpj = cnpj.replace(/[-]/g,"");
+                
                 /* Proibe Números Iguais */
                 if (cnpj === "00000000000000" || cnpj === "11111111111111" || cnpj === "22222222222222" ||
                     cnpj === "33333333333333" || cnpj === "44444444444444" || cnpj === "55555555555555" ||
@@ -492,7 +495,6 @@
                 /* Dígito verificador inválido */
                 var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
                 if (resultado !== parseInt(digitos.charAt(0))){
-                    console.log(document.getElementById("validate"));
                     if(!document.getElementById("validate")){
                         var $d = document.getElementById("validate-unidade").querySelectorAll('.input-field');
                     }else{
@@ -506,8 +508,7 @@
                             }
                         }
                     });
-                    alert('1');
-                    this.customToast("CNPJ Invalido");
+                    this.customToast("CNPJ Invalido - Dígito Verificador");
                     return false;
                 }
 
@@ -535,8 +536,8 @@
                             }
                         }
                     });
-                    alert('2');
-                    this.customToast("CNPJ Invalido");
+                    
+                    this.customToast("CNPJ Invalido - Dìgito Verificador");
                     return false;
                 }
 
