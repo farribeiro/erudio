@@ -1343,9 +1343,7 @@
                                     var endereco = Restangular.copy($scope.pessoa.endereco);
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
-                                        var promise = null;
-                                        if (endereco.id === undefined || endereco.id === null) { promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço'); }
-                                        else { var promise = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço'); }
+                                        var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
                                         promise.then(function (response) {
                                             $scope.pessoa.endereco.id = response.data.id;
                                             $scope.endereco.id = response.data.id;

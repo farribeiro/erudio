@@ -226,11 +226,11 @@
                     if (data.status !== 'ZERO_RESULTS') {
                         $scope.unidade.endereco.latitude = data.results[0].geometry.location.lat;
                         $scope.unidade.endereco.longitude = data.results[0].geometry.location.lng;
-                        $scope.initMap(true, "mapa");
+                        //$scope.initMap(true, "mapa");
                     } else {
                         $scope.unidade.endereco.latitude = -26.929647;
                         $scope.unidade.endereco.longitude = -48.683661;
-                        $scope.initMap(true, "mapa");
+                        //$scope.initMap(true, "mapa");
                     }
                 }
             });
@@ -482,6 +482,8 @@
                     $scope.unidade.endereco = $scope.endereco;
                     $scope.unidade.endereco.latitude = -26.929647;
                     $scope.unidade.endereco.longitude = -48.683661;
+                    $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
+                    $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
                 } else {
                     $scope.acao = "Editar";
                     $("#nomeUnidadeEnsino").focus();
@@ -508,7 +510,7 @@
                                 $('#cidade').material_select();
                                 $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
                                 $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
-                            },500);
+                            },1000);
                         },500);
                     });
                 }
@@ -519,7 +521,7 @@
                     if (!nova) { $scope.index = index; }
                     $scope.fechaLoader();
                     $scope.editando = true;
-                    $timeout(function(){ $scope.initMap(false, "mapa"); $('#nomeUnidadeEnsinoFocus').focus(); },300);
+                    $timeout(function(){ $('#nomeUnidadeEnsinoFocus').focus(); },300);
                 }, 300);
             }else {
                 if (!nova){
@@ -541,7 +543,7 @@
                 $('.opcoesUnidade' + unidade.id).hide();
                 $scope.fechaLoader();
                 $scope.buscaTelefones();
-                $timeout(function(){ $('#info-modal-unidade').modal(); $scope.initMap(false, "info-map"); },500);
+                $timeout(function(){ $('#info-modal-unidade').modal();  },500);
             }, 300);
         };
 
@@ -704,11 +706,11 @@
                 $timeout(function(){
                     $("#nomeUnidadeEnsino").focus();
                     $timeout(function () {Servidor.cardEntra('.form-geral');}, 500);
-                    $timeout(function () { $scope.initMap(false);}, 500);
+                    //$timeout(function () { $scope.initMap(false);}, 500);
                     Servidor.cardEntra('.form-geral');
                     $('#tipo, #instituicao, #estado').material_select('destroy');
                     $('#tipo, #instituicao, #estado').material_select();
-                    $timeout(function(){ $scope.initMap(false, "mapa"); },1000);
+                    //$timeout(function(){ $scope.initMap(false, "mapa"); },1000);
                     $("#nomeUnidadeEnsino").focus();
                 },500);
             },500);
