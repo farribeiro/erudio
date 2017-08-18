@@ -176,25 +176,44 @@
                 var novo = false;
                 if (!$scope.instituicao.id) { $scope.pagina = 0; novo = true; }
                 var endereco = Restangular.copy($scope.instituicao.endereco);
-                var resultadoEndereco = Servidor.finalizar(endereco,'enderecos','Instituição(Endereço)');
+                var resultadoEndereco = null;
+                if (endereco.id === undefined || endereco.id === null) { resultadoEndereco = Servidor.finalizar(endereco, 'enderecos', 'Endereço'); }
+                else { var resultadoEndereco = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço'); }
                 if (resultadoEndereco) {
-                    var novoEndereco = resultadoEndereco.$object;
-                    console.log(novoEndereco);
+                    //var novoEndereco = resultadoEndereco.$object;
                     $timeout(function(){
-                        $scope.instituicao.endereco = { id:novoEndereco.id };
-                        $timeout(function(){                            
-                            var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
-                            if (result) { 
-                                var instituicaoId = result.$object;
-                                if ($scope.telefone.numero && $scope.telefone.descricao) { $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g,''); $scope.instituicao.telefones.push($scope.telefone); }
-                                if ($scope.instituicao.telefones.length > 0) {
-                                    $timeout(function(){
-                                        for (var i=0; i < $scope.instituicao.telefones.length; i++) {
-                                            if(!$scope.instituicao.telefones[i].id) {
-                                                $scope.instituicao.telefones[i].pessoa.id = instituicaoId.id;
-                                                Servidor.finalizar($scope.instituicao.telefones[i], 'telefones', 'Telefone');
-                                            }                                            
-                                        }
+                        resultadoEndereco.then(function(response){
+                           $scope.instituicao.endereco = { id:response.data.id };
+                            $timeout(function(){                            
+                                var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
+                                if (result) { 
+                                    var instituicaoId = result.$object;
+                                    if ($scope.telefone.numero && $scope.telefone.descricao) { $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g,''); $scope.instituicao.telefones.push($scope.telefone); }
+                                    if ($scope.instituicao.telefones.length > 0) {
+                                        $timeout(function(){
+                                            for (var i=0; i < $scope.instituicao.telefones.length; i++) {
+                                                if(!$scope.instituicao.telefones[i].id) {
+                                                    $scope.instituicao.telefones[i].pessoa.id = instituicaoId.id;
+                                                    Servidor.finalizar($scope.instituicao.telefones[i], 'telefones', 'Telefone');
+                                                }                                            
+                                            }
+                                            $timeout(function (){ 
+                                                $scope.inicializar(false);
+                                                $scope.fechaLoader();
+                                                $scope.fecharFormulario();
+                                                if (!novo) {
+                                                    $scope.instituicoes.forEach(function(i,index){
+                                                        if(i.id === instituicaoId.id){
+                                                            $scope.instituicoes[index] = instituicaoId;
+                                                        }
+                                                    });
+                                                } else {
+                                                    $scope.instituicoes = [];
+                                                    $scope.buscarInstituicoes(false);
+                                                }
+                                            },300);
+                                        },300);
+                                    } else {
                                         $timeout(function (){ 
                                             $scope.inicializar(false);
                                             $scope.fechaLoader();
@@ -210,26 +229,10 @@
                                                 $scope.buscarInstituicoes(false);
                                             }
                                         },300);
-                                    },300);
-                                } else {
-                                    $timeout(function (){ 
-                                        $scope.inicializar(false);
-                                        $scope.fechaLoader();
-                                        $scope.fecharFormulario();
-                                        if (!novo) {
-                                            $scope.instituicoes.forEach(function(i,index){
-                                                if(i.id === instituicaoId.id){
-                                                    $scope.instituicoes[index] = instituicaoId;
-                                                }
-                                            });
-                                        } else {
-                                            $scope.instituicoes = [];
-                                            $scope.buscarInstituicoes(false);
-                                        }
-                                    },300);
+                                    }
                                 }
-                            }
-                        },500);
+                            },500); 
+                        });
                     },1000);
                 }
             }
