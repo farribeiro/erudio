@@ -121,6 +121,7 @@
                                             <i class="material-icons prefix">wc</i>
                                             <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita" required>
                                                 <option>&nbsp;</option>
+                                                <option data-ng-selected="pessoa.responsavelNome" value="nenhum">Não se Aplica</option>
                                                 <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae">Filiação 1</option>
                                                 <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Filiação 2</option>
                                                 <option data-ng-selected="pessoa.responsavelNome && pessoa.nomePai !== pessoa.responsavelNome && pessoa.nomeMae !== pessoa.responsavelNome" value="outro">Outro</option>
