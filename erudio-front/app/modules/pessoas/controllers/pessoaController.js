@@ -1293,7 +1293,7 @@
 
             /*Salvar Cadastro de Pessoa*/
             $scope.salvarPessoa = function () {
-                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 2) {
+                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 1) {
                     $scope.mostraLoader();
                     if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3) {
                         if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
@@ -1340,7 +1340,7 @@
                         } else {
                             //if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
                                 //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                                    var endereco = Restangular.copy($scope.pessoa.endereco);
+                                    var endereco = $scope.pessoa.endereco;
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
                                         var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
