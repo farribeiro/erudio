@@ -4,7 +4,7 @@
      * @Module instituicoesForm
      * @Controller InstituicaoFormController
      */
-    var instituicoesForm = angular.module('instituicoesForm',['ngMaterial', 'util', 'rest', 'erudioConfig','instituicaoDirectives','instituicaoService']);
+    var instituicoesForm = angular.module('instituicoesForm',['ngMaterial', 'util', 'rest', 'erudioConfig','instituicaoDirectives']);
     instituicoesForm.controller('InstituicaoFormController',['$scope', 'Util', 'REST', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, REST, ErudioConfig, $routeParams, $timeout){
         /*
          * @attr permissao

@@ -1,5 +1,5 @@
 (function (){
-    var erudioLogin = angular.module('ErudioLogin',['ngMaterial', 'restangular', 'erudioConfig', 'ngRoute', 'util', 'validator', 'pascalprecht.translate', 'appDirectives']);
+    var erudioLogin = angular.module('ErudioLogin',['ngMaterial', 'restangular', 'erudioConfig', 'ngRoute', 'util', 'validator', 'pascalprecht.translate', 'appDirectives', 'rest']);
     erudioLogin.config(['$mdThemingProvider', '$routeProvider', 'RestangularProvider', 'ErudioConfigProvider', '$translateProvider', function ($mdThemingProvider, $routeProvider, RestangularProvider, ErudioConfigProvider, $translateProvider) {
         
         //DEFININDO TEMA - CORES PRIMARIAS E SECUNDARIAS
@@ -18,7 +18,7 @@
         RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
     
-    erudioLogin.controller('LoginController',['$scope', '$mdSidenav', '$mdDialog', 'Util', '$translate', '$timeout', 'ErudioConfig', 'Restangular', function($scope, $mdSidenav, $mdDialog, Util, $translate, $timeout, ErudioConfig, Restangular){
+    erudioLogin.controller('LoginController',['$scope', '$mdSidenav', '$mdDialog', 'Util', '$translate', '$timeout', 'ErudioConfig', 'Restangular', 'REST', function($scope, $mdSidenav, $mdDialog, Util, $translate, $timeout, ErudioConfig, Restangular, REST){
         
         //RESETANDO SESSÃO
         sessionStorage.clear();
@@ -37,14 +37,14 @@
                     sessionStorage.setItem('pass',$scope.auth.password);
                     sessionStorage.setItem('token',response.data.token);
                     sessionStorage.setItem('autenticado',true);
-                    var promise = Util.buscar('users',{username: $scope.auth.username});
-                    promise.then(function (response){
-                        var promiseAttr = Util.um('users/'+response.data[0].id+'?view=ROLES',null);
-                        promiseAttr.then(function(response) {
+                    var callback = function(response){
+                        var callbackAttr = function (response) {
                             sessionStorage.setItem('atribuicoes',JSON.stringify(response.data));
                             $timeout(function(){ window.location = ErudioConfig.dominio; },500);
-                        });
-                    });
+                        };
+                        REST.um('users/'+response.data[0].id+'?view=ROLES',null,callbackAttr);
+                    };
+                    var promise = REST.buscar('users',{username: $scope.auth.username},callback);
                 },function(error){ if (error.data.error.code === 401) { Util.toast("Usuário ou Senha incorreta, verifique e tente novamente."); } $('.cortinaBranca').hide(); $scope.progresso = false; });
             } else { Util.toast('Certifique-se que os campos estão preenchidos antes de autenticar.'); }
         };

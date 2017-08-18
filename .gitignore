@@ -5,4 +5,5 @@ erudio-server/composer\.lock
 erudio-server/app/config/parameters\.yml
 erudio-server/nbproject
 erudio-front-beta/nbproject
+erudio-front-beta/node_modules
 erudio-front/nbproject

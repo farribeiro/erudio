@@ -123,13 +123,20 @@
             $scope.agrupamentoSelecionado = {id: null};
             //BUSCA DISCIPLINA OFERTADA
             $scope.buscaDisciplinaOfertada = function (etapa) {
-                if (!etapa.integral) {
-                    var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa});
-                    promise.then(function (response){
-                        $scope.agrupamentos = response.data;
-                        $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
-                    });
-                }
+                var promise = Servidor.buscarUm('etapas',etapa);
+                promise.then(function(response){
+                    var etapa = response.data;
+                    if (!etapa.integral) {
+                        $scope.mostraPeriodo = true; $scope.integral = false;
+                        var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
+                        promise.then(function (response){
+                            $scope.agrupamentos = response.data;
+                            $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                        });
+                    } else {
+                        $scope.mostraPeriodo = false; $scope.integral = true;
+                    }
+                });
             };
 
             //BUSCA DISCIPLINAS
@@ -771,8 +778,8 @@
 
             /* SALVAR TURMA */
             $scope.finalizar = function () {
-                delete $scope.turma.periodo;
                 if ($scope.integral) {
+                    delete $scope.turma.periodo;
                     if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id) {
                         var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
                         promise.then(function (response) { $scope.turma = response.data; $scope.fechaProgresso(); $scope.fecharFormulario(); }, function (error) { Servidor.customToast(error.message); $scope.fechaProgresso(); $scope.fecharFormulario(); });
@@ -1210,8 +1217,11 @@
             /* REMOÇÃO DE TURMA */
             $scope.remover = function () {
                 $scope.mostraProgresso();
-                Servidor.remover($scope.turmaRemover, 'Turma');
-                $timeout(function () { $scope.buscarTurmas(); $scope.fechaProgresso(); }, 1000);
+                var promise = Servidor.buscarUm('turmas',$scope.turmaRemover.id);
+                promise.then(function(response){
+                    Servidor.remover(response.data, 'Turma');
+                    $timeout(function () { $scope.buscarTurmas(); $scope.fechaProgresso(); }, 1000);
+                });
             };
 
             /* CONTROLE DE SELECT */
@@ -1695,7 +1705,7 @@
             $scope.buscarMatriculas = function (matricula) {
                 $scope.matriculas = [];
                 $scope.matriculasVerificar = [];
-                var promise = Servidor.buscar('disciplinas-ofertadas', {turma: $scope.turma.id});
+                /*var promise = Servidor.buscar('disciplinas-ofertadas', {turma: $scope.turma.id});
                 promise.then(function(response) {
                     $scope.disciplinasOfertadas = response.data;
                 });
@@ -1704,22 +1714,23 @@
                     $scope.matriculaBusca.curso = response.data.curso.id;
                     $scope.matriculaBusca.unidade = $scope.turma.unidadeEnsino.id;
                     $scope.mostraLoader();
-                    $scope.adicionarAlunos = true;
+                    $scope.adicionarAlunos = true;*/
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
-                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso});
+                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso, 'enturmado': 0});
                     promise.then(function (response) {
                         if(response.data.length){
-                            $scope.matriculasVerificar = response.data;
+                            $scope.matriculas = response.data;
+                            //$scope.matriculasVerificar = response.data;
     //                            $scope.fechaLoader();
     //                            $scope.verificarDisciplinasCursadas();
-                            $scope.alunosCompativeisSelecionados = 0;
-                            $scope.enturmacoesEncerradas(response.data);
+                            //$scope.alunosCompativeisSelecionados = 0;
+                            //$scope.enturmacoesEncerradas(response.data);
                         }else{
                             $scope.fechaLoader();
                             Servidor.customToast('Nenhuma matricula encontrada.');
                         }
                     });
-                });
+                /*});*/
             };
 
             $scope.selecionarTodasMatriculasCompativeis = function() {

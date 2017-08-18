@@ -1,6 +1,6 @@
 (function (){
     //LISTANDO TODOS OS MODULOS
-    var modules = angular.module('modules',[
+    var configs = [
         'erudioConfig',
         'auth',
         'rest',
@@ -8,9 +8,11 @@
         'structure',
         'validator',
         'shared',
-        'home',
-        'instituicaoService',
-        'instituicoes',
+        'home'
+    ];
+    
+    var controllers = [
+        'InstituicaoController',
         'instituicoesForm',
         'tipoUnidade',
         'tipoUnidadeForm',
@@ -34,6 +36,80 @@
         'quadroHorariosForm',
         'calendarios',
         'calendariosForm',
-        'calendariosView'
-    ]);
+        'calendariosView',
+        'teste'
+    ];
+    
+    var directives = [
+        'instituicaoDirectives',
+        'tipoUnidadeDirectives',
+        'unidadeDirectives',
+        'regimeDirectives',
+        'cursoDirectives',
+        'etapaDirectives',
+        'disciplinaDirectives',
+        'moduloDirectives',
+        'turnoDirectives',
+        'modelosGradeHorarioDirectives',
+        'quadroHorarioDirectives',
+        'calendarioDirectives',
+        'eventoDirectives',
+        'turmaDirectives',
+        'cargosDirectives',
+        'tipoAvaliacaoDirectives',
+        'habilidadeDirectives',
+        'avaliacaoDirectives',
+        'grupoDirectives',
+        'grupoPermissaoDirectives',
+        'usuarioDirectives'
+    ];
+    
+    var services = [
+        'BaseService',
+        'EnderecoService',
+        'TelefoneService',
+        'InstituicaoService',
+        'TipoUnidadeService',
+        'CursoOfertadoService',
+        'UnidadeService',
+        'RegimeService',
+        'ModalidadeEnsinoService',
+        'CursoService',
+        'EtapaService',
+        'ModuloService',
+        'SistemaAvaliacaoService',
+        'ModeloGradeHorarioService',
+        'DisciplinaService',
+        'TurnoService',
+        'QuadroHorarioService',
+        'CalendarioService',
+        'EventoService',
+        'PeriodoService',
+        'TurmaService',
+        'MatriculaService',
+        'EnturmacaoService',
+        'TransferenciaService',
+        'DesligamentoService',
+        'MovimentacaoService',
+        'EstadoCivilService',
+        'RacaService',
+        'NacionalidadeService',
+        'ParticularidadeService',
+        'NecessidadeEspecialService',
+        'PessoaService',
+        'GrupoService',
+        'CargoService',
+        'TipoAvaliacaoService',
+        'HabilidadeService',
+        'AvaliacaoService',
+        'GrupoPermissaoService',
+        'GrupoService',
+        'PermissaoGrupoService',
+        'AtribuicaoService',
+        'PermissaoService',
+        'UsuarioService'
+    ];
+    
+    var todosModulos = configs.concat(services,controllers,directives);
+    var modules = angular.module('modules',todosModulos);
 })();
