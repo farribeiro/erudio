@@ -76,8 +76,7 @@ class EnturmacaoFacade extends AbstractFacade {
                 $qb->andWhere('e.concluido = :concluido')->setParameter('concluido', $value);
             },
             'emAndamento' => function(QueryBuilder $qb, $value) {
-                $operador = $value ? '=' : '<>';
-                $qb->andWhere("e.concluido {$operador} false")->andWhere("e.encerrado {$operador} false");
+                $qb->andWhere("e.concluido = false")->andWhere("e.encerrado = false");
             }
         ];
     }
@@ -189,8 +188,14 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($enturmacao) {
+        if (!$enturmacao->getMatricula()->isCursando()) {
+            throw new IllegalOperationException('Matrícula em situação inválida para enturmação');
+        }
         if ($this->possuiVagaAberta($enturmacao) == false) {
             throw new IllegalOperationException('Não existem vagas disponíveis nesta turma');
+        }
+        if ($enturmacao->getMatricula()->getCurso() != $enturmacao->getTurma()->getEtapa()->getCurso()) {
+            throw new IllegalOperationException('Curso da matrícula e da turma são incompatíveis');
         }
     }
     

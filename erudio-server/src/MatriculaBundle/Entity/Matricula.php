@@ -168,6 +168,10 @@ class Matricula extends AbstractEditableEntity {
         return $this->unidadeEnsino;
     }
     
+    function isCursando() {
+        return $this->status === self::STATUS_CURSANDO;
+    }
+    
     function setStatus($status) {
         $this->status = $status;
         if ($this->status != self::STATUS_CURSANDO) {

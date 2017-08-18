@@ -61,7 +61,8 @@ class CargoController extends AbstractEntityController {
     * 
     * @FOS\Get("cargos")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    * @FOS\QueryParam(name = "nome", nullable = true) 
+    * @FOS\QueryParam(name = "nome", nullable = true)
+    * @FOS\QueryParam(name = "professor", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

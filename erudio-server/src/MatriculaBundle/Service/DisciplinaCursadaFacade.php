@@ -57,7 +57,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'dataCadastro' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('d.dataCadastro LIKE :dataCadastro')->setParameter('dataCadastro', '%' . $value . '%');
             },
@@ -83,10 +83,11 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada')
+                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada AND d.status <> :statusIncompleto')
+                   ->setParameter('statusIncompleto', DisciplinaCursada::STATUS_INCOMPLETO)
                    ->setParameter('disciplinaOfertada', $value);
             }
-        );
+        ];
     }
     
     function uniqueMap($disciplina) {

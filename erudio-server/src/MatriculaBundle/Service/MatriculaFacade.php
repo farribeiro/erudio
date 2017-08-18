@@ -31,7 +31,6 @@ namespace MatriculaBundle\Service;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\Event\EntityEvent;
 use CoreBundle\ORM\Exception\IllegalOperationException;
-use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use MatriculaBundle\Entity\Matricula;
 use Psr\Log\LoggerInterface;
@@ -80,9 +79,9 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             },
             'enturmado' => function(QueryBuilder $qb, $value) {
-                $operator = $value ? ' NOT ' : '';
-                $qb->leftJoin('m.enturmacoes', 'en', Expr\Join::WITH, 'en.ativo = true AND en.encerrado = false')
-                   ->andWhere("m.enturmacoes IS {$operator} EMPTY");
+                $operator = $value ? '>' : '=';
+                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en'
+                    . " WHERE en.matricula = m AND en.ativo = true AND en.encerrado = false) {$operator} 0");
             }
         ];
     }

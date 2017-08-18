@@ -48,7 +48,8 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 150;
+    const PAGE_SIZE = 50;
+    const MAX_RESULTS = 300;
     
     protected $orm;
     protected $logger;
@@ -132,7 +133,7 @@ abstract class AbstractFacade {
     * @param array $params
     * @return array entidades encontradas, ou um array vazio
     */
-    function findAll($params = [], $page = null, $limit = self::PAGE_SIZE) {
+    function findAll($params = [], $page = null, $limit = self::MAX_RESULTS) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
@@ -220,7 +221,7 @@ abstract class AbstractFacade {
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeUpdate($entidade);
             $entidade->merge($mergeObject);
-            $this->orm->getManager()->flush();
+            $this->orm->getManager()->flush($entidade);
             $this->checkUniqueness($entidade, true);
             $this->afterUpdate($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }

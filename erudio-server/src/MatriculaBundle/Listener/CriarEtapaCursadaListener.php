@@ -29,6 +29,7 @@
 namespace MatriculaBundle\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use CoreBundle\ORM\Exception\UniqueViolationException;
 use MatriculaBundle\Service\EtapaCursadaFacade;
 use MatriculaBundle\Entity\EtapaCursada;
 
@@ -57,16 +58,22 @@ class CriarEtapaCursadaListener implements EventSubscriberInterface {
     
     private function criarEtapaCursada($enturmacao, $status) {
         $unidadeEnsino = $enturmacao->getTurma()->getUnidadeEnsino();
-        $etapaCursada = new EtapaCursada(
-            $enturmacao->getMatricula(), 
-            $enturmacao->getTurma()->getEtapa(), 
-            $enturmacao->getTurma()->getAno(),
-            $unidadeEnsino->getNomeCompleto(), 
-            $unidadeEnsino->getEndereco()->getCidade(), 
-            $status,
-            $enturmacao
-        );
-        $this->etapaCursadaFacade->create($etapaCursada);
+        try {
+            $etapaCursada = new EtapaCursada(
+                $enturmacao->getMatricula(), 
+                $enturmacao->getTurma()->getEtapa(), 
+                $enturmacao->getTurma()->getAno(),
+                $unidadeEnsino->getNomeCompleto(), 
+                $unidadeEnsino->getEndereco()->getCidade(), 
+                $status,
+                $enturmacao
+            );
+            $this->etapaCursadaFacade->create($etapaCursada);
+        } catch (UniqueViolationException $ex) {
+            //ignorar
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
 }

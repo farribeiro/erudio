@@ -85,7 +85,7 @@ class Pessoa extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
-    * @ORM\OneToOne(targetEntity = "Endereco")
+    * @ORM\ManyToOne(targetEntity = "Endereco")
     */
     private $endereco;
     
@@ -110,14 +110,6 @@ class Pessoa extends AbstractEditableEntity {
     
     function init() {
         $this->telefones = new ArrayCollection();
-    }
-    
-    /**
-    * @JMS\Groups({"LIST"})
-    * @JMS\VirtualProperty
-    */
-    function getCodigo() {
-        return (9 + $this->id) . ($this->getDataCadastro()->getTimestamp() % 90 + 10);
     }
     
     function getNome() {
