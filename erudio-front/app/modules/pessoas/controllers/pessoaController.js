@@ -1364,13 +1364,13 @@
                             }*/
                         }
                     } else {
-                        if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                        /*if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
                             $scope.fechaLoader();
                             return Servidor.customToast("Os campos de endereço são obrigatórios.");
-                        } else {
+                        } else {*/
                             delete $scope.pessoa.endereco;
                             $scope.finalizarPessoa();
-                        }
+                        //}
                     }
                 };
             };
