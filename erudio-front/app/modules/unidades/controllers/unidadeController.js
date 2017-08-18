@@ -385,6 +385,11 @@
                         var telefones = $scope.unidade.telefones;
                         delete $scope.unidade.telefones;
                         $scope.tipos.forEach(function(t) { if(t.id === parseInt($scope.unidade.tipo.id)) { $scope.unidade.tipo = t; } });
+                        if ($scope.unidade.cpfCnpj !== undefined && $scope.unidade.cpfCnpj !== null){
+                            $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[.]/g,"");
+                            $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[//]/g,"");
+                            $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[-]/g,"");
+                        }
                         var result = Servidor.finalizar($scope.unidade, 'unidades-ensino', 'Unidade');
                         result.then(function (response) {
                             $scope.unidade.id = response.data.id;

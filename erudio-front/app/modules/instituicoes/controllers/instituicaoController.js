@@ -183,7 +183,13 @@
                     //var novoEndereco = resultadoEndereco.$object;
                     $timeout(function(){
                         resultadoEndereco.then(function(response){
-                           $scope.instituicao.endereco = { id:response.data.id };
+                            $scope.instituicao.endereco = { id:response.data.id };
+                            if ($scope.instituicao.cpfCnpj !== undefined && $scope.instituicao.cpfCnpj !== null){
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[.]/g,"");
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[//]/g,"");
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[-]/g,"");
+                            }
+                                
                             $timeout(function(){                            
                                 var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
                                 if (result) { 

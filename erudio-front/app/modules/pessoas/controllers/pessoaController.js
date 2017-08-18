@@ -1384,6 +1384,13 @@
                         $scope.pessoa.responsavelNome = $scope.pessoa.nomePai;
                         break;
                 };
+                
+                if ($scope.pessoa.cpfCnpj !== undefined && $scope.pessoa.cpfCnpj !== null) {
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[.]/g,"");
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[//]/g,"");
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[-]/g,"");
+                }
+                
                 $scope.pessoa.tipo_pessoa = "PessoaFisica"; delete $scope.pessoa.usuario;
                 var promise = Servidor.finalizar($scope.pessoa, 'pessoas', 'Pessoa');
                 
