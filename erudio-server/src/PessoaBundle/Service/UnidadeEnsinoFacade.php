@@ -52,4 +52,8 @@ class UnidadeEnsinoFacade extends AbstractFacade {
         );
     }
     
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->addOrderBy('u.nome');
+    }
+    
 }

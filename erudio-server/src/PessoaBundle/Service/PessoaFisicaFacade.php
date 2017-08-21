@@ -84,4 +84,8 @@ class PessoaFisicaFacade extends AbstractFacade {
         return [$checagem];
     }
     
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->addOrderBy('pessoa.nome');
+    }
+    
 }

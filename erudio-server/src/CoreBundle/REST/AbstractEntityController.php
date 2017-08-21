@@ -30,6 +30,7 @@ namespace CoreBundle\REST;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\NoResultException;
@@ -42,7 +43,7 @@ use CoreBundle\ORM\AbstractFacade;
 * Controlador REST que serve como base aos demais.
 * Oferece os métodos CRUD já implementados, usando a classe Facade retornada pelo método getFacade.
 */
-abstract class AbstractEntityController {
+abstract class AbstractEntityController extends Controller {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';

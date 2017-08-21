@@ -55,7 +55,8 @@ class InstituicaoFacade extends AbstractFacade {
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->andWhere('i INSTANCE OF PessoaBundle\Entity\Instituicao');
+        $qb->addOrderBy('i.nome')
+           ->andWhere('i INSTANCE OF PessoaBundle\Entity\Instituicao');
     }
     
 }

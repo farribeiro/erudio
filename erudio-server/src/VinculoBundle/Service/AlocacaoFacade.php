@@ -56,6 +56,9 @@ class AlocacaoFacade extends AbstractFacade {
                 $qb->join('a.instituicao', 'instituicao')
                     ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
             },
+            'funcionario' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('vinculo.funcionario = :pessoa')->setParameter('pessoa', $value);
+            },
             'funcionario_nome' => function(QueryBuilder $qb, $value) {
                 $qb->join('vinculo.funcionario', 'funcionario')
                     ->andWhere('funcionario.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
