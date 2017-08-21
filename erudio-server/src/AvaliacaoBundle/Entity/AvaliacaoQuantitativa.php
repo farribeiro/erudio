@@ -52,11 +52,10 @@ class AvaliacaoQuantitativa extends Avaliacao {
     private $tipo;
     
     /** 
-    * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Aula") 
-    * @ORM\JoinColumn(name = "aula_id")
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(name = "data_entrega", type = "datetime")
     */
-    private $aulaEntrega;
+    private $dataEntrega;
     
     function getPeso() {
         return $this->peso;
@@ -66,8 +65,8 @@ class AvaliacaoQuantitativa extends Avaliacao {
         return $this->tipo;
     }
     
-    function getAulaEntrega() {
-        return $this->aulaEntrega;
+    function getDataEntrega() {
+        return $this->dataEntrega;
     }
     
     function setPeso($peso) {
@@ -78,8 +77,8 @@ class AvaliacaoQuantitativa extends Avaliacao {
         $this->tipo = $tipo;
     }
     
-    function setAulaEntrega(Aula $aulaEntrega = null) {
-        $this->aulaEntrega = $aulaEntrega;
+    function setDataEntrega(\DateTime $dataEntrega = null) {
+        $this->dataEntrega = $dataEntrega;
     }
     
 }
