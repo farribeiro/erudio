@@ -201,7 +201,7 @@
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { 
-                                if (response.data[i].valor === undefined) { response.data[i].valor = null; } $scope.enturmacoesNotas.push(response.data[i]);
+                                if (response.data[i].valor === undefined) { response.data[i].valor = null; } $scope.enturmacoesNotas.push(response.data[i].plain());
                             }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); });
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
