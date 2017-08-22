@@ -30,5 +30,9 @@ namespace ReportBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pela emissão de documentos escolares e relatórios.
+ * Permite emissão de documentos como histórico, boletins e relatório de alunos enturmados.
+ */
 class ReportBundle extends Bundle {
 }

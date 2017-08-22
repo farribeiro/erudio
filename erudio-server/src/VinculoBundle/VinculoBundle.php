@@ -30,5 +30,9 @@ namespace VinculoBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo controle básico de funcionários das unidades de ensino.
+ * Permite gerenciar os vínculos de funcionários e onde estão alocados.
+ */
 class VinculoBundle extends Bundle {
 }

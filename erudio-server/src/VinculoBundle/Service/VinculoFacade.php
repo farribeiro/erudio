@@ -85,10 +85,7 @@ class VinculoFacade extends AbstractFacade {
     
     protected function afterCreate($vinculo) {
         $this->orm->getManager()->detach($vinculo);
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Vinculo:Created',
-            new EntityEvent($vinculo, EntityEvent::ACTION_CREATED)
-        );
+        EntityEvent::createAndDispatch($vinculo, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     /**

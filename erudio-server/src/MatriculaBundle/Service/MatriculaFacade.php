@@ -116,14 +116,7 @@ class MatriculaFacade extends AbstractFacade {
     
     protected function afterCreate($matricula) {
         $this->orm->getManager()->detach($matricula);
-        $this->eventDispatcher->dispatch(
-            'MatriculaBundle:Matricula:Created', 
-            new EntityEvent($matricula, EntityEvent::ACTION_CREATED)
-        );
-    }
-    
-    protected function afterUpdate($matricula) {
-        $this->orm->getManager()->flush();
+        EntityEvent::createAndDispatch($matricula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     private function jaExiste(Matricula $matricula) {

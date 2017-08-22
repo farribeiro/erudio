@@ -114,7 +114,7 @@ class Turma extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\QuadroHorario")
+    * @ORM\ManyToOne(targetEntity = "QuadroHorarioBundle\Entity\QuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_id") 
     */
     private $quadroHorario;
@@ -140,12 +140,12 @@ class Turma extends AbstractEditableEntity {
     
     /** 
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Vaga", mappedBy = "turma", fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "VagaBundle\Entity\Vaga", mappedBy = "turma", fetch="EXTRA_LAZY") 
     */
     private $vagas;
     
     function init() {
-        $this->status = self::STATUS_CRIADO;
+        $this->status = self::STATUS_EM_ANDAMENTO;
         $this->enturmacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
     }

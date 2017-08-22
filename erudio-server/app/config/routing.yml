@@ -27,8 +27,23 @@ api_calendario:
     type: rest
     prefix: /api
     
+api_quadro_horario:
+    resource: "@QuadroHorarioBundle/Controller/"
+    type: rest
+    prefix: /api
+    
 api_avaliacao:
     resource: "@AvaliacaoBundle/Controller/"
+    type: rest
+    prefix: /api
+    
+api_aula:
+    resource: "@AulaBundle/Controller/"
+    type: rest
+    prefix: /api
+    
+api_vaga:
+    resource: "@VagaBundle/Controller/"
     type: rest
     prefix: /api
     
@@ -37,7 +52,7 @@ api_auth:
     type: rest
     prefix: /api
     
-api_report:
+api_relatorio:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
