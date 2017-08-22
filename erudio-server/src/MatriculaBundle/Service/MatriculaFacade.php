@@ -80,8 +80,8 @@ class MatriculaFacade extends AbstractFacade {
             },
             'enturmado' => function(QueryBuilder $qb, $value) {
                 $operator = $value ? '>' : '=';
-                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en'
-                    . " WHERE en.matricula = m AND en.ativo = true AND en.encerrado = false) {$operator} 0");
+                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en WHERE en.matricula = m'
+                    . " AND en.ativo = true AND en.encerrado = false AND en.concluido = false) {$operator} 0");
             }
         ];
     }
