@@ -1096,15 +1096,15 @@
 
             /* Adiciona Telefone */
             $scope.salvarTelefone = function (telefone) {
-                if (!telefone.id) {
-                    telefone.pessoa = $scope.pessoa;
+                /*if (!telefone.id) {
+                    telefone.pessoa = Restangular.copy($scope.pessoa);
                     delete telefone.pessoa.endereco;
                     telefone.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
                     telefone.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                }
+                }*/
                 if (telefone.numero && telefone.descricao) {
                     telefone.pessoa.tipo_pessoa = "PessoaFisica";
-                    var pessoa = {id:$scope.telefone.pessoa.id, 'tipo_pessoa': 'PessoaFisica' }; $scope.telefone.pessoa = pessoa;
+                    var pessoa = {id:$scope.pessoa.id, 'tipo_pessoa': 'PessoaFisica' }; $scope.telefone.pessoa = pessoa;
                     var promise = Servidor.finalizar(telefone, 'telefones', 'Telefone');
                     promise.then(function (response) {
                         $scope.telefones.unshift(response.data);
