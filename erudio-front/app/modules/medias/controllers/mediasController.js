@@ -27,7 +27,7 @@
 (function () {
     var mediaModule = angular.module('mediaModule', ['servidorModule', 'mediaDirectives','erudioConfig']);
     //DEFINIÇÃO DO CONTROLADOR
-    mediaModule.controller('MediasController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$rootScope', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $rootScope) {
+    mediaModule.controller('MediasController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$rootScope', 'Restangular', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $rootScope, Restangular) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
         $templateCache.removeAll(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('MEDIAS'); $scope.isAdmin = Servidor.verificaAdmin();
@@ -408,9 +408,11 @@
         //SALVA NOTAS
         $scope.salvarNotas = function (){
             var notas = []; $scope.mostraProgresso();
+            var eNotas = Restangular.copy($scope.enturmacoesNotas);
             $('.input-col').each(function(i){
+                delete eNotas[i].disciplinaCursada;
                 var val = $(this).val(); if (val.indexOf(",") !== -1) { val = val.replace(",","."); }
-                if (val !== "" && val !== null && val !== undefined) { $scope.enturmacoesNotas[i].valor = parseFloat(val); notas.push($scope.enturmacoesNotas[i]); }
+                if (val !== "" && val !== null && val !== undefined) { eNotas[i].valor = parseFloat(val); notas.push(eNotas[i]); }
                 //else if (val === "" || val === null || val === undefined) { val = null; $scope.enturmacoesNotas[i].valor = val; notas.push($scope.enturmacoesNotas[i]); }
             }).promise().done(function(){ 
                 var result = Servidor.salvarLote({medias: notas},'medias','Notas');
