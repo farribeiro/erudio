@@ -56,7 +56,7 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
-    * @ORM\OneToMany(targetEntity = "CalendarioBundle\Entity\HorarioDisciplina", mappedBy = "disciplina", fetch="EAGER")
+    * @ORM\OneToMany(targetEntity = "QuadroHorarioBundle\Entity\HorarioDisciplina", mappedBy = "disciplina", fetch="EAGER")
     */
     private $horarios;
     

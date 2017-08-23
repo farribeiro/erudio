@@ -30,5 +30,10 @@ namespace AuthBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo gerenciamento de usuários e permissões do sistema.
+ * Permite a criação de usuários e atribuição dos mesmos a grupos de acesso que
+ * possuem permissões específicas no sistema.
+ */
 class AuthBundle extends Bundle {
 }

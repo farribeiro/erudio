@@ -29,6 +29,8 @@
 namespace MatriculaBundle\Service;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use CoreBundle\Event\EntityEvent;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
@@ -41,13 +43,11 @@ use CursoBundle\Service\VagaFacade;
 class EnturmacaoFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
-    private $vagaFacade;
     
-    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade, 
-            VagaFacade $vagaFacade) {
-        parent::__construct($doctrine);
+    function __construct(RegistryInterface $doctrine, EventDispatcherInterface $eventDispatcher, 
+            DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        parent::__construct($doctrine, null, $eventDispatcher);
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
-        $this->vagaFacade = $vagaFacade;
     }
     
     function getEntityClass() {
@@ -203,14 +203,14 @@ class EnturmacaoFacade extends AbstractFacade {
         $enturmacao->getMatricula()->redefinirEtapa();
         $this->orm->getManager()->flush();
         $this->vincularDisciplinas($enturmacao);
-        $this->ocuparVaga($enturmacao);
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     protected function afterRemove($enturmacao) {
         $this->desvincularDisciplinas($enturmacao);
         $enturmacao->getMatricula()->resetarEtapa();
         $this->orm->getManager()->flush();
-        $this->liberarVaga($enturmacao);
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
     }
     
     /**
@@ -293,26 +293,6 @@ class EnturmacaoFacade extends AbstractFacade {
      */
     private function possuiVagaAberta(Enturmacao $enturmacao) {
         return $enturmacao->getTurma()->getVagasAbertas()->count() > 0;
-    }
-    
-    /**
-     * Aloca uma vaga na turma da enturmação.
-     * 
-     * @param Enturmacao $enturmacao
-     */
-    private function ocuparVaga(Enturmacao $enturmacao) {
-        $this->vagaFacade->ocupar($enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
-    }
-    
-    /**
-     * Libera a vaga ocupada pela enturmação.
-     * 
-     * @param Enturmacao $enturmacao
-     */
-    private function liberarVaga(Enturmacao $enturmacao) {
-        if ($enturmacao->getVaga()) {
-            $this->vagaFacade->liberar($enturmacao->getVaga());
-        }
     }
     
 }

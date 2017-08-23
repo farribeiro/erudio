@@ -86,17 +86,11 @@ class AlocacaoFacade extends AbstractFacade {
     }
 
     protected function afterCreate($alocacao) {
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Alocacao:Created', 
-            new EntityEvent($alocacao, EntityEvent::ACTION_CREATED)
-        );
+        EntityEvent::createAndDispatch($alocacao, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     protected function afterRemove($alocacao) {
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Alocacao:Removed', 
-            new EntityEvent($alocacao, EntityEvent::ACTION_REMOVED)
-        );
+        EntityEvent::createAndDispatch($$alocacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
     }
     
     /**

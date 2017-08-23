@@ -4,6 +4,8 @@ namespace IntegracaoSigAlimentarBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class IntegracaoSigAlimentarBundle extends Bundle {
-    
+/**
+ * Bundle para integração do Erudio ao sistema SigAlimentar.
+ */
+class IntegracaoSigAlimentarBundle extends Bundle { 
 }

@@ -80,15 +80,15 @@ class Etapa extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)   
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\ModeloQuadroHorario")
+    * @ORM\ManyToOne(targetEntity = "ModeloQuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_modelo_id") 
     */
     private $modeloQuadroHorario;
     
     /**
     * @JMS\Groups({"DETAILS"})       
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    * @ORM\ManyToOne(targetEntity = "SistemaAvaliacao")
+    * @ORM\JoinColumn(name = "sistema_avaliacao_id")
     */
     private $sistemaAvaliacao;
     

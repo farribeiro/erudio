@@ -30,6 +30,7 @@ namespace CoreBundle\Event;
 
 use CoreBundle\ORM\AbstractEntity;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class EntityEvent extends Event {
     
@@ -51,6 +52,15 @@ class EntityEvent extends Event {
     
     function getAction() {
         return $this->action;
+    }
+    
+    function getName() {
+        return $this->entity->getRepository() . ':' . $this->action;
+    }
+    
+    static function createAndDispatch(AbstractEntity $entity, $action, EventDispatcherInterface $dispatcher) {
+        $event = new EntityEvent($entity, $action);
+        $dispatcher->dispatch($event->getName(), $event);
     }
     
 }

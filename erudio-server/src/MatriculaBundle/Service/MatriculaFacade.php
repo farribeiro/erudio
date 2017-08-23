@@ -80,8 +80,8 @@ class MatriculaFacade extends AbstractFacade {
             },
             'enturmado' => function(QueryBuilder $qb, $value) {
                 $operator = $value ? '>' : '=';
-                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en'
-                    . " WHERE en.matricula = m AND en.ativo = true AND en.encerrado = false) {$operator} 0");
+                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en WHERE en.matricula = m'
+                    . " AND en.ativo = true AND en.encerrado = false AND en.concluido = false) {$operator} 0");
             }
         ];
     }
@@ -116,14 +116,7 @@ class MatriculaFacade extends AbstractFacade {
     
     protected function afterCreate($matricula) {
         $this->orm->getManager()->detach($matricula);
-        $this->eventDispatcher->dispatch(
-            'MatriculaBundle:Matricula:Created', 
-            new EntityEvent($matricula, EntityEvent::ACTION_CREATED)
-        );
-    }
-    
-    protected function afterUpdate($matricula) {
-        $this->orm->getManager()->flush();
+        EntityEvent::createAndDispatch($matricula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     private function jaExiste(Matricula $matricula) {

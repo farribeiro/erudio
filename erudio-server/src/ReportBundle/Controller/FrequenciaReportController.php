@@ -38,7 +38,7 @@ use Psr\Log\LoggerInterface;
 use ReportBundle\Util\DateTimeUtil;
 use CursoBundle\Service\TurmaFacade;
 use CursoBundle\Service\DisciplinaOfertadaFacade;
-use CalendarioBundle\Service\AulaFacade;
+use AulaBundle\Service\AulaFacade;
 
 class FrequenciaReportController extends Controller {
     

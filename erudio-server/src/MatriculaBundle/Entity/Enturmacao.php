@@ -75,7 +75,7 @@ class Enturmacao extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao")
+    * @ORM\OneToOne(targetEntity = "VagaBundle\Entity\Vaga", mappedBy="enturmacao")
     */
     private $vaga;
     

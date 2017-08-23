@@ -30,6 +30,9 @@ namespace CoreBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle que fornece a infra-estrutura de classes base para todos os demais bundles.
+ */
 class CoreBundle extends Bundle {
     
 }

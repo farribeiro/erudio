@@ -30,5 +30,9 @@ namespace PessoaBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo controle de cadastros de pessoas físicas e jurídicas.
+ * Engloba também os cadastros de instituições e unidades de ensino.
+ */
 class PessoaBundle extends Bundle {
 }
