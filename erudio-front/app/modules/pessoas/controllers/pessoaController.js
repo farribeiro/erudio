@@ -1437,9 +1437,11 @@
                 var retorno = false;
                 if (Servidor.validar(id)) {
                     retorno = true;
-                    if ($scope.pessoa.naturalidade.id === undefined) {
-                        Servidor.customToast('Selecione uma cidade no campo naturalidade.');
-                        retorno = false;
+                    if ($scope.pessoa.nacionalidade === "BRASILEIRO") {
+                        if ($scope.pessoa.naturalidade.id === undefined) {
+                            Servidor.customToast('Selecione uma cidade no campo naturalidade.');
+                            retorno = false;
+                        }
                     }
                     return retorno;
                 }
