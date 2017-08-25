@@ -1,4 +1,4 @@
-# API
+# API de gestão
 api_login_check:
     path: /api/login_check
 
@@ -56,6 +56,12 @@ api_relatorio:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
+
+#API do aluno
+api_aluno:
+    resource: "@AlunoBundle/Controller/"
+    type: annotation
+    prefix: /api/alunos
 
 # Integrações
 integracao_sig:

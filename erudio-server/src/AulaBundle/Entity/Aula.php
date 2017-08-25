@@ -94,4 +94,26 @@ class Aula extends AbstractEditableEntity {
         return $this->horario;
     }
     
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<AulaBundle\Entity\Frequencia>")
+    */
+    function getChamada() {
+        return $this->chamada->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<AulaBundle\Entity\Anotacao>")
+    */
+    function getAnotacoes() {
+        return $this->chamada->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
 }

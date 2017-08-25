@@ -34,6 +34,7 @@ class AppKernel extends Kernel
             new VinculoBundle\VinculoBundle(),
             new VagaBundle\VagaBundle(),
             new ReportBundle\ReportBundle(),
+            new AlunoBundle\AlunoBundle(),
             
             //Integrações SME
             new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()

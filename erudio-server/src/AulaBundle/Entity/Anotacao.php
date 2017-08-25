@@ -10,7 +10,6 @@ use CoreBundle\ORM\AbstractEditableEntity;
 * @ORM\Entity
 * @ORM\Table(name = "edu_aula_observacao")
 */
-
 class Anotacao extends AbstractEditableEntity {
     
     /** 

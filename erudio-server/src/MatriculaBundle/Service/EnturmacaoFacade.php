@@ -38,7 +38,6 @@ use CoreBundle\ORM\Exception\IllegalUpdateException;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Enturmacao;
 use CursoBundle\Entity\Turma;
-use CursoBundle\Service\VagaFacade;
 
 class EnturmacaoFacade extends AbstractFacade {
     
@@ -146,7 +145,7 @@ class EnturmacaoFacade extends AbstractFacade {
         if ($manterDisciplinas) {
             $this->desvincularDisciplinas($enturmacao);
         } else {
-            $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+            $this->encerrarDisciplinas($enturmacao);
         }
         $this->liberarVaga($enturmacao);
     }
@@ -163,8 +162,8 @@ class EnturmacaoFacade extends AbstractFacade {
             if ($disciplina->emAberto()) {
                 throw new IllegalUpdateException(
                     IllegalUpdateException::ILLEGAL_STATE_TRANSITION,
-                    'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
-                        . $disciplina->getNomeExibicao()
+                    "Enturmação não pode ser encerrada, o aluno {$enturmacao->getAluno()->getNome()} "
+                    . "possui média em aberto na disciplina {$disciplina->getNomeExibicao()}"
                 );
             }
         }
@@ -263,7 +262,7 @@ class EnturmacaoFacade extends AbstractFacade {
      * @param Enturmacao $enturmacao
      * @param $status
      */
-    private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
+    private function encerrarDisciplinas(Enturmacao $enturmacao, $status = DisciplinaCursada::STATUS_INCOMPLETO) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
             $disciplina->encerrar($status);
             $this->orm->getManager()->merge($disciplina);
