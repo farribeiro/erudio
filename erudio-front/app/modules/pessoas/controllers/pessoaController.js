@@ -1438,8 +1438,8 @@
                 if (Servidor.validar(id)) {
                     retorno = true;
                     if ($scope.pessoa.nacionalidade === "BRASILEIRO") {
-                        if ($scope.pessoa.naturalidade.id === undefined) {
-                            Servidor.customToast('Selecione uma cidade no campo naturalidade.');
+                        if ($scope.pessoa.naturalidade === undefined || $scope.pessoa.naturalidade === null) {
+                            Servidor.customToast('Digite e selecione uma cidade no campo naturalidade.');
                             retorno = false;
                         }
                     }
