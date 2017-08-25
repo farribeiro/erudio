@@ -179,7 +179,7 @@
                     if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null) {
                         var promise = Servidor.buscar('medias/faltas', {'turma': $scope.turmaBusca.turma.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
-                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
+                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i].plain()); }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); }); 
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
                             if ($scope.enturmacoes.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
@@ -189,7 +189,7 @@
                     if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
-                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
+                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i].plain()); }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); });
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
                             if (response.data.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
@@ -395,11 +395,13 @@
                     }
                 });
             } else {
+                var efaltas = Restangular.copy($scope.enturmacoes);
                 $('.input-col:not(.ng-hide)').each(function(i){
+                    delete efaltas[i].disciplinaCursada;
                     var val = $(this).val();
-                    if (val !== "" && val !== null && val !== undefined) { $scope.enturmacoes[i].faltas = parseInt(val); }
+                    if (val !== "" && val !== null && val !== undefined) { efaltas[i].faltas = parseInt(val); }
                 }).promise().done(function(){ 
-                    var result = Servidor.salvarLote({medias: $scope.enturmacoes},'medias','Faltas');
+                    var result = Servidor.salvarLote({medias: efaltas},'medias','Faltas');
                     if (!result) { $scope.fechaProgresso(); } else { result.then(function(){$scope.fechaProgresso();}); }
                 });
             }

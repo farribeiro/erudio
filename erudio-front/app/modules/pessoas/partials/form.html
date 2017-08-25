@@ -119,14 +119,14 @@
                                     <div data-ng-hide="outroResponsavel">
                                         <div class="input-field col s12 m12 l6">
                                             <i class="material-icons prefix">wc</i>
-                                            <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita" required>
+                                            <select id="responsavel" data-ng-model="pessoaResponsavel" data-ng-disabled="!escrita">
                                                 <option>&nbsp;</option>
                                                 <option data-ng-selected="pessoa.responsavelNome" value="nenhum">Não se Aplica</option>
                                                 <option data-ng-selected="pessoa.nomeMae === pessoa.responsavelNome || !pessoa.id" value="mae">Filiação 1</option>
                                                 <option data-ng-selected="pessoa.nomePai && pessoa.nomePai === pessoa.responsavelNome" value="pai">Filiação 2</option>
                                                 <option data-ng-selected="pessoa.responsavelNome && pessoa.nomePai !== pessoa.responsavelNome && pessoa.nomeMae !== pessoa.responsavelNome" value="outro">Outro</option>
                                             </select>
-                                            <label for="responsavel">Responsável*</label>                            
+                                            <label for="responsavel">Responsável</label>                            
                                         </div>
                                     </div>
                                     <div data-ng-show="pessoaResponsavel === 'outro'">

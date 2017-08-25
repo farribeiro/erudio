@@ -1340,7 +1340,7 @@
                         } else {
                             //if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
                                 //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                                    var endereco = $scope.pessoa.endereco;
+                                    var endereco = $scope.pessoa.endereco; console.log(endereco);
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
                                         var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
@@ -1395,6 +1395,9 @@
                 promise.then(function (response) {
                     $scope.pessoa = response.data;
                     
+                    var promiseE = Servidor.buscarUm('enderecos',$scope.pessoa.endereco.id);
+                    promiseE.then(function(response){ $scope.pessoa.endereco = response.data; });
+                    
                     if ($scope.telefone.numero !== null && $scope.telefone.descricao !== null){
                         $scope.salvarTelefone($scope.telefone);
                     }
@@ -1434,9 +1437,11 @@
                 var retorno = false;
                 if (Servidor.validar(id)) {
                     retorno = true;
-                    if ($scope.pessoa.naturalidade.id === undefined) {
-                        Servidor.customToast('Selecione uma cidade no campo naturalidade.');
-                        retorno = false;
+                    if ($scope.pessoa.nacionalidade === "BRASILEIRO") {
+                        if ($scope.pessoa.naturalidade === undefined || $scope.pessoa.naturalidade === null) {
+                            Servidor.customToast('Digite e selecione uma cidade no campo naturalidade.');
+                            retorno = false;
+                        }
                     }
                     return retorno;
                 }
