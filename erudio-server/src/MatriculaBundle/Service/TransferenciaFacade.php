@@ -88,7 +88,7 @@ class TransferenciaFacade extends AbstractFacade {
     }
     
     protected function beforeUpdate($transferencia) {
-        if($transferencia->getStatus() !== Transferencia::STATUS_PENDENTE) {
+        if ($transferencia->getStatus() !== Transferencia::STATUS_PENDENTE) {
             throw new IllegalUpdateException(
                 IllegalUpdateException::FINAL_STATE, 
                 'Operação não permitida, a transferência já foi finalizada'

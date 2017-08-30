@@ -30,11 +30,11 @@ namespace MatriculaBundle\Service;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use CoreBundle\Event\EntityEvent;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\Event\EntityEvent;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Enturmacao;
 use CursoBundle\Entity\Turma;
@@ -140,14 +140,13 @@ class EnturmacaoFacade extends AbstractFacade {
      */
     function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
         $enturmacao->encerrar();
-        $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
+        $this->afterUpdate($enturmacao);
         if ($manterDisciplinas) {
             $this->desvincularDisciplinas($enturmacao);
         } else {
             $this->encerrarDisciplinas($enturmacao);
         }
-        $this->liberarVaga($enturmacao);
     }
     
     /**
@@ -168,8 +167,8 @@ class EnturmacaoFacade extends AbstractFacade {
             }
         }
         $enturmacao->concluir();
-        $this->orm->getManager()->merge($enturmacao);
         $this->orm->getManager()->flush();
+        $this->afterUpdate($enturmacao);
     }
      
     protected function selectMap() {
@@ -203,6 +202,10 @@ class EnturmacaoFacade extends AbstractFacade {
         $this->orm->getManager()->flush();
         $this->vincularDisciplinas($enturmacao);
         EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
+    }
+    
+    protected function afterUpdate($enturmacao) {
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_UPDATED, $this->eventDispatcher);
     }
     
     protected function afterRemove($enturmacao) {

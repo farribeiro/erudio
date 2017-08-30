@@ -180,8 +180,8 @@ class Matricula extends AbstractEditableEntity {
     }
     
     function redefinirEtapa() {
-        if ($this->getEnturmacoesAtivas()->count() > 0) {
-            $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
+        if ($this->getEnturmacoesEmAndamento()->count() > 0) {
+            $this->etapa = $this->getEnturmacoesEmAndamento()->first()->getTurma()->getEtapa();
         }
         return $this->etapa;
     }
@@ -226,6 +226,16 @@ class Matricula extends AbstractEditableEntity {
             Criteria::create()->where(Criteria::expr()->andX(              
                 Criteria::expr()->eq('ativo', true),
                 Criteria::expr()->eq('encerrado', false)
+            ))
+        );  
+    }
+    
+    function getEnturmacoesEmAndamento() {
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true),
+                Criteria::expr()->eq('encerrado', false),
+                Criteria::expr()->eq('concluido', false)
             ))
         );  
     }

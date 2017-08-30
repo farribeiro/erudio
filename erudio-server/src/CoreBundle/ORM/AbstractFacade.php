@@ -208,10 +208,11 @@ abstract class AbstractFacade {
     * @throws \Exception
     * @throws IllegalUpdateException
     */
-    function update($id, $mergeObject, $isTransaction = true) {
+    function update($id, $entidade, $isTransaction = true) {
         try {
+            $mergeObject = clone $entidade;
             $this->orm->getManager()->detach($mergeObject);
-            $entidade = $this->loadEntity($id);
+            $this->orm->getManager()->refresh($entidade);
             if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
             }
@@ -221,7 +222,7 @@ abstract class AbstractFacade {
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeUpdate($entidade);
             $entidade->merge($mergeObject);
-            $this->orm->getManager()->flush($entidade);
+            $this->orm->getManager()->flush();
             $this->checkUniqueness($entidade, true);
             $this->afterUpdate($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
