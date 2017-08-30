@@ -34,7 +34,7 @@ use CoreBundle\ORM\AbstractFacade;
 class RegimeFacade extends AbstractFacade {
     
     function getEntityClass() {
-        return 'AvaliacaoBundle:Regime';
+        return 'CursoBundle:Regime';
     }
     
     function queryAlias() {

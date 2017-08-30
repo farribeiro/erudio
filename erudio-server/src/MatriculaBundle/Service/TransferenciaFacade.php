@@ -87,7 +87,7 @@ class TransferenciaFacade extends AbstractFacade {
         $qb->join('t.matricula', 'matricula');
     }
     
-    protected function beforeUpdate($transferencia) {
+    protected function beforeApplyChanges($transferencia) {
         if ($transferencia->getStatus() !== Transferencia::STATUS_PENDENTE) {
             throw new IllegalUpdateException(
                 IllegalUpdateException::FINAL_STATE, 

@@ -73,7 +73,7 @@ class CriarUsuarioListener implements EventSubscriberInterface {
     private function criarUsuario($pessoa, $username) {
         $usuario = $this->usuarioFacade->create(Usuario::criarUsuario($pessoa, $username));
         $pessoa->setUsuario($usuario);
-        $this->pessoaFacade->update($pessoa->getId(), $pessoa);
+        $this->pessoaFacade->update($pessoa);
     }
     
 }

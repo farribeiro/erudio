@@ -140,8 +140,7 @@ class EnturmacaoFacade extends AbstractFacade {
      */
     function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
         $enturmacao->encerrar();
-        $this->orm->getManager()->flush();
-        $this->afterUpdate($enturmacao);
+        $this->update($enturmacao);
         if ($manterDisciplinas) {
             $this->desvincularDisciplinas($enturmacao);
         } else {
@@ -167,8 +166,7 @@ class EnturmacaoFacade extends AbstractFacade {
             }
         }
         $enturmacao->concluir();
-        $this->orm->getManager()->flush();
-        $this->afterUpdate($enturmacao);
+        $this->update($enturmacao);
     }
      
     protected function selectMap() {

@@ -202,16 +202,16 @@ abstract class AbstractFacade {
     /**
     * 
     * @param type $id
-    * @param type $mergeObject
+    * @param type $entidade
     * @param type $isTransaction
-    * @return \CoreBundle\ORM\AbstractEditableEntity
+    * @return CoreBundle\ORM\AbstractEditableEntity
     * @throws \Exception
     * @throws IllegalUpdateException
     */
-    function update($id, $entidade, $isTransaction = true) {
+    function patch($id, $entidade, $isTransaction = true) {
         try {
-            $mergeObject = clone $entidade;
-            $this->orm->getManager()->detach($mergeObject);
+            $patch = clone $entidade;
+            $this->orm->getManager()->detach($patch);
             $this->orm->getManager()->refresh($entidade);
             if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
@@ -220,11 +220,9 @@ abstract class AbstractFacade {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
-            $this->beforeUpdate($entidade);
-            $entidade->merge($mergeObject);
-            $this->orm->getManager()->flush();
-            $this->checkUniqueness($entidade, true);
-            $this->afterUpdate($entidade);
+            $this->beforeApplyChanges($entidade);
+            $entidade->merge($patch);
+            $this->update($entidade, false);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
         } catch(\Exception $ex) {
@@ -239,11 +237,11 @@ abstract class AbstractFacade {
     * @return boolean
     * @throws \Exception
     */
-    function updateBatch(ArrayCollection $mergeObjects) {
+    function patchBatch(ArrayCollection $mergeObjects) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($mergeObjects as $mergeObject) {
-                $this->update($mergeObject->getId(), $mergeObject, false);
+                $this->patch($mergeObject->getId(), $mergeObject, false);
             }
             $this->orm->getManager()->commit();
             return true;
@@ -251,6 +249,22 @@ abstract class AbstractFacade {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
+    }
+    
+    /**
+     * 
+     * @param type $entidade
+     * @param type $restrict
+     */
+    function update($entidade, $restrictFlush = true) {
+        $this->beforeUpdate($entidade);
+        if ($restrictFlush) {
+            $this->orm->getManager()->flush($entidade);
+        } else {
+            $this->orm->getManager()->flush();
+        }
+        $this->checkUniqueness($entidade, true);
+        $this->afterUpdate($entidade);
     }
     
     /**
@@ -385,6 +399,12 @@ abstract class AbstractFacade {
     * @param type $entidade
     */
     protected function afterCreate($entidade) {}
+    
+    /**
+    * 
+    * @param type $entidade
+    */
+    protected function beforeApplyChanges($entidade) {}
     
     /**
     * 

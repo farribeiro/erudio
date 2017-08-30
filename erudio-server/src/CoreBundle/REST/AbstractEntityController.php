@@ -123,7 +123,7 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
+        $entidadeAtualizada = $this->getFacade()->patch($id, $entidade);
         $view = View::create($entidadeAtualizada, Response::HTTP_OK);
         $this->configureContext($view->getContext());
         return $this->handleView($view);
@@ -133,7 +133,7 @@ abstract class AbstractEntityController extends Controller {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $this->getFacade()->updateBatch($entidades);
+        $this->getFacade()->patchBatch($entidades);
         $view = View::create(null, Response::HTTP_NO_CONTENT);
         $this->configureContext($view->getContext());
         return $this->handleView($view);
