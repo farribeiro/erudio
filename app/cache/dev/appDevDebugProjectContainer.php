@@ -665,7 +665,7 @@ class appDevDebugProjectContainer extends Container
         $c = new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this);
         $c->addEventListener(array(0 => 'loadClassMetadata'), $this->get('doctrine.orm.erudio_listeners.attach_entity_listeners'));
 
-        return $this->services['doctrine.dbal.erudio_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => '10.100.1.134', 'port' => 3306, 'dbname' => 'erudio', 'user' => 'root', 'password' => 'warning', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
+        return $this->services['doctrine.dbal.erudio_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => '10.10.1.191', 'port' => 3306, 'dbname' => 'erudio', 'user' => 'gestao', 'password' => 'teste', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
     }
 
     /**
@@ -688,7 +688,7 @@ class appDevDebugProjectContainer extends Container
         $c = new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this);
         $c->addEventListener(array(0 => 'loadClassMetadata'), $this->get('doctrine.orm.moodle_listeners.attach_entity_listeners'));
 
-        return $this->services['doctrine.dbal.moodle_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => '10.100.1.134', 'port' => 3306, 'dbname' => 'educline', 'user' => 'root', 'password' => 'warning', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
+        return $this->services['doctrine.dbal.moodle_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => 'pmi-db-mysql02', 'port' => 3306, 'dbname' => 'educacao_moodle', 'user' => 'educacao_moodle', 'password' => 'eF5TyqlwjyqzDE9KswyPzHIzijQMCo9SAgBTOQbw', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
     }
 
     /**
@@ -711,7 +711,7 @@ class appDevDebugProjectContainer extends Container
         $c = new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this);
         $c->addEventListener(array(0 => 'loadClassMetadata'), $this->get('doctrine.orm.sme_listeners.attach_entity_listeners'));
 
-        return $this->services['doctrine.dbal.sme_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => '10.100.1.134', 'port' => 3306, 'dbname' => 'educacao_portal', 'user' => 'root', 'password' => 'warning', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
+        return $this->services['doctrine.dbal.sme_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => 'pmi-db-mysql02', 'port' => 3306, 'dbname' => 'educacao_portal', 'user' => 'educacao', 'password' => 'eF5TsrUIj8xyM4o0DAqPUgIAHFAD2Q==', 'charset' => 'UTF8', 'driverOptions' => array(), 'defaultTableOptions' => array()), $b, $c, array('enum' => 'string'));
     }
 
     /**
@@ -733,13 +733,13 @@ class appDevDebugProjectContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
+     * @return \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
      */
     protected function getDoctrine_Orm_ErudioEntityManagerService()
     {
-        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_596387a26268e.php');
+        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_5963d39709fe2.php');
 
-        return $this->services['doctrine.orm.erudio_entity_manager'] = new \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.erudio_entity_manager.delegate'), $this);
+        return $this->services['doctrine.orm.erudio_entity_manager'] = new \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.erudio_entity_manager.delegate'), $this);
     }
 
     /**
@@ -800,13 +800,13 @@ class appDevDebugProjectContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
+     * @return \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
      */
     protected function getDoctrine_Orm_MoodleEntityManagerService()
     {
-        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_596387a26268e.php');
+        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_5963d39709fe2.php');
 
-        return $this->services['doctrine.orm.moodle_entity_manager'] = new \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.moodle_entity_manager.delegate'), $this);
+        return $this->services['doctrine.orm.moodle_entity_manager'] = new \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.moodle_entity_manager.delegate'), $this);
     }
 
     /**
@@ -867,13 +867,13 @@ class appDevDebugProjectContainer extends Container
      * This service is shared.
      * This method always returns the same instance of the service.
      *
-     * @return \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
+     * @return \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager A EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager instance
      */
     protected function getDoctrine_Orm_SmeEntityManagerService()
     {
-        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_596387a26268e.php');
+        require_once (__DIR__.'/jms_diextra/doctrine/EntityManager_5963d39709fe2.php');
 
-        return $this->services['doctrine.orm.sme_entity_manager'] = new \EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.sme_entity_manager.delegate'), $this);
+        return $this->services['doctrine.orm.sme_entity_manager'] = new \EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager($this->get('doctrine.orm.sme_entity_manager.delegate'), $this);
     }
 
     /**
@@ -2749,7 +2749,7 @@ class appDevDebugProjectContainer extends Container
         $a = $this->get('security.token_storage');
         $b = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
 
-        return $this->services['security.firewall.map.context.login'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('security.user.provider.concrete.main')), 'login', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '596387a252bb18.22524851', $b, $this->get('security.authentication.manager')), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'login', NULL, NULL, NULL, $b, false));
+        return $this->services['security.firewall.map.context.login'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('security.user.provider.concrete.main')), 'login', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '5963d39673bf39.96840264', $b, $this->get('security.authentication.manager')), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'login', NULL, NULL, NULL, $b, false));
     }
 
     /**
@@ -4457,7 +4457,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getSecurity_Authentication_ManagerService()
     {
-        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('596387a252bb18.22524851'), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($this->get('security.user.provider.concrete.main'), $this->get('security.user_checker.login'), 'secured_area', $this->get('security.encoder_factory'), true)), true);
+        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5963d39673bf39.96840264'), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($this->get('security.user.provider.concrete.main'), $this->get('security.user_checker.login'), 'secured_area', $this->get('security.encoder_factory'), true)), true);
 
         $instance->setEventDispatcher($this->get('debug.event_dispatcher'));
 
@@ -4862,24 +4862,25 @@ class appDevDebugProjectContainer extends Container
             'kernel.charset' => 'UTF-8',
             'kernel.container_class' => 'appDevDebugProjectContainer',
             'database_driver' => 'pdo_mysql',
-            'database_host' => '10.100.1.134',
+            'database_host' => 'pmi-db-mysql02',
             'database_port' => 3306,
             'database_name' => 'educacao_portal',
-            'database_user' => 'root',
-            'database_password' => 'warning',
+            'database_user' => 'educacao',
+            'database_password' => 'eF5TsrUIj8xyM4o0DAqPUgIAHFAD2Q==',
+            'database_host_moodle' => '127.0.0.1',
+            'database_name_moodle' => 'educacao_moodle',
+            'database_user_moodle' => 'educacao_moodle',
+            'database_password_moodle' => 'eF5TyqlwjyqzDE9KswyPzHIzijQMCo9SAgBTOQbw',
+            'database_host_erudio' => '10.10.1.191',
+            'database_name_erudio' => 'erudio',
+            'database_user_erudio' => 'gestao',
+            'database_password_erudio' => 'teste',
             'mailer_transport' => 'gmail',
             'mailer_host' => NULL,
             'mailer_user' => 'educacaoitajai',
             'mailer_password' => 'warningeducacao',
             'locale' => 'pt_BR',
             'secret' => 'W!a@r#n$i%n&g',
-            'database_name_moodle' => 'educline',
-            'database_user_moodle' => 'root',
-            'database_password_moodle' => 'warning',
-            'database_host_erudio' => '10.100.1.134',
-            'database_name_erudio' => 'erudio',
-            'database_user_erudio' => 'root',
-            'database_password_erudio' => 'warning',
             'file_store_path' => '/home/educacao/intranet/publicacoes',
             'cadastro_unico.class' => 'SME\\CommonsBundle\\Service\\CadastroUnico',
             'form_helper.class' => 'SME\\CommonsBundle\\Service\\FormHelper',
@@ -5402,8 +5403,8 @@ class appDevDebugProjectContainer extends Container
             'jms_di_extra.cache_warmer.controller_file_blacklist' => array(
 
             ),
-            'jms_di_extra.doctrine_integration.entity_manager.file' => (__DIR__.'/jms_diextra/doctrine/EntityManager_596387a26268e.php'),
-            'jms_di_extra.doctrine_integration.entity_manager.class' => 'EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\\__CG__\\Doctrine\\ORM\\EntityManager',
+            'jms_di_extra.doctrine_integration.entity_manager.file' => (__DIR__.'/jms_diextra/doctrine/EntityManager_5963d39709fe2.php'),
+            'jms_di_extra.doctrine_integration.entity_manager.class' => 'EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\\__CG__\\Doctrine\\ORM\\EntityManager',
             'web_profiler.controller.profiler.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\ProfilerController',
             'web_profiler.controller.router.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\RouterController',
             'web_profiler.controller.exception.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\ExceptionController',

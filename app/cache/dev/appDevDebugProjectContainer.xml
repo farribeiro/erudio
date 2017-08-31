@@ -200,24 +200,25 @@
     <parameter key="kernel.charset">UTF-8</parameter>
     <parameter key="kernel.container_class">appDevDebugProjectContainer</parameter>
     <parameter key="database_driver">pdo_mysql</parameter>
-    <parameter key="database_host">10.100.1.134</parameter>
+    <parameter key="database_host">pmi-db-mysql02</parameter>
     <parameter key="database_port">3306</parameter>
     <parameter key="database_name">educacao_portal</parameter>
-    <parameter key="database_user">root</parameter>
-    <parameter key="database_password">warning</parameter>
+    <parameter key="database_user">educacao</parameter>
+    <parameter key="database_password">eF5TsrUIj8xyM4o0DAqPUgIAHFAD2Q==</parameter>
+    <parameter key="database_host_moodle">127.0.0.1</parameter>
+    <parameter key="database_name_moodle">educacao_moodle</parameter>
+    <parameter key="database_user_moodle">educacao_moodle</parameter>
+    <parameter key="database_password_moodle">eF5TyqlwjyqzDE9KswyPzHIzijQMCo9SAgBTOQbw</parameter>
+    <parameter key="database_host_erudio">10.10.1.191</parameter>
+    <parameter key="database_name_erudio">erudio</parameter>
+    <parameter key="database_user_erudio">gestao</parameter>
+    <parameter key="database_password_erudio">teste</parameter>
     <parameter key="mailer_transport">gmail</parameter>
     <parameter key="mailer_host">null</parameter>
     <parameter key="mailer_user">educacaoitajai</parameter>
     <parameter key="mailer_password">warningeducacao</parameter>
     <parameter key="locale">pt_BR</parameter>
     <parameter key="secret">W!a@r#n$i%n&amp;g</parameter>
-    <parameter key="database_name_moodle">educline</parameter>
-    <parameter key="database_user_moodle">root</parameter>
-    <parameter key="database_password_moodle">warning</parameter>
-    <parameter key="database_host_erudio">10.100.1.134</parameter>
-    <parameter key="database_name_erudio">erudio</parameter>
-    <parameter key="database_user_erudio">root</parameter>
-    <parameter key="database_password_erudio">warning</parameter>
     <parameter key="file_store_path">/home/educacao/intranet/publicacoes</parameter>
     <parameter key="cadastro_unico.class">SME\CommonsBundle\Service\CadastroUnico</parameter>
     <parameter key="form_helper.class">SME\CommonsBundle\Service\FormHelper</parameter>
@@ -718,8 +719,8 @@
       <parameter>JMS\DiExtraBundle\Annotation</parameter>
     </parameter>
     <parameter key="jms_di_extra.cache_warmer.controller_file_blacklist" type="collection"/>
-    <parameter key="jms_di_extra.doctrine_integration.entity_manager.file">/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_596387a26268e.php</parameter>
-    <parameter key="jms_di_extra.doctrine_integration.entity_manager.class">EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager</parameter>
+    <parameter key="jms_di_extra.doctrine_integration.entity_manager.file">/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_5963d39709fe2.php</parameter>
+    <parameter key="jms_di_extra.doctrine_integration.entity_manager.class">EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager</parameter>
     <parameter key="web_profiler.controller.profiler.class">Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController</parameter>
     <parameter key="web_profiler.controller.router.class">Symfony\Bundle\WebProfilerBundle\Controller\RouterController</parameter>
     <parameter key="web_profiler.controller.exception.class">Symfony\Bundle\WebProfilerBundle\Controller\ExceptionController</parameter>
@@ -2311,7 +2312,7 @@
       <argument type="collection">
         <argument type="service">
           <service class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
-            <argument>596387a252bb18.22524851</argument>
+            <argument>5963d39673bf39.96840264</argument>
           </service>
         </argument>
         <argument type="service">
@@ -2605,7 +2606,7 @@
         <argument type="service">
           <service class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
             <argument type="service" id="security.token_storage"/>
-            <argument>596387a252bb18.22524851</argument>
+            <argument>5963d39673bf39.96840264</argument>
             <argument type="service" id="monolog.logger.security" on-invalid="null"/>
             <argument type="service" id="security.authentication.manager"/>
           </service>
@@ -3043,11 +3044,11 @@
     <service id="doctrine.dbal.sme_connection" class="Doctrine\DBAL\Connection">
       <argument type="collection">
         <argument key="driver">pdo_mysql</argument>
-        <argument key="host">10.100.1.134</argument>
+        <argument key="host">pmi-db-mysql02</argument>
         <argument key="port">3306</argument>
         <argument key="dbname">educacao_portal</argument>
-        <argument key="user">root</argument>
-        <argument key="password">warning</argument>
+        <argument key="user">educacao</argument>
+        <argument key="password">eF5TsrUIj8xyM4o0DAqPUgIAHFAD2Q==</argument>
         <argument key="charset">UTF8</argument>
         <argument key="driverOptions" type="collection"/>
         <argument key="defaultTableOptions" type="collection"/>
@@ -3088,11 +3089,11 @@
     <service id="doctrine.dbal.moodle_connection" class="Doctrine\DBAL\Connection">
       <argument type="collection">
         <argument key="driver">pdo_mysql</argument>
-        <argument key="host">10.100.1.134</argument>
+        <argument key="host">pmi-db-mysql02</argument>
         <argument key="port">3306</argument>
-        <argument key="dbname">educline</argument>
-        <argument key="user">root</argument>
-        <argument key="password">warning</argument>
+        <argument key="dbname">educacao_moodle</argument>
+        <argument key="user">educacao_moodle</argument>
+        <argument key="password">eF5TyqlwjyqzDE9KswyPzHIzijQMCo9SAgBTOQbw</argument>
         <argument key="charset">UTF8</argument>
         <argument key="driverOptions" type="collection"/>
         <argument key="defaultTableOptions" type="collection"/>
@@ -3133,11 +3134,11 @@
     <service id="doctrine.dbal.erudio_connection" class="Doctrine\DBAL\Connection">
       <argument type="collection">
         <argument key="driver">pdo_mysql</argument>
-        <argument key="host">10.100.1.134</argument>
+        <argument key="host">10.10.1.191</argument>
         <argument key="port">3306</argument>
         <argument key="dbname">erudio</argument>
-        <argument key="user">root</argument>
-        <argument key="password">warning</argument>
+        <argument key="user">gestao</argument>
+        <argument key="password">teste</argument>
         <argument key="charset">UTF8</argument>
         <argument key="driverOptions" type="collection"/>
         <argument key="defaultTableOptions" type="collection"/>
@@ -3217,8 +3218,8 @@
       <argument type="collection"/>
       <argument type="collection"/>
     </service>
-    <service id="doctrine.orm.moodle_entity_manager" class="EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
-      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_596387a26268e.php</file>
+    <service id="doctrine.orm.moodle_entity_manager" class="EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
+      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_5963d39709fe2.php</file>
       <argument type="service" id="doctrine.orm.moodle_entity_manager.delegate"/>
       <argument type="service" id="service_container"/>
     </service>
@@ -3256,8 +3257,8 @@
       <argument type="collection"/>
       <argument type="collection"/>
     </service>
-    <service id="doctrine.orm.erudio_entity_manager" class="EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
-      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_596387a26268e.php</file>
+    <service id="doctrine.orm.erudio_entity_manager" class="EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
+      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_5963d39709fe2.php</file>
       <argument type="service" id="doctrine.orm.erudio_entity_manager.delegate"/>
       <argument type="service" id="service_container"/>
     </service>
@@ -3295,8 +3296,8 @@
       <argument type="collection"/>
       <argument type="collection"/>
     </service>
-    <service id="doctrine.orm.sme_entity_manager" class="EntityManager596387a26268e_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
-      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_596387a26268e.php</file>
+    <service id="doctrine.orm.sme_entity_manager" class="EntityManager5963d39709fe2_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager">
+      <file>/var/www/html/intranet/app/cache/dev/jms_diextra/doctrine/EntityManager_5963d39709fe2.php</file>
       <argument type="service" id="doctrine.orm.sme_entity_manager.delegate"/>
       <argument type="service" id="service_container"/>
     </service>
