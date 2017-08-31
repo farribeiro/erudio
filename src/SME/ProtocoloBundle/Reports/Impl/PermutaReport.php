@@ -136,15 +136,11 @@ class PermutaReport extends RequerimentoReport
         $this->MultiCell(540, 16, 'Assinatura do(a) Requerente', 0, 'C');
 
         $this->Ln(15);
-        $dia = date("d");
-        $mes = self::mesNumericoParaExtenso( date("m") );
-        $ano = date("Y");
-        $this->MultiCell(540, 14, "Itajaí, $dia de $mes de $ano", 0, 'R');
+        $this->dataCadastro();
         
-        if ($via == 1 || $via == 3) {
-            $this->Ln(30);
-            $this->caixaProtocolo();
-        }
+        $this->Ln(30);
+        $this->caixaProtocolo();
+        
         
         $this->Ln(30);
         $this->SetFont('Arial', 'B', 12);
