@@ -134,6 +134,6 @@ class UsuarioController extends Controller {
         //$file = $this->get('doctrine')->getRepository('MoodleBundle:FileUser', 'moodle')->findOneBy(array('userid' => $moodleUser->getId()));
         //$photoUrl = 'http://voldemort/moodle4/pluginfile.php/' . $file->getContextId() . '/user/icon/aardvark_makeover/f1';
         //return new Response($photoUrl);
-		return new Response('error');
+	return new Response('error');
     }
 }

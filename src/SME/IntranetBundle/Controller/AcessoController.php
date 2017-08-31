@@ -212,15 +212,15 @@ class AcessoController extends Controller
     	}
     	
     	if ($pessoa->getUsuario()) {
-    		if ($pessoa->getUsuario()->getUsername() != $pessoa->getCpfCnpj()) {
-    			$user = $pessoa->getUsuario();
-    			$user->setUsername($pessoa->getCpfCnpj());
-    			$this->get('cadastro_unico')->retain($pessoa);
-    			
-    			return new Response('success_username');
-    		}
-    		
-    		return new Response('exist');
+            if ($pessoa->getUsuario()->getUsername() != $pessoa->getCpfCnpj()) {
+                    $user = $pessoa->getUsuario();
+                    $user->setUsername($pessoa->getCpfCnpj());
+                    $this->get('cadastro_unico')->retain($pessoa);
+
+                    return new Response('success_username');
+            }
+
+            return new Response('exist');
     	}
     	
     	$portalUser->setUsername($request->get('newUsername'));

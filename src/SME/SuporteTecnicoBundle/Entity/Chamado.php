@@ -17,10 +17,10 @@ use SME\CommonsBundle\Entity\Entidade;
 class Chamado {
     
     /**
-        * @ORM\Id
-        * @ORM\Column(type="integer")
-        * @ORM\GeneratedValue(strategy="AUTO")
-        */
+    * @ORM\Id
+    * @ORM\Column(type="integer")
+    * @ORM\GeneratedValue(strategy="AUTO")
+    */
     private $id;
     
     /** @ORM\Column */
@@ -50,6 +50,12 @@ class Chamado {
      */
     private $pessoaCadastrou;
     
+    /** 
+     * @ORM\ManyToOne(targetEntity="SME\CommonsBundle\Entity\PessoaFisica")
+     * @ORM\JoinColumn(name="pessoa_encerrou_id", referencedColumnName="id")
+     */
+    private $pessoaEncerrou;
+    
     /** @ORM\Column(name="data_cadastro", type="datetime", nullable=false) */
     private $dataCadastro;
     
@@ -66,12 +72,12 @@ class Chamado {
     private $anotacoes;
     
     /**
-        *  @ORM\ManyToMany(targetEntity="Tag")
-        *  @ORM\JoinTable(name="sme_suportetecnico_chamado_tag",
-        *      joinColumns={@ORM\JoinColumn(name="chamado_id", referencedColumnName="id")},
-        *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
-        *   )
-        */
+    *  @ORM\ManyToMany(targetEntity="Tag")
+    *  @ORM\JoinTable(name="sme_suportetecnico_chamado_tag",
+    *      joinColumns={@ORM\JoinColumn(name="chamado_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+    *   )
+    */
     private $tags;
     
     public function __construct() {
@@ -174,6 +180,14 @@ class Chamado {
 
     public function setDataCadastro(\DateTime $dataCadastro) {
         $this->dataCadastro = $dataCadastro;
+    }
+    
+    public function getPessoaEncerrou() {
+        return $this->pessoaEncerrou;
+    }
+
+    public function setPessoaEncerrou($pessoaEncerrou) {
+        $this->pessoaEncerrou = $pessoaEncerrou;
     }
 
     public function setDataEncerramento(\DateTime $dataEncerramento) {

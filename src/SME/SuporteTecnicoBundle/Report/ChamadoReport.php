@@ -68,12 +68,15 @@ class ChamadoReport extends PDFDocument {
         $this->SetFont(self::FONT_DEFAULT_TYPE, 'B', 10);
         $this->Cell(20, 6, 'Criado em:', 0, 0, 'L');
         $this->SetFont(self::FONT_DEFAULT_TYPE, '', 10);
-        $this->Cell(75, 6, $chamado->getDataCadastro()->format('d/m/Y H:i'), 0, 0, 'L');
-        $this->SetFont(self::FONT_DEFAULT_TYPE, 'B', 10);
-        $this->Cell(24, 6, 'Fechado em:', 0, 0, 'L');
-        $this->SetFont(self::FONT_DEFAULT_TYPE, '', 10);
-        $this->Cell(75, 6, $chamado->getDataEncerramento() 
-                ? $chamado->getDataEncerramento()->format('d/m/Y H:i') : '-', 0, 1, 'L');
+        $this->Cell(75, 6, $chamado->getDataCadastro()->format('d/m/Y H:i'), 0, 1, 'L');
+        
+        if ($chamado->getEncerrado()) {
+            $pessoaEncerrou = $chamado->getPessoaEncerrou() ? ' por ' . $chamado->getPessoaEncerrou()->getNome() : '';
+            $this->SetFont(self::FONT_DEFAULT_TYPE, 'B', 10);
+            $this->Cell(24, 6, 'Fechado em:', 0, 0, 'L');
+            $this->SetFont(self::FONT_DEFAULT_TYPE, '', 10);
+            $this->Cell(150, 6, $chamado->getDataEncerramento()->format('d/m/Y H:i') . $pessoaEncerrou, 0, 1, 'L');
+        }
         
         $tags = '';
         foreach($chamado->getTags() as $tag) {

@@ -4,6 +4,7 @@ namespace SME\CommonsBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Component\Validator\Constraints as Assert;
 use SME\CommonsBundle\Util\DocumentosUtil;
 
@@ -305,7 +306,11 @@ class PessoaFisica extends Pessoa {
     }
 
     public function getVinculosTrabalho() {
-        return $this->vinculosTrabalho->filter(function($v) { return $v->getAtivo(); });
+        return $this->vinculosTrabalho->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true)
+            ))
+        );
     }
     
     public function getParticularidades() {

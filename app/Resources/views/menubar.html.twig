@@ -17,7 +17,7 @@
                     <li class="subMenuPadding"><a class="paddingMenu" href="{{path('suporte_index')}}">Suporte Técnico</a></li>
                 {% endif %}
                 <li class="subMenuPadding"><a class="paddingMenu" target="_blank" href="http://ead.educacao.itajai.sc.gov.br">Educline</a></li>
-                <li class="subMenuPadding"><a class="paddingMenu" target="_blank" href="http://erudio.itajai.sc.gov.br/login_intranet.html?username={{ app.user.username }}&key={{ app.user.password }}">Erudio</a></li>
+                <li class="subMenuPadding"><a class="paddingMenu" target="_blank" href="http://erudio.itajai.sc.gov.br/login.html">Erudio</a></li>
                 {% if is_granted('ROLE_QUESTIONARIO') %}
                     <li class="subMenuPadding"><a class="paddingMenu" href="{{path('questionarios_ver_respostas')}}">Questionários (Respostas)</a></li>
                 {% endif %}
