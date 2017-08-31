@@ -249,10 +249,8 @@ class ChamadoController extends Controller {
         if(!$chamado->getSolucao()) {
             throw new \Exception('Solução deve ser informada ao encerrar um chamado');
         }
-        //if($chamado->getDataEncerramento()) {
-        //    throw new \Exception('Este chamado já está encerrado e não pode mais ser alterado');
-        //}
         $chamado->setDataEncerramento(new \DateTime());
+        $chamado->setPessoaEncerrou($this->getUser()->getPessoa());
     }
     
     /** teste com google maps */

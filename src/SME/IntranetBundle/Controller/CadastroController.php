@@ -28,16 +28,20 @@ class CadastroController extends Controller {
     public function atualizarCadastroAction() {
         $pessoa = $this->getUser()->getPessoa();
         if (trim($this->getRequest()->request->get('password'))) {
-        	$password = $this->get('md5_encoder')->encodePassword(trim($this->getRequest()->request->get('password')), null);
-        	$pessoa->getUsuario()->setPassword($password);
-        	
-        	$moodleUser = $this->getDoctrine()->getManager('moodle')->getRepository('MoodleBundle:MoodleUser')->findOneByUsername($pessoa->getCpfCnpj());
-        	if ($moodleUser) {
-        		$passwordMoodle = $this->get('md5_encoder')->encodeMoodlePassword(trim($this->getRequest()->request->get('password')));
-        		$moodleUser->setPassword($passwordMoodle);
-        		$emMoodle = $this->getDoctrine()->getManager('moodle');
-        		$emMoodle->flush();
-        	}
+            $password = $this->get('md5_encoder')->encodePassword(trim($this->getRequest()->request->get('password')), null);
+            $pessoa->getUsuario()->setPassword($password);
+            $erudioUser = $this->getDoctrine()->getManager('erudio')->getRepository('ErudioBundle:ErudioUser')->findOneByUsername($pessoa->getCpfCnpj());
+            if ($erudioUser) {
+                $erudioUser->setPassword($password);
+                $this->getDoctrine()->getManager('erudio')->flush();
+            }
+            $moodleUser = $this->getDoctrine()->getManager('moodle')->getRepository('MoodleBundle:MoodleUser')->findOneByUsername($pessoa->getCpfCnpj());
+            if ($moodleUser) {
+                $passwordMoodle = $this->get('md5_encoder')->encodeMoodlePassword(trim($this->getRequest()->request->get('password')));
+                $moodleUser->setPassword($passwordMoodle);
+                $emMoodle = $this->getDoctrine()->getManager('moodle');
+                $emMoodle->flush();
+            }
         }
         $pessoa->setEmail($this->getRequest()->request->get('email'));
         $pessoa->getTelefone()->setNumero($this->getRequest()->request->get('telefone'));
