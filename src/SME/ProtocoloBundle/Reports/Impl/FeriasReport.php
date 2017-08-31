@@ -86,11 +86,8 @@ class FeriasReport extends RequerimentoReport
 
         $this->Ln(50);
         $this->dataCadastro();
-
        
         $this->Ln(30);
         $this->caixaProtocolo();
-
     }
-
 }
