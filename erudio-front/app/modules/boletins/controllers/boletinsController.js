@@ -151,7 +151,16 @@
         
         //SELECAO DE ETAPA
         $scope.frequenciaUnificada = true;
-        $scope.selecionarEtapa = function(etapaId) { $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.buscarTurmas('formBusca'); };
+        $scope.mostraMedia = false;
+        $scope.selecionarEtapa = function(etapaId) { 
+            var promise = Servidor.buscarUm('etapas',etapaId);
+            promise.then(function(response){
+                if (response.data.sistemaAvaliacao.tipo === "QUALITATIVO") {
+                    $scope.mostraMedia = true;
+                } else { $scope.mostraMedia = false; }
+            });
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.buscarTurmas('formBusca');
+        };
         
         //SELECIONA TURMA
         $scope.alunos = [];
@@ -197,19 +206,37 @@
         };
         
         //GERAR BOLETIM
-        $scope.gerarBoletim = function (url) {
-            $scope.mostraProgresso();
+        $scope.mediaNumero = null;
+        $scope.gerarBoletim = function (url,tipo) {
+            if (url === undefined) {
+                if ($scope.mostraMedia) { url = ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id+'&media='+$scope.turmaBusca.media.id; }
+                else { url = ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id; }
+                $scope.getBoletim(url);
+            } else {
+                if (tipo === 'quali' && $scope.mediaNumero === null || $scope.mediaNumero === undefined) {
+                    Servidor.customToast('Selecione uma média antes de gerar o boletim.');
+                } else {
+                    $scope.getBoletim(url);
+                }
+            }
+                
+            
             //window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
+            
+            //if ($("#individual").is(":checked") && $scope.turmaBusca.aluno.id !== null) { window.open(ErudioConfig.urlServidor+'/report/boletim?enturmacao='+$scope.turmaBusca.aluno.id,'_blank');
+            //} else { window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank'); }
+        };
+        
+        $scope.setNumero = function(numero){ $scope.mediaNumero = numero; };
+        
+        $scope.getBoletim = function (url) {
+            $scope.mostraProgresso();
             if (url !== undefined){
                 var promise = Servidor.getPDF(url,'_blank');
-            } else {
-                var promise = Servidor.getPDF(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
             }
             promise.then(function(){
                 $scope.fechaProgresso();
             });
-            //if ($("#individual").is(":checked") && $scope.turmaBusca.aluno.id !== null) { window.open(ErudioConfig.urlServidor+'/report/boletim?enturmacao='+$scope.turmaBusca.aluno.id,'_blank');
-            //} else { window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank'); }
         };
         
         $scope.nomeAluno = null;
@@ -236,7 +263,15 @@
         $scope.selecionaAluno = function (aluno) {
             $scope.nomeAluno = aluno.nomeAluno;
             var promise = Servidor.buscar("enturmacoes",{matricula: aluno.id, encerrado: ''});
-            promise.then(function(response){ $scope.totalEnturmacoes = response.data; });
+            promise.then(function(response){
+                $scope.totalEnturmacoes = response.data;
+                $scope.totalEnturmacoes.forEach(function(enturmacao){
+                    var promiseE = Servidor.buscarUm('etapas',enturmacao.matricula.etapaAtual.id);
+                    promiseE.then(function(responseE){
+                        enturmacao.matricula.etapaAtual = responseE.data;
+                    });
+                });
+            });
         };
 
         //INICIALIZANDO

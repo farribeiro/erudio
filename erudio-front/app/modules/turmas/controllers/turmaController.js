@@ -1716,7 +1716,7 @@
                     $scope.mostraLoader();
                     $scope.adicionarAlunos = true;*/
                     var promise = Servidor.buscar('matriculas', {'codigo': matricula.codigo, 'aluno_nome': matricula.aluno,
-                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso, 'enturmado': 0});
+                        'unidadeEnsino': $scope.matriculaBusca.unidade, 'curso': $scope.matriculaBusca.curso, 'enturmado': 0, status: "CURSANDO"});
                     promise.then(function (response) {
                         if(response.data.length){
                             $scope.matriculas = response.data;

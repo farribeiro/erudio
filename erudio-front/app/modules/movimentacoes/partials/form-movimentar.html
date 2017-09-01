@@ -40,7 +40,7 @@
     <div class="input-field col s12 m12 l6">
         <i class="material-icons prefix">school</i>
         <select id="turma" data-ng-model="turma.id">
-            <option data-ng-repeat="turma in turmas" value="{{turma.id}}" data-ng-if="turma.id !== enturmacao.turma.id">{{ turma.nomeCompleto | uppercase }}</option>
+            <option data-ng-repeat="turma in turmas" value="{{turma.id}}">{{ turma.nomeCompleto | uppercase }}</option>
         </select>
         <label for="turma">Turma Destino</label>
     </div>
