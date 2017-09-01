@@ -26,31 +26,12 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AulaBundle\Service;
+namespace AlunoBundle;
 
-use Doctrine\ORM\QueryBuilder;
-use CoreBundle\ORM\AbstractFacade;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class AnotacaoFacade extends AbstractFacade {
-    
-    function getEntityClass() {
-        return 'AulaBundle:Anotacao';
-    }
-    
-    function queryAlias() {
-        return 'a';
-    }
-    
-    function parameterMap() {
-        return [
-            'observacao' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.observacao LIKE :observacao')
-                   ->setParameter('observacao', '%' . $value . '%');
-            },
-            'aula' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.aula = :aula')->setParameter('aula', $value);
-            }
-       ];
-    }
-    
+/**
+ * Bundle responsável por fornecer serviços destinados aos alunos.
+ */
+class AlunoBundle extends Bundle {
 }

@@ -43,6 +43,12 @@ class Frequencia extends AbstractEditableEntity {
     const PRESENCA = 'PRESENCA';
     const DISPENSA = 'DISPENSA';
     
+    function __construct($disciplinaCursada, $aula, $status = self::PRESENCA) {
+        $this->status = $status;
+        $this->disciplinaCursada = $disciplinaCursada;
+        $this->aula = $aula;
+    }
+    
     /** 
     * @JMS\Groups({"LIST"})  
     * @ORM\Column(type = "string", nullable = false) 

@@ -73,7 +73,6 @@ class VagaFacade extends AbstractFacade {
             }
         }
     }
-    
         
     function removerVagas(Turma $turma) {
         if (!$turma->getAtivo()) {

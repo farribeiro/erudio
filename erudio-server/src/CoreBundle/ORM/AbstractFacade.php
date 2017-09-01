@@ -269,8 +269,7 @@ abstract class AbstractFacade {
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeRemove($entidade);
             $entidade->finalize();
-            $this->orm->getManager()->merge($entidade);
-            $this->orm->getManager()->flush();
+            $this->orm->getManager()->flush($entidade);
             $this->afterRemove($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return true;

@@ -100,11 +100,8 @@ class AlocacaoFacade extends AbstractFacade {
      */
     function excedeCargaHoraria(Alocacao $alocacao) {
         $vinculo = $alocacao->getVinculo();
-        $chTotal = $alocacao->getCargaHoraria();
-        foreach ($vinculo->getAlocacoes() as $a) {
-            $chTotal += $a->getCargaHoraria();
-        }
-        return $vinculo->getCargaHoraria() < $chTotal;
+        $vinculo->getAlocacoes()->add($alocacao);
+        return !$vinculo->cargaHorariaValida();
     }
 
 }

@@ -33,7 +33,6 @@ use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
-use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
     
@@ -81,15 +80,15 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::CANCELAMENTO:
                 $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
-        $this->orm->getManager()->merge($matricula);
-        $this->orm->getManager()->flush();
+        $this->orm->getManager()->flush($matricula);
     }
     
     private function encerrarEnturmacoes(Matricula $matricula) {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq('encerrado', false));
-        $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
+        $enturmacoes = $matricula->getEnturmacoesAtivas();
         foreach ($enturmacoes as $e) {
-            $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
+            if ($e->isEmAndamento()) {
+                $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
+            }
         }
     }
     
