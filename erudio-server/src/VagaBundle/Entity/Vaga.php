@@ -31,6 +31,7 @@ namespace VagaBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
+use CursoBundle\Entity\Turma;
 use MatriculaBundle\Entity\Enturmacao;
 
 /**

@@ -90,7 +90,7 @@ class AlocacaoFacade extends AbstractFacade {
     }
     
     protected function afterRemove($alocacao) {
-        EntityEvent::createAndDispatch($$alocacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
+        EntityEvent::createAndDispatch($alocacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
     }
     
     /**
