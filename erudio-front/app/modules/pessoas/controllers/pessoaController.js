@@ -1340,15 +1340,36 @@
                         } else {
                             //if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
                                 //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                                    var endereco = $scope.pessoa.endereco; console.log(endereco);
+                                    var endereco = $scope.pessoa.endereco;
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
-                                        var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
-                                        promise.then(function (response) {
-                                            $scope.pessoa.endereco.id = response.data.id;
-                                            $scope.endereco.id = response.data.id;
-                                            $scope.finalizarPessoa();
-                                        });
+                                        if (endereco.id !== undefined) {
+                                            var promiseEndereco = Servidor.buscarUm('enderecos',endereco.id);
+                                            promiseEndereco.then(function(responseAddr) {
+                                                var addr = responseAddr.data;
+                                                addr.bairro = endereco.bairro;
+                                                addr.cep = endereco.cep;
+                                                addr.cidade = {id: endereco.cidade.id ,estado: {id: endereco.cidade.estado.id }};
+                                                addr.id = endereco.id;
+                                                addr.latitude = endereco.latitude;
+                                                addr.longitude = endereco.longitude;
+                                                addr.logradouro = endereco.logradouro;
+                                                addr.numero = endereco.numero;
+                                                var promise = Servidor.finalizar(addr, 'enderecos', null);
+                                                promise.then(function (response) {
+                                                    $scope.pessoa.endereco.id = response.data.id;
+                                                    $scope.endereco.id = response.data.id;
+                                                    $scope.finalizarPessoa();
+                                                });
+                                            });                                            
+                                        } else {
+                                            var promise = Servidor.finalizar(endereco, 'enderecos', null);
+                                            promise.then(function (response) {
+                                                $scope.pessoa.endereco.id = response.data.id;
+                                                $scope.endereco.id = response.data.id;
+                                                $scope.finalizarPessoa();
+                                            });
+                                        }
                                     } else {
                                         $scope.fechaLoader();
                                         return Servidor.customToast("Os campos de endereço são obrigatórios.");

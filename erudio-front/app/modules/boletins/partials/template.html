@@ -87,6 +87,16 @@
                         </select>
                         <label for="turma">Turma</label>
                     </div>
+                    <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA') && mostraMedia">
+                        <i class="material-icons prefix">filter_1</i>
+                        <select id="media" ng-model="turmaBusca.media.id">
+                            <option selected></option> 
+                            <option value="1">Média 1</option> 
+                            <option value="2">Média 2</option> 
+                            <option value="3">Média 3</option> 
+                        </select>
+                        <label for="media">Média</label>
+                    </div>
                     <!--<div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
                         <input type="checkbox" id="individual" ng-click="mostraIndividual()" />
                         <label for="individual">Boletim Individual</label>
@@ -119,8 +129,16 @@
                     <li data-ng-repeat="enturmacao in totalEnturmacoes" class="collection-item avatar">
                         <i class="material-icons circle light-blue darken-4">school</i>
                         <span class="title aluno-nome">{{ enturmacao.matricula.unidadeEnsino.nomeCompleto }} - {{ enturmacao.turma.nomeCompleto }}</span>
-                        <div class="secondary-content" style="margin-top: -17px;"><a target="_blank" ng-click="gerarBoletim(config.urlServidor+'/report/boletim?enturmacao='+enturmacao.id)"><i class="material-icons">print</i></a></div>
-                    </li>
+                        <div class="secondary-content" style="margin-top: -17px;">
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUALITATIVO'">
+                                <input name="group1" type="radio" id="m1" ng-model="mediaNumero" value='1' ng-change='setNumero(1)' /><label for="m1">M1</label>
+                                <input name="group1" type="radio" id="m2" ng-model="mediaNumero" value='2' ng-change='setNumero(2)' /><label for="m2">M2</label>
+                                <input name="group1" type="radio" id="m3" ng-model="mediaNumero" value='3' ng-change='setNumero(3)' /><label for="m3">M3</label>
+                            </span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUALITATIVO'"><a target="_blank" ng-click="gerarBoletim(config.urlServidor+'/report/boletim?enturmacao='+enturmacao.id+'&media='+mediaNumero,'quali')"><i class="material-icons">print</i></a></span>
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUANTITATIVO'"><a target="_blank" ng-click="gerarBoletim(config.urlServidor+'/report/boletim?enturmacao='+enturmacao.id,'qu')"><i class="material-icons">print</i></a></span>
+                        </div>                    </li>
                 </ul>
             </div>
         </div>
