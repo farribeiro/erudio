@@ -60,10 +60,12 @@ class MatriculaController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Get("matriculas")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", default = null) 
     * @FOS\QueryParam(name = "codigo", nullable = true) 
     * @FOS\QueryParam(name = "aluno_nome", nullable = true)
     * @FOS\QueryParam(name = "aluno_dataNascimento", nullable = true)
+    * @FOS\QueryParam(name = "aluno_deficiente", nullable = true)
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "aluno", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "curso", requirements="\d+", nullable = true)

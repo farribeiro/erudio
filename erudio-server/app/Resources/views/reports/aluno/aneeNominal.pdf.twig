@@ -1,0 +1,47 @@
+<pdf>
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}
+            <h1>Alunos ANEE</h1>
+            <h3>Nominal</h3>
+        {% endblock %}
+        
+        {% block info %}{% endblock %}  
+        
+        {% block content %}
+            <div font-size="8px" breakable="false" margin-bottom="5px">
+                <table>
+                    <tr font-size="9px">
+                        <td width="90px"><strong>Matrícula</strong></td>
+                        <td><strong>Nome</strong></td>
+                        <td width="60px"><strong>Data Nasc</strong></td>
+                        <td width="38px"><strong>Gênero</strong></td>
+                        <td><strong>Turmas</strong></td>
+                        <td><strong>Deficiências</strong></td>
+                    </tr>
+                    {% for a in alunos %}
+                        <tr>
+                            <td>{{a.codigo}}</td>
+                            <td text-align="left">{{a.nome|upper}}</td>
+                            <td>{{a.dataNascimento|date('d/m/Y')}}</td>
+                            <td>{{a.genero}}</td>
+                            <td>
+                                <ul>
+                                    {% for e in a.enturmacoes %}
+                                        <li>{{e.turma.nomeCompleto|upper}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    {% for p in a.particularidades %}
+                                        <li>{{p.nome|upper}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+       {% endblock %}
+    {% endembed %}
+</pdf>

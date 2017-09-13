@@ -91,7 +91,7 @@ class EnturmacaoReportController extends Controller {
     */
     function nominalPorUnidadeAction(Request $request) {
         try {
-            $turmas = $this->turmaFacade->findAll(['unidadeEnsino' => $request->query->get('unidade')]);
+            $turmas = $this->turmaFacade->findAll(['unidadeEnsino' => $request->query->get('unidade'), 'encerrado' => false]);
             return $this->render('reports/enturmacao/nominalPorTurma.pdf.twig', [
                 'instituicao' => $turmas[0]->getUnidadeEnsino(),
                 'turmas' => $turmas
@@ -169,7 +169,7 @@ class EnturmacaoReportController extends Controller {
     }
     
     private function gerarRelatorio($unidadeEnsino, $cursoId = 0) {
-        $params = ['unidadeEnsino' => $unidadeEnsino->getId()];
+        $params = ['unidadeEnsino' => $unidadeEnsino->getId(), 'encerrado' => false];
         if ($cursoId) {
             $params['curso'] = $cursoId;
         }

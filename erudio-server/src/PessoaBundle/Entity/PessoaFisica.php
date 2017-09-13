@@ -164,7 +164,7 @@ class PessoaFisica extends Pessoa {
     private $alfabetizado = false;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"DETAILS", "DEFICIENCIAS"})
     * @ORM\ManyToMany(targetEntity="Particularidade")
     * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},

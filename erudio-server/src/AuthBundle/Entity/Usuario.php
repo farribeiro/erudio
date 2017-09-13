@@ -159,7 +159,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         $usuario->nomeExibicao = $pessoa->getNome();
         $password = $firstPassword 
                 ? $firstPassword
-                : substr(str_shuffle($username.str_replace(' ', '' , $pessoa->getNome())), 0, 6);
+                : substr(str_shuffle($username . str_replace(' ', '' , $pessoa->getNome())), 0, 6);
         $usuario->password = md5($password);
         return $usuario;
     }

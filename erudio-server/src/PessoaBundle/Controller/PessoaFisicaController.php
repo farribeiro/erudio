@@ -77,7 +77,8 @@ class PessoaFisicaController extends AbstractEntityController {
     *   )
     *  
     *   @FOS\Get("pessoas")
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    *   @FOS\QueryParam(name = "view", nullable = true)
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "sobrenome", nullable = true) 
     *   @FOS\QueryParam(name = "dataNascimento", nullable = true) 
@@ -87,6 +88,7 @@ class PessoaFisicaController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "nomePai", nullable = true)    
     *   @FOS\QueryParam(name = "avatar", nullable = true)
     *   @FOS\QueryParam(name = "usuario", nullable = true)
+     *  @FOS\QueryParam(name = "deficiente", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

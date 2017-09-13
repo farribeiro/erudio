@@ -37,6 +37,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Usuario;
 use AuthBundle\Service\UsuarioFacade;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @FOS\NamePrefix("users")
@@ -45,6 +46,19 @@ class UsuarioController extends AbstractEntityController {
     
     function __construct(UsuarioFacade $facade) {
         parent::__construct($facade);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Get("users/eu")
+    */
+    function getCurrentAction() {
+        $user = $this->getUser();
+        return new JsonResponse([
+            'id' => $user->getId(),
+            'nomeExibicao' => $user->getNomeExibicao()
+        ]);
     }
     
     /**
@@ -90,7 +104,7 @@ class UsuarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("users/{id}")
+    * @FOS\Put("users/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Usuario $usuario, ConstraintViolationListInterface $errors) {
@@ -100,7 +114,7 @@ class UsuarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("users/{id}")
+    * @FOS\Delete("users/{id}", requirements = {"id": "\d+"})
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

@@ -63,6 +63,10 @@ class MatriculaFacade extends AbstractFacade {
             'aluno_dataNascimento' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
+            'aluno_deficiente' => function(QueryBuilder $qb, $value) {
+                $operador = $value ? 'NOT' : '';
+                $qb->andWhere("aluno.particularidades IS {$operador} EMPTY");
+            },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },

@@ -66,6 +66,10 @@ class PessoaFisicaFacade extends AbstractFacade {
             },
             'usuario' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.usuario = :usuario')->setParameter('usuario', $value);
+            },
+            'deficiente' => function(QueryBuilder $qb, $value) {
+                $operator = $value ? 'NOT' : '';
+                $qb->andWhere("pessoa.particularidades IS {$operator} EMPTY");
             }
         ];
     }

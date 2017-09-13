@@ -116,4 +116,12 @@ class Aula extends AbstractEditableEntity {
         );
     }
     
+    function setDia($dia) {
+        $this->dia = $dia;
+    }
+
+    function setHorario($horario) {
+        $this->horario = $horario;
+    }
+    
 }
