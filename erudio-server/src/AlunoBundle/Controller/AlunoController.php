@@ -75,8 +75,8 @@ class AlunoController extends Controller {
         if ($enturmacao->getAluno() != $this->getUser()->getPessoa()) {
             return JsonResponse::create(null, JsonResponse::HTTP_FORBIDDEN);
         }
-        $disciplinas = $enturmacao->getDisciplinasCursadas()->toArray();
-        return new JsonResponse(array_map(function($d) {
+        $disciplinas = $enturmacao->getDisciplinasCursadas();
+        return new JsonResponse($disciplinas->map(function($d) {
             return [
                 'id' => $d->getId(),
                 'disciplina' => $d->getNomeExibicao(),
@@ -92,7 +92,7 @@ class AlunoController extends Controller {
                     ];
                 })->toArray()
             ];
-        }, $disciplinas));
+        }, $disciplinas)->toArray());
     }
     
 }

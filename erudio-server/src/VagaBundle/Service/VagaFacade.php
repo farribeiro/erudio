@@ -77,19 +77,19 @@ class VagaFacade extends AbstractFacade {
     function removerVagas(Turma $turma) {
         if (!$turma->getAtivo()) {
             foreach ($turma->getVagasAbertas() as $vaga) {
-                $this->vagaFacade->remove($vaga);
+                $this->remove($vaga);
             }
         }
     }
     
     function liberar(Vaga $vaga) {
         $vaga->liberar();
-        $this->orm->getManager()->flush($vaga);
+        $this->orm->getManager()->flush();
     }
     
     function ocupar(Vaga $vaga, Enturmacao $enturmacao) {
-        $vaga->setEnturmacao($enturmacao);
-        $this->orm->getManager()->flush($vaga);
+        $vaga->ocupar($enturmacao);
+        $this->orm->getManager()->flush();
     }
     
 }

@@ -36,7 +36,6 @@ use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Psr\Log\LoggerInterface;
 use MatriculaBundle\Entity\Enturmacao;
-use MatriculaBundle\Entity\DisciplinaCursada;
 use CursoBundle\Service\TurmaFacade;
 use MatriculaBundle\Service\EnturmacaoFacade;
 use AvaliacaoBundle\Service\ConceitoFacade;
@@ -82,6 +81,7 @@ class BoletimReportController extends Controller {
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'boletins' => [$this->gerarBoletim($enturmacao)],
+                'media' => $request->query->getInt('media', 1),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
                     ? $this->conceitoFacade->findAll() : [],
             ]);
@@ -120,9 +120,9 @@ class BoletimReportController extends Controller {
                 'turma' => $turma,
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
+                'media' => $request->query->getInt('media', 1),
                 'boletins' => $boletins,
-                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->conceitoFacade->findAll() : [],
+                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) ? $this->conceitoFacade->findAll() : [],
             ]);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());

@@ -34,7 +34,7 @@ use CoreBundle\ORM\AbstractFacade;
 class SistemaAvaliacaoFacade extends AbstractFacade {
     
     function getEntityClass() {
-        return 'AvaliacaoBundle:SistemaAvaliacao';
+        return 'CursoBundle:SistemaAvaliacao';
     }
     
     function queryAlias() {

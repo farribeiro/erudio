@@ -42,14 +42,14 @@ class UsuarioFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-         return array (
+         return [
             'username' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('u.username LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'nomeExibicao' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('u.nomeExibicao LIKE :nome')->setParameter('nome', '%' . $value . '%');
             }
-        );
+        ];
     }
 
 }

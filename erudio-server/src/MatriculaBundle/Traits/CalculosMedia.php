@@ -4,7 +4,7 @@ namespace MatriculaBundle\Traits;
 
 use MatriculaBundle\Entity\Media;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use CursoBundle\Entity\SistemaAvaliacao;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 
 /**

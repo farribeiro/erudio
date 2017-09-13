@@ -90,7 +90,7 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function afterUpdate($vinculo) {
-        if (!$vinculo->cargaHorariaValida) {
+        if (!$vinculo->cargaHorariaValida()) {
             throw new IllegalUpdateException(
                 IllegalUpdateException::ILLEGAL_STATE_TRANSITION, 
                 'Carga horária não pode ser inferior ao total das alocações'

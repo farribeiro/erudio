@@ -34,7 +34,7 @@ use CoreBundle\ORM\AbstractFacade;
 class ModeloQuadroHorarioFacade extends AbstractFacade {
     
     function getEntityClass() {
-        return 'QuadroHorarioBundle:ModeloQuadroHorario';
+        return 'CursoBundle:ModeloQuadroHorario';
     }
     
     function queryAlias() {

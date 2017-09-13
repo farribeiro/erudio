@@ -32,6 +32,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use CoreBundle\ORM\Exception\UniqueViolationException;
 use MatriculaBundle\Service\EtapaCursadaFacade;
 use MatriculaBundle\Entity\EtapaCursada;
+use CoreBundle\Event\EntityEvent;
 
 class CriarEtapaCursadaListener implements EventSubscriberInterface {
     
