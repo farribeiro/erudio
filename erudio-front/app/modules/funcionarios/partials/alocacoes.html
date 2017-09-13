@@ -39,6 +39,12 @@
         <input id="unidadeAlocacao" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades()" data-activates="dropUnidadesAlocacao" data-ng-disabled="!isAdmin">
         <label for="unidadeAlocacao"><span data-ng-show="isAdmin">Busque aqui uma </span>Unidade*</label>
     </div>
+    <ul id="dropUnidadesAlocacao" class="dropdown-content">
+        <li class="divider"></li>
+        <li data-ng-repeat="unidade in unidades">
+            <a data-ng-click="selecionarUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{ unidade.nome | uppercase }}</a>
+        </li>
+    </ul>
     <div class="input-field col s12 m5 l5" style="width: 45%">
         <i class="material-icons prefix">query_builder</i>
         <input id="cargaHorariaAlocacao" type="number" class="validade counter numeros" data-ng-model="alocacao.cargaHoraria">
