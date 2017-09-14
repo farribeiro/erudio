@@ -108,7 +108,8 @@ class MatriculaFacade extends AbstractFacade {
            ->join('m.curso', 'curso')
            ->join('unidadeEnsino.tipo', 'tipoUnidadeEnsino')
            ->leftJoin('unidadeEnsino.instituicaoPai', 'instituicao')
-           ->leftJoin('m.etapa', 'etapa');
+           ->leftJoin('m.etapa', 'etapa')
+           ->orderBy('aluno.nome', 'ASC');
     }
     
     protected function beforeCreate($matricula) {

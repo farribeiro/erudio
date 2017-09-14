@@ -81,6 +81,7 @@ class PessoaFisicaController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "view", nullable = true)
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "sobrenome", nullable = true) 
+    *   @FOS\QueryParam(name = "codigo", nullable = true) 
     *   @FOS\QueryParam(name = "dataNascimento", nullable = true) 
     *   @FOS\QueryParam(name = "cpf", nullable = true) 
     *   @FOS\QueryParam(name = "certidaoNascimento", requirements="\d+", nullable = true) 

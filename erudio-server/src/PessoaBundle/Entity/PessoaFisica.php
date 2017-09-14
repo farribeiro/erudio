@@ -189,16 +189,24 @@ class PessoaFisica extends Pessoa {
      */
     private $responsavelNome;
     
+    function __construct() {
+        parent::__construct();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getCodigo() {
+        return "{$this->getId()}-{$this->getDataCadastro()->format('y')}";
+    }
+    
     function getResponsavelNome() {
         return $this->responsavelNome;
     }
     
     function setResponsavelNome($responsavelNome) {
         $this->responsavelNome = $responsavelNome;
-    }
-    
-    public function __construct() {
-        parent::__construct();
     }
     
     function getIdade() {

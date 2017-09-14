@@ -35,17 +35,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Psr\Log\LoggerInterface;
+use PessoaBundle\Service\UnidadeEnsinoFacade;
 use CursoBundle\Service\CursoOfertadoFacade;
 use MatriculaBundle\Service\MatriculaFacade;
 
 class ANEEReportController extends Controller {
     
+    private $unidadeEnsinoFacade;
     private $cursoOfertadoFacade;
     private $matriculaFacade;
     private $logger;
     
-    function __construct(CursoOfertadoFacade $cursoOfertadoFacade, MatriculaFacade $matriculaFacade, 
-            LoggerInterface $logger) {
+    function __construct(UnidadeEnsinoFacade $unidadeEnsinoFacade, CursoOfertadoFacade $cursoOfertadoFacade, 
+            MatriculaFacade $matriculaFacade, LoggerInterface $logger) {
+        $this->unidadeEnsinoFacade = $unidadeEnsinoFacade;
         $this->cursoOfertadoFacade = $cursoOfertadoFacade;
         $this->matriculaFacade = $matriculaFacade;
         $this->logger = $logger;
@@ -55,23 +58,27 @@ class ANEEReportController extends Controller {
     * @ApiDoc(
     *   resource = true,
     *   section = "Módulo Relatórios",
-    *   description = "Relação nominal de alunos ANEE por curso ofertado",
+    *   description = "Relação nominal de alunos ANEE por instituição",
     *   statusCodes = {
     *       200 = "Documento PDF"
     *   }
     * )
     * 
-    * @Route("/anee/nominal-curso", defaults={ "_format" = "pdf" })
+    * @Route("/alunos/anee-nominal-instituicao", defaults={ "_format" = "pdf" })
     * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
     */
-    function nominalPorCursoOfertadoAction(Request $request) {
+    function nominalPorInstituicaoAction(Request $request) {
         try {
-            $cursoOfertado = $this->cursoOfertadoFacade->find($request->query->getInt('curso'));
-            $alunos = $this->gerarAlunos($cursoOfertado);
+            $unidadesEnsino = $this->unidadeEnsinoFacade->findAll([
+                'instituicaoPai' => $request->query->getInt('instituicao')
+            ]);
+            $relatorios = [];
+            foreach ($unidadesEnsino as $unidadeEnsino) {
+                $relatorios[] = $this->gerarRelatorio($unidadeEnsino);
+            }
             return $this->render('reports/aluno/aneeNominal.pdf.twig', [
-                'instituicao' => $cursoOfertado->getUnidadeEnsino(),
-                'curso' => $cursoOfertado->getCurso(),
-                'alunos' => $alunos
+                'instituicao' => $unidadesEnsino[0]->getInstituicaoPai(),
+                'relatorios' => $relatorios
             ]);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());
@@ -80,15 +87,53 @@ class ANEEReportController extends Controller {
     }
     
     /**
-     * 
-     * @param type $cursoOfertado
-     * @return type
-     */
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Relação nominal de alunos ANEE por unidade de ensino",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("/alunos/anee-nominal-unidade", defaults={ "_format" = "pdf" })
+    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
+    */
+    function nominalPorUnidadeEnsinoAction(Request $request) {
+        try {
+            $unidadeEnsino = $this->unidadeEnsinoFacade->find($request->query->getInt('unidade'));
+            $relatorio = $this->gerarRelatorio($unidadeEnsino);
+            return $this->render('reports/aluno/aneeNominal.pdf.twig', [
+                'instituicao' => $unidadeEnsino,
+                'relatorios' => [$relatorio]
+            ]);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    private function gerarRelatorio($unidadeEnsino) {
+        $cursosOfertados = $this->cursoOfertadoFacade->findAll([
+            'unidadeEnsino' => $unidadeEnsino
+        ]);
+        $alunosPorCurso = [];
+        foreach ($cursosOfertados as $curso) {
+            $alunosPorCurso[$curso->getCurso()->getNome()] = $this->gerarAlunos($curso);
+        }
+        return ['unidadeEnsino' => $unidadeEnsino, 'alunosPorCurso' => $alunosPorCurso];
+    }
+    
+    /**
+    * 
+    * @param type $cursoOfertado
+    * @return type
+    */
     private function gerarAlunos($cursoOfertado) {
         $matriculas = $this->matriculaFacade->findAll([
             'curso' => $cursoOfertado->getCurso(),
             'unidadeEnsino' => $cursoOfertado->getUnidadeEnsino(),
-            'deficiente' => true
+            'aluno_deficiente' => true
         ]);
         return array_map(function($m) {
             $aluno = $m->getAluno();
