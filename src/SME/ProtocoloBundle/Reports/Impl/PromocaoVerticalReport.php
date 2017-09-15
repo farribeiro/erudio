@@ -261,9 +261,9 @@ class PromocaoVerticalReport extends RequerimentoReport
         // Definição dos Membros da Comissão
         $this->comissao = array();
         $this->comissao[] = 'Patrícia A.A. Obelar Coelho';
-        $this->comissao[] = 'Viviane F. Dittrich de Souza';
+        $this->comissao[] = 'Susana Beatriz da Costa da Cunha';
         $this->comissao[] = 'Marcelo Bombim Caetano';
-        $this->comissao[] = 'Clara S. Ignacio de Mendonça';
+        $this->comissao[] = 'Eliane de Oliveira Bittencourt';
         $this->comissao[] = 'Claudio da Silva';
 
         foreach ($this->comissao as $C) {

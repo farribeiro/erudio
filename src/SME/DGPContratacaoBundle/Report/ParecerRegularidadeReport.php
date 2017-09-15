@@ -42,7 +42,7 @@ class ParecerRegularidadeReport extends PDFDocument {
         $this->MultiCell(190, 4, '_________________________________________', 0, 'C');
         $this->MultiCell(190, 4, AssinaturasUtil::FISCAL_CONTROLE_INTERNO, 0, 'C');
         $this->MultiCell(190, 4, AssinaturasUtil::CARGO_FISCAL_CONTROLE_INTERNO, 0, 'C');
-        //$this->MultiCell(190, 4, 'Portaria de Designação nº 2.790/14', 0, 'C');
+        $this->MultiCell(190, 4, 'Professor III', 0, 'C');
         $this->MultiCell(190, 4, 'Marcelo Bomfim Caetano', 0, 'C');
         $this->MultiCell(190, 4, '(Unidade Setorial de Controle Interno)', 0, 'C');
     }
