@@ -8,8 +8,8 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
-        getAllByPessoa(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
+        getAllByPessoa(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getEstrutura() { return {descricao: '', falarCom: null, numero: null, pessoa: { id: null } }; }
         
         salvar(objeto,feedback) { 
@@ -30,9 +30,9 @@
         
         remover(objeto,feedback) {
             if (feedback === true) {
-                return this.rest.remover(objeto, "Telefone", "M");
+                return this.rest.remover(objeto, "Telefone", "M", true);
             } else {
-                return this.rest.remover(objeto);
+                return this.rest.remover(objeto, null, null, true);
             }
         }
     }

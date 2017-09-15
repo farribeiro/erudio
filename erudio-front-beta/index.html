@@ -65,7 +65,7 @@
                             <div class="user-area" flex layout-gt-sm="column">
                                 <div class="nome-usuario" md-truncate>{{ userAtivo }}</div>
                                 <form-select grid="flex-gt-sm" identidade="formAttr" label="''" nome="'atribuicao'" obrigatorio="required">
-                                    <md-select class="md-select-alocacao no-margin" ng-model="attrAtual.attr.id" ng-change="carregarAtribuicao(attrAtual.attr.id)">
+                                    <md-select aria-label="Alocação" class="md-select-alocacao no-margin" ng-model="attrAtual.attr.id" ng-change="carregarAtribuicao(attrAtual.attr.id)">
                                         <md-option style="font-size: 14px;" value="">Selecione uma alocação</md-option>
                                         <md-option ng-repeat="atribuicao in atribuicoes.atribuicoes" class="select-alocacao" value="{{ atribuicao.id }}">
                                             <span ng-show="atribuicao.apelido">{{ atribuicao.apelido }}</span><span ng-hide="atribuicao.apelido">{{ atribuicao.grupo.nome }}</span><br />
@@ -100,7 +100,7 @@
                     <!-- TOOLBAR COM IMAGEM -->
                     <md-toolbar class="md-tall content-bar">
                         <div class="md-toolbar-tools">
-                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
                         </div>
                         <span flex></span>
@@ -109,7 +109,7 @@
                     <!-- TOOLBAR ATIVADA NO SCROLL  -->
                     <md-toolbar class="scroll-toolbar">
                         <div class="md-toolbar-tools">
-                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
                         </div>
                         <span flex></span>
@@ -125,90 +125,87 @@
         </md-content>
         
         <!-- CONTROLLERS -->
-        <script src="apps/appController.js"></script>
-        <script src="apps/appDirectives.js"></script>
         <script src="apps/home/controllers/modulesController.js"></script>
-        <script src="util/erudioConfig.js"></script>
-        <script src="util/authService.js"></script>
-        <script src="util/restService.js"></script>
-        <script src="util/utilController.js"></script>
-        <script src="util/structureController.js"></script>
-        <script src="util/validatorController.js"></script>
-        <script src="util/sharedProperties.js"></script>
-        
+        <script src="apps/util/erudioConfig.js"></script>
+        <script src="apps/util/authService.js"></script>
+        <script src="apps/util/restService.js"></script>
+        <script src="apps/util/utilController.js"></script>
+        <script src="apps/util/structureController.js"></script>
+        <script src="apps/util/validatorController.js"></script>
+        <script src="apps/util/sharedProperties.js"></script>
+        <!-- base -->
         <script src="apps/core/services/Base.js"></script>
+        <!-- estados -->
+        <script src="apps/estados/services/Estado.js"></script>
+        <!-- cidades -->
+        <script src="apps/cidades/services/Cidade.js"></script>
+        <!-- enderecos -->
         <script src="apps/enderecos/services/Endereco.js"></script>
+        <!-- telefones -->
         <script src="apps/telefones/services/Telefone.js"></script>
-        
+        <!-- inicio -->
         <script src="apps/home/controllers/homeController.js"></script>
+        <!-- cursos ofertados -->
         <script src="apps/cursosOfertados/services/CursoOfertado.js"></script>
+        <!-- modalidades de ensino -->
         <script src="apps/modalidadesEnsino/services/ModalidadeEnsino.js"></script>
+        <!-- sistema de avaliação -->
         <script src="apps/sistemaAvaliacoes/services/SistemaAvaliacao.js"></script>
+        <!-- modelos de grade de horário -->
         <script src="apps/modelosGradeHorario/services/ModeloGradeHorario.js"></script>
-        
+        <!-- instituições -->
         <script src="apps/instituicoes/controllers/instituicaoController.js"></script>
         <script src="apps/instituicoes/controllers/instituicaoFormController.js"></script>
-        <script src="apps/instituicoes/directives/instituicaoDirectives.js"></script>
         <script src="apps/instituicoes/services/Instituicao.js"></script>
-        
+        <!-- tipos de unidade -->
         <script src="apps/tiposUnidade/controllers/tipoUnidadeController.js"></script>
         <script src="apps/tiposUnidade/controllers/tipoUnidadeFormController.js"></script>
-        <script src="apps/tiposUnidade/directives/tipoUnidadeDirectives.js"></script>
         <script src="apps/tiposUnidade/services/TipoUnidade.js"></script>
-        
+        <!-- unidades -->
         <script src="apps/unidades/controllers/unidadeController.js"></script>
         <script src="apps/unidades/controllers/unidadeFormController.js"></script>
-        <script src="apps/unidades/directives/unidadeDirectives.js"></script>
         <script src="apps/unidades/services/Unidade.js"></script>
-        
+        <!-- regimes -->
         <script src="apps/regimes/controllers/regimeController.js"></script>
         <script src="apps/regimes/controllers/regimeFormController.js"></script>
-        <script src="apps/regimes/directives/regimeDirectives.js"></script>
         <script src="apps/regimes/services/Regime.js"></script>
-        
+        <!-- cursos -->
         <script src="apps/cursos/controllers/cursoController.js"></script>
         <script src="apps/cursos/controllers/cursoFormController.js"></script>
-        <script src="apps/cursos/directives/cursoDirectives.js"></script>
         <script src="apps/cursos/services/Curso.js"></script>
-        
+        <!-- etapas -->
         <script src="apps/etapas/controllers/etapaController.js"></script>
         <script src="apps/etapas/controllers/etapaFormController.js"></script>
-        <script src="apps/etapas/directives/etapaDirectives.js"></script>
         <script src="apps/etapas/services/Etapa.js"></script>
-        
+        <!-- disciplinas -->
         <script src="apps/disciplinas/controllers/disciplinaController.js"></script>
         <script src="apps/disciplinas/controllers/disciplinaFormController.js"></script>
-        <script src="apps/disciplinas/directives/disciplinaDirectives.js"></script>
         <script src="apps/disciplinas/services/Disciplina.js"></script>
-        
+        <!-- modulos -->
         <script src="apps/modulos/controllers/moduloController.js"></script>
         <script src="apps/modulos/controllers/moduloFormController.js"></script>
-        <script src="apps/modulos/directives/moduloDirectives.js"></script>
         <script src="apps/modulos/services/Modulo.js"></script>
-        
+        <!-- turno -->
         <script src="apps/turnos/controllers/turnoController.js"></script>
         <script src="apps/turnos/controllers/turnoFormController.js"></script>
-        <script src="apps/turnos/directives/turnoDirectives.js"></script>
         <script src="apps/turnos/services/Turno.js"></script>
-        
+        <!-- modelo grade horario -->
         <script src="apps/modelosGradeHorario/controllers/modeloGradeHorarioController.js"></script>
         <script src="apps/modelosGradeHorario/controllers/modeloGradeHorarioFormController.js"></script>
-        <script src="apps/modelosGradeHorario/directives/modelosGradeHorarioDirectives.js"></script>
         <script src="apps/modelosGradeHorario/services/ModeloGradeHorario.js"></script>
-        
+        <!-- grade de horário -->
         <script src="apps/quadroHorarios/controllers/quadroHorariosController.js"></script>
         <script src="apps/quadroHorarios/controllers/quadroHorariosFormController.js"></script>
-        <script src="apps/quadroHorarios/directives/quadroHorarioDirectives.js"></script>
         <script src="apps/quadroHorarios/services/QuadroHorario.js"></script>
-        
+        <!-- calendarios -->
         <script src="apps/calendarios/controllers/calendarioController.js"></script>
         <script src="apps/calendarios/controllers/calendarioFormController.js"></script>
         <script src="apps/calendarios/controllers/calendarioViewController.js"></script>
-        <script src="apps/calendarios/directives/calendarioDirectives.js"></script>
         <script src="apps/calendarios/services/Calendario.js"></script>
-        
+        <!-- eventos -->
+        <script src="apps/eventos/controllers/eventoController.js"></script>
         <script src="apps/eventos/services/Evento.js"></script>
-        <script src="apps/eventos/directives/eventoDirectives.js"></script>
+        
         
         <script src="apps/periodos/services/Periodo.js"></script>
         
@@ -260,5 +257,8 @@
         <script src="apps/usuarios/directives/usuarioDirectives.js"></script>
         
         <script src="apps/teste/controllers/testeController.js"></script>
+        
+        <script src="apps/appController.js"></script>
+        <script src="apps/appDirectives.js"></script>
     </body>
 </html>

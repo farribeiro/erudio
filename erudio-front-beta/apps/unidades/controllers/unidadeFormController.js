@@ -1,207 +1,308 @@
 (function (){
-    var unidadesForm = angular.module('unidadesForm',['ngMaterial', 'util', 'erudioConfig']);
-    unidadesForm.controller('UnidadeFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, ErudioConfig, $routeParams, $timeout){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class UnidadeFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, estadoService, cidadeService, enderecoService, telefoneService, tipoUnidadeService, instituicaoService, cursoOfertadoService, cursoService, $scope){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.enderecoService = enderecoService;
+            this.estadoService = estadoService;
+            this.cidadeService = cidadeService;
+            this.telefoneService = telefoneService;
+            this.tipoUnidadeService = tipoUnidadeService;
+            this.instituicaoService = instituicaoService;
+            this.cursoOfertadoService = cursoOfertadoService;
+            this.cursoService = cursoService;
+            this.telefones = [];
+            this.timeout = $timeout;
+            this.scope.unidade = null;
+            this.removerCurso = [];
+            this.cursosUnidade = [];
+            this.cursosUnidadeBkp = [];
+            this.nomeCidade = '';
+            this.cidade = null;
+            this.estados = [];
+            this.permissaoLabel = "UNIDADES_ENSINO";
+            this.titulo = "Unidades de Ensino";
+            this.linkModulo = "/#!/unidades/";
+            this.nomeForm = "unidadeForm";
+            this.tiposTelefone = ['CELULAR','COMERCIAL','RESIDENCIAL'];
+            this.mapa = {};
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Unidades de Ensino');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //UNIDADE EM USO
-        $scope.unidade = Util.getEstrutura('unidade');
-        $scope.unidade.endereco = Util.getEstrutura('endereco');
-        $scope.telefone = Util.getEstrutura('telefone');
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('unidades','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações Instituicionais', href: this.util.getInputBlockCustom('unidades','informacoesPessoais')},
+                {label: 'Cursos', href: this.util.getInputBlockCustom('unidades','cursos')},
+                {label: 'Contatos', href: this.util.getInputBlockCustom('unidades','contatos')},
+                {label: 'Endereço', href: this.util.getInputBlockCustom('unidades','endereco')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //ATRIBUTOS EXTRAS
-        $scope.telefones = []; $scope.curso = Util.getEstrutura('cursoUnidade'); $scope.cursosUnidade = [];
-        
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações Institucionais'}, {label: 'Contatos'}, {label: 'Endereço'}, {label: 'Cursos'}];
-        
-        //TEMPLATE DOS BLOCOS DE INPUTS -
-        $scope.inputs = [{ href: Util.getInputBlockCustom('unidades','informacoesPessoais') }, { href: Util.getInputBlockCustom('unidades','contatos') }, { href: Util.getInputBlockCustom('unidades','endereco') } , { href: Util.getInputBlockCustom('unidades','cursos') }];
-        
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'unidadesForm', subheaders: $scope.subheaders }];
-        
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/unidades/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-        
-        //BUSCANDO UNIDADE
-        $scope.buscarUnidade = function () {
-            $scope.telefones = []; $scope.telefone = Util.getEstrutura('telefone');
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('unidades-ensino',$routeParams.id);
-                promise.then(function(response){
-                    $scope.unidade = response.data; $scope.buscarEstados();
-                    $scope.buscarTipos(); $scope.buscarInstituicoes(); $scope.buscarCursos(); $scope.buscarCursosOfertados();
-                    if ($scope.unidade.telefones !== undefined) { $scope.getTelefones($scope.unidade.telefones); }
-                    if (!Util.isVazio($scope.unidade.endereco)) { $scope.getEndereco($scope.unidade.endereco.id); }
-                    Util.aplicarMascaras(); $timeout(function(){ $('#unidadeContatoNumero').find('input').change(function(){ $scope.adicionarTelefone(); }); },300);
-                    $timeout(function(){ $scope.initMapa($scope.unidade.endereco.latitude, $scope.unidade.endereco.longitude); },500);
+        verificarEstado(estadoId) {
+            if (!this.util.isVazio(estadoId)) {
+                var retorno = false;
+                this.estados.forEach((estado) => {
+                    if (estado.id === estadoId) {
+                        retorno = true;
+                    }
                 });
-            } else { 
-                $timeout(function(){ Util.aplicarMascaras(); $scope.initMapa(); $('#unidadeContatoNumero').find('input').change(function(){ $scope.adicionarTelefone(); }); },300);
-                $scope.buscarEstados(); $scope.buscarTipos(); $scope.buscarInstituicoes(); $scope.buscarCursos();
+                return retorno;
             }
-        };
+        }
         
-        //RECUPERANDO ENDERECO
-        $scope.getEndereco = function (id) { var promise = Util.um('enderecos',id); promise.then(function (response) { $scope.unidade.endereco = response.data; $scope.buscarCidades($scope.unidade.endereco.cidade.estado.id); }); };
-        
-        //RECUPERANDO TELEFONES
-        $scope.getTelefones = function (telefones) {
-            if (telefones.length > 0) {
-                $('md-divider.hide').show(); $('.md-subheader.hide').show();
-                for (var i=0; i<telefones.length; i++) { var promise = Util.um('telefones',telefones[i].id); promise.then(function (response) { $scope.telefones.push(response.data); }); }
-            } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
-        };
-        
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //BUSCANDO ESTADOS
-        $scope.buscarEstados = function () { var promiseEstados = Util.getEstados(); promiseEstados.then(function (response){ $scope.estados = response.data; }); };
-        
-        //BUSCANDO CIDADES
-        $scope.buscarCidades = function (estado) { var promiseCidade = Util.getCidades(estado); promiseCidade.then(function(response){ $scope.cidades = response.data; }); };
-        
-        //BUSCANDO TIPOS
-        $scope.buscarTipos = function () { var promise = Util.buscar('tipos-unidade-ensino',null); promise.then(function(response){ $scope.tipos = response.data; }); };
-        
-        //BUSCANDO INSTITUIÇÕES
-        $scope.buscarInstituicoes = function () { var promise = Util.buscar('instituicoes',null); promise.then(function(response){ $scope.instituicoes = response.data; }); };
-        
-        //BUSCANDO CURSOS
-        $scope.buscarCursos = function () { var promise = Util.buscar('cursos',null); promise.then(function(response){ $scope.cursos = response.data; }); };
-        
-        //BUSCANDO CURSOS OFERTADOS
-        $scope.buscarCursosOfertados = function () {
-            var promise = Util.buscar('cursos-ofertados',{unidadeEnsino:$scope.unidade.id});
-            promise.then(function(response){ var arr = response.data; arr.forEach(function(cursoOfertado){ $scope.cursosUnidade[cursoOfertado.id] = cursoOfertado; }); });
-        };
-        
-        //CHECA CURSO
-        $scope.verificarCurso = function (cursoId) { var retorno = false; $scope.cursosUnidade.forEach(function(cursoUnidade){ if (cursoUnidade.curso.id === cursoId) { retorno = true; } }); return retorno; };
-        
-        //OPÇÕES DE TELEFONE
-        $scope.tiposTelefone = ['CELULAR','COMERCIAL','RESIDENCIAL'];
-        
-        //SALVAR UNIDADE
-        $scope.salvar = function () {
-            if ($scope.validar('unidadesForm')) {
-                var endereco = $scope.unidade.endereco;
-                delete $scope.unidade.endereco; delete $scope.unidade.telefones;
-                var resultado = Util.salvar(endereco,'enderecos');
-                resultado.then(function (response){
-                    $scope.unidade.endereco = { id: response.data.id }; 
-                    var resultadoPessoa = Util.salvar($scope.unidade,'unidades-ensino','Unidade de Ensino','F');
-                    resultadoPessoa.then(function(response){
-                        if (Util.isNovo($routeParams.id)) {
-                            $scope.cursosUnidade.forEach(function(cursoU){ cursoU.unidadeEnsino.id = response.data.id; Util.salvar(cursoU,'cursos-ofertados'); });
-                        }
-                        var telefones = $scope.telefones; var tipo_pessoa = response.data.tipo_pessoa;
-                        if (telefones.length > 0) {
-                            for (var i=0; i<telefones.length; i++) { 
-                                telefones[i].pessoa.id = response.data.id; telefones[i].pessoa.tipo_pessoa = tipo_pessoa; var resultadoTelefone = Util.salvar(telefones[i],'telefones');
-                                if (i === telefones.length-1) { resultadoTelefone.then(function(){ $scope.buscarUnidade(); Util.redirect($scope.fab.href);; }); }
-                            }
-                        } else { $scope.buscarUnidade(); Util.redirect($scope.fab.href); }
+        buscarUnidade() {
+            var self = this;
+            this.scope.unidade = this.service.getEstrutura();
+            this.scope.telefone = this.service.getEstruturaTelefone();
+            this.getTiposUnidade(); this.getInstituicoes(); this.getCursos();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.cursoOfertadoService.getAll({ unidadeEnsino: this.routeParams.id }).then((cursos) => {
+                    cursos.forEach((curso) => { 
+                        self.cursosUnidade.push(curso.curso.id);
+                        self.cursosUnidadeBkp.push(curso.curso.id);
                     });
                 });
+                this.service.get(this.routeParams.id).then((unidade) => {
+                    this.scope.unidade = unidade;
+                    if (this.scope.unidade.telefones.length > 0) { 
+                        this.getTelefones(this.scope.unidade.telefones); 
+                    }
+                    if (!this.util.isVazio(this.scope.unidade.endereco)) { 
+                        this.getEndereco(this.scope.unidade.endereco.id); 
+                    }
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ 
+                    self.util.aplicarMascaras(); self.timeout(() => { self.initMapa(); },500);
+                    self.buscarEstados().then((estados) => self.estados = estados);
+                },300);
             }
-        };
+        }
         
-        //VALIDAR FORM
-        $scope.validar = function (formId) { 
-            var obrigatorios = Util.validar(formId); var cnpj = null;
-            if (!Util.isVazio($scope.unidade.cpfCnpj)) { 
-                cnpj = Util.validarCNPJ($scope.unidade.cpfCnpj);
+        getTiposUnidade() { this.tipoUnidadeService.getAll().then((tipos) => { this.tiposUnidade = tipos; }); }
+        getInstituicoes() { this.instituicaoService.getAll().then((instituicoes) => { this.instituicoes = instituicoes; }); }
+        getCursos() { this.cursoService.getAll().then((cursos) => { this.cursos = cursos; }); }
+        buscarEstados () { return this.estadoService.getAll(); }
+        buscarCidades (query,unidade) { 
+            if (query.length > 2) {
+                var self = this;
+                if (unidade.endereco.cidade.estado.id === null) {
+                    return [{id: null, nome: 'É necessário selecionar um estado.'}];
+                } else {
+                    return this.cidadeService.getAll({estado: unidade.endereco.cidade.estado.id, nome: query});
+                }
+            }
+        }
+        
+        getEndereco(id) {
+            var self = this;
+            this.service.getEnderecoCompleto(id,true).then((endereco) => {
+                this.scope.unidade.endereco = endereco;
+                if (this.escrita){
+                    self.timeout(() => { self.initMapa(); },500);
+                    this.cidadeService.get(this.scope.unidade.endereco.cidade.id).then((cidade) => {
+                        this.cidade = cidade;
+                        this.scope.unidade.endereco.cidade = this.cidade;
+                        this.buscarEstados().then((estados) => { 
+                            this.estados = estados;
+                            this.timeout(()=>{this.util.validarCampos()},1000);
+                        });
+                    });
+                }
+            });
+        }
+        
+        getTelefones(telefones) {
+            var self = this;
+            if (telefones.length > 0) {
+                $('md-divider.hide').show(); $('.md-subheader.hide').show();
+                for (var i=0; i<telefones.length; i++) { 
+                    this.telefoneService.get(telefones[i].id).then((telefone) => { this.telefones.push(telefone); });
+                }
+            } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
+        }
+        
+        validaCampo() { this.util.validaCampo(); }
+        
+        validar() {
+            var obrigatorios = this.util.validar(this.nomeForm); var cnpj = null;
+            if (!this.util.isVazio(this.scope.unidade.cpfCnpj)) {
+                cnpj = this.util.validarCNPJ(this.scope.unidade.cpfCnpj);
                 if (obrigatorios && cnpj) { return true; } else { return false; }
             } else { if (obrigatorios) { return true; } else { return false; } }
-        };
-        
-        //ADICIONAR TELEFONE
-        $scope.adicionarTelefone = function () { 
-            if (!Util.isVazio($scope.telefone.numero) && !Util.isVazio($scope.telefone.descricao)) {
-                $scope.telefones.push($scope.telefone); $('md-divider.hide').show(); $('.md-subheader.hide').show();
-                $scope.unidade.telefones = $scope.telefones; Util.toast('Telefone adicionado, salve para garantir as modificações.');
-                $scope.telefone = Util.getEstrutura('telefone');
-            } else { Util.toast('Ambos os campos devem ser preenchidos para adicionar um telefone.'); }
-        };
-        
-        //REMOVER TELEFONE
-        $scope.removerTelefone = function (telefone, index) {
-            var promise = Util.remover(telefone, 'Telefone', 'm');
-            promise.then(function(){ 
-                $scope.telefones.splice(index,1);
-                if ($scope.telefones.length > 0) { $('md-divider.hide').show(); $('.md-subheader.hide').show(); } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
-            });
-        };
-        
-        //ADICIONAR/REMOVER CURSO
-        $scope.adicionarCurso = function (cursoId) {
-            if (!Util.isNovo($routeParams.id)) {
-                $scope.curso.curso.id = cursoId; $scope.curso.unidadeEnsino.id = $scope.unidade.id;
-                if (cursoId in $scope.cursosUnidade) {
-                    var promise = Util.um('cursos-ofertados',cursoId);
-                    promise.then(function(response){ $scope.cursosUnidade.splice(cursoId,1); Util.remover(response.data,'cursos-ofertados','Curso','m'); });
-                } else { $scope.cursosUnidade[cursoId] = $scope.curso; Util.salvar($scope.curso,'cursos-ofertados','Curso','M'); }
+        }
+
+        verificarCursos(cursoId) {
+            var retorno = false;
+            var index = this.cursosUnidade.indexOf(cursoId);
+            if (index > -1) { retorno = true; }
+            return retorno;
+        }
+
+        adicionarCurso(cursoId) {
+            var index = this.cursosUnidade.indexOf(cursoId);
+            if (index > -1) {
+                this.cursosUnidade.splice(index,1);
+                this.removerCurso.push(cursoId);
             } else {
-                var curso = angular.copy($scope.curso);
-                if (cursoId in $scope.cursosUnidade) { $scope.cursosUnidade.splice(cursoId,1); } else { curso.curso.id = cursoId; $scope.cursosUnidade[cursoId] = curso; }
+                this.cursosUnidade.push(cursoId);
+                var idRemover = this.removerCurso.indexOf(cursoId);
+                if (idRemover > -1) { this.removerCurso.splice(index,1); }
             }
-        };
+        }
+
+        salvar() {
+            if (this.validar()) {
+                this.scope.unidade.endereco.cidade.id = this.cidade.id;
+                if (!this.util.isNovo(this.scope.unidade)) {
+                    this.cursosUnidade.forEach((curso) => {
+                        var idx = this.cursosUnidadeBkp.indexOf(curso);
+                        if (idx > -1) { this.cursosUnidade.splice(idx,1); }
+                    });
+                    this.removerCurso.forEach((curso) => {
+                        var idx = this.cursosUnidadeBkp.indexOf(curso);
+                        if (idx === -1) { this.removerCurso.splice(idx,1); }
+                    });
+                }
+                this.scope.unidade.cursos = this.cursosUnidade; console.log(this.cursosUnidade);
+                this.scope.unidade.removerCurso = this.removerCurso;
+                this.scope.unidade.instituicaoPai.id = parseInt(this.scope.unidade.instituicaoPai.id);
+                this.scope.unidade.tipo.id = parseInt(this.scope.unidade.tipo.id);
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.unidade)) {
+                    resultado = this.service.salvar(this.scope.unidade);
+                } else {
+                    resultado = this.service.atualizar(this.scope.unidade);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
         
-        //INICIA MAPA
-        $scope.initMapa = function (lat,lng){
-            $timeout(function(){
-                if (Util.isVazio(lat) || Util.isVazio(lng)) { lat = -26.930232; lng = -48.684180; }
-                $scope.mapa = L.map('mapa').setView([lat,lng],16); $scope.mapa.scrollWheelZoom.disable();
-                L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-                    attribution: 'Erudio Map by &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-                    maxZoom: 24, id: 'mapbox.streets',
-                    accessToken: 'pk.eyJ1IjoiY3Jpc3RpYW5vc2llYmVydCIsImEiOiJjajRlaXlseDQwNDNhMndydjNqYzlqOWtyIn0.MQqg-LSABfmy1v8-EIpBGg'
-                }).addTo($scope.mapa);
-                $scope.marker = L.marker([lat, lng]).addTo($scope.mapa);
-                $scope.mapa.on('click', $scope.adicionaMarcador);
-            },500);
-        };
+        adicionarTelefone() {
+            var self = this; var tamanhoTelefone = this.scope.telefone.numero.length;
+            if (!this.util.isVazio(this.scope.telefone.numero) && !this.util.isVazio(this.scope.telefone.descricao)) {
+                this.telefones.push(this.scope.telefone); $('md-divider.hide').show(); $('.md-subheader.hide').show();
+                this.scope.unidade.telefones = this.telefones; this.util.toast('Telefone adicionado, salve para garantir as modificações.');
+                this.timeout(function(){ self.scope.telefone = self.service.getEstruturaTelefone(); $("#telefone_numero").val(''); },300);
+            } else if (tamanhoTelefone > 11) {
+                this.util.toast('Ambos os campos devem ser preenchidos para adicionar um telefone.');
+            }
+        }
         
-        //ADICIONA MARCADOR NA TELA
-        $scope.adicionaMarcador = function (event) {
-            $scope.mapa.removeLayer($scope.marker);
-            $scope.marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo($scope.mapa);
-            $scope.marker.bindPopup('<div class="map-popup-content"><strong>Este é o endereço desejado?</strong><br /><br /><button id="btnMapaSim" class="material-btn">Sim</md-button><button class="material-btn">Não</md-button></div>').openPopup();
-            $("#btnMapaSim").on('click',function(ev){ ev.preventDefault(); $scope.confirmaLatLng(event); });
-        };
-        
-        //CONFIRMA LAT LNG
-        $scope.confirmaLatLng = function (event) {
-            var lt = parseFloat(event.latlng.lat).toFixed(6); var ln = parseFloat(event.latlng.lng).toFixed(6);
-            $scope.instituicao.endereco.latitude = parseFloat(lt); $scope.instituicao.endereco.longitude = parseFloat(ln); $scope.mapa.closePopup();
-        };
-        
-        //PREENCHE CEP
-        $scope.preencheCEP = function(){ console.log('ha'); $timeout(function(){ $("input[name=cep]").change(function(){ $scope.buscaCEP(); }); },500); };
-        
-        //BUSCA CEP
-        $scope.buscaCEP = function () {
-            /*if (!Util.isVazio($scope.instituicao.endereco.cep) && $scope.instituicao.endereco.cep.length === 8) {
-                $.getJSON("https://viacep.com.br/ws/"+$scope.instituicao.endereco.cep+"/json/?callback=?", function(dados) {
-                    console.log(dados);
-                    if (!Util.isVazio(dados.logradouro)) { $scope.instituicao.endereco.logradouro = dados.logradouro; }
-                    if (!Util.isVazio(dados.bairro)) { $scope.instituicao.endereco.bairro = dados.bairro; }
-                    if (!Util.isVazio(dados.uf)) { 
-                        var promise = Util.buscar('estados',{sigla: dados.uf});
-                        promise.then(function(response){ $scope.instituicao.endereco.cidade.estado = response.data;  $scope.buscarCidades(); });
-                    }
-                    
+        removerTelefone(telefone, index) {
+            var self = this;
+            if (this.util.isNovoObjeto(telefone)) {
+                this.telefones.splice(index,1);
+            } else {
+                this.telefoneService.remover(telefone, true).then((result) => {
+                    self.telefones.splice(index,1);
+                    if (self.telefones.length > 0) { $('md-divider.hide').show(); $('.md-subheader.hide').show(); } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
                 });
-            }*/
-        };
+            }
+        }
         
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarUnidade();
-        Util.mudarImagemToolbar('unidades/assets/images/unidades.jpg');
-    }]);
+        initMapa() {
+            var lat; var lng;
+            if (this.util.isNovoObjeto(this.scope.unidade)) { lat = -26.930232; lng = -48.684180; } else { 
+                if (this.util.isVazio(this.scope.unidade.endereco.latitude)) {
+                    lat = -26.930232; lng = -48.684180;
+                } else {
+                    lat = parseFloat(this.scope.unidade.endereco.latitude); lng = parseFloat(this.scope.unidade.endereco.longitude);
+                }
+            }
+            if (typeof this.mapa.remove === "function") { this.mapa.remove(); }
+            this.mapa = L.map('mapa').setView([lat,lng],16); this.mapa.scrollWheelZoom.disable();
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: 'Erudio Map by &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                maxZoom: 24, id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoiY3Jpc3RpYW5vc2llYmVydCIsImEiOiJjajRlaXlseDQwNDNhMndydjNqYzlqOWtyIn0.MQqg-LSABfmy1v8-EIpBGg'
+            }).addTo(this.mapa);
+            this.marker = L.marker([lat, lng]).addTo(this.mapa);
+            if (this.escrita){ this.mapa.on('click', this.adicionarMarcador.bind(this)); }
+        }
+        
+        adicionarMarcador(event) {
+            this.mapa.removeLayer(this.marker); 
+            var self = this;
+            this.marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo(this.mapa);
+            this.marker.bindPopup('<div class="map-popup-content"><strong>Este é o endereço desejado?</strong><br /><br /><button id="btnMapaSim" class="material-btn">Sim</md-button><button class="material-btn">Não</md-button></div>').openPopup();
+            $("#btnMapaSim").on('click',function(ev){ ev.preventDefault(); self.confirmaLatLng(event); });
+        }
+        
+        confirmaLatLng(event) {
+            var lt = parseFloat(event.latlng.lat).toFixed(6); var ln = parseFloat(event.latlng.lng).toFixed(6);
+            this.scope.unidade.endereco.latitude = parseFloat(lt); this.scope.unidade.endereco.longitude = parseFloat(ln); this.mapa.closePopup();
+        }
+        
+        preencheCEP() {
+            var self = this;
+            this.timeout(function(){ $("input[name=cep]").change(function(){ self.buscaCEP(); }); },500);
+        }
+        
+        buscaCEP () {
+            if (!this.util.isVazio(this.scope.unidade.endereco.cep) && this.scope.unidade.endereco.cep.length === 8) {
+                this.util.buscaCEP(this.scope.unidade.endereco.cep).then((addr) => {
+                    if(!this.util.isVazio(addr.bairro)) { this.scope.unidade.endereco.bairro = addr.bairro; this.util.validarCampos(); }
+                    if(!this.util.isVazio(addr.logradouro)) { this.scope.unidade.endereco.logradouro = addr.logradouro; this.util.validarCampos(); }
+                    if(!this.util.isVazio(addr.uf)) {
+                        this.estados.forEach((estado) => {
+                            if(estado.sigla === addr.uf) { 
+                                this.scope.unidade.endereco.cidade.estado.id = estado.id;
+                                this.util.validarCampos();
+                                if (!this.util.isVazio(addr.localidade)) {
+                                    this.cidadeService.getAll({nome: addr.localidade},true).then((cidade) => {
+                                        this.scope.unidade.endereco.cidade.id = cidade[0].id;
+                                        this.cidade = cidade[0];
+                                        this.nomeCidade = cidade[0].nome;
+                                        this.util.validarCampos();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao(); var self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('unidades/assets/images/unidades.jpg');
+                $(".fit-screen").unbind('scroll');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                this.preparaForm();
+                this.buscarUnidade();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    UnidadeFormController.$inject = ["UnidadeService","Util","ErudioConfig","$routeParams","$timeout","EstadoService","CidadeService","EnderecoService","TelefoneService","TipoUnidadeService","InstituicaoService","CursoOfertadoService", "CursoService","$scope"];
+    angular.module('UnidadeFormController',['ngMaterial', 'util', 'erudioConfig']).controller('UnidadeFormController',UnidadeFormController);
 })();

@@ -1,21 +1,15 @@
 (function (){
     'use strict';    
-    class ModuloService {        
-        constructor(rest,cursoService){
+    class EstadoService {        
+        constructor(rest){
             this.rest = rest;
-            this.cursoService = cursoService;
-            this.url = 'modulos';
+            this.url = 'estados';
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
-        getCursos(opcoes){ return this.cursoService.getAll(opcoes); }
-        getEstrutura() { return { nome: null, curso: {id: null} }; }
-        salvar(objeto) { return this.rest.salvar(this.url, objeto, "Módulo", "M"); }
-        atualizar(objeto) { return this.rest.atualizar(objeto, "Módulo", "M"); }
-        remover(objeto) { this.rest.remover(objeto, "Módulo", "M"); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
     };
     
-    angular.module('ModuloService',[]).service('ModuloService',ModuloService);
-    ModuloService.$inject = ["BaseService","CursoService"];
+    angular.module('EstadoService',[]).service('EstadoService',EstadoService);
+    EstadoService.$inject = ["BaseService"];
 })();

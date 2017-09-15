@@ -7,7 +7,7 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getEstrutura() { return { curso: { id:null }, unidadeEnsino: { id: null } }; }
         
         atualizar(objeto, feedback) { 

@@ -1,48 +1,94 @@
 (function (){
-    var cursosForm = angular.module('cursosForm',['ngMaterial', 'util', 'erudioConfig']);
-    cursosForm.controller('CursoFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, ErudioConfig, $routeParams, $timeout){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class CursoFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, modalidadeEnsinoService){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.modalidadeEnsinoService = modalidadeEnsinoService;
+            this.scope.curso = null;
+            this.permissaoLabel = "CURSOS";
+            this.titulo = "Cursos";
+            this.linkModulo = "/#!/cursos/";
+            this.nomeForm = "cursoForm";
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Cursos');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //CURSO EM USO
-        $scope.curso = Util.getEstrutura('curso');
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('cursos','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações do Curso', href: this.util.getInputBlockCustom('cursos','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações do Curso'}];
+        buscarModalidades() { this.modalidadeEnsinoService.getAll(null,true).then((modalidades) => this.modalidades = modalidades); }
         
-        //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('cursos','inputs') }];
+        buscarCurso() {
+            var self = this;
+            this.scope.curso = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((curso) => {
+                    this.scope.curso = curso;
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
+            }
+        }
         
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'cursoForm', subheaders: $scope.subheaders }];
+        validaCampo() { this.util.validaCampo(); }
         
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/cursos/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
+        validar() { return this.util.validar(this.nomeForm); }
         
-        //BUSCANDO CURSO
-        $scope.buscarCurso = function () {
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('cursos',$routeParams.id);
-                promise.then(function(response){ $scope.curso = response.data; $scope.buscarModalidades(); $timeout(function(){ Util.aplicarMascaras(); },300); });
-            } else { $timeout(function(){ Util.aplicarMascaras(); $scope.buscarModalidades(); },300); }
-        };
+        salvar() {
+            if (this.validar()) {
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.curso)) {
+                    resultado = this.service.salvar(this.scope.curso);
+                } else {
+                    resultado = this.service.atualizar(this.scope.curso);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
         
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //BUSCANDO MODALIDADES
-        $scope.buscarModalidades = function () { var promise = Util.buscar('modalidades-ensino',null); promise.then(function(response){ $scope.modalidades = response.data; }); };
-                
-        //SALVAR UNIDADE
-        $scope.salvar = function () { if ($scope.validar('cursoForm')) { var resultado = Util.salvar($scope.curso,'cursos'); resultado.then(function (){ Util.redirect($scope.fab.href); }); } };
-        
-        //VALIDAR FORM
-        $scope.validar = function (formId) { return Util.validar(formId); };
-        
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarCurso();
-        Util.mudarImagemToolbar('cursos/assets/images/cursos.jpg');
-    }]);
+        iniciar(){
+            let permissao = this.verificarPermissao(); var self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('cursos/assets/images/cursos.jpg');
+                $(".fit-screen").unbind('scroll');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                this.buscarModalidades();
+                this.preparaForm();
+                this.buscarCurso();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    CursoFormController.$inject = ["CursoService","Util","ErudioConfig","$routeParams","$timeout","$scope","ModalidadeEnsinoService"];
+    angular.module('CursoFormController',['ngMaterial', 'util', 'erudioConfig']).controller('CursoFormController',CursoFormController);
 })();

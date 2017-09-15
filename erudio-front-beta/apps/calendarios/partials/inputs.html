@@ -1,25 +1,65 @@
-<div layout-gt-sm="column" ng-show="mostraAutocomplete" style="margin-bottom: 20px;">
-    <label class="autocomplete-label">Unidade de Ensino</label>
-    <autocomplete class="w100"></autocomplete>
-</div>
-<div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="calendarioNome" label="'Nome do Calendário'" model="calendario" obrigatorio="required" campo="nome" tipo="'text'" nome="'nome'" classe="'input-ajuste'" erro="'calendariosForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-select grid="flex-gt-sm" identidade="calendarioBase" label="'Calendário Base'" nome="'base'" obrigatorio="required" erro="'calendariosForm.base.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-disabled="disabledSelect" ng-model="calendario.calendarioBase.id" required >
+<div layout-gt-sm="row">    
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="base">Calendário Base</label>
+        <md-icon class="material-icons">event</md-icon>
+        <md-select ng-model="calendario.calendarioBase.id" id="base" name="base" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="calendario in calendarios track by $index" value="{{ calendario.id }}">{{ calendario.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.bases track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
-</div>
-<div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="calendarioInicio" label="'Data de Início'" model="calendario" obrigatorio="required" campo="dataInicio" tipo="'text'" nome="'inicio'" classe="'maskData'" dica="'Apenas Números'" erro="'calendariosForm.inicio.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="calendarioTermino" label="'Data de Término'" model="calendario" obrigatorio="required" campo="dataTermino" tipo="'text'" nome="'termino'" classe="'maskData'" dica="'Apenas Números'" erro="'calendariosForm.termino.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="calendarioSistemaAvaliacao" label="'Sistema de Avaliação'" nome="'sistemaAvaliacao'" obrigatorio="required" erro="'calendariosForm.sistemaAvaliacao.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-disabled="disabledSelect" ng-model="calendario.sistemaAvaliacao.id" required >
+        <div ng-messages="calendarioForm.calendario.calendarioBase.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="sistema">Sistema de Avaliação</label>
+        <md-icon class="material-icons">receipt</md-icon>
+        <md-select ng-model="calendario.sistemaAvaliacao.id" id="sistema" name="sistema" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="sistema in sistemas track by $index" value="{{ sistema.id }}">{{ sistema.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.sistemas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+        <div ng-messages="calendarioForm.calendario.sistemaAvaliacao.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="inicio" class="date-label">Início</label>
+        <md-datepicker required ng-model="ctrl.dataInicio" name="inicio" md-min-date="ctrl.hoje" md-open-on-focus>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="calendarioForm.inicio.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="termino" class="date-label">Término</label>
+        <md-datepicker required ng-model="ctrl.dataTermino" name="termino" md-min-date="ctrl.hoje" md-open-on-focus>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="calendarioForm.calendario.dataTermino.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="column" style="margin-bottom: 20px;">
+        
+    <md-input-container class="md-icon-float autocomplete-wrap fix-wrap" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+        <md-icon class="material-icons">account_balance</md-icon>
+        <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.unidade" 
+                md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
+                md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino" md-require-match required>
+            <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>
+        </md-autocomplete>
+        <div ng-messages="calendarioForm.unidade.$error" class="errors-wrapper">
+            <div ng-message="required" class="autocomplete-error">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>

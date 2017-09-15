@@ -9,9 +9,9 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getEstrutura() { return { nome:null, sigla:null, cpfCnpj:null, email:null, endereco:this.getEstruturaEndereco(), telefones:[] }; }
-        getEnderecoCompleto(id) { return this.enderecoService.get(id); }
+        getEnderecoCompleto(id,loader) { return this.enderecoService.get(id,loader); }
         getTelefones(id) { return this.telefoneService.getAllByPessoa({pessoa: id}); }
         getEstruturaEndereco() {return this.enderecoService.getEstrutura(); }
         getEstruturaTelefone() {return this.telefoneService.getEstrutura(); }

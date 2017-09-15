@@ -9,7 +9,7 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getTurnos(opcoes){ return this.turnoService.getAll(opcoes); }
         getUnidades(opcoes){ return this.unidadeService.getAll(opcoes); }
         getEstrutura() { return { nome: null, inicio: null, modelo: {id: null}, unidadeEnsino: {id: null}, turno: {id: null}, diasSemana: [{diaSemana: '2'}, {diaSemana: '3'}, {diaSemana: '4'}, {diaSemana: '5'}, {diaSemana: '6'}] }; }

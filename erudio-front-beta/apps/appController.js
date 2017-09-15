@@ -1,45 +1,59 @@
+
 (function (){
     var erudio = angular.module('Erudio',['ngMaterial', 'restangular', 'erudioConfig', 'ngRoute', 'appDirectives', 'modules', 'util', 'validator', 'pascalprecht.translate']);
-    erudio.config(['$mdThemingProvider', '$routeProvider', 'RestangularProvider', 'ErudioConfigProvider', '$translateProvider', function ($mdThemingProvider, $routeProvider, RestangularProvider, ErudioConfigProvider, $translateProvider) {
+    erudio.config(['$mdThemingProvider', '$routeProvider', 'RestangularProvider', 'ErudioConfigProvider', '$translateProvider','$mdDateLocaleProvider', function ($mdThemingProvider, $routeProvider, RestangularProvider, ErudioConfigProvider, $translateProvider,$mdDateLocaleProvider) {
         
         //DEFININDO TEMA - CORES PRIMARIAS E SECUNDARIAS
         var tema = $mdThemingProvider.theme('default'); 
         tema.primaryPalette("blue",{ 'default': '800', 'hue-1': '700', 'hue-2': '500' }); tema.accentPalette('pink');
         
+        //DEFININDO FORMATO DE DATA
+        $mdDateLocaleProvider.formatDate = function (date) {
+            return moment(date).format('DD/MM/YYYY');
+        };
+        $mdDateLocaleProvider.months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+        $mdDateLocaleProvider.shortMonths = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+        $mdDateLocaleProvider.days = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+        $mdDateLocaleProvider.shortDays = ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];
+        $mdDateLocaleProvider.weekNumberFormatter = function(weekNumber) { return 'Semana ' + weekNumber; };
+        $mdDateLocaleProvider.msgCalendar = 'Calendário';
+        $mdDateLocaleProvider.msgOpenCalendar = 'Abrir o calendário';
+
         //CRIANDO ROTAS
         $routeProvider
             .when('/',{ templateUrl: 'apps/home/partials/template.html', controller: 'HomeController' })
             .when('/instituicoes',{ templateUrl: 'apps/instituicoes/partials/index.html', controller: 'InstituicaoController', controllerAs: 'ctrl' })
-            .when('/instituicoes/:id',{ templateUrl: 'apps/instituicoes/partials/form.html', controller: 'InstituicaoFormController' })
-            .when('/tipos-unidade',{ templateUrl: 'apps/tiposUnidade/partials/index.html', controller: 'TipoUnidadeController' })
-            .when('/tipos-unidade/:id',{ templateUrl: 'apps/tiposUnidade/partials/form.html', controller: 'TipoUnidadeFormController' })
-            .when('/unidades',{ templateUrl: 'apps/unidades/partials/index.html', controller: 'UnidadeController' })
-            .when('/unidades/:id',{ templateUrl: 'apps/unidades/partials/form.html', controller: 'UnidadeFormController' })
-            .when('/regimes',{ templateUrl: 'apps/unidades/partials/index.html', controller: 'RegimeController' })
-            .when('/regimes/:id',{ templateUrl: 'apps/unidades/partials/form.html', controller: 'RegimeFormController' })
-            .when('/cursos',{ templateUrl: 'apps/cursos/partials/index.html', controller: 'CursoController' })
-            .when('/cursos/:id',{ templateUrl: 'apps/cursos/partials/form.html', controller: 'CursoFormController' })
-            .when('/etapas',{ templateUrl: 'apps/etapas/partials/index.html', controller: 'EtapaController' })
-            .when('/etapas/:id',{ templateUrl: 'apps/etapas/partials/form.html', controller: 'EtapaFormController' })
-            .when('/disciplinas',{ templateUrl: 'apps/disciplinas/partials/index.html', controller: 'DisciplinaController' })
-            .when('/disciplinas/:id',{ templateUrl: 'apps/disciplinas/partials/form.html', controller: 'DisciplinaFormController' })
-            .when('/modulos',{ templateUrl: 'apps/modulos/partials/index.html', controller: 'ModuloController' })
-            .when('/modulos/:id',{ templateUrl: 'apps/modulos/partials/form.html', controller: 'ModuloFormController' })
-            .when('/turnos',{ templateUrl: 'apps/turnos/partials/index.html', controller: 'TurnoController' })
-            .when('/turnos/:id',{ templateUrl: 'apps/turnos/partials/form.html', controller: 'TurnoFormController' })
-            .when('/modelos-horario',{ templateUrl: 'apps/modelosGradeHorario/partials/index.html', controller: 'ModeloGradeHorarioController' })
-            .when('/modelos-horario/:id',{ templateUrl: 'apps/modelosGradeHorario/partials/form.html', controller: 'ModeloGradeHorarioFormController' })
-            .when('/quadros-horario',{ templateUrl: 'apps/quadroHorarios/partials/index.html', controller: 'QuadroHorarioController' })
-            .when('/quadros-horario/:id',{ templateUrl: 'apps/quadroHorarios/partials/form.html', controller: 'QuadroHorarioFormController' })
-            .when('/calendarios',{ templateUrl: 'apps/calendarios/partials/index.html', controller: 'CalendarioController' })
-            .when('/calendarios/:id',{ templateUrl: 'apps/calendarios/partials/form.html', controller: 'CalendarioFormController' })
-            .when('/calendarios/view/:id',{ templateUrl: 'apps/calendarios/partials/view.html', controller: 'CalendarioViewController' })
+            .when('/instituicoes/:id',{ templateUrl: 'apps/instituicoes/partials/form.html', controller: 'InstituicaoFormController', controllerAs: 'ctrl' })
+            .when('/tipos-unidade',{ templateUrl: 'apps/tiposUnidade/partials/index.html', controller: 'TipoUnidadeController', controllerAs: 'ctrl' })
+            .when('/tipos-unidade/:id',{ templateUrl: 'apps/tiposUnidade/partials/form.html', controller: 'TipoUnidadeFormController', controllerAs: 'ctrl' })
+            .when('/unidades',{ templateUrl: 'apps/unidades/partials/index.html', controller: 'UnidadeController', controllerAs: 'ctrl' })
+            .when('/unidades/:id',{ templateUrl: 'apps/unidades/partials/form.html', controller: 'UnidadeFormController', controllerAs: 'ctrl' })
+            .when('/regimes',{ templateUrl: 'apps/unidades/partials/index.html', controller: 'RegimeController', controllerAs: 'ctrl' })
+            .when('/regimes/:id',{ templateUrl: 'apps/unidades/partials/form.html', controller: 'RegimeFormController', controllerAs: 'ctrl' })
+            .when('/cursos',{ templateUrl: 'apps/cursos/partials/index.html', controller: 'CursoController', controllerAs: 'ctrl' })
+            .when('/cursos/:id',{ templateUrl: 'apps/cursos/partials/form.html', controller: 'CursoFormController', controllerAs: 'ctrl' })
+            .when('/etapas',{ templateUrl: 'apps/etapas/partials/index.html', controller: 'EtapaController', controllerAs: 'ctrl' })
+            .when('/etapas/:id',{ templateUrl: 'apps/etapas/partials/form.html', controller: 'EtapaFormController', controllerAs: 'ctrl' })
+            .when('/disciplinas',{ templateUrl: 'apps/disciplinas/partials/index.html', controller: 'DisciplinaController', controllerAs: 'ctrl' })
+            .when('/disciplinas/:id',{ templateUrl: 'apps/disciplinas/partials/form.html', controller: 'DisciplinaFormController', controllerAs: 'ctrl' })
+            .when('/modulos',{ templateUrl: 'apps/modulos/partials/index.html', controller: 'ModuloController', controllerAs: 'ctrl' })
+            .when('/modulos/:id',{ templateUrl: 'apps/modulos/partials/form.html', controller: 'ModuloFormController', controllerAs: 'ctrl' })
+            .when('/turnos',{ templateUrl: 'apps/turnos/partials/index.html', controller: 'TurnoController', controllerAs: 'ctrl' })
+            .when('/turnos/:id',{ templateUrl: 'apps/turnos/partials/form.html', controller: 'TurnoFormController', controllerAs: 'ctrl' })
+            .when('/modelos-horario',{ templateUrl: 'apps/modelosGradeHorario/partials/index.html', controller: 'ModeloGradeHorarioController', controllerAs: 'ctrl' })
+            .when('/modelos-horario/:id',{ templateUrl: 'apps/modelosGradeHorario/partials/form.html', controller: 'ModeloGradeHorarioFormController', controllerAs: 'ctrl' })
+            .when('/quadros-horario',{ templateUrl: 'apps/quadroHorarios/partials/index.html', controller: 'QuadroHorarioController', controllerAs: 'ctrl' })
+            .when('/quadros-horario/:id',{ templateUrl: 'apps/quadroHorarios/partials/form.html', controller: 'QuadroHorarioFormController', controllerAs: 'ctrl' })
+            .when('/calendarios',{ templateUrl: 'apps/calendarios/partials/index.html', controller: 'CalendarioController', controllerAs: 'ctrl' })
+            .when('/calendarios/:id',{ templateUrl: 'apps/calendarios/partials/form.html', controller: 'CalendarioFormController', controllerAs: 'ctrl' })
+            .when('/calendarios/view/:id',{ templateUrl: 'apps/calendarios/partials/view.html', controller: 'CalendarioViewController', controllerAs: 'ctrl' })
+            .when('/eventos',{ templateUrl: 'apps/eventos/partials/index.html', controller: 'EventoController', controllerAs: 'ctrl' })
             .when('/teste',{ templateUrl: 'apps/teste/partials/teste.html', controller: 'TESTE', controllerAs: 'ctrl' })
             .otherwise({ redirectTo: '/404' })
         ;
         
         //DEFININDO TRADUÇÕES
-        $translateProvider.useStaticFilesLoader({ prefix:ErudioConfigProvider.$get().dominio+'/util/translations/locale-', suffix: '.json' });
+        $translateProvider.useStaticFilesLoader({ prefix:ErudioConfigProvider.$get().dominio+'/apps/util/translations/locale-', suffix: '.json' });
         $translateProvider.translations('en'); 
         $translateProvider.translations('ptbr');
         $translateProvider.preferredLanguage('ptbr');

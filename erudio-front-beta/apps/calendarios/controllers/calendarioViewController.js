@@ -1,115 +1,130 @@
 (function (){
-    var calendariosView = angular.module('calendariosView',['ngMaterial', 'util', 'erudioConfig']);
-    calendariosView.controller('CalendarioViewController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', '$mdDialog', function($scope, Util, ErudioConfig, $routeParams, $timeout, $mdDialog){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class CalendarioViewController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $mdDialog, $mdMenu){
+            this.service = service;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.mdDialog = $mdDialog;
+            this.mdMenu = $mdMenu;
+            this.calendario = null;
+            this.mesCalendario = [];
+            this.semanaCalendario = [];
+            this.permissaoLabel = "CALENDARIO";
+            this.titulo = "Calendários";
+            this.linkModulo = "/#!/calendarios/";
+            this.nomeForm = "calendarioForm";
+            this.mes = null;
+            this.ano = null;
+            this.iniciar();
+        }
         
-        //VERIFICA PERMISSOES
-        $scope.permissao = Util.verificaPermissao('CALENDARIO');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //VALIDANDO PERMISSAO
-        if ($scope.permissao) {
-            
-            Util.comPermissao(); $scope.escrita = Util.verificaEscrita('CALENDARIO'); $scope.isAdmin = Util.isAdmin();
-            $scope.validarEscrita = function (opcao) { return Util.validarEscrita(opcao, $scope.opcoes, $scope.escrita); }; 
-            //$scope.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
-            
-            //ATRIBUTOS
-            $scope.mesCalendario = []; $scope.semanaCalendario = [];
-            
-            //SETA O TITULO
-            Util.setTitulo('Calendários');
+        resetCalendario() { this.mesCalendario = []; this.semanaCalendario = []; }
 
-            //OPCOES DO BOTAO VOLTAR
-            $scope.link = '/#!/calendarios/';
-            $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-
-            //BUSCANDO CALENDARIO
-            $scope.buscarCalendario = function () {
-                if (!Util.isNovo($routeParams.id)) {
-                    var promise = Util.um('calendarios',$routeParams.id);
-                    promise.then(function(response){ $scope.calendario = response.data; $scope.preparaCalendario(); });
-                }
-            };
-            
-            //RESET CALENDARIO
-            $scope.resetCalendario = function () { $scope.mesCalendario = []; $scope.semanaCalendario = []; };
-            
-            //PREPARA CALENDARIO
-            $scope.preparaCalendario = function (mes,ano) {
-                if (Util.isVazio(mes) && Util.isVazio(ano)) {
-                    var dateBase = new Date(); $scope.mes = dateBase.getMonth(); $scope.ano = dateBase.getFullYear();
-                    $scope.preparaCalendario($scope.mes, $scope.ano);
-                } else {
-                    $scope.diaS = 1; $scope.mes = mes; $scope.ano = ano; $scope.diaSemana = new Date($scope.ano,$scope.mes,$scope.diaS).getDay();
-                    $scope.counterCalendario = $scope.diaSemana; $scope.gapInicio = $scope.diaSemana;
-                }
-                $scope.diasMes = Util.diasNoMes($scope.mes,$scope.ano); $scope.semanaCalendario = new Array($scope.gapInicio); $scope.nomeMes = Util.nomeMes($scope.mes);
-                $timeout(function(){ $scope.linkPaginacao(); },500); $scope.buscarEventos();
-            };
-            
-            //ABRIR DIA MODAL
-            $scope.abrirDia = function (dia) {
-                $scope.dia = dia;
-                $mdDialog.show({locals: {dia: {dia: dia, config: ErudioConfig} }, controller: ModalControl, templateUrl: ErudioConfig.dominio+'/apps/calendarios/partials/dia.html', parent: angular.element(document.body), targetEvent: event, clickOutsideToClose: true});
-                $timeout(function(){
-                    $('.dia-item').click(function(){
-                        var val = $(this).attr('data-value');
-                        switch (val) {
-                            case 'E': 
-                                $scope.dia.letivo = true; $scope.dia.efetivo = true;
-                                Util.salvarLote([$scope.dia],'calendarios/'+$scope.calendario.id+'/dias');
-                                break;
-                            case 'L': 
-                                $scope.dia.letivo = true; $scope.dia.efetivo = false;
-                                Util.salvarLote([$scope.dia],'calendarios/'+$scope.calendario.id+'/dias');
-                                break;
-                            default: 
-                                $scope.dia.letivo = false; $scope.dia.efetivo = false;
-                                Util.salvarLote([$scope.dia],'calendarios/'+$scope.calendario.id+'/dias');
-                                break;
-                        }
-                    });
-                },500);
-            };
-            
-            //FUNCAO DO MODAL - CRIANDO ESCOPO
-            function ModalControl($scope, dia) { 
-                $scope.dia = dia.dia; $scope.config = dia.config;
-                $scope.abreMenu = function ($mdMenu, ev) { var origemEv = ev; $mdMenu.open(ev); };
+        preparaCalendario(mes,ano) {
+            var self = this;
+            if (this.util.isVazio(mes) && this.util.isVazio(ano)) {
+                var dateBase = new Date(); this.mes = dateBase.getMonth(); this.ano = dateBase.getFullYear();
+                this.preparaCalendario(this.mes, this.ano);
+            } else {
+                this.diaS = 1; this.mes = mes; this.ano = ano; this.diaSemana = new Date(this.ano,this.mes,this.diaS).getDay();
+                this.counterCalendario = this.diaSemana; this.gapInicio = this.diaSemana;
+                this.diasMes = this.util.diasNoMes(this.mes,this.ano); this.semanaCalendario = new Array(this.gapInicio); this.nomeMes = this.util.nomeMes(this.mes);
+                this.timeout(function(){ self.linkPaginacao(); },500); self.buscarEventos();
             }
-            
-            //BUSCAR EVENTOS
-            $scope.buscarEventos = function () {
-                var promise = Util.buscar('calendarios/'+$scope.calendario.id+'/meses/'+($scope.mes+1));
-                promise.then(function(response){ 
-                    $scope.dias = response.data;
-                    for (var i=0; i<$scope.diasMes; i++) {                        
-                        $scope.counterCalendario++; $scope.semanaCalendario.push($scope.dias[i]);
-                        if ($scope.counterCalendario === 7) { $scope.mesCalendario.push($scope.semanaCalendario); $scope.counterCalendario = 0; $scope.semanaCalendario = []; }
-                        if (i === $scope.diasMes-1) {
-                            var dataFinal = new Date($scope.ano,$scope.mes,i+1); $scope.gapFinal = 6 - dataFinal.getDay();
-                            for (var j=0; j<$scope.gapFinal; j++) { $scope.semanaCalendario.push(null); if (j === $scope.gapFinal-1) { $scope.mesCalendario.push($scope.semanaCalendario); } }
-                        }
+        };
+
+        buscarCalendario() {
+            var self = this;
+            this.service.get(this.routeParams.id).then((calendario) => { this.calendario = calendario; this.preparaCalendario(); });
+        }
+
+        abrirDia(dia) {
+            this.dia = dia; var self = this;
+            this.mdDialog.show({locals: {dia: {dia: dia, config: this.erudioConfig} }, controller: this.modalControl, templateUrl: this.erudioConfig.dominio+'/apps/calendarios/partials/dia.html', parent: angular.element(document.body), targetEvent: event, clickOutsideToClose: true});
+            this.timeout(function(){
+                $('.dia-item').click(function(){
+                    var val = $(this).attr('data-value');
+                    let obj = null;
+                    switch (val) {
+                        case 'E': 
+                            self.dia.letivo = true; self.dia.efetivo = true; obj = self.dia.plain();
+                            self.service.salvarDias({dias:[obj]},self.calendario);
+                            break;
+                        case 'L': 
+                            self.dia.letivo = true; self.dia.efetivo = false; obj = self.dia.plain();
+                            self.service.salvarDias({dias:[obj]},self.calendario);
+                            break;
+                        default: 
+                            self.dia.letivo = false; self.dia.efetivo = false; obj = self.dia.plain();
+                            self.service.salvarDias({dias:[obj]},self.calendario);
+                            break;
                     }
                 });
-            };
-            
-            //LINKS PAGINACAO
-            $scope.linkPaginacao = function () {
-                $scope.proximoMes = new Date($scope.ano,$scope.mes,1); $scope.proximoMes.setMonth($scope.proximoMes.getMonth()+1);
-                $scope.mesAnterior = new Date($scope.ano,$scope.mes,1); $scope.mesAnterior.setMonth($scope.mesAnterior.getMonth()-1);
-            };
-            
-            //VERIFICA TIPO DE DIA - LETIVO/EFETIVO OU NAO LETIVO
-            $scope.classeTipoDia = function (dia){ if (!Util.isVazio(dia)) { if (dia.efetivo) { return 'calendario-dia-efetivo'; } else if (dia.letivo) { return 'calendario-dia-letivo'; } else { return 'calendario-dia-nao-letivo'; } } };
-            
-            //PAGINANDO
-            $scope.paginaProxima = function (){ $scope.resetCalendario(); $scope.preparaCalendario($scope.proximoMes.getMonth(),$scope.proximoMes.getFullYear()); };
-            $scope.paginaAnterior = function (){ $scope.resetCalendario(); $scope.preparaCalendario($scope.mesAnterior.getMonth(),$scope.mesAnterior.getFullYear()); };
+            },500);
+        }
+        
+        modalControl($scope, dia) { 
+            $scope.dia = dia.dia; $scope.config = dia.config;
+            $scope.dia.eventos.forEach((evento) => {
+                let ini = evento.inicio.split(":");
+                evento.inicio = ini[0]+":"+ini[1];
+                let termino = evento.termino.split(":");
+                evento.termino = termino[0]+":"+termino[1];
+            });
+            $scope.abreMenu = function ($mdMenu, ev) { var origemEv = ev; $mdMenu.open(ev); };
+        }
+        
+        buscarEventos() {
+            this.service.getDiasPorMes(this.calendario,this.mes+1,true).then((dias) => {
+                this.dias = dias;
+                for (var i=0; i<this.diasMes; i++) {                        
+                    this.counterCalendario++; this.semanaCalendario.push(this.dias[i]);
+                    if (this.counterCalendario === 7) { this.mesCalendario.push(this.semanaCalendario); this.counterCalendario = 0; this.semanaCalendario = []; }
+                    if (i === this.diasMes-1) {
+                        var dataFinal = new Date(this.ano,this.mes,i+1); this.gapFinal = 6 - dataFinal.getDay();
+                        for (var j=0; j<this.gapFinal; j++) { this.semanaCalendario.push(null); if (j === this.gapFinal-1) { this.mesCalendario.push(this.semanaCalendario); } }
+                    }
+                }
+            });
+        }
+        
+        linkPaginacao() {
+            this.proximoMes = new Date(this.ano,this.mes,1); this.proximoMes.setMonth(this.proximoMes.getMonth()+1);
+            this.mesAnterior = new Date(this.ano,this.mes,1); this.mesAnterior.setMonth(this.mesAnterior.getMonth()-1);
+        }
+        
+        classeTipoDia(dia){ if (!this.util.isVazio(dia)) { if (dia.efetivo) { return 'calendario-dia-efetivo'; } else if (dia.letivo) { return 'calendario-dia-letivo'; } else { return 'calendario-dia-nao-letivo'; } } }
+        
+        paginaProxima(){ this.resetCalendario(); this.preparaCalendario(this.proximoMes.getMonth(),this.proximoMes.getFullYear()); }
+        paginaAnterior(){ this.resetCalendario(); this.preparaCalendario(this.mesAnterior.getMonth(),this.mesAnterior.getFullYear()); }
 
-            //INICIANDO
-            $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarCalendario();
-            Util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
-            
-        } else { Util.semPermissao(); }            
-    }]);
+        iniciar(){
+            let permissao = this.verificarPermissao();
+            if (permissao) {
+                this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
+                this.buscarCalendario();
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    CalendarioViewController.$inject = ["CalendarioService","Util","ErudioConfig","$routeParams","$timeout","$mdDialog","$mdMenu"];
+    angular.module('CalendarioViewController',['ngMaterial', 'util', 'erudioConfig']).controller('CalendarioViewController',CalendarioViewController);
 })();

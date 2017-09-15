@@ -1,91 +1,133 @@
 (function (){
-    var calendarios = angular.module('calendarios',['ngMaterial', 'util', 'erudioConfig','shared']);
-    calendarios.controller('CalendarioController',['$scope', 'Util', '$mdDialog', 'ErudioConfig', 'Shared', '$timeout', function($scope, Util, $mdDialog, ErudioConfig, Shared, $timeout){
+    /*
+     * @ErudioDoc Instituição Controller
+     * @Module instituicoes
+     * @Controller InstituicaoController
+     */
+    class CalendarioController {
+        constructor (service, util, $mdDialog, erudioConfig, $timeout) {
+            this.service = service;
+            this.util = util;
+            this.mdDialog = $mdDialog;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.permissaoLabel = "CALENDARIO";
+            this.titulo = "Calendários";
+            this.linkModulo = "/#!/calendarios/";
+            this.calendario = null;
+            this.pagina = 0;
+            this.finalLista = false;
+            this.buscaIcone = 'search';
+            this.isAdmin = false;
+            this.iniciar();
+        }
         
-        //VERIFICA PERMISSOES
-        $scope.permissao = Util.verificaPermissao('CALENDARIO');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //VALIDANDO PERMISSAO
-        if ($scope.permissao) {
-            
-            Util.comPermissao();
-            $scope.escrita = Util.verificaEscrita('CALENDARIO');
-            $scope.validarEscrita = function (opcao) { return Util.validarEscrita(opcao, $scope.opcoes, $scope.escrita); };
-            
-            //SETA O TITULO
-            Util.setTitulo('Calendários');
-
-            //CALENDARIO EM USO
-            $scope.calendario = null;
-
-            //SETA COLUNAS DA LISTA
-            $scope.subheaders =[{label: 'Nome do Calendário'}];
-
-            //OPCOES
-            $scope.opcoes = [{tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true}];
-
-            //OPCOES DO BOTAO FAB
-            $scope.link = ErudioConfig.dominio + '/#!/calendarios/view/';
-            $scope.fab = {tooltip: 'Adicionar Calendário', icone: 'add', href: $scope.link+'novo'};
-
-            //PAGINA DA LISTA
-            $scope.pagina = 0;
-
-            //BUSCANDO CALENDARIO - inserir unidade
-            $scope.buscarCalendarios = function () {
-                var promise = Util.buscar('calendarios',{page: $scope.pagina});
-                promise.then(function(response){ $scope.objetos = response.data; });
-            };
-            $scope.buscarCalendarios();
-
-            //BUSCANDO TEMPLATE DA LISTA GERAL E ESPECIFICA
-            $scope.lista = Util.getTemplateLista();
-            $scope.listaEspecifica = Util.getTemplateListaEspecifica('calendarios');
-
-            //BUSCANDO TEMPLATE DA BUSCA SIMPLES
-            $scope.buscaSimples = Util.getTemplateBuscaSimples();
-
-            //EXECUTANDO OPCOES
-            $scope.executarOpcao = function (event, opcao, objeto) {
-                $scope.calendario = objeto;
-                switch (opcao.opcao) {
-                    case 'remover': $scope.modalExclusão(event); break;
-                    default: return false; break;
+        preparaLista(){
+            this.subheaders = [{ label: 'Nome do Calendário' }];
+            this.opcoes = [{tooltip: 'Ver Calendário', icone: 'event', opcao: 'calendario', validarEscrita: true}, {tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true}];
+            this.link = this.erudioConfig.dominio + this.linkModulo;
+            this.fab = { tooltip: 'Adicionar Calendário', icone: 'add', href: this.link+'novo' };
+            this.template = this.util.getTemplateLista();
+            this.lista = this.util.getTemplateListaEspecifica('calendarios');
+        }
+        
+        preparaBusca(){
+            this.busca = '';
+            this.buscaSimples = this.util.getTemplateBuscaSimples();
+        }
+                
+        buscarCalendarios(loader) {
+            var options = null;
+            if (!this.isAdmin) { 
+                let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
+                options = {page: this.pagina, instituicao: unidade};
+            } else { options = {page: this.pagina}; };
+            if (this.util.isAdmin()) { options = {page: this.pagina}; } else { 
+                let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
+                options = {page: this.pagina, instituicao: unidade };
+            }
+            this.service.getAll(options,loader).then((calendarios) => {
+                if (this.pagina === 0) { this.objetos = calendarios; } else { 
+                    if (calendarios.length !== 0) { this.objetos = this.objetos.concat(calendarios); } else { this.finalLista = true; this.pagina--; }
                 }
-            };
+            });
+        }
+        
+        executarOpcao(event,opcao,objeto) {
+            this.calendario = objeto;
+            switch (opcao.opcao) {
+                case 'remover': this.modalExclusao(event); break;
+                case 'calendario': this.verCalendario(); break;
+                default: return false; break;
+            }
+        }
 
-            //ABRINDO MODAL DE EXCLUSAO
-            $scope.modalExclusão = function (event) {
-                var confirm = Util.modalExclusao(event, 'Remover Calendário', 'Deseja remover este Calendário?', 'remover', $mdDialog);
-                $mdDialog.show(confirm).then(function() { 
-                    var remocao = Util.remover($scope.calendario, 'Calendário', 'm'); remocao.then(function(){ $scope.buscarCalendarios(); });
-                }, function() {});
-            };
+        verCalendario() { this.util.redirect(this.erudioConfig.dominio + this.linkModulo + 'view/' + this.calendario.id); }
+        
+        modalExclusao(event) {
+            var self = this;
+            let confirm = this.util.modalExclusao(event, "Remover Calendário", "Deseja remover este calendário?", 'remover', this.mdDialog);
+            this.mdDialog.show(confirm).then(function(){
+                let id = self.calendario.id;
+                var index = self.util.buscaIndice(id, self.objetos);
+                if (index !== false) {
+                    self.service.remover(self.calendario, "Calendário","m");
+                    self.objetos.splice(index,1);
+                }
+            });
+        }
+        
+        verificaBusca(query) { if (this.util.isVazio(query)) { this.buscarCalendarios(); this.buscaIcone = 'search'; } else { this.executarBusca(query); this.buscaIcone = 'clear'; } }
+        
+        limparBusca() { this.busca = ''; $('.busca-simples').val(''); this.buscaIcone = 'search'; this.buscarCalendarios(true); }
 
-            //ESCUTANDO VARIAVEL DE BUSCA
-            $scope.busca = '';
-            $scope.verificaBusca = function (query) { if(Util.isVazio(query)){ $scope.buscarCalendarios(); } else { $scope.executarBusca(query); } };
-
-            //BUSCA COM PARAMETRO
-            $scope.executarBusca = function (query) {
-                $timeout.cancel($scope.delayBusca);
-                $scope.delayBusca = $timeout(function(){
-                    if (Util.isVazio(query)) { query = ''; } var tamanho = query.length;
-                    if (tamanho > 3) {
-                        var res = Util.buscar('calendarios',{'nome':query});
-                        res.then(function(response){ $scope.objetos = response.data; });
-                    }
-                }, 800);
-            };
-
-            //PAGINANDO
-            $scope.paginaProxima = function (){ $scope.pagina++; $scope.buscarCalendarios(); };
-            $scope.paginaAnterior = function (){ if ($scope.pagina > 0) { $scope.pagina = $scope.pagina - 1; $scope.buscarCalendarios(); } };
-
-            //INICIAR
-            Util.inicializar();
-            Util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
-            
-        } else { Util.semPermissao(); }
-    }]);
+        executarBusca(query) {
+            this.timeout.cancel(this.delayBusca); var self = this;
+            this.delayBusca = this.timeout(() => {
+                self.buscaIcone = 'clear';
+                if (self.util.isVazio(query)) { query = ''; self.buscaIcone = 'search'; }
+                let tamanho = query.length;
+                if (tamanho > 3) {
+                    let options = null;
+                    if (!self.isAdmin) { 
+                        let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
+                        options = {nome: query, instituicao: unidade};
+                    } else { options = {nome: query}; };
+                    self.service.getAll(options,true).then((calendarios) => { self.objetos = calendarios; });
+                } else {
+                    self.util.toast('A busca é ativada com no mínimo 4 caracteres.');
+                }
+            },800);
+        }
+        
+        paginar(){ this.pagina++; this.buscarCalendarios(true); }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao(); let self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
+                this.preparaLista();
+                this.preparaBusca();
+                this.buscarCalendarios();
+                if (this.util.isAdmin()) { this.isAdmin = true; } else { this.isAdmin = false; }
+                $(".fit-screen").scroll(function(){
+                    let distancia = Math.floor(Number($(".conteudo").offset().top - $(document).height()));
+                    let altura = Math.floor(Number($(".main-layout").height()));
+                    let total = altura + distancia;
+                    if (total === 0) { self.paginar(); }
+                });
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    CalendarioController.$inject = ["CalendarioService","Util","$mdDialog","ErudioConfig","$timeout"];
+    angular.module('CalendarioController',['ngMaterial', 'util', 'erudioConfig']).controller('CalendarioController',CalendarioController);
 })();
