@@ -51,6 +51,14 @@ class UsuarioFacade extends AbstractFacade {
             }
         ];
     }
+    
+    protected function beforeCreate($usuario) {
+        $usuario->encodePassword();
+    }
+
+    protected function beforeApplyChanges($usuario, $patch) {
+        $patch->encodePassword();
+    }
 
 }
 

@@ -48,7 +48,15 @@ class AuthenticationController {
     }
     
     /**
-    * @ApiDoc()
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Autenticação",
+    *   description = "Cria e retorna um token de autenticação válido por 15 minutos.",
+    *   statusCodes = {
+    *       200 = "Token de autenticação",
+    *       401 = "Usuário ou senha informados são inválidos"
+    *   }
+    * )
     * 
     * @FOS\Post("tokens")
     * @ParamConverter("credentials", converter="fos_rest.request_body")

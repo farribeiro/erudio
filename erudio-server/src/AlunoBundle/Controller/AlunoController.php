@@ -25,7 +25,15 @@ class AlunoController extends Controller {
     }
     
     /**
-    * @ApiDoc()
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Alunos",
+    *   description = "Retorna todas as matrículas do aluno autenticado",
+    *   statusCodes = {
+    *       200 = "Array de matrículas"
+    *   }
+    * )
+    * 
     * 
     * @FOS\Get("matriculas")
     */
@@ -44,7 +52,15 @@ class AlunoController extends Controller {
     }
     
     /**
-    * @ApiDoc()
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Alunos",
+    *   description = "Retorna todas as enturmações ativas da matrícula, ou seja, 
+    *   as que estão em andamento ou concluídas.",
+    *   statusCodes = {
+    *       200 = "Array de enturmações"
+    *   }
+    * )
     * 
     * @FOS\Get("matriculas/{id}/enturmacoes")
     */
@@ -57,7 +73,8 @@ class AlunoController extends Controller {
         return new JsonResponse(array_map(function($e) {
             return [
                 'id' => $e->getId(),
-                'turma' => $e->getTurma()->getNomeExibicao(), 
+                'turma' => $e->getTurma()->getNomeExibicao(),
+                'unidadeEnsino' => $e->getTurma()->getUnidadeEnsino()->getNomeCompleto(),
                 'etapa' => $e->getTurma()->getEtapa()->getNome(),
                 'concluido' => $e->getConcluido(),
                 'dataCadastro' => $e->getDataCadastro()->format('Y-m-d H:i:s')
@@ -66,7 +83,15 @@ class AlunoController extends Controller {
     }
     
     /**
-    * @ApiDoc()
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Alunos",
+    *   description = "Retorna todas as disciplinas cursadas pelo aluno vinculadas
+    *   a uma enturmação",
+    *   statusCodes = {
+    *       200 = "Array de disciplinas, cada uma contendo suas médias parciais"
+    *   }
+    * )
     * 
     * @FOS\Get("enturmacoes/{id}/disciplinas")
     */
@@ -85,6 +110,7 @@ class AlunoController extends Controller {
                 'frequencia' => $d->getFrequenciaTotal(),
                 'medias' => $d->getMedias()->map(function($m) {
                     return [
+                        'id' => $m->getId(),
                         'nome' => $m->getNome(),
                         'numero' => $m->getNumero(),
                         'nota' => $m->getValor(),

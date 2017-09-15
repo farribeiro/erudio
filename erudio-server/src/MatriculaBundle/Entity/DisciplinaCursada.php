@@ -107,6 +107,12 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $disciplinaOfertada;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\Column(type = "boolean", name = "insercao_manual")
+    */
+    private $insercaoManual = true;
+    
     /**  
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Media", mappedBy = "disciplinaCursada", fetch = "EXTRA_LAZY")
@@ -128,9 +134,10 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $statusPrevisto;
     
-    function __construct(Matricula $matricula, Disciplina $disciplina) {
+    function __construct(Matricula $matricula, Disciplina $disciplina, $insercaoManual = false) {
         $this->matricula = $matricula;
         $this->disciplina = $disciplina;
+        $this->insercaoManual = $insercaoManual;
         $this->init();
     }
     
@@ -172,6 +179,15 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
+    }
+        
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("boolean")
+    * @JMS\VirtualProperty
+    */   
+    function getAuto() {
+        return !$this->insercaoManual;
     }
     
     /**

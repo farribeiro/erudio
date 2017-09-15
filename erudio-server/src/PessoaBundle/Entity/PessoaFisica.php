@@ -164,7 +164,7 @@ class PessoaFisica extends Pessoa {
     private $alfabetizado = false;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"DETAILS", "DEFICIENCIAS"})
     * @ORM\ManyToMany(targetEntity="Particularidade")
     * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
@@ -189,16 +189,24 @@ class PessoaFisica extends Pessoa {
      */
     private $responsavelNome;
     
+    function __construct() {
+        parent::__construct();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getCodigo() {
+        return "{$this->getId()}-{$this->getDataCadastro()->format('y')}";
+    }
+    
     function getResponsavelNome() {
         return $this->responsavelNome;
     }
     
     function setResponsavelNome($responsavelNome) {
         $this->responsavelNome = $responsavelNome;
-    }
-    
-    public function __construct() {
-        parent::__construct();
     }
     
     function getIdade() {

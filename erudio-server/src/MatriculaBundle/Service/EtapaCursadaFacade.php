@@ -56,7 +56,7 @@ class EtapaCursadaFacade extends AbstractFacade {
     function parameterMap() {
         return [
             'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('matricula = :matricula')->setParameter('matricula', $value);
+                $qb->andWhere('e.matricula = :matricula')->setParameter('matricula', $value);
             }
         ];
     }

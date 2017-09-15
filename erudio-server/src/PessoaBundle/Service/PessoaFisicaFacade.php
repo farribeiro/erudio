@@ -49,6 +49,9 @@ class PessoaFisicaFacade extends AbstractFacade {
             'sobrenome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.nome LIKE :sobrenome')->setParameter('sobrenome', '%' . $value . '%');
             },
+            'codigo' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('pessoa.id = :codigo')->setParameter('codigo', explode('-', $value)[0]);
+            },
             'dataNascimento' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
@@ -66,6 +69,10 @@ class PessoaFisicaFacade extends AbstractFacade {
             },
             'usuario' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('pessoa.usuario = :usuario')->setParameter('usuario', $value);
+            },
+            'deficiente' => function(QueryBuilder $qb, $value) {
+                $operator = $value ? 'NOT' : '';
+                $qb->andWhere("pessoa.particularidades IS {$operator} EMPTY");
             }
         ];
     }

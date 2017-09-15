@@ -26,32 +26,27 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AlunoBundle\Service;
+namespace MatriculaBundle\Service;
 
-use MatriculaBundle\Service\MatriculaFacade;
-use MatriculaBundle\Service\EnturmacaoFacade;
+use Doctrine\ORM\QueryBuilder;
+use CoreBundle\ORM\AbstractFacade;
 
-class AlunoService {
+class ObservacaoHistoricoFacade extends AbstractFacade {
     
-    private $matriculaFacade;
-    private $enturmacaoFacade;
-    
-    function __construct(MatriculaFacade $matriculaFacade, EnturmacaoFacade $enturmacaoFacade) {
-        $this->matriculaFacade = $matriculaFacade;
-        $this->enturmacaoFacade = $enturmacaoFacade;
+    function getEntityClass() {
+        return 'MatriculaBundle:ObservacaoHistorico';
     }
     
-    function listarMatriculas($aluno) {
-        return $this->matriculaFacade->findAll(['aluno' => $aluno]);
+    function queryAlias() {
+        return 'o';
     }
     
-    function listarEnturmacoes($matricula) {
-        return $this->enturmacaoFacade->findAll(['matricula' => $matricula, 'encerrado' => false]);
+    function parameterMap() {
+        return [
+            'matricula' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('o.matricula = :matricula')->setParameter('matricula', $value);
+            }
+        ];
     }
-    
-    function listarDisciplinas($enturmacao) {
-        return $this->enturmacaoFacade->find($enturmacao)->getDisciplinasCursadas()->toArray();
-    }
-    
+
 }
-

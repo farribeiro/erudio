@@ -220,7 +220,7 @@ abstract class AbstractFacade {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
-            $this->beforeApplyChanges($entidade);
+            $this->beforeApplyChanges($entidade, $patch);
             $entidade->merge($patch);
             $this->update($entidade, false);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
@@ -404,7 +404,7 @@ abstract class AbstractFacade {
     * 
     * @param type $entidade
     */
-    protected function beforeApplyChanges($entidade) {}
+    protected function beforeApplyChanges($entidade, $patch) {}
     
     /**
     * 
