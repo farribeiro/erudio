@@ -26,64 +26,46 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace MatriculaBundle\Controller;
+namespace MatriculaBundle\Entity;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcherInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityController;
-use MatriculaBundle\Entity\Enturmacao;
-use MatriculaBundle\Service\EnturmacaoFacade;
+use Doctrine\ORM\Mapping AS ORM;
+use JMS\Serializer\Annotation as JMS;
+use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
- * @FOS\NamePrefix("enturmacoes")
- */
-class EnturmacaoController extends AbstractEntityController {
+* @ORM\Entity
+* @ORM\Table(name = "edu_matricula_historico_observacao")
+*/
+class ObservacaoHistorico extends AbstractEditableEntity {
     
-    function __construct(EnturmacaoFacade $facade) {
-        parent::__construct($facade);
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    */
+    private $matricula;
+    
+    /**  
+    * @JMS\Groups({"LIST"})
+    * @ORM\Column
+    */
+    private $texto;
+    
+    function __construct(Matricula $matricula, $texto = '') {
+        $this->matricula = $matricula;
+        $this->texto = $texto;
     }
     
-    /**
-    * @ApiDoc()
-    * @FOS\Get("enturmacoes/{id}")
-    */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
-    }
-    
-    /**
-    *   @ApiDoc()
-    * 
-    *   @FOS\Get("enturmacoes")
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
-    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "encerrado", default = false) 
-    */
-    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
-        return $this->getList($request, $paramFetcher->all());
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Post("enturmacoes")
-    * @ParamConverter("enturmacao", converter="fos_rest.request_body")
-    */
-    function postAction(Request $request, Enturmacao $enturmacao, ConstraintViolationListInterface $errors) {
-        return $this->post($request, $enturmacao, $errors);
+    function getMatricula() {
+        return $this->matricula;
     }
 
-    /**
-    * @ApiDoc()
-    * @FOS\Delete("enturmacoes/{id}")
-    */
-    function deleteAction(Request $request, $id) {
-        return $this->delete($request, $id);
+    function getTexto() {
+        return $this->texto;
+    }
+
+    function setTexto($texto) {
+        $this->texto = $texto;
     }
 
 }

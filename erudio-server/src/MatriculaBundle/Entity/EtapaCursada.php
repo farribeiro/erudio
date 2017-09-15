@@ -90,6 +90,12 @@ class EtapaCursada extends AbstractEditableEntity {
     */
     private $enturmacao;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\Column(type = "boolean", name = "insercao_manual")
+    */
+    private $insercaoManual = true;
+    
     function __construct(Matricula $matricula, Etapa $etapa, $ano, $unidadeEnsino, $cidade,
             $status = self::STATUS_APROVADO, $enturmacao = null) {
         $this->matricula = $matricula;
@@ -99,8 +105,17 @@ class EtapaCursada extends AbstractEditableEntity {
         $this->cidade = $cidade;
         $this->status = $status;
         $this->enturmacao = $enturmacao;
+        $this->insercaoManual = false;
     }
 
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("boolean")
+    * @JMS\VirtualProperty
+    */   
+    function getAuto() {
+        return !$this->insercaoManual;
+    }
     
     function getAno() {
         return $this->ano;

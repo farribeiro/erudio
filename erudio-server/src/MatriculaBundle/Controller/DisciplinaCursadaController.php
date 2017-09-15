@@ -124,7 +124,6 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * 
     * @FOS\Post("disciplinas-ofertadas/{id}/media-final", requirements = {"id": "\d+"})
     */
     function postMediasFinaisAction($id) {

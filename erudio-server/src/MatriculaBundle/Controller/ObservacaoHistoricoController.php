@@ -35,21 +35,19 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use MatriculaBundle\Entity\Enturmacao;
-use MatriculaBundle\Service\EnturmacaoFacade;
+use MatriculaBundle\Service\ObservacaoHistoricoFacade;
+use MatriculaBundle\Entity\ObservacaoHistorico;
 
-/**
- * @FOS\NamePrefix("enturmacoes")
- */
-class EnturmacaoController extends AbstractEntityController {
+class ObservacaoHistoricoController extends AbstractEntityController {
     
-    function __construct(EnturmacaoFacade $facade) {
+    function __construct(ObservacaoHistoricoFacade $facade) {
         parent::__construct($facade);
     }
     
     /**
-    * @ApiDoc()
-    * @FOS\Get("enturmacoes/{id}")
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("observacoes-historico/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -58,32 +56,40 @@ class EnturmacaoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("enturmacoes")
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
-    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "encerrado", default = false) 
+    *   @FOS\Get("observacoes-historico")
+    *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-    * @ApiDoc()
+    *  @ApiDoc()
     * 
-    * @FOS\Post("enturmacoes")
-    * @ParamConverter("enturmacao", converter="fos_rest.request_body")
+    *  @FOS\Post("observacoes-historico")
+    *  @ParamConverter("observacao", converter="fos_rest.request_body")
     */
-    function postAction(Request $request, Enturmacao $enturmacao, ConstraintViolationListInterface $errors) {
-        return $this->post($request, $enturmacao, $errors);
+    function postAction(Request $request, ObservacaoHistorico $observacao, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $observacao, $errors);
     }
-
+    
     /**
-    * @ApiDoc()
-    * @FOS\Delete("enturmacoes/{id}")
+    *  @ApiDoc()
+    * 
+    *  @FOS\Put("observacoes-historico/{id}")
+    *  @ParamConverter("observacao", converter="fos_rest.request_body")
+    */
+    function putAction(Request $request, $id, ObservacaoHistorico $observacao, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $observacao, $errors);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *  @FOS\Delete("observacoes-historico/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
     }
-
+    
 }

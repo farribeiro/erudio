@@ -52,7 +52,7 @@ class QuadroHorarioFacade extends AbstractFacade {
         ];
     }
     
-     protected function beforeApplyChanges($quadroHorario) {
+     protected function beforeApplyChanges($quadroHorario, $patch) {
         foreach($quadroHorario->getDiasSemana() as $dia) {
             $dia->setQuadroHorario($quadroHorario);
         }
