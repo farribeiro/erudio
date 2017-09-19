@@ -67,6 +67,12 @@ class EtapaCursadaFacade extends AbstractFacade {
         ];
     }
     
+    protected function beforeRemove($etapaCursada) {
+        if ($etapaCursada->getAuto()) {
+            throw new IllegalOperationException('Etapas cursadas geradas pelo sistema não podem ser excluídas');
+        }
+    }
+    
     function isCompleta(Matricula $matricula, Etapa $etapa) {
         $disciplinasCursadas = $this->disciplinaCursadaFacade->findByMatriculaAndEtapa($matricula, $etapa, false);
         $quantidadeDisciplinas = count($etapa->getDisciplinas());
