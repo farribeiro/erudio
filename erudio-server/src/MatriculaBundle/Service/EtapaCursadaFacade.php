@@ -61,6 +61,12 @@ class EtapaCursadaFacade extends AbstractFacade {
         ];
     }
     
+    function uniqueMap($etapa) {
+        return [
+            ['enturmacao' => $etapa->getEnturmacao()]
+        ];
+    }
+    
     function isCompleta(Matricula $matricula, Etapa $etapa) {
         $disciplinasCursadas = $this->disciplinaCursadaFacade->findByMatriculaAndEtapa($matricula, $etapa, false);
         $quantidadeDisciplinas = count($etapa->getDisciplinas());
