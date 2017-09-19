@@ -51,31 +51,34 @@
                         <small class="sub-text-login">Digite suas credenciais.</small>
                     </md-card-title-text>
                     <md-card-content>
-                        <form id="authForm" name="authForm">
+                        <form id="authForm" name="authForm" ng-init="inicializaEnter()">
                             <form-input grid="flex-gt-sm" identidade="username" label="'CPF'" model="auth" obrigatorio="required" campo="username" tipo="'text'" nome="'username'" erro="'authForm.username.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
                             <form-input grid="flex-gt-sm" identidade="password" label="'Senha'" model="auth" obrigatorio="required" campo="password" tipo="'password'" nome="'password'" erro="'authForm.password.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
                         </form>
                     </md-card-content>
-                    <md-card-actions layout="row" layout-align="end center">
+                    <md-card-actions layout="row" layout-align="end center" class="btn-login-mobile">
                         <md-button class="md-primary" ng-click="autenticar()">ENTRAR</md-button>
                     </md-card-actions>
                 </md-card>
             </div>
             <div flex="0" flex-gt-sm="33"></div>
-            <div layout-gt-sm="row" class="valign-helper">
-                <md-button>Esqueci minha senha</md-button>
-                <md-button>Tutoriais</md-button>
-            </div>
+        </div>
+        <div layout-gt-sm="row" class="valign-helper">
+            <md-button>Esqueci minha senha</md-button>
+            <md-button>Tutoriais</md-button>
+        </div>
+        <div layout-gt-sm="row" class="valign-helper-mobile">
+            <md-button><md-icon class="material-icons">lock_icon</md-icon></md-button>
+            <md-button><md-icon class="material-icons">help</md-icon></md-button>
         </div>
         
-        
         <!-- CONTROLLERS -->
-        <script src="util/erudioConfig.js"></script>
-        <script src="util/utilController.js"></script>
-        <script src="util/authService.js"></script>
-        <script src="util/restService.js"></script>
-        <script src="util/structureController.js"></script>
-        <script src="util/validatorController.js"></script>
+        <script src="apps/util/erudioConfig.js"></script>
+        <script src="apps/util/utilController.js"></script>
+        <script src="apps/util/authService.js"></script>
+        <script src="apps/util/restService.js"></script>
+        <script src="apps/util/structureController.js"></script>
+        <script src="apps/util/validatorController.js"></script>
         <script src="apps/appDirectives.js"></script>
         <script src="apps/login/controllers/loginController.js"></script>
     </body>

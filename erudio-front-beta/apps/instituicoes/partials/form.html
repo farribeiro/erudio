@@ -1,2 +1,2 @@
-<div data-ng-if="escrita" ng-include="form"></div>
-<div data-ng-if="!escrita" ng-include="leitura"></div>
+<div ng-if="ctrl.escrita" ng-include="ctrl.form"></div>
+<div ng-if="!ctrl.escrita" ng-include="ctrl.leitura"></div>

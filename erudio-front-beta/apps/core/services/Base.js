@@ -2,9 +2,10 @@
     'use strict';
     
     class BaseService {
-        constructor(Restangular, $mdToast) {
+        constructor(Restangular, $mdToast, $http) {
             this.restangular = Restangular;
             this.mdToast = $mdToast;
+            this.http = $http;
             this.loginPage = '/login.html!#/';
         }
         
@@ -130,46 +131,48 @@
         remover(objeto, label, orientacao, loader) {
             var self = this; self.ativarLoader(loader);
             var rest = this.preparaRestangular(); rest.setFullResponse(true);
-            return objeto.remove().then(function (response){ 
-                return new Promise((resolve) => {
-                    var sufix = this.orientarLabel('removid', orientacao);
-                    if (label !== null && label !== '') { self.mdToast.show(self.mdToast.simple().textContent(label+' '+sufix)); } 
-                    self.desativarLoader(loader); resolve(response);
-                });
+            objeto.remove();
+            return new Promise((resolve) => {
+                var sufix = self.orientarLabel('removid', orientacao);
+                if (label !== null && label !== '') { self.mdToast.show(self.mdToast.simple().textContent(label+' '+sufix)); } 
+                self.desativarLoader(loader); resolve('removido');
+            });
+            //TRATAR ERRO
+            /*    
             }, function(error) {
                 return new Promise((resolve,reject) => {
                     if (error.data.code === 401) {
                         self.reautenticar().then(() => self.remover(objeto, label, orientacao, loader)).then((data) => { self.desativarLoader(loader); resolve(data); });
                     } else { reject(error); self.desativarLoader(loader); }
                 });
-            });
+            });*/
         }
         
         //SALVAR EM BATCH
-        salvarLote(objeto, endereco, label, gen, callback, loader) {
-            if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }  var self = this;
+        salvarLote(objeto, endereco, label, gen, loader) {
+            var self = this; self.ativarLoader(loader);
             var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
-            var resultado = $http({
+            var resultado = this.http({
                 method: "PUT",
                 url: this.restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
                 headers: {'JWT-Authorization': this.criarHeader()}
             });
             resultado.then(function(data){
-                if (data.status === 200 || data.status === 204) {
-                    if(callback !== null && callback !== undefined){ callback(data); }
-                    if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
-                    if (label !== null && label !== '' && label !== undefined) { $mdToast.show($mdToast.simple().textContent(label+' salv'+artigo+' com sucesso.')); }
-                }
-            }, function() { 
-                if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
-                var res = self.retrieveAndRetry();
-                res.then(function(response){
-                   sessionStorage.setItem('token',response.token);
-                   self.salvarLote(objeto, endereco, label, gen, callback, loader);
+                return new Promise((resolve) => {
+                    if (data.status >= 200 || data.status <= 204) {
+                        var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
+                        if (label !== undefined) { self.mdToast.show(self.mdToast.simple().textContent(label+' atualizad'+artigo+' com sucesso.')); }
+                    }
+                    self.desativarLoader(loader); resolve(data.data);
+                });
+            }, function(error) {
+                return new Promise((resolve,reject) => {
+                    if (error.data.code === 401) {
+                        self.reautenticar().then(() => self.atualizar(objeto, label, gen, loader)).then((data) => { self.desativarLoader(loader); resolve(data); });
+                    } else { reject(error); self.desativarLoader(loader); }
                 });
             });
-            return resultado;
         }
 
         //EXCLUIR EM BATCH
@@ -196,5 +199,5 @@
     }
     
     angular.module('BaseService',['ngMaterial']).service('BaseService',BaseService);
-    BaseService.$inject = ["Restangular",'$mdToast'];
+    BaseService.$inject = ["Restangular",'$mdToast','$http'];
 }());

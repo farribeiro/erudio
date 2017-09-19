@@ -1,3 +1,8 @@
 <div layout-gt-sm="row">
-    <autocomplete class="w100"></autocomplete>
+    <md-input-container class="md-icon-float autocomplete-wrap" md-block flex-gt-sm>
+        <md-icon ng-click="ctrl.limparBusca()" class="material-icons busca-icone">{{ ctrl.buscaIcone }}</md-icon>
+        <md-autocomplete md-selected-item-change="ctrl.buscarQuadrosHorarios(true)" class="autocomplete-form" flex md-input-name="unidades" md-selected-item="ctrl.unidade" md-search-text="ctrl.nomeUnidade" md-items="item in ctrl.buscarUnidades(ctrl.nomeUnidade)" md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
+            <span md-highlight-text="ctrl.nomeCompleto">{{ item.nomeCompleto }}</span>
+        </md-autocomplete>
+    </md-input-container>
 </div>

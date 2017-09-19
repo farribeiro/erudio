@@ -196,6 +196,8 @@
                                         <!--<li data-ng-show="verificarPermissoes('ALUNOS_DEFASADOS')"><a href="#/alunos-defasados">Alunos Defasados</a></li>-->
 					<li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/relatorio-alunos-defasados">Alunos Defasados</a></li>
 					<li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/alunos-enturmados">Alunos Enturmados</a></li>
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/alunos-anee">Alunos ANEE</a></li>
+                                        <li data-ng-show="verificarPermissoes('RELATORIOS')"><a class="submenu-style" href="#/historicos">Histórico Escolar</a></li>
                                         <li data-ng-show="verificarPermissoes('RELATORIOS')"><a href="#/espelhos">Espelho de Notas</a></li> 
                                     </ul>
                                 </div>
@@ -317,11 +319,14 @@
 
 	<!-- Relatorios -->
         <script type="text/javascript" src="app/modules/relatorios/controllers/relatorioController.js"></script>
+        <script type="text/javascript" src="app/modules/alunosANEE/controllers/alunosANEEController.js"></script>
 	<script type="text/javascript" src="app/modules/relatorios/directives/relatorioDirectives.js"></script>
 	<script type="text/javascript" src="app/modules/diarioNotas/controllers/diarioNotasController.js"></script>
 	<script type="text/javascript" src="app/modules/relatorioAlunosDefasados/controllers/relatoriosDefasadosController.js"></script>
         <script type="text/javascript" src="app/modules/relatorioAlunosDefasados/directives/relatoriosDefasadosDirectives.js"></script>
         <script type="text/javascript" src="app/modules/espelho/controllers/espelhoController.js"></script>
+        <script type="text/javascript" src="app/modules/historicos/controllers/historicosController.js"></script>
+        <script type="text/javascript" src="app/modules/historicos/directives/historicosDirectives.js"></script>
         
         <script type="text/javascript" src="app/modules/reclassificacao/controllers/reclassificacaoController.js"></script>
         <script type="text/javascript" src="app/modules/reclassificacao/directives/reclassificacaoDirectives.js"></script>
@@ -350,6 +355,7 @@
         <!-- Angular Directives -->
         <script type="text/javascript" src="app/modules/main/directives/mainDirectives.js"></script>
         <script type="text/javascript" src="app/modules/instituicoes/directives/instituicaoDirectives.js"></script>
+        <script type="text/javascript" src="app/modules/alunosANEE/directives/alunosANEEDirectives.js"></script>
         <script type="text/javascript" src="app/modules/etapas/directives/etapaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/disciplinas/directives/disciplinaDirectives.js"></script>
         <script type="text/javascript" src="app/modules/regimes/directives/regimeDirectives.js"></script>

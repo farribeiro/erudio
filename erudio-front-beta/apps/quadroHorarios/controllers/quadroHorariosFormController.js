@@ -1,70 +1,117 @@
 (function (){
-    var quadroHorariosForm = angular.module('quadroHorariosForm',['ngMaterial', 'util', 'erudioConfig', 'shared']);
-    quadroHorariosForm.controller('QuadroHorarioFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', 'Shared', function($scope, Util, ErudioConfig, $routeParams, $timeout, Shared){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class QuadroHorarioFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, unidadeService, modeloGradeHorarioService, turnoService){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.unidadeService = unidadeService;
+            this.modeloGradeHorarioService = modeloGradeHorarioService;
+            this.turnoService = turnoService;
+            this.timeout = $timeout;
+            this.scope.grade = null;
+            this.unidade = null;
+            this.permissaoLabel = "QUADROS_HORARIO";
+            this.titulo = "Grades de Horário";
+            this.linkModulo = "/#!/quadros-horario/";
+            this.nomeForm = "gradeForm";
+            this.itemBusca = '';
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Quadros de Horários');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //QUADRO EM USO
-        $scope.quadro = Util.getEstrutura('quadroHorario'); $scope.turnos = [];
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('quadroHorarios','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações da Grade de Horário', href: this.util.getInputBlockCustom('quadroHorarios','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações do Quadro de Horário'}];
+        buscarUnidades() { this.unidadeService.getAll(null,true).then((unidades) => this.unidades = unidades); }
+        buscarModelos() { this.modeloGradeHorarioService.getAll(null,true).then((modelos) => this.modelos = modelos); }
+        buscarTurnos() { this.turnoService.getAll(null,true).then((turnos) => this.turnos = turnos); }
         
-        //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('quadroHorarios','inputs') }];
-        
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'quadroForm', subheaders: $scope.subheaders }];
-        
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/quadro-horarios/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-        
-        //BUSCANDO QUADRO
-        $scope.buscarQuadro = function () {
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('quadro-horarios',$routeParams.id);
-                promise.then(function(response){ $scope.quadro = response.data; $timeout(function(){ Util.aplicarMascaras(); },500); });
-            } else { $timeout(function(){ Util.aplicarMascaras(); },500); }
-        };
-        
-        //BUSCAR UNIDADES
-        $scope.buscarUnidades = function (){
-            var promise = Util.buscar('unidades-ensino',null);
-            promise.then(function(response){ $scope.items = response.data; });
-        };
-        
-        //FILTRANDO AUTOCOMPLETE
-        $scope.filtrar = function (query){ return Util.filtrar(query, $scope.items); };
-        
-        //SELECIONAR AUTOCOMPLETE
-        $scope.selecionar = function (item) { if (Util.isVazio(item.id)) { $scope.quadro.unidadeEnsino.id = null; } else { $scope.quadro.unidadeEnsino.id = item.id; } };
-        
-        //BUSCANDO TURNOS
-        $scope.buscarTurnos = function () { var promise = Util.buscar('turnos',null); promise.then(function(response){ $scope.turnos = response.data; }); };
-        
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //BUSCANDO MODELO DE QUADRO DE HORARIO
-        $scope.buscarModeloQuadro = function () { var promise = Util.buscar('modelo-quadro-horarios',null); promise.then(function(response){ $scope.quadros = response.data; }); };
-            
-        //SALVAR QUADRO
-        $scope.salvar = function () { 
-            if ($scope.validar('quadroForm')) { 
-                $scope.quadro.inicio += ":00"; var diasSemana = angular.copy($scope.quadro.diasSemana);
-                $scope.quadro.diasSemana.forEach(function(dia,i){ if (dia.diaSemana) { dia.diaSemana = i+2; } else { $scope.quadro.diasSemana.splice(i,1); } });
-                var resultado = Util.salvar($scope.quadro,'quadro-horarios'); resultado.then(function (){ Util.redirect($scope.fab.href); }); 
+        buscarGrade() {
+            var self = this;
+            this.scope.grade = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((modulo) => {
+                    this.scope.grade = grade;
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
             }
-        };
+        }
         
-        //VALIDAR FORM
-        $scope.validar = function (formId) { return Util.validar(formId); };
+        validaCampo() { this.util.validaCampo(); }
         
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarQuadro(); $scope.buscarUnidades(); $scope.buscarTurnos();
-        $timeout(function(){$('md-autocomplete-wrap').removeClass('md-whiteframe-z1');},500); $scope.buscarModeloQuadro();
-        Util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
-    }]);
+        validar() { return this.util.validar(this.nomeForm); }
+        
+        salvar() {
+            if (this.validar()) {
+                var resultado = null; this.scope.grade.inicio += ':00';
+                this.scope.grade.unidadeEnsino.id = this.unidade.id;
+
+                var modeloNome = '';
+                this.modelos.forEach((modelo) => {
+                    if (modelo.id === parseInt(this.scope.grade.modelo.id)) { modeloNome = modelo.nome; }
+                });
+
+                var turnoNome = '';
+                this.turnos.forEach((turno) => {
+                    if (turno.id === parseInt(this.scope.grade.turno.id)) { turnoNome = turno.nome; }
+                });
+
+                this.scope.grade.nome = modeloNome + " - " + turnoNome;
+                if (this.util.isNovoObjeto(this.scope.grade)) {
+                    resultado = this.service.salvar(this.scope.grade);
+                } else {
+                    resultado = this.service.atualizar(this.scope.grade);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
+
+        filtrar (query) { if (query.length > 2) { return this.unidadeService.getAll({nome: query}); } }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao();
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                $(".fit-screen").unbind('scroll');
+                this.preparaForm();
+                if (this.isAdmin) { this.buscarUnidades(); }
+                this.buscarModelos();
+                this.buscarTurnos();
+                this.buscarGrade();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    QuadroHorarioFormController.$inject = ["QuadroHorarioService","Util","ErudioConfig","$routeParams","$timeout","$scope","UnidadeService","ModeloGradeHorarioService","TurnoService"];
+    angular.module('QuadroHorarioFormController',['ngMaterial', 'util', 'erudioConfig']).controller('QuadroHorarioFormController',QuadroHorarioFormController);
 })();

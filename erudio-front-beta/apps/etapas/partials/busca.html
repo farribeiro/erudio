@@ -1,8 +1,12 @@
 <div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="buscaEtapaCurso" label="'Curso'" nome="'cursoBusca'">
-        <md-select ng-model="curso.id" ng-change="buscarEtapas()">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="curso">Curso</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="ctrl.curso.id" ng-change="ctrl.buscarEtapas()" id="curso" name="curso">
             <md-option value=""></md-option>
-            <md-option ng-repeat="curso in cursos track by $index" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+    </md-input-container>
+    
 </div>

@@ -8,7 +8,7 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getModalidades(opcoes){ return this.modalidadeEnsinoService.getAll(opcoes); }
         getEstrutura() { return { nome: null, modalidade: {id: null}, especializado: false, alfabetizatorio: false }; }
         salvar(objeto) { return this.rest.salvar(this.url, objeto, "Curso", "M"); }

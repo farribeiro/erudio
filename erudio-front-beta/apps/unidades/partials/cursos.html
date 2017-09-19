@@ -1,5 +1,9 @@
 <div layout="row" layout-wrap>
-    <div flex="100" layout="row">
-        <md-checkbox ng-checked="verificarCurso(curso.id)" ng-click="adicionarCurso(curso.id)" ng-repeat="curso in cursos">{{ curso.nome }}</md-checkbox>
+    <div flex="100" layout="row" hide show-gt-sm>
+        <md-checkbox ng-checked="ctrl.verificarCursos(curso.id)" ng-click="ctrl.adicionarCurso(curso.id)" ng-repeat="curso in ctrl.cursos">{{ curso.nome }}</md-checkbox>
+    </div>
+
+    <div flex="100" layout="row" hide-gt-sm ng-repeat="curso in ctrl.cursos">
+        <md-checkbox ng-checked="ctrl.verificarCursos(curso.id)" ng-click="ctrl.adicionarCurso(curso.id)" >{{ curso.nome }}</md-checkbox>
     </div>
 </div>

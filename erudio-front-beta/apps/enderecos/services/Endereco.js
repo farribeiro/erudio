@@ -7,9 +7,9 @@
             this.url = 'enderecos';
         }
         
-        get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
-        getEstrutura() { return { logradouro:null, numero:null, bairro:null, complemento:null, cep:null, cidade: { id:null, nome:null, estado: { id:null, nome:null, sigla:null }, latitude: null, longitude: null } }; }
+        get(id,loader){ return this.rest.um(this.url,id,loader); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
+        getEstrutura() { return { logradouro:null, numero:null, bairro:null, complemento:null, cep:null, cidade: { id:null, estado: { id:null }, latitude: null, longitude: null } }; }
         
         salvar(objeto,feedback) { 
             if (feedback === true) {

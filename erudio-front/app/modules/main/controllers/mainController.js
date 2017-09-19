@@ -29,7 +29,7 @@
         'unidadeModule', 'tipoModule', 'turmaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
         'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
         'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','historicoEscolarModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
-        'grupoPermissaoModule', 'turmaMistaModule','homeModule','relatorioModule','diarioNotasModule','relatoriosDefasadosModule','reclassificacaoModule', 'mediaModule','boletinsModule','espelhoModule']);
+        'grupoPermissaoModule', 'turmaMistaModule','homeModule','relatorioModule','diarioNotasModule','relatoriosDefasadosModule','reclassificacaoModule', 'mediaModule','boletinsModule','espelhoModule','alunosANEEModule', 'historicosModule']);
 
     mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
         $templateCache.removeAll();

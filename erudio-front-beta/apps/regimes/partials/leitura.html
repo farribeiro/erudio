@@ -1,4 +1,7 @@
-<div class="modal-padding">
-    <h3>{{ unidadeInfo.nomeCompleto }}</h3>
-    <i>{{ unidadeInfo.email }}</i>
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && !ctrl.novo">
+    {{ regime.nome }}
+</div>
+
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && ctrl.novo">
+    Você não tem permissão para criar novos regimes de ensino.
 </div>

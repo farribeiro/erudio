@@ -1,8 +1,34 @@
 <div layout-gt-sm="row">
-    <input-instituicao type="text" model="nome" required="true"></input-instituicao>
-    <input-instituicao type="text" model="sigla"></input-instituicao>
-</div>
-<div layout-gt-sm="row">
-    <input-instituicao type="text" model="cpfCnpj"></input-instituicao>
-    <input-instituicao type="text" model="email" required="true"></input-instituicao>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="instituicao.nome" type="text" name="nome" required/>
+        <div ng-messages="instituicoesForm.instituicao.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <!-- <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="sigla">Sigla</label>
+        <md-icon class="material-icons">text_format</md-icon>
+        <input id="sigla" ng-model="instituicao.sigla" type="text" name="sigla"/>
+    </md-input-container> -->
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="cnpj">CNPJ</label>
+        <md-icon class="material-icons">account_box</md-icon>
+        <input id="cnpj" class="maskCNPJ" ng-model="instituicao.cpfCnpj" type="text" name="cnpj"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="email">E-Mail</label>
+        <md-icon class="material-icons">email</md-icon>
+        <input id="email" ng-model="instituicao.email" type="text" name="email" required/>
+        <div ng-messages="instituicoesForm.instituicao.email.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>

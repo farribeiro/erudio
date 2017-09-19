@@ -1,80 +1,116 @@
 (function (){
-    var quadroHorarios = angular.module('quadroHorarios',['ngMaterial', 'util', 'erudioConfig', 'shared']);
-    quadroHorarios.controller('QuadroHorarioController',['$scope', 'Util', '$mdDialog', 'ErudioConfig', 'Shared', '$timeout', function($scope, Util, $mdDialog, ErudioConfig, Shared, $timeout){
+    /*
+     * @ErudioDoc Instituição Controller
+     * @Module instituicoes
+     * @Controller InstituicaoController
+     */
+    class QuadroHorarioController {
+        constructor (service, util, $mdDialog, erudioConfig, $timeout, unidadeService, $scope) {
+            this.service = service;
+            this.util = util;
+            this.mdDialog = $mdDialog;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.unidadeService = unidadeService;
+            this.scope = $scope;
+            this.permissaoLabel = "QUADROS_HORARIO";
+            this.titulo = "Grades de Horário";
+            this.linkModulo = "/#!/quadros-horario/";
+            this.grade = null;
+            this.nomeUnidade = null;
+            this.unidade = null;
+            this.pagina = 0;
+            this.finalLista = false;
+            this.itemBusca = '';
+            this.buscaIcone = 'account_balance';
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Quadros de Horário');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //QUADROS EM USO
-        $scope.quadro = null;
+        preparaLista(){
+            this.subheaders = [{ label: 'Nome do Grade' }];
+            this.opcoes = [{tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true}];
+            this.link = this.erudioConfig.dominio + this.linkModulo;
+            this.fab = { tooltip: 'Adicionar Grade de Horário', icone: 'add', href: this.link+'novo' };
+            this.template = this.util.getTemplateLista();
+            this.lista = this.util.getTemplateListaEspecifica('quadroHorarios');
+        }
         
-        //ATRIBUTOS EXTRAS
-        $scope.items = []; $scope.item = {id: null}; $scope.itemBusca = ''; $scope.autoPlaceholder = 'Selecione uma Unidade de Ensino';
-        
-        //SETA BUSCA CUSTOM
-        $scope.buscaCustom = Util.setBuscaCustom('/apps/quadroHorarios/partials');
-        
-        //SETA COLUNAS DA LISTA
-        $scope.subheaders =[{label: 'Nome do Quadro'}];
-        
-        //OPCOES
-        $scope.opcoes = [{tooltip: 'Remover', icone: 'delete', opcao: 'remover'}];
-        
-        //OPCOES DO BOTAO FAB
-        $scope.link = ErudioConfig.dominio + '/#!/quadros-horario/';
-        $scope.fab = {tooltip: 'Adicionar Quadro de Horário', icone: 'add', href: $scope.link+'novo'};
-        
-        //PAGINA DA LISTA
-        $scope.pagina = 0;
-        
-        //BUSCAR UNIDADES
-        $scope.buscarUnidades = function (){
-            var promise = Util.buscar('unidades-ensino',null);
-            promise.then(function(response){ $scope.items = response.data; });
-        };
-        
-        //FILTRANDO AUTOCOMPLETE
-        $scope.filtrar = function (query){ return Util.filtrar(query, $scope.items); };
-        
-        //BUSCANDO QUADROS
-        $scope.buscarQuadros = function () {
-            var promise = Util.buscar('quadro-horarios',{page: $scope.pagina, unidadeEnsino: $scope.unidade.id});
-            promise.then(function(response){ 
-                $scope.objetos = response.data;
-                $scope.objetos.forEach(function(objeto, i) {
-                    var inicioArr = objeto.inicio.split(":"); var terminoArr = objeto.termino.split(":");
-                    objeto.inicio = inicioArr[0]+":"+inicioArr[1]; objeto.termino = terminoArr[0]+":"+terminoArr[1];
-                });
+        preparaBusca(){
+            this.busca = '';
+            this.buscaCustomTemplate = this.util.getTemplateBuscaCustom();
+            this.buscaCustom = this.util.setBuscaCustom('/apps/quadroHorarios/partials');
+        }
+
+        ajustaHora() {
+            this.objetos.forEach(function(objeto, i) {
+                var inicioArr = objeto.inicio.split(":"); var terminoArr = objeto.termino.split(":");
+                objeto.inicio = inicioArr[0]+":"+inicioArr[1]; objeto.termino = terminoArr[0]+":"+terminoArr[1];
             });
-        };
+        }
         
-        //BUSCANDO TEMPLATE DA LISTA GERAL E ESPECIFICA
-        $scope.lista = Util.getTemplateLista();
-        $scope.listaEspecifica = Util.getTemplateListaEspecifica('quadroHorarios');
+        buscarQuadrosHorarios(loader) {
+            if (!this.util.isVazio(this.unidade)) {
+                this.service.getAll({page: this.pagina, unidadeEnsino: this.unidade.id},loader).then((grades) => {
+                    if (this.pagina === 0) { this.objetos = grades; this.ajustaHora(); } else { 
+                        if (grades.length !== 0) { this.objetos = this.objetos.concat(grades); this.ajustaHora(); } else { this.finalLista = true; this.pagina--; }
+                    }
+                });
+            }
+        }
         
-        //BUSCANDO TEMPLATE DA BUSCA 
-        $scope.buscaCustomTemplate = Util.getTemplateBuscaCustom();
+        executarOpcao(event,opcao,objeto) {
+            this.grade = objeto; this.modalExclusao(event);
+        }
         
-        //EXECUTANDO OPCOES
-        $scope.executarOpcao = function (event, opcao, objeto) { $scope.quadro = objeto; $scope.modalExclusão(event); };
+        modalExclusao(event) {
+            var self = this;
+            let confirm = this.util.modalExclusao(event, "Remover Grade de Horário", "Deseja remover esta grade de horário?", 'remover', this.mdDialog);
+            this.mdDialog.show(confirm).then(function(){
+                let id = self.grade.id;
+                var index = self.util.buscaIndice(id, self.objetos);
+                if (index !== false) {
+                    self.service.remover(self.grade, "Grade de Horário","f");
+                    self.objetos.splice(index,1);
+                }
+            });
+        }
+
+        limparBusca() { this.nomeUnidade = ''; this.buscaIcone = 'account_balance';  this.objetos = []; }
+
+        paginar(){ this.pagina++; this.buscarQuadrosHorarios(true); }
+
+        buscarUnidades (query) { 
+            this.buscaIcone = 'clear';
+            if (query.length > 2) {
+                return this.unidadeService.getAll({nome: query},true);
+            } else { return []; }
+        }
         
-        //ABRINDO MODAL DE EXCLUSAO
-        $scope.modalExclusão = function (event) {
-            var confirm = Util.modalExclusao(event, 'Remover Quadro de Horário', 'Deseja remover este Quadro de Horário?', 'remover', $mdDialog);
-            $mdDialog.show(confirm).then(function() { 
-                var remocao = Util.remover($scope.quadro, 'Quadro de Horário', 'm'); remocao.then(function(){ $scope.buscarQuadros(); });
-            }, function() {});
-        };
-        
-        //SELECIONAR AUTOCOMPLETE
-        $scope.selecionar = function (item) { if (Util.isVazio(item.id)) { $scope.objetos = []; } else { $scope.unidade = item; $scope.buscarQuadros(); } };
-        
-        //PAGINANDO
-        $scope.paginaProxima = function (){ $scope.pagina++; $scope.buscarQuadros(); };
-        $scope.paginaAnterior = function (){ if ($scope.pagina > 0) { $scope.pagina = $scope.pagina - 1; $scope.buscarQuadros(); } };
-        
-        //INICIAR
-        Util.inicializar(); $scope.buscarUnidades(); $timeout(function(){$('md-autocomplete-wrap').removeClass('md-whiteframe-z1');},500);
-        Util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
-    }]);
+        iniciar(){
+            let permissao = this.verificarPermissao(); let self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.util.mudarImagemToolbar('quadroHorarios/assets/images/quadroHorarios.jpg');
+                this.preparaLista();
+                this.preparaBusca();
+                $(".fit-screen").scroll(function(){
+                    let distancia = Math.floor(Number($(".conteudo").offset().top - $(document).height()));
+                    let altura = Math.floor(Number($(".main-layout").height()));
+                    let total = altura + distancia;
+                    if (total === 0) { self.paginar(); }
+                });
+                
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    QuadroHorarioController.$inject = ["QuadroHorarioService","Util","$mdDialog","ErudioConfig","$timeout","UnidadeService","$scope"];
+    angular.module('QuadroHorarioController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('QuadroHorarioController',QuadroHorarioController);
 })();

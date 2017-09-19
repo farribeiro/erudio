@@ -1,14 +1,21 @@
 <div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="buscaDisciplinaCurso" label="'Curso'" nome="'cursoBusca'">
-        <md-select ng-model="curso.id" ng-change="buscarEtapas()">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="curso">Curso</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="ctrl.curso.id" ng-change="ctrl.buscarEtapas()" id="curso" name="curso">
             <md-option value=""></md-option>
-            <md-option ng-repeat="curso in cursos" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
-    <form-select grid="flex-gt-sm" identidade="buscaDisciplinaCurso" label="'Etapa'" nome="'cursoEtapa'">
-        <md-select ng-model="etapa.id" ng-change="buscarDisciplinas()">
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="etapa">Etapa</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="ctrl.etapa.id" ng-change="ctrl.buscarDisciplinas()" id="etapa" name="etapa">
             <md-option value=""></md-option>
-            <md-option ng-repeat="etapa in etapas" value="{{ etapa.id }}">{{ etapa.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+    </md-input-container>
+    
 </div>

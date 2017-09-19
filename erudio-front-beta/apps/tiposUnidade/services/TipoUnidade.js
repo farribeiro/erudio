@@ -7,7 +7,7 @@
         }
         
         get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getEstrutura() { return { nome: null, sigla: null }; }
         atualizar(objeto) { return this.rest.atualizar(objeto, "Tipo de Unidade", "M"); }
         salvar(objeto) { return this.rest.salvar(this.url, objeto, "Tipo de Unidade", "M"); }        

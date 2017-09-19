@@ -1,99 +1,117 @@
 (function (){
-    var calendariosForm = angular.module('calendariosForm',['ngMaterial', 'util', 'erudioConfig']);
-    calendariosForm.controller('CalendarioFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, ErudioConfig, $routeParams, $timeout){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class CalendarioFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, unidadeService, sistemaAvaliacaoService){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.unidadeService = unidadeService;
+            this.sistemaAvaliacaoService = sistemaAvaliacaoService;
+            this.timeout = $timeout;
+            this.scope.calendario = null;
+            this.unidade = null;
+            this.permissaoLabel = "CALENDARIO";
+            this.titulo = "Calendários";
+            this.linkModulo = "/#!/calendarios/";
+            this.nomeForm = "calendarioForm";
+            this.itemBusca = '';
+            this.hoje = new Date();
+            this.dataInicio = new Date();
+            this.dataTermino = new Date();
+            this.iniciar();
+        }
         
-        //VERIFICA PERMISSOES
-        $scope.permissao = Util.verificaPermissao('CALENDARIO');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //VALIDANDO PERMISSAO
-        if ($scope.permissao) {
-            
-            Util.comPermissao(); $scope.escrita = Util.verificaEscrita('CALENDARIO');
-            $scope.validarEscrita = function (opcao) { return Util.validarEscrita(opcao, $scope.opcoes, $scope.escrita); };
-            $scope.isAdmin = Util.isAdmin(); $scope.mostraAutocomplete = true; $scope.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
-            $scope.disabledSelect = false;
-            
-            //SETA O TITULO
-            Util.setTitulo('Calendários');
-            
-            //ATRIBUTOS EXTRAS - autocomplete
-            $scope.items = []; $scope.item = {id: null}; $scope.itemBusca = ''; $scope.autoPlaceholder = '';
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('calendarios','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações do Calendário', href: this.util.getInputBlockCustom('calendarios','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
+        
+        buscarSistemas() { this.sistemaAvaliacaoService.getAll(null,true).then((sistemas) => this.sistemas = sistemas); }
+        buscarUnidades() { this.unidadeService.getAll(null,true).then((unidades) => this.unidades = unidades); }
+        buscarBases() {
+            var attrAtual = JSON.parse(sessionStorage.getItem('atribuicao-ativa'));
+            this.service.getAll({instituicao: attrAtual.instituicao.id}).then((bases) => this.bases = bases);
+        }
+        
+        filtrar (query) { if (query.length > 2) { return this.unidadeService.getAll({nome: query}); } }
 
-            //BUSCAR UNIDADES - autocomplete
-            $scope.buscarUnidades = function (){
-                if (!Util.isVazio($scope.calendario.id)) { $scope.selecionar($scope.calendario.instituicao); $timeout(function(){ Util.desabilitaForm('#calendariosForm'); $scope.disabledSelect = true; },500); }
-                if ($scope.isAdmin) { var promise = Util.buscar('unidades-ensino',null); promise.then(function(response){ $scope.items = response.data; });
+        buscarCalendario() {
+            var self = this;
+            this.scope.calendario = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((calendario) => {
+                    this.scope.calendario = calendario;
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
+            }
+        }
+        
+        validaCampo() { this.util.validaCampo(); }
+        
+        validar() { return this.util.validar(this.nomeForm); }
+        
+        salvar() {
+            if (this.validar()) {
+                this.scope.calendario.instituicao.id = this.unidade.id;
+                var calBase = "";
+                this.bases.forEach((base) => {
+                    if (base.id === parseInt(this.scope.calendario.calendarioBase.id)) { calBase = base.nome; }
+                });
+                this.scope.calendario.nome = this.unidade.nome + " - " + calBase;
+                this.scope.calendario.dataInicio = this.dataInicio.getYear() + '-' + this.dataInicio.getMonth() + '-' + this.dataInicio.getDay();
+                this.scope.calendario.dataTermino = this.dataTermino.getYear() + '-' + this.dataTermino.getMonth() + '-' + this.dataTermino.getDay();
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.calendario)) {
+                    resultado = this.service.salvar(this.scope.calendario);
                 } else {
-                    if ($scope.attr.atribuicoes.length > 1) { $scope.attr.forEach(function(a){ $scope.items.push(a.instituicao); }); $scope.mostraAutocomplete = true; }
-                    else { $scope.item.id = $scope.attr.atribuicoes[0].instituicao.id; $scope.calendario.instituicao.id = $scope.attr.atribuicoes[0].instituicao.id; $scope.mostraAutocomplete = false; }
+                    resultado = this.service.atualizar(this.scope.calendario);
                 }
-            };
-            
-            //FILTRANDO AUTOCOMPLETE - autocomplete
-            $scope.filtrar = function (query){ return Util.filtrar(query, $scope.items); };
-
-            //SELECIONAR AUTOCOMPLETE
-            $scope.selecionar = function (item) { if (Util.isVazio(item.id)) { $scope.objetos = []; } else { $scope.itemBusca = item.nomeCompleto; $scope.item.id = $scope.attr.atribuicoes[0].instituicao.id; $scope.calendario.instituicao.id = $scope.attr.atribuicoes[0].instituicao.id; } };
-
-            //BUSCAR SISTEMAS DE AVALIACAO
-            $scope.buscarSistemas = function (){
-                var promise = Util.buscar('sistemas-avaliacao',null);
-                promise.then(function(response) { $scope.sistemas = response.data; });
-            };
-
-            //CALENDARIO EM USO
-            $scope.calendario = Util.getEstrutura('calendario');
-
-            //SETA SUBHEADER DO FORM
-            $scope.subheaders =[{label: 'Informações do Calendário'}];
-
-            //TEMPLATE DOS BLOCOS DE INPUTS
-            $scope.inputs = [{ href: Util.getInputBlockCustom('calendarios','inputs') }];
-
-            //CRIAR FORMS
-            $scope.forms = [{ nome: 'calendariosForm', subheaders: $scope.subheaders }];
-
-            //OPCOES DO BOTAO VOLTAR
-            $scope.link = '/#!/calendarios/';
-            $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-
-            //BUSCANDO CALENDARIO
-            $scope.buscarCalendario = function () {
-                if (!Util.isNovo($routeParams.id)) {
-                    var promise = Util.um('calendarios',$routeParams.id);
-                    promise.then(function(response){ 
-                        $scope.calendario = response.data; $scope.calendario.dataInicio = Util.formataData(response.data.dataInicio); $scope.calendario.dataTermino = Util.formataData(response.data.dataTermino);
-                        $timeout(function(){ Util.aplicarMascaras(); $scope.buscarUnidades(); $scope.buscarSistemas(); $scope.buscarBase(); },300); $timeout(function(){ $("md-autocomplete-wrap").removeClass('md-whiteframe-z1').addClass('md-whiteframe-z0'); $("md-autocomplete-wrap").css('border-bottom','1px solid #eee'); },600); 
-                    });
-                } else { $timeout(function(){ Util.aplicarMascaras(); $scope.buscarUnidades(); $scope.buscarSistemas(); $scope.buscarBase(); },300); $timeout(function(){ $("md-autocomplete-wrap").removeClass('md-whiteframe-z1').addClass('md-whiteframe-z0'); $("md-autocomplete-wrap").css('border-bottom','1px solid #eee'); },600); }
-            };
-
-            //BUSCANDO CALEMDARIO BASE
-            $scope.buscarBase = function () {
-                var attrAtual = JSON.parse(sessionStorage.getItem('atribuicao-ativa'));
-                var promise = Util.buscar('calendarios',{instituicao: attrAtual.instituicao.id});
-                promise.then(function(response) { $scope.calendarios = response.data; });
-            };
-
-            //VALIDA CAMPO
-            $scope.validaCampo = function () { Util.validaCampo(); };
-
-            //SALVAR CALENDARIO
-            $scope.salvar = function () { 
-                if ($scope.validar('calendariosForm')) { 
-                    $scope.calendario.calendarioBase.id = parseInt($scope.calendario.calendarioBase.id); $scope.calendario.sistemaAvaliacao.id = parseInt($scope.calendario.sistemaAvaliacao.id);
-                    $scope.calendario.dataInicio = Util.converteData($scope.calendario.dataInicio); $scope.calendario.dataTermino = Util.converteData($scope.calendario.dataTermino);
-                    $timeout(function(){ var resultado = Util.salvar($scope.calendario,'calendarios'); resultado.then(function (){ Util.redirect($scope.fab.href); }); },500);
-                }
-            };
-
-            //VALIDAR FORM
-            $scope.validar = function (formId) { return Util.validar(formId); };
-
-            //INICIANDO
-            $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarCalendario();
-            Util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
-            
-        } else { Util.semPermissao(); }            
-    }]);
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao();
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('calendarios/assets/images/calendarios.jpg');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                $(".fit-screen").unbind('scroll');
+                this.preparaForm();
+                if (this.isAdmin) { this.buscarUnidades(); }
+                this.buscarSistemas();
+                this.buscarBases();
+                this.buscarCalendario();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    CalendarioFormController.$inject = ["CalendarioService","Util","ErudioConfig","$routeParams","$timeout","$scope","UnidadeService","SistemaAvaliacaoService"];
+    angular.module('CalendarioFormController',['ngMaterial', 'util', 'erudioConfig']).controller('CalendarioFormController',CalendarioFormController);
 })();

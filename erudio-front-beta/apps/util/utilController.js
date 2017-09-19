@@ -48,14 +48,67 @@
         
         //VALIDA CAMPO
         this.validaCampo = function() {
-            $('input').change(function(){ if (!$(this).hasClass('ng-invalid')) { $(this).parent().parent().find('.message-list').removeAttr('style'); } });
-            $('md-select').blur(function(){ if (!$(this).hasClass('ng-invalid')) { $(this).parent().parent().find('.message-list').removeAttr('style'); } });
+            $('input').change(function(){ 
+                if (!$(this).hasClass('md-input-invalid')) { 
+                    $(this).parent().removeClass('md-input-invalid');
+                    if ($(this).parent().parent().parent().parent().hasClass('autocomplete-wrap')) {
+                        $(this).parent().parent().parent().parent().find('.md-input-message-animation').removeAttr('style');
+                    }
+                    $(this).parent().find('.md-input-message-animation').removeAttr('style');
+                }
+            });
+            $('md-select').blur(function(){ 
+                if (!$(this).hasClass('md-input-invalid')) { 
+                    $(this).parent().removeClass('md-input-invalid');
+                    $(this).parent().find('.md-input-message-animation').removeAttr('style');
+                }
+            });
         };
-        
+
+        //FORÇAR VALIDAR CAMPO
+        this.validarCampos = function () {
+            var self = this;
+            $('input').each(function(){ 
+                if (!$(this).hasClass('md-input-invalid')) { 
+                    $(this).parent().removeClass('md-input-invalid');
+                    if ($(this).parent().parent().parent().parent().hasClass('autocomplete-wrap')) {
+                        $(this).parent().parent().parent().parent().find('.md-input-messages-animation').removeAttr('style');
+                    }
+                    $(this).parent().find('.md-input-message-animation').removeAttr('style');
+                }
+            });
+            $('md-select').each(function(){ 
+                if (!$(this).hasClass('ng-invalid')) { 
+                    $(this).parent().removeClass('md-input-invalid');
+                    $(this).parent().find('.md-input-message-animation').removeAttr('style');
+                } else {
+                    var elem = $(this).find('md-option[aria-selected="true"]');
+                    if (!self.isVazio(elem.attr('value'))) {
+                        $(this).removeClass('ng-invalid').removeClass('ng-invalid-required').addClass('ng-valid').addClass('ng-valid-required');
+                        $(this).parent().removeClass('md-input-invalid');
+                        $(this).parent().find('.md-input-message-animation').removeAttr('style');
+                    }
+                }
+            });
+        };
+
+        this.inicializaEnter = function (){
+            $("input").keypress(function(event){
+                var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { return true; } else { return false; }
+            });
+        };
+
         //MOSTRA MODAL DE EXCLUSAO
         this.modalExclusao = function(event, title, content, label, $mdDialog) {
             var confirm = $mdDialog.confirm().title(title).textContent(content).ariaLabel(label).targetEvent(event).ok('Remover').cancel('Cancelar');
             return confirm;
+        };
+        
+        //PEGA INDICE DO OBJETO NA LISTA
+        this.buscaIndice = function (id, list) {
+            var retorno = false;
+            list.forEach((item, i) => { if (id === item.id) { retorno = i; } });
+            return retorno;
         };
         
         //MOSTRA MODAL SIMPLES
@@ -74,7 +127,7 @@
         this.getCidades = function (estado) { return this.buscar('cidades',{ estado: estado }); };
         
         //VERIFICA VARIAVEL VAZIA
-        this.isVazio = function (value) { if (value === null || value === undefined || value === "") { return true; } else { return false; } };
+        this.isVazio = function (value) { if (value === null || value === undefined || value === "" || value.length === 0) { return true; } else { return false; } };
         
         //VERIFICA SE É CADASTRO OU EDICAO
         this.isNovoLabel = function (value) { if (value === 'novo') { return 'Cadastrar'; } else { return 'Editar'; } };
@@ -90,37 +143,31 @@
         
         //VALIDA FORM
         this.validar = function (formId) {
-            var errors = ''; var contador = 0; $('.form-errors').html('').append('<strong>Por favor, verifique os seguintes itens:</strong><br />');
-            var inputs = $('#'+formId).find('input[required]'); var retorno = true;
-            for (var i=0; i<inputs.length; i++) {
-                if (this.isVazio($(inputs[i]).val())) { contador++; var parent = $(inputs[i]).parent().parent(); var field = parent.find('label').html(); errors += field+', '; }
-                if (i === inputs.length-1 && errors.length > 0) { 
-                    var inicioToast = "<br />Os campos "; var finalToast = " são obrigatórios."; if (contador === 1) { inicioToast = "O campo "; finalToast = " é obrigatório."; } 
-                    errors = errors.slice(0,-2); $('.form-errors').append(inicioToast+errors+finalToast); $('.form-errors').show(); retorno = false;
-                }
-            }
-            
-            var invalidInputs = $('#'+formId).find('input.ng-invalid');
-            if (invalidInputs.length > 0) {
-                for (var i=0; i<invalidInputs.length; i++) {
-                    if ($(invalidInputs[i]).hasClass('ng-untouched')) {
-                        $(invalidInputs[i]).parent().parent().addClass('md-input-invalid');
-                        $(invalidInputs[i]).removeClass('ng-untouched').addClass('ng-touched');
+            var self = this; var retorno = true;
+
+            $("form#"+formId+" :input").each(function(){
+                if ( !self.isVazio($(this).attr('required')) && self.isVazio($(this).val()) ) {
+                    $(this).parent().addClass('md-input-invalid');
+                    $(this).parent().find('.md-input-message-animation').attr('style','opacity: 1; margin-top: 0px;');
+                    var auto = $(this).parent().parent().parent().parent();
+                    if (auto.hasClass('autocomplete-wrap')) {
+                        auto.find('.md-input-messages-animation').attr('style','height: 19px; opacity: 1; position: absolute; left: 38px;');
+                        if (!auto.hasClass('fix-wrap')) { auto.find('.md-input-messages-animation').css('margin-top','-38px;'); }
+                        auto.find('.md-input-message-animation').attr('style','opacity: 1; margin-top: -4px;');
                     }
-                }
-                $('.form-errors').append('<br />Os campos em vermelho contém dados inválidos.'); $('.form-errors').show(); retorno = false;
-            }
-            
-            var invalidSelect = $('#'+formId).find('md-select.ng-invalid');
-            if (invalidSelect.length > 0) { 
-                for (var i=0; i<invalidSelect.length; i++) {
-                    if ($(invalidSelect[i]).hasClass('ng-untouched')) {
-                        $(invalidSelect[i]).parent().parent().addClass('md-input-invalid');
-                        $(invalidSelect[i]).removeClass('ng-untouched').addClass('ng-touched');
-                    }
-                }
-                $('.form-errors').append('<br />Os campos de seleção em vermelho contém dados inválidos.'); $('.form-errors').show(); retorno = false;
-            }
+                    retorno = false;
+                } 
+            });
+
+            $("md-select").each(function(){
+                if ( !self.isVazio($(this).attr('required')) && $(this).hasClass('ng-invalid') ) {
+                    $(this).parent().addClass('md-input-invalid');
+                    $(this).parent().find('.md-input-message-animation').attr('style','opacity: 1; margin-top: 0px;');
+                    retorno = false;
+                } 
+            });
+
+            if (!retorno) { $('.fit-screen').scrollTop(0); }
             
             return retorno;
         };
@@ -197,7 +244,7 @@
         //VALIDA ESCRITA
         this.validarEscrita = function (opcao, opcoes, escrita) {
             this.validacaoEscrita = false;
-            for (var i=0; i<opcoes.length; i++) { if (opcoes[i].opcao === opcao && opcoes[i].validarEscrita === true) { this.validacaoEscrita = escrita; } else { this.validacaoEscrita === true; } }
+            for (var i=0; i<opcoes.length; i++) { if (opcoes[i].opcao === opcao) { this.validacaoEscrita = escrita; } else { this.validacaoEscrita === true; } }
             return this.validacaoEscrita;
         };
         
@@ -244,5 +291,10 @@
         
         //MOSTRAR LISTA
         //this.enterList = function (elem) { $(elem).each(function(i){ setTimeout(function(){ $(elem).eq(i).addClass('mostrar'); },175); }); };
+
+        //BUSCA CEP
+        this.buscaCEP = function (cep) {
+            return $.getJSON("https://viacep.com.br/ws/"+cep+"/json/?callback=?", (dados) => { return dados; });
+        };
     }]);
 })();

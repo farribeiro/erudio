@@ -1,50 +1,90 @@
 (function (){
-    var tipoUnidadeForm = angular.module('tipoUnidadeForm',['ngMaterial', 'util', 'erudioConfig']);
-    tipoUnidadeForm.controller('TipoUnidadeFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, ErudioConfig, $routeParams, $timeout){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class TipoUnidadeFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.scope.tipo = null;
+            this.permissaoLabel = "TIPOS_UNIDADE";
+            this.titulo = "Tipos de Unidade";
+            this.linkModulo = "/#!/tipos-unidade/";
+            this.nomeForm = "tipoUnidadeForm";
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Tipos de Unidade');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //TIPO EM USO
-        $scope.tipo = Util.getEstrutura('tipoUnidade');
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('tiposUnidade','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações', href: this.util.getInputBlockCustom('tiposUnidade','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações'}];
-        
-        //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('tiposUnidade','inputs') }];
-        
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'tiposUnidadeForm', subheaders: $scope.subheaders }];
-        
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/tipos-unidade/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-        
-        //BUSCANDO TIPO
-        $scope.buscarTipo = function () {
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('tipos-unidade-ensino',$routeParams.id);
-                promise.then(function(response){ $scope.tipo = response.data; Util.aplicarMascaras(); });
-            } else { $timeout(function(){ Util.aplicarMascaras(); },300); }
-        };
-        
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //SALVAR INSTITUICAO
-        $scope.salvar = function () {
-            if ($scope.validar('tiposUnidadeForm')) {
-                var resultado = Util.salvar($scope.tipo,'tipos-unidade-ensino','Tipo de Unidade','F');
-                resultado.then(function (){ Util.redirect($scope.fab.href); });
+        buscarTipo() {
+            var self = this;
+            this.scope.tipo = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((tipo) => {
+                    this.scope.tipo = tipo;
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
             }
-        };
+        }
         
-        //VALIDAR FORM
-        $scope.validar = function (formId) { return Util.validar(formId); };
+        validaCampo() { this.util.validaCampo(); }
         
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarTipo();
-        Util.mudarImagemToolbar('tiposUnidade/assets/images/tiposUnidade.jpeg');
-    }]);
+        validar() { return this.util.validar(this.nomeForm); }
+        
+        salvar() {
+            if (this.validar()) {
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.tipo)) {
+                    resultado = this.service.salvar(this.scope.tipo);
+                } else {
+                    resultado = this.service.atualizar(this.scope.tipo);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao(); var self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('tiposUnidade/assets/images/tiposUnidade.jpeg');
+                $(".fit-screen").unbind('scroll');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                this.preparaForm();
+                this.buscarTipo();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    TipoUnidadeFormController.$inject = ["TipoUnidadeService","Util","ErudioConfig","$routeParams","$timeout","$scope"];
+    angular.module('TipoUnidadeFormController',['ngMaterial', 'util', 'erudioConfig']).controller('TipoUnidadeFormController',TipoUnidadeFormController);
 })();

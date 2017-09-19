@@ -9,7 +9,7 @@
         $routeProvider.when('/',{ controller: 'LoginController' });
         
         //DEFININDO TRADUÇÕES
-        $translateProvider.useStaticFilesLoader({ prefix:ErudioConfigProvider.$get().dominio+'/util/translations/locale-', suffix: '.json' });
+        $translateProvider.useStaticFilesLoader({ prefix:ErudioConfigProvider.$get().dominio+'/apps/util/translations/locale-', suffix: '.json' });
         $translateProvider.translations('en'); 
         $translateProvider.translations('ptbr');
         $translateProvider.preferredLanguage('ptbr');
@@ -26,6 +26,12 @@
         //ATRIBUTOS
         $scope.progresso = false;    
         $scope.auth = {username: null, password: null};
+
+        $scope.inicializaEnter = function (){
+            $timeout(function(){ $("input").keypress(function(event){
+                var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { $scope.autenticar(); return false; } else { return true; }
+            }); },500);
+        };        
         
         $scope.autenticar = function (){
             if (Util.validar("authForm")) {
