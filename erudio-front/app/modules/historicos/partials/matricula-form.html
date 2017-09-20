@@ -35,22 +35,203 @@
                 
                 <div class="card">
                     <div class="card-content white-text" style='color: #000 !important;'>
-                        <span class="card-title" style='color: #000;'>Etapas</span>
+                        <span class="card-title" style='color: #000;'>Histórico - {{ matricula.aluno.nome }}</span>
                         <ul class="collapsible" data-collapsible="accordion">
                             <li ng-repeat="etapa in etapas">
-                                <div class="collapsible-header" ng-click='getDisciplinasByEtapa(etapa.id)'>{{ etapa.nome }}</div>
+                                <div class="collapsible-header" ng-if="etapa.etapaCursada !== undefined" ng-click='getDisciplinasByEtapa(etapa.id)'>{{ etapa.nome }} - {{ etapa.etapaCursada.unidadeEnsino }} - {{ etapa.etapaCursada.ano }} - {{ etapa.etapaCursada.cidade.nome }}/{{ etapa.etapaCursada.cidade.estado.sigla }}</div>
+                                <div class="collapsible-header" ng-if="etapa.etapaCursada === undefined" ng-click='getDisciplinasByEtapa(etapa.id)'>{{ etapa.nome }}</div>
                                 <div class="collapsible-body">
-                                    <p>
-                                        
-                                    </p>
-                                <div>
+                                    <div class="row center-align" ng-show="mostraSpinner">
+                                        <div style="padding: 10px;" class="col s12">
+                                            <div class="preloader-wrapper small active" >
+                                                <div class="spinner-layer spinner-blue-only">
+                                                    <div class="circle-clipper left">
+                                                        <div class="circle"></div>
+                                                    </div><div class="gap-patch">
+                                                        <div class="circle"></div>
+                                                    </div><div class="circle-clipper right">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-repeat="disciplina in disciplinasCursadas">
+                                        <div ng-if="$index === 0" >
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee;" class="col l4" ng-if="!disciplina.mediaFinal && !disciplina.frequenciaTotal"><strong>Disciplina</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l3" ng-if="disciplina.mediaFinal && disciplina.frequenciaTotal"><strong>Disciplina</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l4" ng-if="!disciplina.mediaFinal"><strong>Média Final</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l3" ng-if="disciplina.mediaFinal"><strong>Média Final</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l4" ng-if="!disciplina.frequenciaTotal"><strong>Frequência</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l3" ng-if="disciplina.frequenciaTotal"><strong>Frequência</strong></div>
+                                            <div style="padding-bottom: 10px; padding-top: 10px; border-bottom: 1px solid #eee; background: #eee" class="col l3" ng-if="disciplina.mediaFinal && disciplina.frequenciaTotal && disciplina.auto === true"><strong>Opções</strong></div>
+                                        </div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l4" ng-if="!disciplina.mediaFinal && !disciplina.frequenciaTotal">{{ disciplina.nomeExibicao }}</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l3" ng-if="disciplina.mediaFinal && disciplina.frequenciaTotal">{{ disciplina.nomeExibicao }}</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l4" ng-if="!disciplina.mediaFinal">Média final não finalizada.</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l3" ng-if="disciplina.mediaFinal">{{ disciplina.mediaFinal }}</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l4" ng-if="!disciplina.frequenciaTotal">Frequência final não finalizada</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l3" ng-if="disciplina.frequenciaTotal">{{ disciplina.frequenciaTotal }}%</div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l3" ng-if="disciplina.mediaFinal && disciplina.frequenciaTotal && disciplina.auto === true">
+                                            <a class="waves-effect waves-blue btn-flat" ng-click="getMediasParciais(disciplina)">Ver Médias</a>
+                                        </div>
+                                        <div style="padding-bottom: 10px; padding-top: 10px;" class="col l3" ng-if="disciplina.mediaFinal && disciplina.frequenciaTotal && disciplina.auto === false">
+                                            <a class="waves-effect waves-blue btn-flat" ng-click="modalDisciplina(disciplina.id)">EDITAR</a>
+                                            <a class="waves-effect waves-blue btn-flat" ng-click="modalRemoveDisciplinaNova(disciplina, $index)">REMOVER</a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12 right-align" style="padding-bottom: 10px; padding-top: 10px;">
+                                            <a class="waves-effect waves-light btn green" ng-click="modalDisciplina()">Adicionar Disciplina</a>
+                                            <a ng-if="!etapa.etapaCursada.auto || etapa.etapaCursada === undefined" class="waves-effect waves-light btn blue" ng-click="modalConclusao()">Dados de conclusão</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
                         </ul>
                     </div>
+                    <div class="end-card right-align" style="margin-bottom:0px; padding: 0;">
+                        <a class="waves-effect waves-blue btn-flat" ng-click="getPDF(config.urlRelatorios+'/historico?matricula='+matricula.id)">IMPRIMIR</a>
+                    </div>
                 </div>
-                
+            </div>
+        </div>
+    </div>
+</div>
+        
+<div id="modal-disciplinas-novas" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno" style="height: 200px;">
+                    <h4 style="color:white;position:relative;top:1550px;padding-left:10px;">Adicionar Disciplina</h4>
+                </div>
+                <div class="row">
+                    <div class="col s12" style="padding: 10px; text-align: center;">Se a disciplina desejada não estiver na lista, entre em contato com o Administrador do Sistema para incluí-la.</div>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12 input-field">
+                        <i class="material-icons prefix">location_on</i>
+                        <select id="discConclusao" data-ng-model="disciplinaConclusaoId" data-ng-disabled="!escrita" required>
+                            <option value="{{ disciplina.id }}" data-ng-selected="verificaDisciplinaConclusao(disciplina.id)" data-ng-repeat="disciplina in todasDisciplinas">{{ disciplina.nomeExibicao }}</option>
+                        </select>
+                        <label for="discConclusao" class="ajuste-select-top-label">Disciplina*</label>
+                    </div>
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">filter_8</i>
+                        <input id="mFinal" type="text" class="validate" data-ng-model="mediaFinalConclusao" data-ng-disabled="!escrita" required />
+                        <label for="mFinal">Média Final*</label>
+                    </div>
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">filter_7</i>
+                        <input id="freq" type="text" class="validate" data-ng-model="freqConclusao" data-ng-disabled="!escrita" required />
+                        <label for="freq">Frequência Total(%)*</label>
+                    </div>
+                    <div class="col s12 m12 l12 input-field">
+                        <i class="material-icons prefix">location_on</i>
+                        <select id="statusConclusao" data-ng-model="statusConclusao" data-ng-disabled="!escrita" required>
+                            <option value="APROVADO" data-ng-selected="verificaSelectStatus('APROVADO')">APROVADO</option>
+                            <option value="DISPENSADO" data-ng-selected="verificaSelectStatus('DISPENSADO')">DISPENSADO</option>
+                        </select>
+                        <label for="statusConclusao">Status*</label>
+                    </div>
+                </div>
+            </div>
+            <div class="end-card" style="margin-bottom:0px; padding: 0;">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat">NÃO</a>
+                    <a href="" data-ng-click="gerarDisciplinaCursada()" class="modal-action modal-close waves-effect waves-green btn-flat ">SALVAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+<div id="modal-parciais" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno">
+                    <h4 style="color:white;position:relative;top:250px;padding-left:10px;">Médias Parciais - {{ nomeDisc }}</h4>
+                </div>
+                <div class="row">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-ng-repeat="md in totalTh track by $index" ng-class="oddTable($index)" style="text-align: center;">{{ md }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-ng-repeat="media in mediasConclusao track by $index" ng-class="oddTable($index)" style="text-align: center;">{{ media }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="modal-dados-conclusao" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-info-aluno">
+                    <h4 style="color:white;position:relative;top:250px;padding-left:10px;">Inserir dados de conclusão</h4>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">account_box</i>
+                        <input id="unidade" type="text" focus-on="focusMe" class="validate" data-ng-model="unidadeConclusao" data-ng-disabled="!escrita" required />
+                        <label for="unidade">Unidade de Ensino*</label>
+                    </div>
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">number</i>
+                        <input id="ano" type="text" class="validate" data-ng-model="anoConclusao" data-ng-disabled="!escrita" required />
+                        <label for="ano">Ano*</label>
+                    </div>
+                    <div class="col s12 m12 l12 input-field">
+                        <i class="material-icons prefix">location_on</i>
+                        <select id="estadoConclusao" data-ng-change="selecionaEstado()" data-ng-model="estadoId" data-ng-disabled="!escrita" required>
+                            <option value="{{ estado.id }}" data-ng-selected="verificaSelectEstado(estado.id)" data-ng-repeat="estado in estados">{{ estado.nome }}</option>
+                        </select>
+                        <label for="estadoConclusao" class="ajuste-select-top-label">Estado*</label>
+                    </div>
+                    <div class="col s12 m12 l12 input-field">
+                        <i class="material-icons prefix">location_on</i>
+                        <select id="cidadeConclusao" data-ng-model="cidadeId" data-ng-disabled="!escrita" required>
+                            <option value="{{ cidade.id }}" data-ng-selected="verificaSelectCidade(cidade.id)" data-ng-repeat="cidade in cidades">{{ cidade.nome }}</option>
+                        </select>
+                        <label for="cidadeConclusao">Cidade*</label>
+                    </div>                    
+                </div>
+            </div>
+            <div class="end-card" style="margin-bottom:0px;">
+                <div class="modal-footer">
+                    <a href=""  class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="gerarEtapaCursada()" class="modal-action modal-close waves-effect waves-green btn-flat ">SALVAR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="remover-enturmacao-disciplina-nova" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-banner-matricula">
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 14rem; color: white;">Remover Disciplina</h4>
+                </div>
+                <p>Você realmente deseja remover a disciplina {{ nomeDisciplinaRemover }}?</p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat">NÃO</a>
+                    <a href="" data-ng-click="removerDisciplinaNova()" class="modal-action modal-close waves-effect waves-green btn-flat">REMOVER</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

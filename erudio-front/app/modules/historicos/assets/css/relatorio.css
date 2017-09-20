@@ -28,3 +28,7 @@
     background: url('../images/banner-final.jpg') no-repeat center center;
     background-size: 100% auto;
 }
+
+.odd {
+    background: #E0E0E0 !important;
+}
