@@ -146,6 +146,12 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         }
     }
     
+    protected function beforeRemove($disciplinaCursada) {
+        if ($disciplinaCursada->getAuto() && $disciplinaCursada->getEnturmacao()) {
+            throw new IllegalOperationException('Disciplinas cursadas geradas pelo sistema não podem ser excluídas');
+        }
+    }
+
     function encerrar(DisciplinaCursada $disciplina, $status = null) {
         if ($status) {
             $disciplina->encerrar($status);

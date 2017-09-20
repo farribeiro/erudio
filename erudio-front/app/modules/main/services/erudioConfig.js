@@ -28,19 +28,17 @@
     var erudioConfig = angular.module('erudioConfig',[]);
 
     erudioConfig.service('ErudioConfig', [function () {
-        this.dominio = 'http://10.100.0.143/erudio/erudio/erudio-front'; this.extraUrl = '/erudio/erudio/erudio-front';
+        this.dominio = 'http://localhost/erudio/erudio-front';
+        this.extraUrl = '/erudio/erudio-front';
         //this.dominio = 'http://erudio.itajai.sc.gov.br'; this.extraUrl = '';
         
         //this.urlServidor = 'http://novo.erudio.itajai.sc.gov.br/servicos/web/app_dev.php/api';
         //this.urlRelatorios = 'http://novo.erudio.itajai.sc.gov.br/servicos/web/app_dev.php/api/report';
         //this.urlUpload = 'http://novo.erudio.itajai.sc.gov.br/servicos/web/bundles/assets/uploads/';
         
-        //this.urlServidor = 'http://10.100.1.134/erudio/erudio-server/web/app_dev.php/api';
-        this.urlServidor = 'http://10.100.0.208/erudio/erudio-server/web/app_dev.php/api';
-        //this.urlRelatorios = 'http://10.100.1.134/erudio/erudio-server/web/app_dev.php/api/report';
-        this.urlRelatorios = 'http://10.100.0.208/erudio/erudio-server/web/app_dev.php/api/report';
-        //this.urlUpload = 'http://10.100.1.134/erudio/erudio-server/web/bundles/assets/uploads/';
-        this.urlUpload = 'http://10.100.0.208/erudio/erudio-server/web/bundles/assets/uploads/';
+        this.urlServidor = 'http://10.100.1.134/erudio/erudio-server/web/app_dev.php/api';
+        this.urlRelatorios = 'http://10.100.1.134/erudio/erudio-server/web/app_dev.php/api/report';
+        this.urlUpload = 'http://10.100.1.134/erudio/erudio-server/web/bundles/assets/uploads/';
         
         this.urlTemplateInicio = "/app/modules/";
         this.urlTemplateFinal = "/partials/";

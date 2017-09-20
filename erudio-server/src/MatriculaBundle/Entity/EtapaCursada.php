@@ -81,7 +81,7 @@ class EtapaCursada extends AbstractEditableEntity {
     * @JMS\Groups({"LIST"}) 
     * @ORM\Column(nullable = false) 
     */
-    private $status;
+    private $status = self::STATUS_APROVADO;
     
     /** 
     * @JMS\Groups({"DETAILS"}) 
