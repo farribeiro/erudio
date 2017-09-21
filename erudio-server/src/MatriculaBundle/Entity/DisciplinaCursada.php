@@ -73,7 +73,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})
-    * @JMS\Type("float")
     * @ORM\Column(name = "media_final")
     */
     private $mediaFinal;

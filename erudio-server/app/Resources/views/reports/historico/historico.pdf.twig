@@ -1,0 +1,55 @@
+<pdf>
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}
+            <h1>Histórico Escolar</h1>
+            <h3>{{instituicao.instituicaoPai.nomeCompleto}}</h3>
+        {% endblock %}
+        
+        {% block info %}{% endblock %}  
+        
+        {% block content %}
+            <div margin-top="30px" padding="5px" border-size="1px" font-size="12px" breakable="false">
+                {{aluno.nome|upper}}, natural de {{aluno.endereco.cidade.nome|upper}}, 
+                estado de {{aluno.endereco.cidade.estado.nome}}, de nacionalidade {{aluno.nacionalidade}},
+                do sexo {{aluno.genero == 'M' ? 'MASCULINO' : 'FEMININO'}}, matrícula {{matricula.codigo}},
+                nascido(a) em {{aluno.dataNascimento|date('d/m/Y')}}, filho(a) de {{aluno.nomeMae}} e {{aluno.nomePai}},
+                concluiu os anos/séries do curso de {{matricula.curso.nome|upper}} nos termos da lei vigente:
+            </div>
+            <div margin-top="30px" font-size="10px" breakable="false">
+                <table>
+                    {% for disciplina, notas in dados.notas %}
+                        <tr>
+                            <td>{{disciplina}}</td>
+                            {% for nota in notas %}
+                                <td>{{nota}}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div margin-top="30px" font-size="10px" breakable="false">
+                <table>
+                    <tr>
+                        <td><strong>Ano Escolar</strong></td>
+                        <td><strong>Ano</strong></td>
+                        <td><strong>Resultado</strong></td>
+                        <td><strong>Unidade de Ensino</strong></td>
+                        <td><strong>Município</strong></td>
+                        <td><strong>UF</strong></td>
+                    </tr>
+                    {% for etapa in dados.etapasCursadas %}
+                        <tr>
+                            <td>{{etapa.etapa.nome}}</td>
+                            <td>{{etapa.ano}}</td>
+                            <td>{{etapa.status}}</td>
+                            <td width="250px">{{etapa.unidadeEnsino}}</td>
+                            <td width="150px">{{etapa.cidade.nome}}</td>
+                            <td>{{etapa.cidade.estado.sigla}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+       {% endblock %}
+    {% endembed %}
+</pdf>
+
