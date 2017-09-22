@@ -45,6 +45,7 @@ class AlunoController extends Controller {
                 'id' => $m->getId(),
                 'codigo' => $m->getCodigo(),
                 'curso' => $m->getCurso()->getNome(),
+                'unidadeEnsino' => $m->getUnidadeEnsino()->getNomeCompleto(),
                 'dataCadastro' => $m->getDataCadastro()->format('Y-m-d H:i:s'),
                 'status' => $m->getStatus()
             ];
@@ -105,6 +106,7 @@ class AlunoController extends Controller {
             return [
                 'id' => $d->getId(),
                 'disciplina' => $d->getNomeExibicao(),
+                'sigla' => $d->getSigla(),
                 'status' => $d->getStatus(),
                 'mediaFinal' => $d->getMediaFinal(),
                 'frequencia' => $d->getFrequenciaTotal(),

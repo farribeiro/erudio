@@ -41,7 +41,7 @@ class ObservacaoHistorico extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    * @ORM\ManyToOne(targetEntity = "Matricula", inversedBy = "observacoesHistorico") 
     */
     private $matricula;
     
