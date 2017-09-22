@@ -17,13 +17,13 @@ class HistoricoFacade {
         $notas = [];
         foreach ($etapas as $etapa) {
             $disciplinas = $this->disciplinaCursadaFacade->findAprovadas($matricula, $etapa);
-            foreach ($disciplinas as $disciplina) {
-                $notas[$d->getNomeExibicao()][$etapa->getOrdem() - 1] = $disciplina->getMediaFinal();
+            foreach ($disciplinas as $d) {
+                $notas[$d->getNomeExibicao()][$etapa->getOrdem()] = $d->getMediaFinal();
             }
         }
         return [
             'matricula' => $matricula,
-            'etapasCursadas' => $matricula->getEtapasCursadas(),
+            'etapasCursadas' => $matricula->getEtapasCursadas()->toArray(),
             'notas' => $notas
         ];
     }

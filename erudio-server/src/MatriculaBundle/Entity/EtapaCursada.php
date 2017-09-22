@@ -97,7 +97,7 @@ class EtapaCursada extends AbstractEditableEntity {
     private $insercaoManual = true;
     
     function __construct(Matricula $matricula, Etapa $etapa, $ano, $unidadeEnsino, $cidade,
-            $status = self::STATUS_APROVADO, $enturmacao = null) {
+            $status = self::STATUS_APROVADO, Enturmacao $enturmacao = null) {
         $this->matricula = $matricula;
         $this->etapa = $etapa;
         $this->ano = $ano;

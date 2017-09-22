@@ -160,6 +160,15 @@ class DisciplinaCursadaController extends AbstractEntityController {
         return $this->put($request, $id, $disciplina, $errors);
     }
     
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
+    }
+    
 }
 
 /**  Wrapper class for batch operations*/
