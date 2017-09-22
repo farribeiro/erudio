@@ -128,10 +128,15 @@
                     var etapa = response.data;
                     if (!etapa.integral) {
                         $scope.mostraPeriodo = true; $scope.integral = false;
-                        var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
-                        promise.then(function (response){
-                            $scope.agrupamentos = response.data;
-                            $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                        var promise = Servidor.buscar('turmas/'+$scope.turma.id+'/disciplinas-ofertadas',null);
+                        promise.then(function(response){
+                            var disciplina = response.data[0];
+                            $scope.agrupamentoSelecionado.id = disciplina.agrupamento.id;
+                            var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
+                            promise.then(function (response){
+                                $scope.agrupamentos = response.data;
+                                $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                            });
                         });
                     } else {
                         $scope.mostraPeriodo = false; $scope.integral = true;
@@ -792,7 +797,7 @@
                     //if ($scope.disciplinasOfertadas.length > 0) {
                         $scope.turma.periodo.id = parseInt($scope.turma.periodo.id);
                         if ($scope.turma.nome && $scope.turma.limiteAlunos && $scope.turma.etapa.id && $scope.turma.turno.id && $scope.turma.calendario.id && $scope.turma.quadroHorario.id && $scope.turma.periodo.id && $scope.agrupamentoSelecionado.id) {
-                            var novo = false;
+                            var novo = false; //$scope.turma.agrupamento = { id: $scope.agrupamentoSelecionado.id };
                             if ($scope.turma.id === undefined) { novo = true; }
                             var promise = Servidor.finalizar($scope.turma, 'turmas', 'Turma');
                             promise.then(function (response) { 
@@ -877,8 +882,8 @@
                                 $scope.cursoTurma.id = response.data.curso.id;
                                 $scope.curso.id = response.data.curso.id; $scope.etapa.id = $scope.turma.etapa.id;
                                 $scope.buscarEtapas(response.data.curso.id);
-                                //if (!response.data.integral) { $scope.buscaDisciplinaOfertada(response.data.id); $scope.buscarPeriodos(result.data.calendario.id, result.data.etapa.id); }
-                                if (!response.data.integral) { $scope.buscarPeriodos($scope.turma.calendario.id, response.data.id); $scope.integral = false; }
+                                if (!response.data.integral) { $scope.buscaDisciplinaOfertada(response.data.id); $scope.buscarPeriodos($scope.turma.calendario.id, response.data.id); $scope.integral = false; }
+                                //if (!response.data.integral) { $scope.buscarPeriodos($scope.turma.calendario.id, response.data.id); $scope.integral = false; }
                                 $scope.nomeUnidade = $scope.turma.unidadeEnsino.nomeCompleto;
                                 $scope.editando = true; $('#voltar').show(); $scope.mostraForm = true; $scope.formTurma = true;
                                 $scope.buscarCalendarios($scope.turma.unidadeEnsino.id);
