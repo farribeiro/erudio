@@ -11,6 +11,9 @@
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA
         this.getTemplateLista = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'lista.html'; };
         
+        //BUSCA O ENDERECO DO TEMPLATE DE LISTA ESPECIAL
+        this.getTemplateListaEspecial = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'listaEspecial.html'; };
+
         //BUSCA O ENDERECO DO TEMPLATE DE BUSCA
         this.getTemplateBuscaSimples = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'buscaSimples.html'; };
         
@@ -38,6 +41,7 @@
             $('.maskCEP').mask('99999999');
             $('.maskTelefone').mask('(99)999999999');
             $('.maskNumeroCasa').mask('99999');
+            $('.maskNumeros').mask('99999999999');
             $('.maskOrdem').mask('999');
             $('.maskAlunos').mask('999');
             $('.maskCargaHoraria').mask('999999');
@@ -83,6 +87,7 @@
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 } else {
                     var elem = $(this).find('md-option[aria-selected="true"]');
+                    console.log(elem);
                     if (!self.isVazio(elem.attr('value'))) {
                         $(this).removeClass('ng-invalid').removeClass('ng-invalid-required').addClass('ng-valid').addClass('ng-valid-required');
                         $(this).parent().removeClass('md-input-invalid');
@@ -159,11 +164,14 @@
                 } 
             });
 
-            $("md-select").each(function(){
+            $("form#"+formId+" md-select").each(function(){
                 if ( !self.isVazio($(this).attr('required')) && $(this).hasClass('ng-invalid') ) {
-                    $(this).parent().addClass('md-input-invalid');
-                    $(this).parent().find('.md-input-message-animation').attr('style','opacity: 1; margin-top: 0px;');
-                    retorno = false;
+                    var elem = $(this).find('md-option[aria-selected="true"]');
+                    if (self.isVazio(elem.attr('value'))) {
+                        $(this).parent().addClass('md-input-invalid');
+                        $(this).parent().find('.md-input-message-animation').attr('style','opacity: 1; margin-top: 0px;');
+                        retorno = false;
+                    }
                 } 
             });
 

@@ -10,8 +10,8 @@
             this.url = 'matriculas';
         }
         
-        get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
+        get(id,loader){ return this.rest.um(this.url,id,loader); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getCursos(opcoes){ return this.cursoService.getAll(opcoes); }
         getPessoas(opcoes){ return this.pessoaService.getAll(opcoes); }
         getUnidades(opcoes){ return this.unidadeService.getAll(opcoes); }

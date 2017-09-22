@@ -38,6 +38,9 @@
         'CalendarioFormController',
         'CalendarioViewController',
         'EventoController',
+        'EventoFormController',
+        'HistoricoController',
+        'HistoricoViewController',
         'teste'
     ];
     
@@ -97,7 +100,10 @@
         'PermissaoService',
         'UsuarioService',
         'EstadoService',
-        'CidadeService'
+        'CidadeService',
+        'EtapaCursadaService',
+        'DisciplinaCursadaService',
+        'MediaService'
     ];
     
     var todosModulos = configs.concat(services,controllers,directives);

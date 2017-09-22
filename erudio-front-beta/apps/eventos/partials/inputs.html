@@ -2,8 +2,31 @@
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="nome">Nome</label>
         <md-icon class="material-icons">account_circle</md-icon>
-        <input id="nome" ng-model="regime.nome" type="text" name="nome" required/>
-        <div ng-messages="regimeForm.regime.nome.$error" class="errors-wrapper">
+        <input id="nome" ng-model="evento.nome" type="text" name="nome" required/>
+        <div ng-messages="eventoForm.evento.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="descricao">Descrição</label>
+        <md-icon class="material-icons">edit</md-icon>
+        <input id="descricao" ng-model="evento.descricao" type="text" name="descricao" required/>
+        <div ng-messages="eventoForm.evento.descricao.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+</div>
+
+<div layout-gt-sm="row">
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="tipo">Tipo de Evento:</label>
+        <md-icon class="material-icons">select_all</md-icon>
+        <md-select ng-model="evento.tipo" id="tipo" name="tipo" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.tipos track by $index" value="{{ item.value }}">{{ item.label }}</md-option>
+        </md-select>
+        <div ng-messages="eventoForm.evento.tipo.$error" class="errors-wrapper">
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>

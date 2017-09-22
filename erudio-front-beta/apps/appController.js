@@ -48,6 +48,9 @@
             .when('/calendarios/:id',{ templateUrl: 'apps/calendarios/partials/form.html', controller: 'CalendarioFormController', controllerAs: 'ctrl' })
             .when('/calendarios/view/:id',{ templateUrl: 'apps/calendarios/partials/view.html', controller: 'CalendarioViewController', controllerAs: 'ctrl' })
             .when('/eventos',{ templateUrl: 'apps/eventos/partials/index.html', controller: 'EventoController', controllerAs: 'ctrl' })
+            .when('/eventos/:id',{ templateUrl: 'apps/eventos/partials/form.html', controller: 'EventoFormController', controllerAs: 'ctrl' })
+            .when('/historicos',{ templateUrl: 'apps/historicos/partials/index.html', controller: 'HistoricoController', controllerAs: 'ctrl' })
+            .when('/historicos/:id',{ templateUrl: 'apps/historicos/partials/view.html', controller: 'HistoricoViewController', controllerAs: 'ctrl' })
             .when('/teste',{ templateUrl: 'apps/teste/partials/teste.html', controller: 'TESTE', controllerAs: 'ctrl' })
             .otherwise({ redirectTo: '/404' })
         ;
@@ -96,7 +99,7 @@
         var menuLabels = ['INSTITUICOES_UNIDADES','INSTITUICOES','TIPOS_UNIDADE','UNIDADES_ENSINO',"GESTAO","REGIMES_ENSINO","CURSOS","ETAPAS","DISCIPLINAS",
             "MODULOS","TURNOS","MODELOS_HORARIO","QUADROS_HORARIO","CALENDARIOS","EVENTOS","VIDA_ESCOLAR","TURMAS","MATRICULAS","MOVIMENTACOES","NOTAS",
             "PESSOAS_TITULO","PESSOAS","CARGOS","FUNCIONARIOS","AVALIACOES_TITLE","TIPOS_AVALIACAO","HABILIDADES","AVALIACOES","DOCUMENTOS","BOLETIM",
-            "DIARIO_FREQUENCIA","DIARIO_NOTAS","RELATORIOS","ALUNOS_DEFASADOS","ALUNOS_ENTURMADOS","ESPELHO_NOTA","ADMINISTRADOR", "USUARIOS","PERMISSOES","GRUPOS_PERMISSOES",
+            "DIARIO_FREQUENCIA","DIARIO_NOTAS","RELATORIOS","ALUNOS_DEFASADOS","HISTORICO_ESCOLAR","ALUNOS_ENTURMADOS","ESPELHO_NOTA","ADMINISTRADOR", "USUARIOS","PERMISSOES","GRUPOS_PERMISSOES",
             "PERFIL","SOBRE","MUDOU","CONFIG","SAIR"];
         
         $timeout(function(){
@@ -170,6 +173,7 @@
                         links: [ 
                             { label: traducoes.ALUNOS_DEFASADOS, href: "#!/alunos-defasados", permissao: 'RELATORIOS' },
                             { label: traducoes.ALUNOS_ENTURMADOS, href: "#!/alunos-enturmados", permissao: 'RELATORIOS' },
+                            { label: traducoes.HISTORICO_ESCOLAR, href: "#!/historicos", permissao: 'RELATORIOS' },
                             { label: traducoes.ESPELHO_NOTA, href: "#!/espelho-notas", permissao: 'RELATORIOS' }
                         ]
                     },

@@ -102,12 +102,47 @@ md-input-container.md-icon-left { padding-left: 36px; padding-right: 0; }
 .modal-title { padding-left: 15px; }
 .menu-modal { position: absolute !important; right: 0px; top: 130px; }
 .md-open-menu-container { z-index: 1005 !important; }
-.md-dialog-container, .btn-zindex {
-    z-index: 1005 !important;
-}
+.md-dialog-container, .btn-zindex { z-index: 1005 !important; }
 md-input-container:not(.md-input-has-value) input:not(:focus) { color: #000 !important; }
-
 .md-virtual-repeat-container.md-autocomplete-suggestions-container { z-index: 1005 !important; }
+.end-card { margin-top: 15px; }
+
+.condensed-panel {
+    padding: 15px;
+    margin: 0 7px 0 7px;
+    background: #fff;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+}
+
+tr th { padding: 15px 0px 15px 10px !important; }
+tr td, tr th { border-bottom: 1px solid #eee !important; padding: 10px 0 10px 10px; font-size: 14px; text-align: right; }
+.first-column, .left-text-table { text-align: left !important; }
+tr th.table-modal { text-align: center !important; padding: 15px 10px 15px 10px !important; }
+tr td.table-modal { text-align: center !important; padding: 10px 10px 10px 10px !important; }
+.last-column { padding-right: 10px !important; }
+.table-clicavel { text-decoration: underline; cursor: pointer; }
+.end-table { padding: 5px; }
+.odd-cell { background: #eee !important; }
+
+.expanded-panel {
+    margin: 15px 7px 15px 7px;
+    background: #fff;
+    display: none;
+}
+
+.ultimo-panel {
+    margin-bottom: 30px;
+}
+
+.expanded-title {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+}
 
 .md-subheader:not(.not-header) .md-subheader-inner {
     padding: 0 !important;
@@ -160,8 +195,16 @@ form-input, form-select, form-datepicker, md-select {
     text-align: center;
 }
 
-.md-select-menu-container { z-index: 1004 !important; }
+.md-select-menu-container { z-index: 1005 !important; }
 md-toast { z-index: 1004 !important; }
+
+.modal-content { background: #fff; margin-top: -15px; }
+
+.table-with-icons { padding: 0px !important; padding-right: 10px !important; }
+
+.modal-info, .modal-form {
+    padding: 0px 15px 0 15px;
+}
 
 .margin-top-bottom {
     margin-top: 20px; margin-bottom: 20px;
