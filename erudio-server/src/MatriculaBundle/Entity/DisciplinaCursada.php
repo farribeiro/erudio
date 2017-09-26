@@ -266,6 +266,28 @@ class DisciplinaCursada extends AbstractEditableEntity {
         $this->status = self::determinarStatus($this);
     }
     
+    function possuiEquivalente(array $disciplinasOfertadas) {
+         foreach ($disciplinasOfertadas as $disciplinaOfertada) {
+            if ($disciplinaOfertada->getDisciplina() === $this->disciplina) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
+        if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
+            throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
+        }
+        $this->enturmacao = $enturmacao;
+        $this->disciplinaOfertada = $disciplinaOfertada;
+    }
+    
+    function desvincularEnturmacao() {
+        $this->enturmacao = null;
+        $this->disciplinaOfertada = null;
+    }
+    
     static function determinarStatus(DisciplinaCursada $disciplina, $preliminar = false) {
         $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal();
         $frequenciaTotal = $preliminar ? $disciplina->getFrequenciaPreliminar() : $disciplina->getFrequenciaTotal();
@@ -287,19 +309,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
                     ? self::STATUS_APROVADO : self::STATUS_EXAME;
         }
         return $status;
-    }
-    
-    function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
-        if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
-            throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
-        }
-        $this->enturmacao = $enturmacao;
-        $this->disciplinaOfertada = $disciplinaOfertada;
-    }
-    
-    function desvincularEnturmacao() {
-        $this->enturmacao = null;
-        $this->disciplinaOfertada = null;
     }
     
     function getMatricula() {

@@ -54,9 +54,9 @@ class AvaliacaoQuantitativaFacade extends AbstractFacade {
                 $qb->join('a.disciplina', 'disciplina')
                    ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
             },
-            'dia' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.aulaEntrega', 'aula')
-                   ->andWhere('aula.dia = :dia')->setParameter('dia', $value);
+            'dataEntrega' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('a.dataEntrega LIKE :data')
+                   ->setParameter('data', $value->format('Y-m-d') . '%');
             },
             'media' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('a.media = :media')->setParameter('media', $value);

@@ -28,16 +28,20 @@
 
 namespace AulaBundle\Service;
 
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use CoreBundle\Event\EntityEvent;
+use AulaBundle\Entity\Aula;
 
 class AulaFacade extends AbstractFacade {
     
-    function __construct(RegistryInterface $doctrine, LoggerInterface $logger) {
-        parent::__construct($doctrine, $logger);
+    function __construct(RegistryInterface $doctrine, LoggerInterface $logger, 
+            EventDispatcherInterface $eventDispatcher) {
+        parent::__construct($doctrine, $logger, $eventDispatcher);
     }
     
     function getEntityClass() {
@@ -59,18 +63,15 @@ class AulaFacade extends AbstractFacade {
                    ->setParameter('mes', '%-' . $mes . '-%');
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
-            },
-            'disciplinas' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('disciplina.id IN (:disciplinas)')->setParameter('disciplinas', $value);
+                $qb->andWhere(':disciplina MEMBER OF a.disciplinasOfertadas')
+                   ->setParameter('disciplina', $value);
             },
             'horario' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.horario', 'horario')
-                   ->andWhere('horario.id = :horario')->setParameter('horario', $value);
+                $qb->andWhere(is_null($value) ? 'a.horario IS NULL' : 'a.horario = :horario')
+                   ->setParameter('horario', $value);
             },
             'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('disciplina.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value);
+                $qb->andWhere('turma.id = :turma')->setParameter('turma', $value);
             },
             'dataInicio' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('dia.data > :dataInicio')->setParameter('dataInicio', $value->format('Y-m-d'));
@@ -78,14 +79,47 @@ class AulaFacade extends AbstractFacade {
        ];
     }
     
+    function uniqueMap($aula) {
+        return [[
+            'matricula' => $aula->getDia(), 
+            'turma' => $aula->getTurma(), 
+            'horario' => $aula->getHorario()
+        ]];
+    }
+    
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('a.disciplinaOfertada', 'disciplina')->join('a.dia', 'dia');    
+        $qb->join('a.turma', 'turma')->join('a.dia', 'dia');    
     }
     
     protected function beforeCreate($aula) {
-        $hoje = new \DateTime();
-        if ($hoje < $aula->getDia()->getData() && count($aula->getChamada())) {
-            throw new IllegalOperationException('A chamada não pode ser realizada antes da data da aula');
+        if ($aula->getTurma()->getEtapa()->getFrequenciaUnificada()) {
+            $aula->setDisciplinasOfertadas($this->getDisciplinasPorProfessor($aula));
+        }
+        $this->validarAula($aula);
+    }
+    
+    protected function afterCreate($aula) {
+        EntityEvent::createAndDispatch($aula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
+    }
+
+
+    protected function getDisciplinasPorProfessor(Aula $aula) {
+        return $aula->getTurma()->getDisciplinas()->filter(function($d) use ($aula) {
+            return $d->getProfessores()->exists(function($i, $p) use ($aula) {
+                return $p->getFuncionario() === $aula->getProfessor();
+            });
+        });
+    }
+    
+    protected function validarAula(Aula $aula) {
+        if (!$aula->getTurma()->getEtapa()->getFrequenciaUnificada() && $aula->getHorario()->getQuadroHorario() !== $aula->getTurma()->getQuadroHorario()) {
+            throw new IllegalOperationException('Aulas cuja frequência é controlada por disciplina devem especificar o horário');
+        }
+        if (!$aula->getDisciplinasOfertadas()->count()) {
+            throw new IllegalOperationException('Não é possível criar uma aula sem disciplinas associadas');
+        }
+        if ($aula->getDia()->getCalendario() !== $aula->getTurma()->getCalendario()) {
+            throw new IllegalOperationException('Calendário do dia da aula deve ser o mesmo adotado pela turma');
         }
     }
     

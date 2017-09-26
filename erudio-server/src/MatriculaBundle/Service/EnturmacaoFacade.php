@@ -74,6 +74,11 @@ class EnturmacaoFacade extends AbstractFacade {
             'concluido' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.concluido = :concluido')->setParameter('concluido', $value);
             },
+            'dataAula' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.dataCadastro <= :dataAula')
+                   ->andWhere('(e.encerrado = false OR e.dataModificacao > :dataAula)')
+                   ->setParameter('dataAula', $value);
+            },
             'emAndamento' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere("e.concluido = false")->andWhere("e.encerrado = false");
             }
@@ -134,7 +139,10 @@ class EnturmacaoFacade extends AbstractFacade {
     
     /**
      * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
-     * de ensino, bem como suas disciplinas cursadas.
+     * de ensino ou que está sendo desligado. 
+     * O segundo argumento define se as disciplinas serão igualmente encerradas, ficando 
+     * com seu status permanentemente INCOMPLETO, ou se permanecerão ativas, podendo ser 
+     * vinculadas a uma nova enturmação, o que tipicamente ocorre em uma transferência entre unidades.
      * 
      * @param Enturmacao $enturmacao
      */
@@ -149,8 +157,7 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     /**
-     * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
-     * de ensino, bem como suas disciplinas cursadas.
+     * Finaliza uma enturmação de um aluno que está concluindo as disciplinas cursadas.
      * 
      * @param Enturmacao $enturmacao
      */

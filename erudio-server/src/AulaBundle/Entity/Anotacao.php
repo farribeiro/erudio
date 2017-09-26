@@ -8,7 +8,7 @@ use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
 * @ORM\Entity
-* @ORM\Table(name = "edu_aula_observacao")
+* @ORM\Table(name = "edu_aula_anotacao")
 */
 class Anotacao extends AbstractEditableEntity {
     

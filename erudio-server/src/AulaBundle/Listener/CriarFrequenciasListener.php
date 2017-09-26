@@ -26,62 +26,54 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace CoreBundle\Event;
+namespace AulaBundle\Listener;
 
-use CoreBundle\ORM\AbstractEntity;
-use Symfony\Component\EventDispatcher\Event;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use CoreBundle\Event\EntityEvent;
+use MatriculaBundle\Service\EnturmacaoFacade;
+use MatriculaBundle\Entity\Enturmacao;
+use AulaBundle\Service\FrequenciaFacade;
+use AulaBundle\Entity\Aula;
+use AulaBundle\Entity\Frequencia;
 
-/**
-* Evento que representa a ocorrência de uma operação de escrita sobre uma entidade.
-* 
-* Listeners registrados na aplicação podem capturar estes eventos e realizar outras 
-* ações em resposta, tendo como informações a entidade (após a aplicação da operação) 
-* e o tipo de ação executado, os quais estão definidos como constantes na classe.
-* 
-* O padrão de nomenclatura usado para os eventos será sempre o nome do repositório
-* da entidade, que segue o padrão NomeBundle:NomeClasse, seguido do caracter : e do 
-* nome da ação executada.
-*/
-class EntityEvent extends Event {
+class CriarFrequenciasListener implements EventSubscriberInterface {
     
-    const ACTION_CREATED = 'Created';
-    const ACTION_UPDATED = 'Updated';
-    const ACTION_REMOVED = 'Removed';
+    private $enturmacaoFacade;
+    private $frequenciaFacade;
     
-    private $entity;
-    private $action;
-    
-    function __construct(AbstractEntity $entity, $action = self::ACTION_CREATED) {
-        $this->entity = $entity;
-        $this->action = $action;
+    function __construct(EnturmacaoFacade $enturmacaoFacade, FrequenciaFacade $frequenciaFacade) {
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->frequenciaFacade = $frequenciaFacade;
+    }
+
+    static function getSubscribedEvents() {
+        return ['AulaBundle:Aula:Created' => 'onAulaCriada'];
     }
     
-    function getEntity() {
-        return $this->entity;
+    function onAulaCriada(EntityEvent $event) {
+        $aula = $event->getEntity();
+        $frequencias = $this->gerarFrequencias($aula);
+        $this->frequenciaFacade->createBatch(new ArrayCollection($frequencias));
     }
     
-    function getAction() {
-        return $this->action;
+    function gerarFrequencias(Aula $aula) {
+        $enturmacoes = $this->enturmacaoFacade->findAll([
+            'dataAula' => $aula->getDia()->getData(),
+            'turma' => $aula->getTurma()
+        ]);
+        return array_map(function($enturmacao) use ($aula) {
+           return $this->gerarFrequencia($enturmacao, $aula);
+        }, $enturmacoes);
     }
     
-    /**
-    * Retorna o nome identificador do evento.
-    * @return string nome do evento
-    */
-    function getName() {
-        return $this->entity->getRepository() . ':' . $this->action;
-    }
-    
-    /**
-     * Cria e envia um evento para o dispatcher passado como argumento.
-     * @param AbstractEntity $entity
-     * @param type $action
-     * @param EventDispatcherInterface $dispatcher
-     */
-    static function createAndDispatch(AbstractEntity $entity, $action, EventDispatcherInterface $dispatcher) {
-        $event = new EntityEvent($entity, $action);
-        $dispatcher->dispatch($event->getName(), $event);
+    function gerarFrequencia(Enturmacao $enturmacao, Aula $aula) {
+        $disciplinasOfertadas = $aula->getDisciplinasOfertadas()->toArray();
+        $disciplinasCursadas = $enturmacao->getDisciplinasCursadas()
+            ->filter(function($d) use ($disciplinasOfertadas) {
+                return $d->possuiEquivalente($disciplinasOfertadas);
+            })->toArray();
+        return new Frequencia($aula, Frequencia::PRESENCA, $disciplinasCursadas);
     }
     
 }

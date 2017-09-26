@@ -34,12 +34,27 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use CoreBundle\Exception\PublishedException;
 
+/**
+* Serviço de tratamento de exceções publicadas, ou seja, exceções que devem ser
+* retornadas ao cliente com um feedback do erro cometido. Basicamente, as exceções
+* são interceptadas e convertidas em um objeto JSON padronizado.
+*/
 class ExceptionHandler implements EventSubscriberInterface {
     
+    /**
+    * Define o evento kernel.exception do Symfony como monitorado por este listener.
+    * @return array eventos monitorados
+    */
     static function getSubscribedEvents() {
         return ['kernel.exception' => 'onException'];
     }
 
+    /**
+    * Realiza o tratamento adequado da exceção de acordo com sua natureza. Atualmente
+    * são divididos dois tipos de exceção, de autenticação e de validade da operação.
+    * 
+    * @param GetResponseForExceptionEvent $event
+    */
     function onException(GetResponseForExceptionEvent $event) {
         $exception = $event->getException();
         if ($exception instanceof PublishedException) {
@@ -53,6 +68,13 @@ class ExceptionHandler implements EventSubscriberInterface {
         }
     }
     
+    /**
+     * Cria o objeto de resposta de erro a ser retornado ao cliente.
+     * 
+     * @param int $httpCode
+     * @param string $message
+     * @return JsonResponse resposta JSON
+     */
     function createResponse($httpCode, $message) {
         return new JsonResponse([
             'error' => [

@@ -28,76 +28,66 @@
 
 namespace AulaBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use CoreBundle\REST\AbstractEntityController;
-use AulaBundle\Entity\Aula;
-use AulaBundle\Service\AulaFacade;
+use VinculoBundle\Service\AlocacaoFacade;
 
 /**
-* @FOS\NamePrefix("aulas")
-*/
-class AulaController extends AbstractEntityController {
+ * @FOS\NamePrefix("disciplinas")
+ */
+class ProfessorController extends Controller {
     
-    function __construct(AulaFacade $facade) {
-        parent::__construct($facade);
+    private $alocacaoFacade;
+    
+    function __construct(AlocacaoFacade $alocacaoFacade) {
+        $this->alocacaoFacade = $alocacaoFacade;
     }
     
     /**
-    * @ApiDoc()
+    * @ApiDoc(
+    *   resource = true,
+        *   section = "Módulo Professores",
+    *   description = "Retorna todas as disciplinas ofertadas do professor autenticado",
+    *   statusCodes = {
+    *       200 = "Array de disciplinas"
+    *   }
+    * )
     * 
-    * @FOS\Get("aulas/{id}")
+    * @FOS\Get("disciplinas")
+    * @FOS\QueryParam(name = "emAndamento", nullable = true)
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Get("aulas")
-    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *  @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
-    *  @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
-    *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
-    *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
-    */
-    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
-        return $this->getList($request, $paramFetcher->all());
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Post("aulas")
-    *  @ParamConverter("aula", converter="fos_rest.request_body")
-    */
-    function postAction(Request $request, Aula $aula, ConstraintViolationListInterface $errors) {
-        $aula->setProfessor($this->getUser()->getPessoa());
-        return $this->post($request, $aula, $errors);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("aulas/{id}")
-    *  @ParamConverter("aula", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, Aula $aula, ConstraintViolationListInterface $errors) {
-        return $this->put($request, $id, $aula, $errors);
-    }
-    
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Delete("aulas/{id}") 
-    */
-    function deleteAction(Request $request, $id) {
-        return $this->delete($request, $id);
+    function getDisciplinasAction(ParamFetcherInterface $paramFetcher) {
+        $professor = $this->getUser()->getPessoa();
+        $emAndamento = $paramFetcher->get('emAndamento');
+        $alocacoes = $this->alocacaoFacade->findAll(['funcionario' => $professor, 'professor' => true]);
+        $disciplinas = array_reduce($alocacoes, function($acc, $alocacao) use ($emAndamento) {
+            return array_merge($acc, $emAndamento 
+                ? $alocacao->getDisciplinasMinistradasEmAndamento()->toArray() 
+                : $alocacao->getDisciplinasMinistradas()->toArray()
+            );
+        }, []);
+        return new JsonResponse(array_map(function($d) {
+            $turma = $d->getTurma();
+            return [
+                'id' => $d->getId(),
+                'nome' => $d->getNome(),
+                'nomeExibicao' => $d->getNomeExibicao(),
+                'turma' => [
+                    'id' => $turma->getId(),
+                    'nome' => $turma->getNomeCompleto(),
+                    'status' => $turma->getStatus(),
+                    'unidadeEnsino' => $turma->getUnidadeEnsino()->getNomeCompleto(),
+                    'etapa' => [
+                        'id' => $turma->getEtapa()->getId(),
+                        'nome' => $turma->getEtapa()->getNome(),
+                        'frequenciaUnificada' => $turma->getEtapa()->getFrequenciaUnificada()
+                    ]
+                ]
+            ];
+        }, $disciplinas));
     }
     
 }

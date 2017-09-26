@@ -61,7 +61,7 @@ class HorarioDisciplinaController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
-        return $this->getList($request, $paramFetcher);
+        return $this->getList($request, $paramFetcher->all());
     }
 
     /**

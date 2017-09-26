@@ -32,16 +32,6 @@ api_quadro_horario:
     type: rest
     prefix: /api
     
-api_avaliacao:
-    resource: "@AvaliacaoBundle/Controller/"
-    type: rest
-    prefix: /api
-    
-api_aula:
-    resource: "@AulaBundle/Controller/"
-    type: rest
-    prefix: /api
-    
 api_vaga:
     resource: "@VagaBundle/Controller/"
     type: rest
@@ -56,6 +46,17 @@ api_relatorio:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
+
+#API do professor
+api_avaliacao:
+    resource: "@AvaliacaoBundle/Controller/"
+    type: rest
+    prefix: /api
+    
+api_aula:
+    resource: "@AulaBundle/Controller/"
+    type: rest
+    prefix: /api/professor
 
 #API do aluno
 api_aluno:

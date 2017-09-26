@@ -30,7 +30,6 @@ namespace AvaliacaoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use CalendarioBundle\Entity\Aula;
 
 /**
 * @ORM\Entity

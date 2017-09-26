@@ -84,11 +84,9 @@ class DesligamentoFacade extends AbstractFacade {
     }
     
     private function encerrarEnturmacoes(Matricula $matricula) {
-        $enturmacoes = $matricula->getEnturmacoesAtivas();
+        $enturmacoes = $matricula->getEnturmacoesEmAndamento();
         foreach ($enturmacoes as $e) {
-            if ($e->isEmAndamento()) {
-                $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
-            }
+            $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
         }
     }
     

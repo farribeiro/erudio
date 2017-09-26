@@ -45,6 +45,7 @@ class AlunoController extends Controller {
                 'id' => $m->getId(),
                 'codigo' => $m->getCodigo(),
                 'curso' => $m->getCurso()->getNome(),
+                'aluno' => $m->getAluno()->getNome(),
                 'unidadeEnsino' => $m->getUnidadeEnsino()->getNomeCompleto(),
                 'dataCadastro' => $m->getDataCadastro()->format('Y-m-d H:i:s'),
                 'status' => $m->getStatus()

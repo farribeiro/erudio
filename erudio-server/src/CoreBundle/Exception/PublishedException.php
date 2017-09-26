@@ -31,7 +31,8 @@ namespace CoreBundle\Exception;
 /**
 * Classe de marcação, para indicar que a mensagem da exceção deve ser 
 * retornada ao usuário. Isto se aplica normalmente a exceções causadas pelo usuário
-* ao enviar dados inválidos ou tentar realizar uma operação não permitida. 
+* ao enviar dados inválidos ou tentar realizar uma operação não permitida que não
+* pôde ser checada no cliente, como por exemplo adionar um cadastro duplicado.
 */
 class PublishedException extends \Exception {
     
