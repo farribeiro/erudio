@@ -116,6 +116,12 @@ class Matricula extends AbstractEditableEntity {
     */
     private $enturmacoes;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "ObservacaoHistorico", mappedBy = "matricula", fetch="EXTRA_LAZY") 
+    */
+    private $observacoesHistorico;
+    
     function init() {
         $this->enturmacoes = new ArrayCollection();
         $this->status = self::STATUS_CURSANDO;
@@ -211,6 +217,12 @@ class Matricula extends AbstractEditableEntity {
 
     function getEnturmacoes() {
         return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
+    function getObservacoesHistorico() {
+        return $this->observacoesHistorico->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }

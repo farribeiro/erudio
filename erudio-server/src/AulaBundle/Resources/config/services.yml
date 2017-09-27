@@ -14,3 +14,7 @@ services:
         tags: ['controller.service_arguments']
         calls:
           - [setViewHandler, ["@fos_rest.view_handler"]]
+          
+    AulaBundle\Controller\ProfessorController:
+        public: true
+        tags: ['controller.service_arguments']

@@ -30,6 +30,7 @@ namespace AulaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -42,10 +43,10 @@ class Aula extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
-    * @ORM\JoinColumn(name = "turma_disciplina_id")
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turma")
+    * @ORM\JoinColumn(name = "turma_id")
     */
-    private $disciplinaOfertada;
+    private $turma;
     
     /** 
     * @JMS\Groups({"LIST"})
@@ -61,29 +62,76 @@ class Aula extends AbstractEditableEntity {
     * @ORM\JoinColumn(name = "quadro_horario_aula_id")
     */
     private $horario;
+ 
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 2)
+    * @ORM\ManyToMany(targetEntity="CursoBundle\Entity\DisciplinaOfertada")
+    * @ORM\JoinTable(name="edu_aula_turma_disciplina",
+    *      joinColumns={@ORM\JoinColumn(name="aula_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="turma_disciplina_id", referencedColumnName="id")}
+    *   )
+    */
+    private $disciplinasOfertadas;
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity= "Frequencia", mappedBy = "aula", cascade = {"persist"})
+    * @ORM\OneToMany(targetEntity= "Frequencia", mappedBy = "aula")
     */
     private $chamada;
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Anotacao", mappedBy = "aula", cascade = {"persist"})
+    * @ORM\OneToMany(targetEntity = "Anotacao", mappedBy = "aula")
     */
     private $anotacoes;
     
-    function __construct($disciplinaOfertada, $dia, $horario) {
-        $this->disciplinaOfertada = $disciplinaOfertada;
+    private $professor;
+    
+    /**
+    *
+    * @JMS\Type("CursoBundle\Entity\DisciplinaOfertada") 
+    */
+    private $disciplina;
+    
+    function __construct($turma, $dia, $horario = null) {
+        $this->turma = $turma;
         $this->dia = $dia;
         $this->horario = $horario;
+    }
+    
+    function init() {
         $this->chamada = new ArrayCollection();
         $this->anotacoes = new ArrayCollection();
+        $this->disciplinasOfertadas = new ArrayCollection();
+        if (!$this->getTurma()->getEtapa()->getFrequenciaUnificada()) {
+            $this->disciplinasOfertadas->add($this->disciplina);
+        }
+    }
+     
+//    function getProfessores() {
+//        $aux = $this->disciplinasOfertadas->map(
+//            function($d) { return $d->getProfessores()->toArray(); }
+//        )->toArray();
+//        $professores = [];
+//        array_walk_recursive($aux, function($p) use (&$professores) {
+//            if (!in_array($p, $professores)) {
+//                $professores[] = $p;
+//            } 
+//        });
+//        return $professores;
+//    }
+    
+    function getProfessor() {
+        return $this->professor;
+    }
+    
+    function getDisciplina() {
+        return $this->disciplina;
     }
 
-    function getDisciplinaOfertada() {
-        return $this->disciplinaOfertada;
+    function getTurma() {
+        return $this->turma;
     }
 
     function getDia() {
@@ -92,6 +140,10 @@ class Aula extends AbstractEditableEntity {
 
     function getHorario() {
         return $this->horario;
+    }
+    
+    function getDisciplinasOfertadas() {
+        return $this->disciplinasOfertadas;
     }
     
     /**
@@ -111,7 +163,7 @@ class Aula extends AbstractEditableEntity {
     * @JMS\Type("ArrayCollection<AulaBundle\Entity\Anotacao>")
     */
     function getAnotacoes() {
-        return $this->chamada->matching(
+        return $this->anotacoes->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }
@@ -122,6 +174,18 @@ class Aula extends AbstractEditableEntity {
 
     function setHorario($horario) {
         $this->horario = $horario;
+    }
+    
+    function setDisciplinasOfertadas($disciplinasOfertadas) {
+        $this->disciplinasOfertadas = $disciplinasOfertadas;
+    }
+    
+    function setProfessor($professor) {
+        $this->professor = $professor;
+    }
+    
+    function setDisciplina($disciplina) {
+        $this->disciplina = $disciplina;
     }
     
 }

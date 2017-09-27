@@ -29,12 +29,13 @@
 namespace AulaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
 * @ORM\Entity
-* @ORM\Table(name = "edu_frequencia")
+* @ORM\Table(name = "edu_aula_frequencia")
 */
 class Frequencia extends AbstractEditableEntity {
     
@@ -42,12 +43,6 @@ class Frequencia extends AbstractEditableEntity {
     const FALTA_JUSTIFICADA = 'FALTA_JUSTIFICADA';
     const PRESENCA = 'PRESENCA';
     const DISPENSA = 'DISPENSA';
-    
-    function __construct($disciplinaCursada, $aula, $status = self::PRESENCA) {
-        $this->status = $status;
-        $this->disciplinaCursada = $disciplinaCursada;
-        $this->aula = $aula;
-    }
     
     /** 
     * @JMS\Groups({"LIST"})  
@@ -62,20 +57,30 @@ class Frequencia extends AbstractEditableEntity {
     private $justificativa;
     
     /**  
-    *  @JMS\Groups({"LIST"}) 
-    *  @ORM\ManyToOne(targetEntity = "MatriculaBundle\Entity\DisciplinaCursada") 
-    *  @ORM\JoinColumn(name = "matricula_disciplina_id") 
-    */
-    private $disciplinaCursada;
-    
-    /**  
     * @JMS\Groups({"LIST"})
     * @ORM\ManyToOne(targetEntity = "Aula") 
     */
     private $aula;
     
-    function getDisciplinaCursada() {
-        return $this->disciplinaCursada;
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 2)
+    * @ORM\ManyToMany(targetEntity="MatriculaBundle\Entity\DisciplinaCursada")
+    * @ORM\JoinTable(name="edu_aula_frequencia_matricula_disciplina",
+    *      joinColumns={@ORM\JoinColumn(name="frequencia_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="matricula_disciplina_id", referencedColumnName="id")}
+    *   )
+    */
+    private $disciplinasCursadas;
+    
+    function __construct($aula, $status = self::PRESENCA, array $disciplinas = []) {
+        $this->status = $status;
+        $this->aula = $aula;
+        $this->disciplinasCursadas = new ArrayCollection($disciplinas);
+    }
+    
+    function getDisciplinasCursadas() {
+        return $this->disciplinasCursadas;
     }
      
     function getStatus() {

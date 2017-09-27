@@ -91,6 +91,14 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     }
     
     /**
+     * @JMS\Groups({"LIST"})
+     * @JMS\VirtualProperty
+     */
+    function getAgrupamento() {
+        return $this->disciplina->getAgrupamento();
+    }
+    
+    /**
     * @JMS\VirtualProperty
     */
     function getStatus() {
