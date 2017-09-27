@@ -423,42 +423,44 @@
 
             /* Busca de Pessoa -Lista */
             $scope.buscarPessoas = function () {
-                var pessoaBusca = $scope.pessoaBusca;
-                if (pessoaBusca.dataNascimento && pessoaBusca.dataNascimento !== undefined) {
-                    var dataNascimento = dateTime.converterDataServidor(pessoaBusca.dataNascimento, true);
-                } else {
-                    dataNascimento = null;
-                }
-                if(pessoaBusca.cpf){
-                    pessoaBusca.cpf = pessoaBusca.cpf.split(".").join("");
-                    pessoaBusca.cpf = pessoaBusca.cpf.split("-").join("");
-                }
-                $scope.mostraProgresso();
-                $scope.mostraLoader();
-                var promise = Servidor.buscar('pessoas', {
-                    'nome': pessoaBusca.nome,
-                    'sobrenome': pessoaBusca.sobrenome, 'cpf': pessoaBusca.cpf,
-                    'dataNascimento': dataNascimento,
-                    'nomeMae': pessoaBusca.nomeMae, 'certidaoNascimento': pessoaBusca.certidaoFormatada
-                });
-                promise.then(function (response) {
-                    $('.tooltipped').tooltip('remove');
-                    $timeout(function () {
-                        $('.tooltipped').tooltip({delay: 50});
-                        window.scrollTo(0, 600);
-                    }, 100);
-                    $scope.paginaAtual = 1;
-                    $scope.fechaLoader();
-                    $scope.pessoas = response.data;
-                    if(!response.data.length) {
-                        Servidor.customToast('Nenhuma pessoa encontrada.');
+                if ($scope.validarBusca()) {
+                    var pessoaBusca = $scope.pessoaBusca;
+                    if (pessoaBusca.dataNascimento && pessoaBusca.dataNascimento !== undefined) {
+                        var dataNascimento = dateTime.converterDataServidor(pessoaBusca.dataNascimento, true);
+                    } else {
+                        dataNascimento = null;
                     }
-                    $scope.quantidadePaginas = Math.ceil(response.data.length/50);
-                    $('.btn-add').show();
-                    $scope.adicionaPessoa = true;
-                    $scope.fechaProgresso();
-                    $scope.fechaLoader();
-                });
+                    if(pessoaBusca.cpf){
+                        pessoaBusca.cpf = pessoaBusca.cpf.split(".").join("");
+                        pessoaBusca.cpf = pessoaBusca.cpf.split("-").join("");
+                    }
+                    $scope.mostraProgresso();
+                    $scope.mostraLoader();
+                    var promise = Servidor.buscar('pessoas', {
+                        'nome': pessoaBusca.nome,
+                        'sobrenome': pessoaBusca.sobrenome, 'cpf': pessoaBusca.cpf,
+                        'dataNascimento': dataNascimento,
+                        'nomeMae': pessoaBusca.nomeMae, 'certidaoNascimento': pessoaBusca.certidaoFormatada
+                    });
+                    promise.then(function (response) {
+                        $('.tooltipped').tooltip('remove');
+                        $timeout(function () {
+                            $('.tooltipped').tooltip({delay: 50});
+                            window.scrollTo(0, 600);
+                        }, 100);
+                        $scope.paginaAtual = 1;
+                        $scope.fechaLoader();
+                        $scope.pessoas = response.data;
+                        if(!response.data.length) {
+                            Servidor.customToast('Nenhuma pessoa encontrada.');
+                        }
+                        $scope.quantidadePaginas = Math.ceil(response.data.length/50);
+                        $('.btn-add').show();
+                        $scope.adicionaPessoa = true;
+                        $scope.fechaProgresso();
+                        $scope.fechaLoader();
+                    });
+                }
             };
 
             $scope.buscarEstadoCivil = function () {
