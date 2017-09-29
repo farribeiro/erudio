@@ -22,59 +22,45 @@
  *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
  *    junto  com  este  programa. Se não, escreva para a Free Software     *
  *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
- *    02111-1307, USA.                                                     *
+ *    02111-1307, USA.                                               *
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AvaliacaoBundle\Service;
+namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use MatriculaBundle\Entity\Retorno;
 
-class AvaliacaoQuantitativaFacade extends AbstractFacade {
+class RetornoFacade extends AbstractFacade {
     
-    function getEntityClass() {
-        return 'AvaliacaoBundle:AvaliacaoQuantitativa';
+    public function getEntityClass() {
+        return 'MatriculaBundle:Retorno';
     }
     
     function queryAlias() {
-        return 'a';
+        return 'r';
     }
     
     function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },            
-            'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.disciplina', 'disciplina')
-                   ->andWhere('disciplina.turma = :turma')->setParameter('turma', $value);
-            },
-            'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.disciplina = :disciplina')->setParameter('disciplina', $value);
-            },
-            'dataEntrega' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.dataEntrega LIKE :data')
-                   ->setParameter('data', $value . '%');
-            },
-            'media' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.media = :media')->setParameter('media', $value);
+        return [
+            'matricula' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('r.matricula = :matricula')->setParameter('matricula', $value);
             }
-        );
+        ];
     }
     
-    protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->addOrderBy('a.dataEntrega', 'DESC');
+    protected function afterCreate($retorno) {
+        $this->reativarMatricula($retorno);
     }
-
     
-    protected function beforeRemove($avaliacao) {
-        $notas = $this->orm->getRepository('MatriculaBundle:NotaQuantitativa')->findBy(array('avaliacao' => $avaliacao));     
-        foreach($notas as $nota) {
-            $nota->getMedia()->removeNota($nota);
-            $nota->finalize();
-            $this->orm->getManager()->merge($nota);            
+    private function reativarMatricula(Retorno $retorno) {
+        $matricula = $retorno->getMatricula();
+        if (!$matricula->reativar($retorno->getEtapa())) {
+            throw new IllegalOperationException('Matrícula não pode ser reativada em sua situação atual.');
         }
+        $this->orm->getManager()->flush();
     }
     
 }

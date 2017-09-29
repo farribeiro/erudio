@@ -185,6 +185,15 @@ class Matricula extends AbstractEditableEntity {
         }
     }
     
+    function reativar($etapa = null) {
+        if ($this->status === self::STATUS_TRANCADO || $this->status === self::STATUS_ABANDONO) {
+            $this->status = self::STATUS_CURSANDO;
+            $this->etapa = $etapa;
+            return true;
+        }
+        return false;
+    }
+    
     function redefinirEtapa() {
         if ($this->getEnturmacoesEmAndamento()->count() > 0) {
             $this->etapa = $this->getEnturmacoesEmAndamento()->first()->getTurma()->getEtapa();

@@ -76,4 +76,13 @@ class AvaliacaoQualitativaFacade extends AbstractFacade {
         ]];
     }
     
+    function beforeRemove($avaliacao) {
+        $notas = $this->orm->getRepository('MatriculaBundle:NotaQualitativa')->findBy(array('avaliacao' => $avaliacao));     
+        foreach($notas as $nota) {
+            $nota->getMedia()->removeNota($nota);
+            $nota->finalize();
+            $this->orm->getManager()->merge($nota);            
+        }
+    }
+    
 }

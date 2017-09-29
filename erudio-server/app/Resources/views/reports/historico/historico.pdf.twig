@@ -1,11 +1,26 @@
 <pdf>
     {% embed 'reports/templates/page.twig' %}
-        {% block title %}
-            <h1>Histórico Escolar</h1>
-            <h3>{{instituicao.instituicaoPai.nomeCompleto}}</h3>
-        {% endblock %}
-        
-        {% block info %}{% endblock %}  
+         {% block header %}
+            <div height="80px" width="100%"> 
+                <div height="{% block headerHeight %}120px{% endblock %}" width="100%">
+                    <div width="30%" float="left">
+                        <img margin="auto" width="45%" src="bundles/report/selo-nacional.png" />
+                    </div>
+                    <div width="40%" float="left" text-align="center">
+                        <div margin-top="20px" margin-bottom="2px">
+                            <h1>Histórico Escolar</h1>
+                            <h3>{{instituicao.instituicaoPai.nomeCompleto}}</h3>
+                            <h3>{{instituicao.nomeCompleto}}</h3>
+                        </div>
+                    </div>
+                    <div float="left" width="30%">
+                        <div width="90%" float="right">
+                            <img margin="auto" width="100%" src="bundles/report/brasao-municipal.jpg" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endblock %}  
         
         {% block content %}
             {% set filiacao = aluno.nomePai ? aluno.nomeMae|upper ~ ' e ' ~ aluno.nomePai|upper : aluno.nomeMae|upper %}

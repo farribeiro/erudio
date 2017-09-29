@@ -20,22 +20,24 @@
             </div>
         </footer>
         <header>
-            <div height="{% block headerHeight %}60px{% endblock %}" width="100%">
-                <div width="50%" float="left">
-                    <img width="50%" src="bundles/report/brasao.jpg" />
-                </div>
-                <div position="absolute" top="50px" right="0" text-align="center">
-                    <div margin-top="0" margin-bottom="2px">
-                        {% block title %}Relatório Erudio{% endblock %}
-                        <h3>{{instituicao.nomeCompleto}}</h3>
+            {% block header %}
+                <div height="{% block headerHeight %}60px{% endblock %}" width="100%">
+                    <div width="50%" float="left">
+                        <img width="50%" src="bundles/report/brasao-municipal.jpg" />
+                    </div>
+                    <div position="absolute" top="50px" right="0" text-align="center">
+                        <div margin-top="0" margin-bottom="2px">
+                            {% block title %}Relatório Erudio{% endblock %}
+                            <h3>{{instituicao.nomeCompleto}}</h3>
+                        </div>
+                    </div>
+                    <div position="absolute" float="right" top="50px" text-align="right" width="230px">
+                        <div margin-top="0" margin-bottom="2px">
+                            {% block info %}{% endblock %}
+                        </div>
                     </div>
                 </div>
-                <div position="absolute" float="right" top="50px" text-align="right" width="230px">
-                    <div margin-top="0" margin-bottom="2px">
-                        {% block info %}{% endblock %}
-                    </div>
-                </div>
-            </div>
+            {% endblock %}
         </header>
     </placeholders>
     {% block content %}{% endblock %}
