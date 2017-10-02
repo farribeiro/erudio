@@ -33,6 +33,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\Event\EntityEvent;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 use VinculoBundle\Entity\Vinculo;
 
 class VinculoFacade extends AbstractFacade {
@@ -85,10 +86,16 @@ class VinculoFacade extends AbstractFacade {
     
     protected function afterCreate($vinculo) {
         $this->orm->getManager()->detach($vinculo);
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Vinculo:Created',
-            new EntityEvent($vinculo, EntityEvent::ACTION_CREATED)
-        );
+        EntityEvent::createAndDispatch($vinculo, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
+    }
+    
+    protected function afterUpdate($vinculo) {
+        if (!$vinculo->cargaHorariaValida()) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::ILLEGAL_STATE_TRANSITION, 
+                'Carga horária não pode ser inferior ao total das alocações'
+            );
+        }
     }
     
     /**

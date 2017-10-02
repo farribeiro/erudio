@@ -27,10 +27,16 @@ class AppKernel extends Kernel
             new PessoaBundle\PessoaBundle(),
             new CursoBundle\CursoBundle(),
             new CalendarioBundle\CalendarioBundle(),
+            new QuadroHorarioBundle\QuadroHorarioBundle(),
             new AvaliacaoBundle\AvaliacaoBundle(),
+            new AulaBundle\AulaBundle(),
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
+            new VagaBundle\VagaBundle(),
             new ReportBundle\ReportBundle(),
+            new AlunoBundle\AlunoBundle(),
+            
+            //Integrações SME
             new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()
         ];
 

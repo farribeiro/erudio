@@ -34,7 +34,7 @@
                 <div class="col s12" data-ng-repeat="habilidade in habilidades" style="border-bottom: 1px solid #eee;">
                     <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
                         <div class="col s7">
-                            {{ habilidade.nome }}
+                            {{ $index+1 }} - {{ habilidade.nome }}
                         </div>
                         <div class="col s5">
                             <div data-delay="50" data-position="top" data-tooltip="{{ conceito.nome }}"  data-ng-click="prepararConceito(habilidade.id,conceito.id)" data-habilidade="{{habilidade.id}}" data-conceito="{{conceito.id}}" class="chip col s2 c{{conceito.id}}h{{habilidade.id}} h{{habilidade.id}} tooltipped" data-ng-repeat="conceito in conceitos">{{ conceito.sigla }}</div>

@@ -125,7 +125,8 @@
                 $timeout(function() { $('.tooltipped').tooltip({delay: 50}); }, 250);
                 $scope.buscarInstituicoesUnidades();
             });
-            var promise = Servidor.buscar('calendarios', {instituicao: sessionStorage.getItem('instituicao')});
+            var u = ($scope.isAdmin) ? 16138 : sessionStorage.getItem('unidade');
+            var promise = Servidor.buscar('calendarios', {instituicao: u});
             promise.then(function(response) {
                 $scope.calendariosBases = response.data;
             });

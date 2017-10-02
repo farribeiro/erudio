@@ -90,7 +90,8 @@ class Disciplina extends AbstractEditableEntity {
     private $curso;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina", inversedBy = "disciplinas")
     * @ORM\JoinColumn(name = "disciplina_agrupamento_id") 
     */

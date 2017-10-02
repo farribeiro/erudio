@@ -74,6 +74,8 @@ class ReclassificacaoFacade extends AbstractFacade {
     
     protected function afterCreate($reclassificacao) {
         $this->encerrarEnturmacaoOrigem($reclassificacao);
+        $reclassificacao->getMatricula()->redefinirEtapa();
+        $this->orm->getManager()->flush($reclassificacao->getMatricula());
     }
     
     private function validarReclassificacao(Reclassificacao $reclassificacao) {

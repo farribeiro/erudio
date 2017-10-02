@@ -1,83 +1,132 @@
 (function (){
-    var etapas = angular.module('etapas',['ngMaterial', 'util', 'erudioConfig', 'shared']);
-    etapas.controller('EtapaController',['$scope', 'Util', '$mdDialog', 'ErudioConfig', 'Shared', '$timeout', function($scope, Util, $mdDialog, ErudioConfig, Shared, $timeout){
+    /*
+     * @ErudioDoc Instituição Controller
+     * @Module instituicoes
+     * @Controller InstituicaoController
+     */
+    class EtapaController {
+        constructor (service, util, $mdDialog, erudioConfig, $timeout, sharedService, cursoService) {
+            this.service = service;
+            this.util = util;
+            this.mdDialog = $mdDialog;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.sharedService = sharedService;
+            this.cursoService = cursoService;
+            this.permissaoLabel = "ETAPAS";
+            this.titulo = "Etapas";
+            this.linkModulo = "/#!/etapas/";
+            this.etapa = null;
+            this.curso = {id: null};
+            this.pagina = 0;
+            this.finalLista = false;
+            this.buscaIcone = 'search';
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Etapas');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //ETAPA EM USO
-        $scope.etapa = null;
+        preparaLista(){
+            this.subheaders = [{ label: 'Nome da Etapa' }];
+            this.opcoes = [{tooltip: 'Disciplinas', icone: 'import_contacts', opcao: 'disciplinas' },{tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true}];
+            this.link = this.erudioConfig.dominio + this.linkModulo;
+            this.fab = { tooltip: 'Adicionar Etapa', icone: 'add', href: this.link+'novo' };
+            this.template = this.util.getTemplateLista();
+            this.lista = this.util.getTemplateListaEspecifica('etapas');
+        }
         
-        //ATRIBUTOS EXTRAS
-        $scope.curso = {id: null};
+        preparaBusca(){
+            this.busca = '';
+            this.buscaCustomTemplate = this.util.getTemplateBuscaCustom();
+            this.buscaCustom = this.util.setBuscaCustom('/apps/etapas/partials');
+        }
         
-        //SETA BUSCA CUSTOM
-        $scope.buscaCustom = Util.setBuscaCustom('/apps/etapas/partials');
+        buscarCursos() {
+            this.cursoService.getAll(null, true).then((cursos) => this.cursos = cursos);
+        }
         
-        //SETA COLUNAS DA LISTA
-        $scope.subheaders =[{label: 'Nome da Etapa'}];
+        buscarEtapas(loader) {
+            this.sharedService.setCursoEtapa(this.curso.id);
+            this.service.getAll({page: this.pagina, curso: this.curso.id},loader).then((etapas) => {
+                if (this.pagina === 0) { this.objetos = etapas; } else { 
+                    if (etapas.length !== 0) { this.objetos = this.objetos.concat(etapas); } else { this.finalLista = true; this.pagina--; }
+                }
+            });
+        }
         
-        //OPCOES
-        $scope.opcoes = [{tooltip: 'Disciplinas', icone: 'import_contacts', opcao: 'disciplinas'},{tooltip: 'Remover', icone: 'delete', opcao: 'remover'}];
-        
-        //OPCOES DO BOTAO FAB
-        $scope.link = ErudioConfig.dominio + '/#!/etapas/';
-        $scope.fab = {tooltip: 'Adicionar Etapa', icone: 'add', href: $scope.link+'novo'};
-        
-        //PAGINA DA LISTA
-        $scope.pagina = 0;
-        
-        //BUSCANDO CURSOS
-        $scope.buscarCursos = function () {
-            var cursoEtapa = Shared.getCursoEtapa();
-            if (Util.isVazio(cursoEtapa)) { var promise = Util.buscar('cursos',null); promise.then(function(response){ $scope.cursos = response.data; });
-            } else { $scope.curso.id = cursoEtapa; $scope.buscarEtapas(); }
-        };
-        
-        //BUSCANDO ETAPAS
-        $scope.buscarEtapas = function () {
-            Shared.setCursoEtapa($scope.curso.id);
-            var promise = Util.buscar('etapas',{page: $scope.pagina, curso: $scope.curso.id});
-            promise.then(function(response){ $scope.objetos = response.data; });
-        };
-        
-        //BUSCANDO TEMPLATE DA LISTA GERAL E ESPECIFICA
-        $scope.lista = Util.getTemplateLista();
-        $scope.listaEspecifica = Util.getTemplateListaEspecifica('etapas');
-        
-        //BUSCANDO TEMPLATE DA BUSCA 
-        $scope.buscaCustomTemplate = Util.getTemplateBuscaCustom();
-        
-        //EXECUTANDO OPCOES
-        $scope.executarOpcao = function (event, opcao, objeto) {
-            $scope.etapa = objeto; 
+        executarOpcao(event,opcao,objeto) {
+            this.etapa = objeto;
             switch (opcao.opcao) {
-                case 'remover': $scope.modalExclusão(event); break;
-                case 'disciplinas': $scope.verDisciplinas(); break;
+                case 'remover': this.modalExclusao(event); break;
+                case 'disciplinas': this.verDisciplinas(); break;
                 default: return false; break;
             }
-        };
+        }
         
-        //ABRINDO MODAL DE EXCLUSAO
-        $scope.modalExclusão = function (event) {
-            var confirm = Util.modalExclusao(event, 'Remover Etapa', 'Deseja remover esta Etapa?', 'remover', $mdDialog);
-            $mdDialog.show(confirm).then(function() { 
-                var remocao = Util.remover($scope.etapa, 'Etapa', 'f'); remocao.then(function(){ $scope.buscarEtapas(); });
-            }, function() {});
-        };
+        modalExclusao(event) {
+            var self = this;
+            let confirm = this.util.modalExclusao(event, "Remover Etapa", "Deseja remover esta etapa?", 'remover', this.mdDialog);
+            this.mdDialog.show(confirm).then(function(){
+                let id = self.etapa.id;
+                var index = self.util.buscaIndice(id, self.objetos);
+                if (index !== false) {
+                    self.service.remover(self.etapa, "Etapa","f");
+                    self.objetos.splice(index,1);
+                }
+            });
+        }
         
-        //ABRIR INFORMACOES
-        $scope.verDisciplinas = function () {
-            Shared.setEtapaDisciplina($scope.etapa.id);
-            Util.redirect(ErudioConfig.dominio + '/#!/disciplinas');
-        };
+        verificaBusca(query) { if (this.util.isVazio(query)) { this.buscarEtapas(); this.buscaIcone = 'search'; } else { this.executarBusca(query); self.buscaIcone = 'clear'; } }
         
-        //PAGINANDO
-        $scope.paginaProxima = function (){ $scope.pagina++; $scope.buscarEtapas(); };
-        $scope.paginaAnterior = function (){ if ($scope.pagina > 0) { $scope.pagina = $scope.pagina - 1; $scope.buscarEtapas(); } };
+        limparBusca() { this.busca = ''; $('.busca-simples').val(''); this.buscaIcone = 'search'; this.buscarEtapas(true); }
+
+        executarBusca(query) {
+            this.timeout.cancel(this.delayBusca); var self = this;
+            this.delayBusca = this.timeout(() => {
+                self.buscaIcone = 'clear';
+                if (self.util.isVazio(query)) { query = ''; this.buscaIcone = 'search'; }
+                let tamanho = query.length;
+                if (tamanho > 3) {
+                    self.service.getAll({ nome: query },true).then((etapas) => { self.objetos = etapas; });
+                } else {
+                    self.util.toast('A busca é ativada com no mínimo 4 caracteres.');
+                }
+            },800);
+        }
         
-        //INICIAR
-        Util.inicializar(); $scope.buscarCursos();
-        Util.mudarImagemToolbar('etapas/assets/images/etapas.jpg');
-    }]);
+        verDisciplinas() {
+            this.sharedService.setCursoEtapa(this.curso.id);
+            this.sharedService.setEtapaDisciplina(this.etapa.id);
+            this.util.redirect(this.erudioConfig.dominio + '/#!/disciplinas');
+        }
+        
+        paginar(){ this.pagina++; this.buscarEtapas(true); }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao(); let self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.util.mudarImagemToolbar('etapas/assets/images/etapas.jpg');
+                let cursoEtapa = this.sharedService.getCursoEtapa();
+                if (!this.util.isVazio(cursoEtapa)) { this.curso.id = cursoEtapa; this.buscarEtapas(); }
+                this.preparaLista();
+                this.preparaBusca();
+                this.buscarCursos();
+                $(".fit-screen").scroll(function(){
+                    let distancia = Math.floor(Number($(".conteudo").offset().top - $(document).height()));
+                    let altura = Math.floor(Number($(".main-layout").height()));
+                    let total = altura + distancia;
+                    if (total === 0) { self.paginar(); }
+                });
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    EtapaController.$inject = ["EtapaService","Util","$mdDialog","ErudioConfig","$timeout","Shared","CursoService"];
+    angular.module('EtapaController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('EtapaController',EtapaController);
 })();

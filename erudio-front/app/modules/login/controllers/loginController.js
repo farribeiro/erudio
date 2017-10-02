@@ -38,18 +38,17 @@
             return text;
         };
         
-        //GERADOR HEADER
-        $scope.criarHeader = function (username, senha) {
-            var created = moment().format(); var nonce = $scope.guid(); var nonceSend = btoa(nonce); var pass = md5.createHash(senha); var digest = btoa(sha1.hash(nonce + created + pass));
-            var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
-            return header;
-        };
-        
         //GERADOR HEADER INTRANET
-        $scope.criarHeaderIntranet = function (username, senha) {
-            var created = moment().format(); var nonce = $scope.guid(); var nonceSend = btoa(nonce); var pass = senha; var digest = btoa(sha1.hash(nonce + created + pass));
-            var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
-            return header;
+        $scope.criarHeaderIntranet = function (token) { return $scope.criarHeader(token); };
+        
+        //PREPARA HEADER X-WSSE
+        $scope.criarHeader = function(token) { var header = "Bearer "+token; return header; };
+
+        //INSERE O HEADER NA CHAMADA REST
+        $scope.preparaRestangular = function(token) {
+            var header = this.criarHeader(token);
+            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
+            return rest;
         };
         
         //GERADOR GUID
@@ -91,63 +90,64 @@
             
             //SÓ PROSSEGUE QUANDO USER E SENHA ESTÃO PREENCHIDOS
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
-                
+                var auth = { username: $scope.usuario, password: btoa($scope.senha) };                
                 //CRIA O HEADER
                 var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
                 //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
                 var rest = Restangular;
                 rest.setFullResponse(true); $scope.btnText = 'CARREGANDO...';
-
-                //BUSCA O USUARIO
-                var promise = rest.all('users').getList({'username':$scope.usuario});
-                promise.then(function(response){
-                    if (response.status === 200) {
-                        if (response.data.length === 0) {
-                            //USUARIO NAO ENCONTRADO
-                            $scope.btnText = 'ENTRAR'; Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
-                        } else {
-                            
-                            //ANIMACAO INICIAL
-                            $scope.loginAnimation(); 
-                            var user = response.data[0]; 
-                            var promiseU = rest.one('users',user.id).get();
-                            promiseU.then(function(responseU){
-                                sessionStorage.setItem('user', JSON.stringify(responseU.data));
-                                var roles = responseU.data.atribuicoes; var atribuicoes = [];
-                                //PREPARA PERMISSOES
-                                var unidadesPermissoes = [];
-                                if (roles.length > 0) {
-                                    for (var i=0; i<roles.length; i++)
-                                    {
-                                        unidadesPermissoes.push(roles[i].instituicao);
-                                        var index = i;
-                                        if (roles[i].grupo !== undefined) {
-                                            var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                            promise.then(function(response){
-                                                for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                                if (atribuicoes.length > 0) {
-                                                    sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                                } else {
-                                                    var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                                    sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                                }
-                                            });
-                                        } else {
-                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                rest.all('tokens').post(auth).then(function(response){
+                    if (response.data.length === 0) {
+                        //USUARIO NAO ENCONTRADO
+                        $scope.btnText = 'ENTRAR'; Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
+                    } else {
+                        //ANIMACAO INICIAL
+                        $scope.loginAnimation(); 
+                        sessionStorage.setItem('token',response.data.token);
+                        var restangular = $scope.preparaRestangular(response.data.token);
+                        var promise = restangular.all('users').getList({username: $scope.usuario});
+                        promise.then(function(response){
+                            if (response.status === 200) {
+                                var user = response.data[0]; 
+                                var promiseU = restangular.one('users',user.id).get();
+                                promiseU.then(function(responseU){
+                                    sessionStorage.setItem('user', JSON.stringify(responseU.data));
+                                    var roles = responseU.data.atribuicoes; var atribuicoes = [];
+                                    //PREPARA PERMISSOES
+                                    var unidadesPermissoes = [];
+                                    if (roles.length > 0) {
+                                        for (var i=0; i<roles.length; i++)
+                                        {
+                                            unidadesPermissoes.push(roles[i].instituicao);
+                                            var index = i;
+                                            if (roles[i].grupo !== undefined) {
+                                                var promise = restangular.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                                promise.then(function(response){
+                                                    for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
+                                                    if (atribuicoes.length > 0) {
+                                                        sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                    } else {
+                                                        var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                                        sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                    }
+                                                });
+                                            } else {
+                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                            }
+                                            if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
                                         }
-                                        if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
+                                    } else {
+                                        $scope.setaSessao(user, sessionId);
                                     }
-                                } else {
-                                    $scope.setaSessao(user, sessionId);
-                                }
-                            });
-                        }
+                                });
+                            }
+                        });
                     }
                 }, function(error){
                     //SENHA ERRADA
-                    $scope.btnText = 'ENTRAR'; if (error.status === 403){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
+                    $scope.btnText = 'ENTRAR'; if (error.data.error.code === 401){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
                 });
             } else { $scope.btnText = 'ENTRAR'; Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000); }
         };
@@ -179,56 +179,65 @@
         //EVENTO DE LOGIN VIA INTRANET
         $scope.intranetLogin = function () {
             $scope.usuario = $scope.getUrlParameter('username'); $scope.senha = $scope.getUrlParameter('key');
-            var sessionId = $scope.guid(); var header = $scope.criarHeaderIntranet($scope.usuario, $scope.senha);
-            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); }); rest.setFullResponse(true);
+            //var sessionId = $scope.guid(); var header = $scope.criarHeaderIntranet($scope.usuario, $scope.senha);
+            //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); }); rest.setFullResponse(true);
             
             if ($scope.usuario !== '' && $scope.usuario !== null && $scope.senha !== '' && $scope.senha !== null) {
                 
-                //PREPARA O HEADER
-                var promise = rest.all('users').getList({'username':$scope.usuario});
-                promise.then(function(response){
-                    if (response.status === 200) {
-                        if (response.data.length === 0) {
-                            
-                            //USUARIO NAO ENCONTRADO
-                            Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
-                        } else {                         
-                            var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
-                            var promiseU = rest.one('users',user.id).get();
-                            promiseU.then(function(responseU){
-                                var roles = responseU.data.atribuicoes; var atribuicoes = [];
-                                //PREPARA PERMISSOES
-                                var unidadesPermissoes = [];
-                                for (var i=0; i<roles.length; i++)
-                                {
-                                    unidadesPermissoes.push(roles[i].instituicao);
-                                    var index = i;
-                                    if (roles[i].grupo !== undefined) {
-                                        var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
-                                        promise.then(function(response){
-                                            for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
-                                            if (atribuicoes.length > 0) {
-                                                sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
-                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                            } else {
-                                                var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
-                                                sessionStorage.setItem("roles", JSON.stringify(noRoles));
-                                                if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
-                                            }
-                                        });
-                                    } else {
-                                        if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                var auth = { username: $scope.usuario, password: $scope.senha };
+                //CRIA O HEADER
+                var sessionId = $scope.guid(); var header = $scope.criarHeader($scope.usuario, $scope.senha);
+                //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+                var rest = Restangular;
+                rest.setFullResponse(true); $scope.btnText = 'CARREGANDO...';
+                rest.all('tokens').post(auth).then(function(response){
+                    //PREPARA O HEADER
+                    sessionStorage.setItem('token',response.data.token);
+                    var restangular = $scope.preparaRestangular(response.data.token);
+                    var promise = restangular.all('users').getList({'username':$scope.usuario});
+                    promise.then(function(response){
+                        if (response.status === 200) {
+                            if (response.data.length === 0) {
+                                //USUARIO NAO ENCONTRADO
+                                Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000);
+                            } else {                         
+                                var user = response.data[0]; sessionStorage.setItem('user', JSON.stringify(user));
+                                var promiseU = restangular.one('users',user.id).get();
+                                promiseU.then(function(responseU){
+                                    var roles = responseU.data.atribuicoes; var atribuicoes = [];
+                                    //PREPARA PERMISSOES
+                                    var unidadesPermissoes = [];
+                                    for (var i=0; i<roles.length; i++)
+                                    {
+                                        unidadesPermissoes.push(roles[i].instituicao);
+                                        var index = i;
+                                        if (roles[i].grupo !== undefined) {
+                                            var promise = rest.all('permissoes-grupo').getList({'grupo':roles[i].grupo.id});
+                                            promise.then(function(response){
+                                                for (var j=0; j<response.data.length; j++) { atribuicoes.push(response.data[j]); }
+                                                if (atribuicoes.length > 0) {
+                                                    sessionStorage.setItem("roles", JSON.stringify(atribuicoes));
+                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                } else {
+                                                    var noRoles = [{"permissao":{"nomeIdentificacao":"ROLE_USUARIO"}}];
+                                                    sessionStorage.setItem("roles", JSON.stringify(noRoles));
+                                                    if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                                }
+                                            });
+                                        } else {
+                                            if (index === roles.length-1) { $scope.setaSessao(user, sessionId); }
+                                        }
+                                        if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
                                     }
-                                    if (index === roles.length-1) { sessionStorage.setItem('unidadesPermissoes',JSON.stringify(unidadesPermissoes)); }
-                                }
-                            });
-                            
-                            
+                                });
+
+
+                            }
                         }
-                    }
+                    });
                 }, function(error){
                     //SENHA ERRADA
-                    if (error.status === 403){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
+                    $scope.btnText = 'ENTRAR'; if (error.data.error.code === 401){ Materialize.toast("Verifique se o nome de usuário e senha estão corretos e tente novamente.", 5000); }
                 });
             } else { Materialize.toast("Preencha os dois campos para efetuar login. :)", 5000); }
         };

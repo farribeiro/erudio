@@ -30,7 +30,19 @@ namespace CoreBundle\Event;
 
 use CoreBundle\ORM\AbstractEntity;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+* Evento que representa a ocorrência de uma operação de escrita sobre uma entidade.
+* 
+* Listeners registrados na aplicação podem capturar estes eventos e realizar outras 
+* ações em resposta, tendo como informações a entidade (após a aplicação da operação) 
+* e o tipo de ação executado, os quais estão definidos como constantes na classe.
+* 
+* O padrão de nomenclatura usado para os eventos será sempre o nome do repositório
+* da entidade, que segue o padrão NomeBundle:NomeClasse, seguido do caracter : e do 
+* nome da ação executada.
+*/
 class EntityEvent extends Event {
     
     const ACTION_CREATED = 'Created';
@@ -51,6 +63,25 @@ class EntityEvent extends Event {
     
     function getAction() {
         return $this->action;
+    }
+    
+    /**
+    * Retorna o nome identificador do evento.
+    * @return string nome do evento
+    */
+    function getName() {
+        return $this->entity->getRepository() . ':' . $this->action;
+    }
+    
+    /**
+     * Cria e envia um evento para o dispatcher passado como argumento.
+     * @param AbstractEntity $entity
+     * @param type $action
+     * @param EventDispatcherInterface $dispatcher
+     */
+    static function createAndDispatch(AbstractEntity $entity, $action, EventDispatcherInterface $dispatcher) {
+        $event = new EntityEvent($entity, $action);
+        $dispatcher->dispatch($event->getName(), $event);
     }
     
 }

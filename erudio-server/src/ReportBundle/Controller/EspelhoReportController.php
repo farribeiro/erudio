@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use  Psr\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use CursoBundle\Entity\Turma;
 use ReportBundle\Util\StringUtil;
 use MatriculaBundle\Entity\DisciplinaCursada;

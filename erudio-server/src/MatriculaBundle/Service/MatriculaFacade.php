@@ -31,7 +31,6 @@ namespace MatriculaBundle\Service;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\Event\EntityEvent;
 use CoreBundle\ORM\Exception\IllegalOperationException;
-use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use MatriculaBundle\Entity\Matricula;
 use Psr\Log\LoggerInterface;
@@ -64,6 +63,10 @@ class MatriculaFacade extends AbstractFacade {
             'aluno_dataNascimento' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
             },
+            'aluno_deficiente' => function(QueryBuilder $qb, $value) {
+                $operador = $value ? 'NOT' : '';
+                $qb->andWhere("aluno.particularidades IS {$operador} EMPTY");
+            },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },
@@ -80,9 +83,9 @@ class MatriculaFacade extends AbstractFacade {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
             },
             'enturmado' => function(QueryBuilder $qb, $value) {
-                $operator = $value ? ' NOT ' : '';
-                $qb->leftJoin('m.enturmacoes', 'en', Expr\Join::WITH, 'en.ativo = true AND en.encerrado = false')
-                   ->andWhere("m.enturmacoes IS {$operator} EMPTY");
+                $operator = $value ? '>' : '=';
+                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en WHERE en.matricula = m'
+                    . " AND en.ativo = true AND en.encerrado = false AND en.concluido = false) {$operator} 0");
             }
         ];
     }
@@ -105,7 +108,8 @@ class MatriculaFacade extends AbstractFacade {
            ->join('m.curso', 'curso')
            ->join('unidadeEnsino.tipo', 'tipoUnidadeEnsino')
            ->leftJoin('unidadeEnsino.instituicaoPai', 'instituicao')
-           ->leftJoin('m.etapa', 'etapa');
+           ->leftJoin('m.etapa', 'etapa')
+           ->orderBy('aluno.nome', 'ASC');
     }
     
     protected function beforeCreate($matricula) {
@@ -117,14 +121,7 @@ class MatriculaFacade extends AbstractFacade {
     
     protected function afterCreate($matricula) {
         $this->orm->getManager()->detach($matricula);
-        $this->eventDispatcher->dispatch(
-            'MatriculaBundle:Matricula:Created', 
-            new EntityEvent($matricula, EntityEvent::ACTION_CREATED)
-        );
-    }
-    
-    protected function afterUpdate($matricula) {
-        $this->orm->getManager()->flush();
+        EntityEvent::createAndDispatch($matricula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     private function jaExiste(Matricula $matricula) {

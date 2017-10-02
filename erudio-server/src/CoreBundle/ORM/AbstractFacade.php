@@ -48,7 +48,8 @@ abstract class AbstractFacade {
     const DEFAULT_QUERY_ALIAS = 'entidade';
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
-    const PAGE_SIZE = 150;
+    const PAGE_SIZE = 50;
+    const MAX_RESULTS = 300;
     
     protected $orm;
     protected $logger;
@@ -132,7 +133,7 @@ abstract class AbstractFacade {
     * @param array $params
     * @return array entidades encontradas, ou um array vazio
     */
-    function findAll($params = [], $page = null, $limit = self::PAGE_SIZE) {
+    function findAll($params = [], $page = null, $limit = self::MAX_RESULTS) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
@@ -201,16 +202,17 @@ abstract class AbstractFacade {
     /**
     * 
     * @param type $id
-    * @param type $mergeObject
+    * @param type $entidade
     * @param type $isTransaction
-    * @return \CoreBundle\ORM\AbstractEditableEntity
+    * @return CoreBundle\ORM\AbstractEditableEntity
     * @throws \Exception
     * @throws IllegalUpdateException
     */
-    function update($id, $mergeObject, $isTransaction = true) {
+    function patch($id, $entidade, $isTransaction = true) {
         try {
-            $this->orm->getManager()->detach($mergeObject);
-            $entidade = $this->loadEntity($id);
+            $patch = clone $entidade;
+            $this->orm->getManager()->detach($patch);
+            $this->orm->getManager()->refresh($entidade);
             if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
             }
@@ -218,11 +220,9 @@ abstract class AbstractFacade {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
-            $this->beforeUpdate($entidade);
-            $entidade->merge($mergeObject);
-            $this->orm->getManager()->flush();
-            $this->checkUniqueness($entidade, true);
-            $this->afterUpdate($entidade);
+            $this->beforeApplyChanges($entidade, $patch);
+            $entidade->merge($patch);
+            $this->update($entidade, false);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
         } catch(\Exception $ex) {
@@ -237,11 +237,11 @@ abstract class AbstractFacade {
     * @return boolean
     * @throws \Exception
     */
-    function updateBatch(ArrayCollection $mergeObjects) {
+    function patchBatch(ArrayCollection $mergeObjects) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($mergeObjects as $mergeObject) {
-                $this->update($mergeObject->getId(), $mergeObject, false);
+                $this->patch($mergeObject->getId(), $mergeObject, false);
             }
             $this->orm->getManager()->commit();
             return true;
@@ -249,6 +249,22 @@ abstract class AbstractFacade {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
+    }
+    
+    /**
+     * 
+     * @param type $entidade
+     * @param type $restrict
+     */
+    function update($entidade, $restrictFlush = true) {
+        $this->beforeUpdate($entidade);
+        if ($restrictFlush) {
+            $this->orm->getManager()->flush($entidade);
+        } else {
+            $this->orm->getManager()->flush();
+        }
+        $this->checkUniqueness($entidade, true);
+        $this->afterUpdate($entidade);
     }
     
     /**
@@ -268,8 +284,7 @@ abstract class AbstractFacade {
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeRemove($entidade);
             $entidade->finalize();
-            $this->orm->getManager()->merge($entidade);
-            $this->orm->getManager()->flush();
+            $this->orm->getManager()->flush($entidade);
             $this->afterRemove($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return true;
@@ -384,6 +399,12 @@ abstract class AbstractFacade {
     * @param type $entidade
     */
     protected function afterCreate($entidade) {}
+    
+    /**
+    * 
+    * @param type $entidade
+    */
+    protected function beforeApplyChanges($entidade, $patch) {}
     
     /**
     * 

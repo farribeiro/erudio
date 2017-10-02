@@ -2,8 +2,6 @@ PessoaBundle\Entity\Pessoa:
     properties:
         nome:
             - NotBlank: ~
-        dataNascimento:
-            - NotNull: ~
         genero:
             - Choice: [M, F]
             

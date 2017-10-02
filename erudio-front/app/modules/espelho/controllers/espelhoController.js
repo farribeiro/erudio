@@ -55,6 +55,13 @@
             },500);
         };
         
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+        
         //CARREGA SELECT CURSOS
         $scope.buscarCursos = function () {
             $scope.mostraProgresso(); var promise = null; $scope.turmaBusca.curso.id = null;

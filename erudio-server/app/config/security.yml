@@ -23,7 +23,7 @@ security:
             anonymous: true
         
         api_interna:
-            pattern: ^/apix/
+            pattern: ^/api/
             stateless: true
             guard:
                 authenticators:

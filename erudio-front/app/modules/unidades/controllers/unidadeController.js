@@ -226,11 +226,11 @@
                     if (data.status !== 'ZERO_RESULTS') {
                         $scope.unidade.endereco.latitude = data.results[0].geometry.location.lat;
                         $scope.unidade.endereco.longitude = data.results[0].geometry.location.lng;
-                        $scope.initMap(true, "mapa");
+                        //$scope.initMap(true, "mapa");
                     } else {
                         $scope.unidade.endereco.latitude = -26.929647;
                         $scope.unidade.endereco.longitude = -48.683661;
-                        $scope.initMap(true, "mapa");
+                        //$scope.initMap(true, "mapa");
                     }
                 }
             });
@@ -284,42 +284,27 @@
             });
         };
 
+        $scope.cursosSalvar = [];
         $scope.selecionarCurso = function(curso) {
-            if ($scope.unidade.cursos === undefined) { $scope.unidade.cursos = []; }
-            var qtd = $scope.unidade.cursos.length;
-            var total = 0;
-            $('.cursoUnidade:checked').each(function(){ total++; });
-            if (qtd > total) {
-                var cursoIds = [];
-                $('.cursoUnidade:checked').each(function(){ cursoIds.push($(this).val()); });
-                $timeout(function() {
-                    for (var i=0; i<$scope.unidade.cursos.length; i++) {
-                        var index = cursoIds.indexOf($scope.unidade.cursos[i].id);
-                        if (index === -1) { $scope.unidade.cursos.splice(index,1); }
+            if ($scope.unidade.id !== undefined && $scope.ofertados !== undefined) {
+                $scope.ofertados.forEach(function(cursoOfertado, i){
+                    var del = false;
+                    if (cursoOfertado.curso.id === curso.id) {
+                        Servidor.remover(cursoOfertado,'Curso');
+                        del = true;
+                    } else if (!del) {
+                        var c = { curso: { id:curso.id }, unidadeEnsino: { id: $scope.unidade.id } };
+                        Servidor.finalizar(c,'cursos-ofertados','Curso');
                     }
-                },50);
+                });
             } else {
-                $scope.unidade.cursos.push(curso.plain());
+                var idx = $scope.cursosSalvar.indexOf(curso.id);
+                if (idx > -1) {
+                    $scope.cursosSalvar.splice(idx,1);
+                } else {
+                    $scope.cursosSalvar.push(curso.id);
+                }
             }
-            console.log($scope.unidade);
-            $timeout(function() {
-                var unidade = angular.copy($scope.unidade);
-                delete unidade.instituicaoPai;
-                Servidor.finalizar(unidade, 'unidades-ensino', 'Curso'); 
-                $timeout(function() { 
-                    var promise = Servidor.buscarUm('unidades-ensino',$scope.unidade.id);
-                    promise.then(function(response){
-                        $scope.unidade = response.data;
-                        $timeout(function() {
-                            Servidor.verificaLabels();
-                            $('#cidade').material_select('destroy');
-                            $('#cidade').material_select();
-                            $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
-                            $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
-                        }, 100);
-                    });
-                }, 300);
-            }, 100);
         };
 
         $scope.atualizarPagina = function(numero, substituir) {
@@ -375,59 +360,79 @@
                         endereco.logradouro = $scope.unidade.endereco.logradouro;
                         endereco.numero = $scope.unidade.endereco.numero;
                         $scope.promise = Servidor.finalizar(endereco, 'enderecos', null);
+                        $scope.promise.then(function(response) { $scope.concluirSalvar(novo, response); });
                     });
                 } else {
                     $scope.promise = Servidor.finalizar($scope.unidade.endereco, 'enderecos', null);
+                    $scope.promise.then(function(response) { $scope.concluirSalvar(novo, response); });
                 }
-                $timeout(function () {
-                    $scope.promise.then(function(response) {
-                        $scope.unidade.endereco.id = response.data.id;
-                        var telefones = $scope.unidade.telefones;
-                        delete $scope.unidade.telefones;
-                        $scope.tipos.forEach(function(t) { if(t.id === parseInt($scope.unidade.tipo.id)) { $scope.unidade.tipo = t; } });
-                        var result = Servidor.finalizar($scope.unidade, 'unidades-ensino', 'Unidade');
-                        result.then(function (response) {
-                            $scope.unidade.id = response.data.id;
-                            $scope.unidades.forEach(function (u, index) {
-                                if (u.id === $scope.unidade.id) {
-                                    $scope.unidades[index] = response.data;
-                                }
-                            });
-                            if ($scope.telefone.numero && $scope.telefone.descricao) {
-                                $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g, '');
-                                telefones.push($scope.telefone);
-                            }
-                            if (telefones.length > 0) {
-                                $timeout(function () {
-                                    for (var i = 0; i < telefones.length; i++) {
-                                        if (!telefones[i].id) {
-                                            telefones[i].pessoa.id = $scope.unidade.id;
-                                            Servidor.finalizar(telefones[i], 'telefones', 'Telefone');
-                                        }
-                                    }
-                                    $scope.inicializar(false);
-                                    $scope.fechaLoader();
-                                    $scope.fecharFormulario();
-                                    if (novo) {
-                                        $scope.unidades = [];
-                                        $scope.buscarUnidades(false);
-                                    }
-                                }, 300);
-                            } else {
-                                $timeout(function () {
-                                    $scope.inicializar(false);
-                                    $scope.fechaLoader();
-                                    $scope.fecharFormulario();
-                                    if (novo) {
-                                        $scope.unidades = [];
-                                        $scope.buscarUnidades(false);
-                                    }
-                                }, 300);
-                            }
-                        });
-                    });
-                }, 1000);
+                
             }
+        };
+
+        $scope.concluirSalvar = function (novo, response){
+            $scope.unidade.endereco.id = response.data.id;
+            var telefones = $scope.unidade.telefones;
+            delete $scope.unidade.telefones;
+            $scope.tipos.forEach(function(t) { if(t.id === parseInt($scope.unidade.tipo.id)) { $scope.unidade.tipo = t; } });
+            if ($scope.unidade.cpfCnpj !== undefined && $scope.unidade.cpfCnpj !== null){
+                $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[.]/g,"");
+                $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[//]/g,"");
+                $scope.unidade.cpfCnpj = $scope.unidade.cpfCnpj.replace(/[-]/g,"");
+            }
+            var result = Servidor.finalizar($scope.unidade, 'unidades-ensino', 'Unidade');
+            result.then(function (response) {
+                $scope.unidade.id = response.data.id;
+                
+                if (novo && $scope.cursosSalvar.length > 0) {
+                    $scope.cursosSalvar.forEach(function(curso){
+                        var c = { curso: { id:curso }, unidadeEnsino: { id: $scope.unidade.id } };
+                        Servidor.finalizar(c,'cursos-ofertados',null);
+                    });
+                } else if (!novo && $scope.cursosSalvar.length > 0) {
+                    $scope.cursosSalvar.forEach(function(curso){
+                        var c = { curso: { id:curso }, unidadeEnsino: { id: $scope.unidade.id } };
+                        Servidor.finalizar(c,'cursos-ofertados',null);
+                    });
+                }
+                
+                $scope.unidades.forEach(function (u, index) {
+                    if (u.id === $scope.unidade.id) {
+                        $scope.unidades[index] = response.data;
+                    }
+                });
+                if ($scope.telefone.numero && $scope.telefone.descricao) {
+                    $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g, '');
+                    telefones.push($scope.telefone);
+                }
+                if (telefones.length > 0) {
+                    $timeout(function () {
+                        for (var i = 0; i < telefones.length; i++) {
+                            if (!telefones[i].id) {
+                                telefones[i].pessoa.id = $scope.unidade.id;
+                                Servidor.finalizar(telefones[i], 'telefones', 'Telefone');
+                            }
+                        }
+                        $scope.inicializar(false);
+                        $scope.fechaLoader();
+                        $scope.fecharFormulario();
+                        if (novo) {
+                            $scope.unidades = [];
+                            $scope.buscarUnidades(false);
+                        }
+                    }, 300);
+                } else {
+                    $timeout(function () {
+                        $scope.inicializar(false);
+                        $scope.fechaLoader();
+                        $scope.fecharFormulario();
+                        if (novo) {
+                            $scope.unidades = [];
+                            $scope.buscarUnidades(false);
+                        }
+                    }, 300);
+                }
+            });
         };
 
         /* Previne os dados de serem descartados */
@@ -477,6 +482,8 @@
                     $scope.unidade.endereco = $scope.endereco;
                     $scope.unidade.endereco.latitude = -26.929647;
                     $scope.unidade.endereco.longitude = -48.683661;
+                    $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
+                    $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
                 } else {
                     $scope.acao = "Editar";
                     $("#nomeUnidadeEnsino").focus();
@@ -487,11 +494,15 @@
                             $scope.buscaTelefones();
                             $scope.estadoId = $scope.unidade.endereco.cidade.estado.id;
                             $scope.cidadeId = $scope.unidade.endereco.cidade.id;
-                            if ($scope.unidade.cursos !== undefined && $scope.unidade.cursos.length) {
-                                $scope.unidade.cursos.forEach(function(curso) {
-                                    $('#c' + curso.id).prop('checked', true);
-                                });
-                            }
+                            var promiseCursos = Servidor.buscar('cursos-ofertados',{unidadeEnsino: $scope.unidade.id});
+                            promiseCursos.then(function(response){
+                                if (response.data.length > 0) {
+                                    $scope.ofertados = response.data;
+                                    response.data.forEach(function(curso) {
+                                        $('#c' + curso.curso.id).prop('checked', true);
+                                    });
+                                }
+                            });
                             var promise = Servidor.buscarUm('enderecos', response.data.endereco.id);
                             promise.then(function(response) {
                                 $scope.unidade.endereco = response.data;
@@ -503,7 +514,7 @@
                                 $('#cidade').material_select();
                                 $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select('destroy');
                                 $('#tipoUnidade, #instituicaoPai, #estado, #descricao').material_select();
-                            },500);
+                            },1000);
                         },500);
                     });
                 }
@@ -514,7 +525,7 @@
                     if (!nova) { $scope.index = index; }
                     $scope.fechaLoader();
                     $scope.editando = true;
-                    $timeout(function(){ $scope.initMap(false, "mapa"); $('#nomeUnidadeEnsinoFocus').focus(); },300);
+                    $timeout(function(){ $('#nomeUnidadeEnsinoFocus').focus(); },300);
                 }, 300);
             }else {
                 if (!nova){
@@ -536,7 +547,7 @@
                 $('.opcoesUnidade' + unidade.id).hide();
                 $scope.fechaLoader();
                 $scope.buscaTelefones();
-                $timeout(function(){ $('#info-modal-unidade').modal(); $scope.initMap(false, "info-map"); },500);
+                $timeout(function(){ $('#info-modal-unidade').modal();  },500);
             }, 300);
         };
 
@@ -661,7 +672,7 @@
 
         /* Guarda a instituição para futura remoção e abre o modal de confirmação */
         $scope.prepararRemover = function (unidade, index){
-            $('#remove-modal-unidade').modal();
+            $('#remove-modal-unidade').openModal();
             $scope.unidadeRemover = unidade;
             $('.opcoesunidade' + unidade.id).hide();
             $scope.index = index;
@@ -699,11 +710,11 @@
                 $timeout(function(){
                     $("#nomeUnidadeEnsino").focus();
                     $timeout(function () {Servidor.cardEntra('.form-geral');}, 500);
-                    $timeout(function () { $scope.initMap(false);}, 500);
+                    //$timeout(function () { $scope.initMap(false);}, 500);
                     Servidor.cardEntra('.form-geral');
                     $('#tipo, #instituicao, #estado').material_select('destroy');
                     $('#tipo, #instituicao, #estado').material_select();
-                    $timeout(function(){ $scope.initMap(false, "mapa"); },1000);
+                    //$timeout(function(){ $scope.initMap(false, "mapa"); },1000);
                     $("#nomeUnidadeEnsino").focus();
                 },500);
             },500);

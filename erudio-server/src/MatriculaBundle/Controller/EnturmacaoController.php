@@ -80,16 +80,6 @@ class EnturmacaoController extends AbstractEntityController {
 
     /**
     * @ApiDoc()
-    * 
-    * @FOS\Put("enturmacoes/{id}")
-    * @ParamConverter("enturmacao", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, Enturmacao $enturmacao, ConstraintViolationListInterface $errors) {
-        return $this->put($request, $id, $enturmacao, $errors);
-    }
-
-    /**
-    * @ApiDoc()
     * @FOS\Delete("enturmacoes/{id}")
     */
     function deleteAction(Request $request, $id) {

@@ -66,6 +66,7 @@ class AvaliacaoQuantitativaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "media", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "dataEntrega", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

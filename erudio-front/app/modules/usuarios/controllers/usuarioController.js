@@ -126,14 +126,14 @@
                             }
                         });                        
                     });    */                
-                    $scope.usuarios.forEach(function(u) {
+                    /*$scope.usuarios.forEach(function(u) {
                         if (u.pessoa !== undefined) {
                             var promise = Servidor.buscarUm('pessoas', u.pessoa.id);
                             promise.then(function(response) {
                                 $scope.pessoas.push(response.data);
                             });
                         }
-                    });                        
+                    });         */               
                     if ($('#search').is(':disabled')) {
                         $('#search').attr('disabled','');
                         $('#search').css('background','');
@@ -166,10 +166,11 @@
             if ($scope.validar('validate') === true) {                
                 $scope.mostraLoader(true);
                 var senha = $('#senha').val();
-                if (senha !== '') {
+                $scope.usuario.password = senha;
+                /*if (senha !== '') {
                     var pass = md5.createHash(senha);
                     $scope.usuario.password = pass;
-                }
+                }*/
                 var username = $scope.usuario.username.split('.').join('').split('-').join('');
                 var promise = Servidor.buscar('users', {username: username});
                 promise.then(function(response) {

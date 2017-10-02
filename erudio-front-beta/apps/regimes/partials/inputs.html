@@ -1,3 +1,10 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="regimeNome" label="'Nome do Regime'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="regime" campo="nome" erro="'regimeForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="regime.nome" type="text" name="nome" required/>
+        <div ng-messages="regimeForm.regime.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
 </div>

@@ -423,42 +423,44 @@
 
             /* Busca de Pessoa -Lista */
             $scope.buscarPessoas = function () {
-                var pessoaBusca = $scope.pessoaBusca;
-                if (pessoaBusca.dataNascimento && pessoaBusca.dataNascimento !== undefined) {
-                    var dataNascimento = dateTime.converterDataServidor(pessoaBusca.dataNascimento, true);
-                } else {
-                    dataNascimento = null;
-                }
-                if(pessoaBusca.cpf){
-                    pessoaBusca.cpf = pessoaBusca.cpf.split(".").join("");
-                    pessoaBusca.cpf = pessoaBusca.cpf.split("-").join("");
-                }
-                $scope.mostraProgresso();
-                $scope.mostraLoader();
-                var promise = Servidor.buscar('pessoas', {
-                    'nome': pessoaBusca.nome,
-                    'sobrenome': pessoaBusca.sobrenome, 'cpf': pessoaBusca.cpf,
-                    'dataNascimento': dataNascimento,
-                    'nomeMae': pessoaBusca.nomeMae, 'certidaoNascimento': pessoaBusca.certidaoFormatada
-                });
-                promise.then(function (response) {
-                    $('.tooltipped').tooltip('remove');
-                    $timeout(function () {
-                        $('.tooltipped').tooltip({delay: 50});
-                        window.scrollTo(0, 600);
-                    }, 100);
-                    $scope.paginaAtual = 1;
-                    $scope.fechaLoader();
-                    $scope.pessoas = response.data;
-                    if(!response.data.length) {
-                        Servidor.customToast('Nenhuma pessoa encontrada.');
+                if ($scope.validarBusca()) {
+                    var pessoaBusca = $scope.pessoaBusca;
+                    if (pessoaBusca.dataNascimento && pessoaBusca.dataNascimento !== undefined) {
+                        var dataNascimento = dateTime.converterDataServidor(pessoaBusca.dataNascimento, true);
+                    } else {
+                        dataNascimento = null;
                     }
-                    $scope.quantidadePaginas = Math.ceil(response.data.length/50);
-                    $('.btn-add').show();
-                    $scope.adicionaPessoa = true;
-                    $scope.fechaProgresso();
-                    $scope.fechaLoader();
-                });
+                    if(pessoaBusca.cpf){
+                        pessoaBusca.cpf = pessoaBusca.cpf.split(".").join("");
+                        pessoaBusca.cpf = pessoaBusca.cpf.split("-").join("");
+                    }
+                    $scope.mostraProgresso();
+                    $scope.mostraLoader();
+                    var promise = Servidor.buscar('pessoas', {
+                        'nome': pessoaBusca.nome,
+                        'sobrenome': pessoaBusca.sobrenome, 'cpf': pessoaBusca.cpf,
+                        'dataNascimento': dataNascimento,
+                        'nomeMae': pessoaBusca.nomeMae, 'certidaoNascimento': pessoaBusca.certidaoFormatada
+                    });
+                    promise.then(function (response) {
+                        $('.tooltipped').tooltip('remove');
+                        $timeout(function () {
+                            $('.tooltipped').tooltip({delay: 50});
+                            window.scrollTo(0, 600);
+                        }, 100);
+                        $scope.paginaAtual = 1;
+                        $scope.fechaLoader();
+                        $scope.pessoas = response.data;
+                        if(!response.data.length) {
+                            Servidor.customToast('Nenhuma pessoa encontrada.');
+                        }
+                        $scope.quantidadePaginas = Math.ceil(response.data.length/50);
+                        $('.btn-add').show();
+                        $scope.adicionaPessoa = true;
+                        $scope.fechaProgresso();
+                        $scope.fechaLoader();
+                    });
+                }
             };
 
             $scope.buscarEstadoCivil = function () {
@@ -1007,6 +1009,8 @@
                     }
                     if ($scope.pessoa.responsavelNome !== $scope.pessoa.nomeMae && $scope.pessoa.responsavelNome !== $scope.pessoa.nomePai) {
                         $scope.pessoaResponsavel = 'outro';
+                    } else {
+                        $scope.pessoaResponsavel = $scope.pessoa.responsavelNome;
                     }
                     
                     $scope.cadastrarPessoa(salvo, novo);
@@ -1094,15 +1098,15 @@
 
             /* Adiciona Telefone */
             $scope.salvarTelefone = function (telefone) {
-                if (!telefone.id) {
-                    telefone.pessoa = $scope.pessoa;
+                /*if (!telefone.id) {
+                    telefone.pessoa = Restangular.copy($scope.pessoa);
                     delete telefone.pessoa.endereco;
                     telefone.pessoa.dataNascimento = dateTime.converterDataServidor($scope.pessoa.dataNascimento);
                     telefone.pessoa.dataExpedicaoCertidaoNascimento = dateTime.converterDataServidor($scope.pessoa.dataExpedicaoCertidaoNascimento);
-                }
+                }*/
                 if (telefone.numero && telefone.descricao) {
                     telefone.pessoa.tipo_pessoa = "PessoaFisica";
-                    var pessoa = {id:$scope.telefone.pessoa.id, 'tipo_pessoa': 'PessoaFisica' }; $scope.telefone.pessoa = pessoa;
+                    var pessoa = {id:$scope.pessoa.id, 'tipo_pessoa': 'PessoaFisica' }; $scope.telefone.pessoa = pessoa;
                     var promise = Servidor.finalizar(telefone, 'telefones', 'Telefone');
                     promise.then(function (response) {
                         $scope.telefones.unshift(response.data);
@@ -1291,7 +1295,7 @@
 
             /*Salvar Cadastro de Pessoa*/
             $scope.salvarPessoa = function () {
-                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 2) {
+                if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 1) {
                     $scope.mostraLoader();
                     if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3) {
                         if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
@@ -1315,7 +1319,9 @@
                     }
                     if ($scope.telaNumero === 1) {
                         if ($scope.pessoa.id === undefined || $scope.pessoa.id === null) {
-                            if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            //var header = Servidor.criarToken();
+                               // var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
                                 var endereco = Restangular.copy($scope.pessoa.endereco);
                                 if (Servidor.validar('validate-endereco')) {
                                     endereco.route = 'enderecos';
@@ -1326,40 +1332,66 @@
                                         $scope.finalizarPessoa();
                                     });
                                 } else {
-                                    return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                    $scope.fechaLoader();
+                                    return Servidor.customToast("Os campos de endereço são obrigatórios.");
                                 }
-                            } else {
+                            /*} else {
                                 delete $scope.pessoa.endereco;
                                 $scope.finalizarPessoa();
-                            }
+                            }*/
                         } else {
-                            if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
-                                if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
-                                    var endereco = Restangular.copy($scope.pessoa.endereco);
+                            //if ($scope.pessoa.endereco.id === undefined || $scope.pessoa.endereco.id === null) {
+                                //if ($scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                                    var endereco = $scope.pessoa.endereco;
                                     if (Servidor.validar('validate-endereco')) {
                                         endereco.route = 'enderecos';
-                                        var promise = Servidor.finalizar(endereco, 'enderecos', 'Endereço');
-                                        promise.then(function (response) {
-                                            $scope.pessoa.endereco.id = response.data.id;
-                                            $scope.endereco.id = response.data.id;
-                                            $scope.finalizarPessoa();
-                                        });
+                                        if (endereco.id !== undefined) {
+                                            var promiseEndereco = Servidor.buscarUm('enderecos',endereco.id);
+                                            promiseEndereco.then(function(responseAddr) {
+                                                var addr = responseAddr.data;
+                                                addr.bairro = endereco.bairro;
+                                                addr.cep = endereco.cep;
+                                                addr.cidade = {id: endereco.cidade.id ,estado: {id: endereco.cidade.estado.id }};
+                                                addr.id = endereco.id;
+                                                addr.latitude = endereco.latitude;
+                                                addr.longitude = endereco.longitude;
+                                                addr.logradouro = endereco.logradouro;
+                                                addr.numero = endereco.numero;
+                                                var promise = Servidor.finalizar(addr, 'enderecos', null);
+                                                promise.then(function (response) {
+                                                    $scope.pessoa.endereco.id = response.data.id;
+                                                    $scope.endereco.id = response.data.id;
+                                                    $scope.finalizarPessoa();
+                                                });
+                                            });                                            
+                                        } else {
+                                            var promise = Servidor.finalizar(endereco, 'enderecos', null);
+                                            promise.then(function (response) {
+                                                $scope.pessoa.endereco.id = response.data.id;
+                                                $scope.endereco.id = response.data.id;
+                                                $scope.finalizarPessoa();
+                                            });
+                                        }
                                     } else {
-                                        return Servidor.customToast("Há campos obrigatórios não preenchidos.");
+                                        $scope.fechaLoader();
+                                        return Servidor.customToast("Os campos de endereço são obrigatórios.");
                                     }
-                                } else {
+                                /*} else {
                                     delete $scope.pessoa.endereco;
                                     $scope.finalizarPessoa();
-                                }
-                            } else {
+                                }*/
+                            /*} else {
                                 $scope.finalizarPessoa();
-                            }
+                            }*/
                         }
                     } else {
-                        if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                        /*if (!$scope.verificarEnderecoPreenchido($scope.pessoa.endereco)) {
+                            $scope.fechaLoader();
+                            return Servidor.customToast("Os campos de endereço são obrigatórios.");
+                        } else {*/
                             delete $scope.pessoa.endereco;
-                        }
-                        $scope.finalizarPessoa();
+                            $scope.finalizarPessoa();
+                        //}
                     }
                 };
             };
@@ -1373,11 +1405,21 @@
                         $scope.pessoa.responsavelNome = $scope.pessoa.nomePai;
                         break;
                 };
+                
+                if ($scope.pessoa.cpfCnpj !== undefined && $scope.pessoa.cpfCnpj !== null) {
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[.]/g,"");
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[//]/g,"");
+                    $scope.pessoa.cpfCnpj = $scope.pessoa.cpfCnpj.replace(/[-]/g,"");
+                }
+                
                 $scope.pessoa.tipo_pessoa = "PessoaFisica"; delete $scope.pessoa.usuario;
                 var promise = Servidor.finalizar($scope.pessoa, 'pessoas', 'Pessoa');
                 
                 promise.then(function (response) {
                     $scope.pessoa = response.data;
+                    
+                    var promiseE = Servidor.buscarUm('enderecos',$scope.pessoa.endereco.id);
+                    promiseE.then(function(response){ $scope.pessoa.endereco = response.data; });
                     
                     if ($scope.telefone.numero !== null && $scope.telefone.descricao !== null){
                         $scope.salvarTelefone($scope.telefone);
@@ -1415,8 +1457,16 @@
 
 
             $scope.validarPessoa = function (id) {
+                var retorno = false;
                 if (Servidor.validar(id)) {
-                    return true;
+                    retorno = true;
+                    if ($scope.pessoa.nacionalidade === "BRASILEIRO") {
+                        if ($scope.pessoa.naturalidade === undefined || $scope.pessoa.naturalidade === null) {
+                            Servidor.customToast('Digite e selecione uma cidade no campo naturalidade.');
+                            retorno = false;
+                        }
+                    }
+                    return retorno;
                 }
             };
 
@@ -1519,14 +1569,11 @@
                             var endereco = Servidor.recuperaCep();
                             if (endereco[0]) {
                                 $scope.pessoa.endereco.logradouro = endereco[0];
-                            } else {
-                                $scope.pessoa.endereco.logradouro = '';
                             }
                             if (endereco[1]) {
                                 $scope.pessoa.endereco.bairro = endereco[1];
-                            } else {
-                                $scope.pessoa.endereco.bairro = '';
                             }
+                            
                             /* Buscando Estado */
                             if (endereco[3]) {
                                 var promise = Servidor.buscar('estados', {'sigla': endereco[3]});
@@ -1550,9 +1597,7 @@
                                                 $scope.pessoa.endereco.cidade = cidade[0].plain();
                                                 $scope.cidadeId = cidade[0].id;
                                                 $timeout(function () {
-                                                    $scope.buscaCoordenadasPorEndereco();
-                                                    $('#cidade').material_select('destroy');
-                                                    $('#cidade').material_select();
+                                                    //$scope.buscaCoordenadasPorEndereco();
                                                     Servidor.verificaLabels();
                                                     $scope.fechaProgresso();
                                                     if (!$scope.pessoa.id) {
@@ -1561,6 +1606,8 @@
                                                         } else {
                                                             $("#numero").focus();
                                                         }
+                                                        $('#cidade').material_select('destroy');
+                                                        $('#cidade').material_select();
                                                     }
                                                 }, 500);
                                             });
@@ -1573,7 +1620,6 @@
                                 });
                             } else {
                                 $scope.fechaLoader();
-                                $scope.endereco.cidade.estado.id = '';
                                 $('#estado').material_select();
                             }
                         }, 500);

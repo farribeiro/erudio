@@ -29,25 +29,24 @@
 namespace MatriculaBundle\Service;
 
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
+use CoreBundle\Event\EntityEvent;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Entity\Enturmacao;
 use CursoBundle\Entity\Turma;
-use CursoBundle\Service\VagaFacade;
 
 class EnturmacaoFacade extends AbstractFacade {
     
     private $disciplinaCursadaFacade;
-    private $vagaFacade;
     
-    function __construct(RegistryInterface $doctrine, DisciplinaCursadaFacade $disciplinaCursadaFacade, 
-            VagaFacade $vagaFacade) {
-        parent::__construct($doctrine);
+    function __construct(RegistryInterface $doctrine, EventDispatcherInterface $eventDispatcher, 
+            DisciplinaCursadaFacade $disciplinaCursadaFacade) {
+        parent::__construct($doctrine, null, $eventDispatcher);
         $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
-        $this->vagaFacade = $vagaFacade;
     }
     
     function getEntityClass() {
@@ -75,9 +74,13 @@ class EnturmacaoFacade extends AbstractFacade {
             'concluido' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.concluido = :concluido')->setParameter('concluido', $value);
             },
+            'dataAula' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.dataCadastro <= :dataAula')
+                   ->andWhere('(e.encerrado = false OR e.dataModificacao > :dataAula)')
+                   ->setParameter('dataAula', $value);
+            },
             'emAndamento' => function(QueryBuilder $qb, $value) {
-                $operador = $value ? '=' : '<>';
-                $qb->andWhere("e.concluido {$operador} false")->andWhere("e.encerrado {$operador} false");
+                $qb->andWhere("e.concluido = false")->andWhere("e.encerrado = false");
             }
         ];
     }
@@ -136,25 +139,25 @@ class EnturmacaoFacade extends AbstractFacade {
     
     /**
      * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
-     * de ensino, bem como suas disciplinas cursadas.
+     * de ensino ou que está sendo desligado. 
+     * O segundo argumento define se as disciplinas serão igualmente encerradas, ficando 
+     * com seu status permanentemente INCOMPLETO, ou se permanecerão ativas, podendo ser 
+     * vinculadas a uma nova enturmação, o que tipicamente ocorre em uma transferência entre unidades.
      * 
      * @param Enturmacao $enturmacao
      */
     function encerrarPorMovimentacao(Enturmacao $enturmacao, $manterDisciplinas = true) {
         $enturmacao->encerrar();
-        $this->orm->getManager()->merge($enturmacao);
-        $this->orm->getManager()->flush();
+        $this->update($enturmacao);
         if ($manterDisciplinas) {
             $this->desvincularDisciplinas($enturmacao);
         } else {
-            $this->encerrarDisciplinas($enturmacao, DisciplinaCursada::STATUS_INCOMPLETO);
+            $this->encerrarDisciplinas($enturmacao);
         }
-        $this->liberarVaga($enturmacao);
     }
     
     /**
-     * Encerra uma enturmação de um aluno que está sendo transferido para outra unidade
-     * de ensino, bem como suas disciplinas cursadas.
+     * Finaliza uma enturmação de um aluno que está concluindo as disciplinas cursadas.
      * 
      * @param Enturmacao $enturmacao
      */
@@ -164,14 +167,13 @@ class EnturmacaoFacade extends AbstractFacade {
             if ($disciplina->emAberto()) {
                 throw new IllegalUpdateException(
                     IllegalUpdateException::ILLEGAL_STATE_TRANSITION,
-                    'Turma não pode ser encerrada, existem alunos com média em aberto na disciplina '
-                        . $disciplina->getNomeExibicao()
+                    "Enturmação não pode ser encerrada, o aluno {$enturmacao->getAluno()->getNome()} "
+                    . "possui média em aberto na disciplina {$disciplina->getNomeExibicao()}"
                 );
             }
         }
         $enturmacao->concluir();
-        $this->orm->getManager()->merge($enturmacao);
-        $this->orm->getManager()->flush();
+        $this->update($enturmacao);
     }
      
     protected function selectMap() {
@@ -189,8 +191,14 @@ class EnturmacaoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($enturmacao) {
+        if (!$enturmacao->getMatricula()->isCursando()) {
+            throw new IllegalOperationException('Matrícula em situação inválida para enturmação');
+        }
         if ($this->possuiVagaAberta($enturmacao) == false) {
             throw new IllegalOperationException('Não existem vagas disponíveis nesta turma');
+        }
+        if ($enturmacao->getMatricula()->getCurso() != $enturmacao->getTurma()->getEtapa()->getCurso()) {
+            throw new IllegalOperationException('Curso da matrícula e da turma são incompatíveis');
         }
     }
     
@@ -198,14 +206,18 @@ class EnturmacaoFacade extends AbstractFacade {
         $enturmacao->getMatricula()->redefinirEtapa();
         $this->orm->getManager()->flush();
         $this->vincularDisciplinas($enturmacao);
-        $this->ocuparVaga($enturmacao);
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
+    }
+    
+    protected function afterUpdate($enturmacao) {
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_UPDATED, $this->eventDispatcher);
     }
     
     protected function afterRemove($enturmacao) {
         $this->desvincularDisciplinas($enturmacao);
         $enturmacao->getMatricula()->resetarEtapa();
         $this->orm->getManager()->flush();
-        $this->liberarVaga($enturmacao);
+        EntityEvent::createAndDispatch($enturmacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
     }
     
     /**
@@ -258,7 +270,7 @@ class EnturmacaoFacade extends AbstractFacade {
      * @param Enturmacao $enturmacao
      * @param $status
      */
-    private function encerrarDisciplinas(Enturmacao $enturmacao, $status) {
+    private function encerrarDisciplinas(Enturmacao $enturmacao, $status = DisciplinaCursada::STATUS_INCOMPLETO) {
         foreach ($enturmacao->getDisciplinasCursadas() as $disciplina) {
             $disciplina->encerrar($status);
             $this->orm->getManager()->merge($disciplina);
@@ -288,26 +300,6 @@ class EnturmacaoFacade extends AbstractFacade {
      */
     private function possuiVagaAberta(Enturmacao $enturmacao) {
         return $enturmacao->getTurma()->getVagasAbertas()->count() > 0;
-    }
-    
-    /**
-     * Aloca uma vaga na turma da enturmação.
-     * 
-     * @param Enturmacao $enturmacao
-     */
-    private function ocuparVaga(Enturmacao $enturmacao) {
-        $this->vagaFacade->ocupar($enturmacao->getTurma()->getVagasAbertas()->first(), $enturmacao);
-    }
-    
-    /**
-     * Libera a vaga ocupada pela enturmação.
-     * 
-     * @param Enturmacao $enturmacao
-     */
-    private function liberarVaga(Enturmacao $enturmacao) {
-        if ($enturmacao->getVaga()) {
-            $this->vagaFacade->liberar($enturmacao->getVaga());
-        }
     }
     
 }

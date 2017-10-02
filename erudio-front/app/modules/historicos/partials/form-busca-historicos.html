@@ -1,0 +1,74 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div id="info">        
+    <div class="input-field col s12 m12 l6">
+        <i class="material-icons prefix">perm_identity</i>
+        <input id="nomeAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.aluno"/>
+        <label for="nomeAlunoMatricula">Nome do Aluno</label>
+    </div>
+    <div class="input-field col s12 m12 l6"> 
+        <i class="material-icons prefix">toll</i>
+        <input id="codigoBuscaMatricula" type="text" length="11" class="validate counter"  data-ng-model="matriculaBusca.codigo"/>
+        <label for="codigoBuscaMatricula">Código de Matrícula</label>
+    </div>
+    <div class="input-field col s12 m12 l6">
+        <i class="material-icons prefix">account_balance</i>
+        <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
+            <option value=""></option>
+            <option value="">TODOS</option>
+            <option value="{{ unidade.id }}" data-ng-repeat="unidade in unidades">{{unidade.nome| uppercase}}</option>
+        </select>
+        <label for="unidadeBuscaMatricula">Unidade de Ensino</label>
+    </div>                                        
+    <div class="input-field col s12 m12 l6">
+        <i class="material-icons prefix">school</i>
+        <select id="cursoBuscaMatricula" data-ng-model="matriculaBusca.curso">
+            <option value="" disabled selected></option>
+            <option value="{{ curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome| uppercase}}</option>
+        </select>
+        <label for="cursoBuscaMatricula">Curso</label>
+    </div>
+    <div class="input-field col s12 m12 l6" >
+        <i class="material-icons prefix">description</i>
+        <select id="statusBusca" data-ng-model="matriculaBusca.status">
+            <option disabled selected></option>
+            <option value="CURSANDO">CURSANDO</option>
+            <option value="APROVADO">APROVADO</option>
+            <option value="REPROVADO">REPROVADO</option>
+            <option value="TRANCADO">TRANCADO</option>
+            <option value="ABANDONO">ABANDONO</option>
+            <option value="FALECIDO">FALECIDO</option>
+        </select>
+        <label for="statusBusca">Status</label>
+    </div>
+</div>
+<div class="row end-card" style="border-top: none;">
+    <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; padding-top: 15px; padding-bottom: 15px; margin-top: 15px;">
+        <a data-ng-click="reiniciarPessoaBusca()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+        <a data-ng-click="buscarMatriculas(matriculaBusca, '', 'botao')" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+    </div>
+</div>

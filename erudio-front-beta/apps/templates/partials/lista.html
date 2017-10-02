@@ -1,17 +1,20 @@
-<div class="lista-items" ng-repeat="subheader in subheaders">
-    <md-subheader data-ng-show="objetos.length" class="md-primary">{{ subheader.label }}</md-subheader>
+<div class="lista-items" ng-repeat="subheader in ctrl.subheaders">
+    <md-subheader data-ng-show="ctrl.objetos.length" class="md-primary">{{ subheader.label }}</md-subheader>
     <md-card class="no-margin-up-down">
         <md-card-content class="no-padding">
             <md-list flex class="no-padding white-content">
-                <md-list-item id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in objetos">
-                    <a class="link-list" href="{{ link+objeto.id }}"><div class="md-list-item-text" layout="column"><div ng-include="listaEspecifica"></div></div></a>
+                <md-list-item id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.objetos">
+                    <a class="link-list" href="{{ ctrl.link+objeto.id }}"><div class="md-list-item-text" layout="column">
+                        <div ng-include="ctrl.lista"></div>
+                    </div></a>
                     <opcao-lista class="md-secondary"></opcao-lista>
                 </md-list-item>
             </md-list>
         </md-card-content>
     </md-card>
+    <fieldset ng-show="ctrl.finalLista"><legend>Você chegou ao final da lista.</legend></fieldset>
 </div>
 
-<botao-adicionar></botao-adicionar>
-<div class="empty-state" data-ng-hide="objetos.length">Nenhum item encontrado. :(</div>
-<paginador data-ng-show="objetos.length"></paginador>
+<botao-adicionar ng-show="ctrl.escrita"></botao-adicionar>
+<div class="empty-state" data-ng-hide="ctrl.objetos.length">Nenhum item encontrado. :(</div>
+<!-- <paginador data-ng-show="ctrl.objetos.length"></paginador> -->

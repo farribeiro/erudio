@@ -46,7 +46,7 @@ class Grupo extends AbstractEditableEntity {
     private $nome;
     
     /**
-    * @JMS\Exclude  
+    * @JMS\Exclude 
     * @ORM\OneToMany(targetEntity = "PermissaoGrupo", mappedBy = "grupo")
     */
     private $permissoes;

@@ -48,7 +48,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     private $username;
     
     /**
-    * @JMS\Exclude
+    * @JMS\Groups({"HIDDEN"})
     * @ORM\Column(name="senha") 
     */
     private $password;
@@ -104,7 +104,11 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     }
 
     function setPassword($password) {
-        $this->password = md5($password);
+        $this->password = $password;
+    }
+    
+    function encodePassword() {
+        $this->password = md5($this->password);
     }
 
     function getNomeExibicao() {
@@ -159,8 +163,8 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
         $usuario->nomeExibicao = $pessoa->getNome();
         $password = $firstPassword 
                 ? $firstPassword
-                : substr(str_shuffle($username.str_replace(' ', '' , $pessoa->getNome())), 0, 6);
-        $usuario->password = md5($password);
+                : substr(str_shuffle($username . str_replace(' ', '' , $pessoa->getNome())), 0, 6);
+        $usuario->password = $password;
         return $usuario;
     }
 }

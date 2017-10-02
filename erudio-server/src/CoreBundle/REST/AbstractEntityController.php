@@ -30,6 +30,7 @@ namespace CoreBundle\REST;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\NoResultException;
@@ -37,14 +38,12 @@ use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractFacade;
-use CoreBundle\ORM\Exception\IllegalOperationException;
-use CoreBundle\ORM\Exception\UniqueViolationException;
 
 /**
 * Controlador REST que serve como base aos demais.
 * Oferece os métodos CRUD já implementados, usando a classe Facade retornada pelo método getFacade.
 */
-abstract class AbstractEntityController {
+abstract class AbstractEntityController extends Controller {
     
     const SERIALIZER_GROUP_LIST = 'LIST';
     const SERIALIZER_GROUP_DETAILS = 'DETAILS';
@@ -124,7 +123,7 @@ abstract class AbstractEntityController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $entidadeAtualizada = $this->getFacade()->update($id, $entidade);
+        $entidadeAtualizada = $this->getFacade()->patch($id, $entidade);
         $view = View::create($entidadeAtualizada, Response::HTTP_OK);
         $this->configureContext($view->getContext());
         return $this->handleView($view);
@@ -134,7 +133,7 @@ abstract class AbstractEntityController {
         if(count($errors) > 0) {
             return $this->handleValidationErrors($errors);
         }
-        $this->getFacade()->updateBatch($entidades);
+        $this->getFacade()->patchBatch($entidades);
         $view = View::create(null, Response::HTTP_NO_CONTENT);
         $this->configureContext($view->getContext());
         return $this->handleView($view);

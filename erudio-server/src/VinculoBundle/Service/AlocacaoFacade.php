@@ -56,6 +56,9 @@ class AlocacaoFacade extends AbstractFacade {
                 $qb->join('a.instituicao', 'instituicao')
                     ->andWhere('instituicao.id = :instituicao')->setParameter('instituicao', $value);
             },
+            'funcionario' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('vinculo.funcionario = :pessoa')->setParameter('pessoa', $value);
+            },
             'funcionario_nome' => function(QueryBuilder $qb, $value) {
                 $qb->join('vinculo.funcionario', 'funcionario')
                     ->andWhere('funcionario.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
@@ -83,17 +86,11 @@ class AlocacaoFacade extends AbstractFacade {
     }
 
     protected function afterCreate($alocacao) {
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Alocacao:Created', 
-            new EntityEvent($alocacao, EntityEvent::ACTION_CREATED)
-        );
+        EntityEvent::createAndDispatch($alocacao, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     protected function afterRemove($alocacao) {
-        $this->eventDispatcher->dispatch(
-            'VinculoBundle:Alocacao:Removed', 
-            new EntityEvent($alocacao, EntityEvent::ACTION_REMOVED)
-        );
+        EntityEvent::createAndDispatch($alocacao, EntityEvent::ACTION_REMOVED, $this->eventDispatcher);
     }
     
     /**
@@ -103,11 +100,8 @@ class AlocacaoFacade extends AbstractFacade {
      */
     function excedeCargaHoraria(Alocacao $alocacao) {
         $vinculo = $alocacao->getVinculo();
-        $chTotal = $alocacao->getCargaHoraria();
-        foreach ($vinculo->getAlocacoes() as $a) {
-            $chTotal += $a->getCargaHoraria();
-        }
-        return $vinculo->getCargaHoraria() < $chTotal;
+        $vinculo->getAlocacoes()->add($alocacao);
+        return !$vinculo->cargaHorariaValida();
     }
 
 }

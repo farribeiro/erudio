@@ -100,15 +100,27 @@ class Matricula extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "matricula", cascade = {"all"}, fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "EtapaCursada", mappedBy = "matricula", fetch="EXTRA_LAZY") 
+    */
+    private $etapasCursadas;
+    
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "DisciplinaCursada", mappedBy = "matricula", fetch="EXTRA_LAZY") 
     */
     private $disciplinasCursadas;
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Enturmacao", mappedBy = "matricula", cascade = {"all"}, fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "Enturmacao", mappedBy = "matricula", fetch="EXTRA_LAZY") 
     */
     private $enturmacoes;
+    
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "ObservacaoHistorico", mappedBy = "matricula", fetch="EXTRA_LAZY") 
+    */
+    private $observacoesHistorico;
     
     function init() {
         $this->enturmacoes = new ArrayCollection();
@@ -155,11 +167,15 @@ class Matricula extends AbstractEditableEntity {
     * @JMS\MaxDepth(depth = 1)
     */
     function getEtapaAtual() {
-        return $this->etapa;
+        return $this->etapa ? $this->etapa : $this->redefinirEtapa(); //retirar posteriormente
     }
 
     function getUnidadeEnsino() {
         return $this->unidadeEnsino;
+    }
+    
+    function isCursando() {
+        return $this->status === self::STATUS_CURSANDO;
     }
     
     function setStatus($status) {
@@ -169,9 +185,18 @@ class Matricula extends AbstractEditableEntity {
         }
     }
     
+    function reativar($etapa = null) {
+        if ($this->status === self::STATUS_TRANCADO || $this->status === self::STATUS_ABANDONO) {
+            $this->status = self::STATUS_CURSANDO;
+            $this->etapa = $etapa;
+            return true;
+        }
+        return false;
+    }
+    
     function redefinirEtapa() {
-        if ($this->getEnturmacoesAtivas()->count() > 0) {
-            $this->etapa = $this->getEnturmacoesAtivas()->first()->getTurma()->getEtapa();
+        if ($this->getEnturmacoesEmAndamento()->count() > 0) {
+            $this->etapa = $this->getEnturmacoesEmAndamento()->first()->getTurma()->getEtapa();
         }
         return $this->etapa;
     }
@@ -187,12 +212,26 @@ class Matricula extends AbstractEditableEntity {
         }
     }
     
+    function getEtapasCursadas() {
+        return $this->etapasCursadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
     function getDisciplinasCursadas() {
-        return $this->disciplinasCursadas;
+        return $this->disciplinasCursadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
 
     function getEnturmacoes() {
         return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
+    function getObservacoesHistorico() {
+        return $this->observacoesHistorico->matching(
             Criteria::create()->where(Criteria::expr()->eq('ativo', true))
         );
     }
@@ -208,6 +247,16 @@ class Matricula extends AbstractEditableEntity {
             Criteria::create()->where(Criteria::expr()->andX(              
                 Criteria::expr()->eq('ativo', true),
                 Criteria::expr()->eq('encerrado', false)
+            ))
+        );  
+    }
+    
+    function getEnturmacoesEmAndamento() {
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true),
+                Criteria::expr()->eq('encerrado', false),
+                Criteria::expr()->eq('concluido', false)
             ))
         );  
     }

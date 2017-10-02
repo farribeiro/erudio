@@ -9,7 +9,7 @@ class MatriculaFacadeTest extends TestCase {
     
     function testCreate() {
         $matricula = $this->createMock(Matricula::class);
-        $matricula->
+        
     }
     
 }

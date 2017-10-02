@@ -62,6 +62,13 @@ class DisciplinaOfertadaFacade extends AbstractFacade {
         );
     }
     
+    function uniqueMap($disciplinaOfertada) {
+        return [[ 
+            'turma' => $disciplinaOfertada->getTurma(), 
+            'disciplina' => $disciplinaOfertada->getDisciplina()
+        ]];
+    }
+    
     function afterCreate($disciplinaOfertada) {
         $enturmacoes = $disciplinaOfertada->getTurma()->getEnturmacoes();
         foreach ($enturmacoes as $enturmacao) {

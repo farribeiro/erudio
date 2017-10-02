@@ -38,6 +38,7 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use MatriculaBundle\Entity\DisciplinaCursada;
 use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
@@ -113,33 +114,29 @@ class DisciplinaCursadaController extends AbstractEntityController {
     * @FOS\Post("disciplinas-cursadas/{id}/media-final", requirements = {"id": "\d+"})
     */
     function postMediaFinalAction($id) {
-        try {
-            $disciplina = $this->getFacade()->find($id);
-            $this->getFacade()->encerrar($disciplina);
-            $view = View::create($disciplina);
-            $this->configureContext($view->getContext());
-        } catch (Exception $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $disciplina = $this->getFacade()->find($id);
+        $this->getFacade()->encerrar($disciplina);
+        $view = View::create($disciplina);
+        $this->configureContext($view->getContext());
         return $this->handleView($view);
     }
     
     /**
     * @ApiDoc()
     * 
-    * 
     * @FOS\Post("disciplinas-ofertadas/{id}/media-final", requirements = {"id": "\d+"})
     */
     function postMediasFinaisAction($id) {
         $disciplinas = $this->getFacade()->findAll(['disciplinaOfertada' => $id]);
-        try {
-            foreach($disciplinas as $disciplina) {
+        foreach($disciplinas as $disciplina) {
+            try {
                 $this->getFacade()->encerrar($disciplina);
+            } catch (IllegalOperationException $ex) {
+                $aluno = $disciplina->getMatricula()->getAluno()->getNome();
+                throw new IllegalOperationException("Não foi possível calcular a média do aluno {$aluno}.");
             }
-            $view = View::create(null, Response::HTTP_NO_CONTENT);
-        } catch (\Exception $ex) {
-            $view = View::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
         return $this->handleView($view);
     }
 
@@ -161,6 +158,15 @@ class DisciplinaCursadaController extends AbstractEntityController {
     */
     function putAction(Request $request, $id, DisciplinaCursada $disciplina, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $disciplina, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
     }
     
 }

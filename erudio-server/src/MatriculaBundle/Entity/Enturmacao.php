@@ -75,7 +75,7 @@ class Enturmacao extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToOne(targetEntity = "CursoBundle\Entity\Vaga", mappedBy="enturmacao")
+    * @ORM\OneToOne(targetEntity = "VagaBundle\Entity\Vaga", mappedBy="enturmacao")
     */
     private $vaga;
     
@@ -92,6 +92,13 @@ class Enturmacao extends AbstractEditableEntity {
     */
     function isEmAndamento() {
         return !$this->encerrado && !$this->concluido;
+    }
+    
+    function isAprovado() {
+        return $this->concluido && !$this->getDisciplinasCursadas()->exists(function($d) {
+            return $d->getStatus() != DisciplinaCursada::STATUS_APROVADO &&
+                   $d->getStatus() != DisciplinaCursada::STATUS_DISPENSADO;
+        });
     }
     
     function getAluno() {

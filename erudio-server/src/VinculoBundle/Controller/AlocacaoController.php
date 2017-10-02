@@ -64,6 +64,7 @@ class AlocacaoController extends AbstractEntityController {
     * @FOS\QueryParam(name = "instituicao", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "vinculo", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "professor", nullable = true)
+    * @FOS\QueryParam(name = "funcionario", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "funcionario_nome", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {

@@ -73,7 +73,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})
-    * @JMS\Type("float")
     * @ORM\Column(name = "media_final")
     */
     private $mediaFinal;
@@ -107,6 +106,12 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $disciplinaOfertada;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\Column(type = "boolean", name = "insercao_manual")
+    */
+    private $insercaoManual = true;
+    
     /**  
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Media", mappedBy = "disciplinaCursada", fetch = "EXTRA_LAZY")
@@ -128,9 +133,10 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $statusPrevisto;
     
-    function __construct(Matricula $matricula, Disciplina $disciplina) {
+    function __construct(Matricula $matricula, Disciplina $disciplina, $insercaoManual = false) {
         $this->matricula = $matricula;
         $this->disciplina = $disciplina;
+        $this->insercaoManual = $insercaoManual;
         $this->init();
     }
     
@@ -172,6 +178,15 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
+    }
+        
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("boolean")
+    * @JMS\VirtualProperty
+    */   
+    function getAuto() {
+        return !$this->insercaoManual;
     }
     
     /**
@@ -251,6 +266,28 @@ class DisciplinaCursada extends AbstractEditableEntity {
         $this->status = self::determinarStatus($this);
     }
     
+    function possuiEquivalente(array $disciplinasOfertadas) {
+         foreach ($disciplinasOfertadas as $disciplinaOfertada) {
+            if ($disciplinaOfertada->getDisciplina() === $this->disciplina) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
+        if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
+            throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
+        }
+        $this->enturmacao = $enturmacao;
+        $this->disciplinaOfertada = $disciplinaOfertada;
+    }
+    
+    function desvincularEnturmacao() {
+        $this->enturmacao = null;
+        $this->disciplinaOfertada = null;
+    }
+    
     static function determinarStatus(DisciplinaCursada $disciplina, $preliminar = false) {
         $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal();
         $frequenciaTotal = $preliminar ? $disciplina->getFrequenciaPreliminar() : $disciplina->getFrequenciaTotal();
@@ -272,19 +309,6 @@ class DisciplinaCursada extends AbstractEditableEntity {
                     ? self::STATUS_APROVADO : self::STATUS_EXAME;
         }
         return $status;
-    }
-    
-    function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
-        if ($enturmacao->getTurma()->getId() != $disciplinaOfertada->getTurma()->getId()) {
-            throw new \InvalidArgumentException('A enturmação e a disciplina ofertada devem ser da mesma turma');
-        }
-        $this->enturmacao = $enturmacao;
-        $this->disciplinaOfertada = $disciplinaOfertada;
-    }
-    
-    function desvincularEnturmacao() {
-        $this->enturmacao = null;
-        $this->disciplinaOfertada = null;
     }
     
     function getMatricula() {

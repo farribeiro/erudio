@@ -57,7 +57,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'dataCadastro' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('d.dataCadastro LIKE :dataCadastro')->setParameter('dataCadastro', '%' . $value . '%');
             },
@@ -83,21 +83,55 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada')
+                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada AND d.status <> :statusIncompleto')
+                   ->setParameter('statusIncompleto', DisciplinaCursada::STATUS_INCOMPLETO)
                    ->setParameter('disciplinaOfertada', $value);
             }
-        );
+        ];
     }
     
-    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa) {
+    function uniqueMap($disciplina) {
+        return [[
+            'matricula' => $disciplina->getMatricula(),
+            'disciplina' => $disciplina->getDisciplina(),
+            'status' => DisciplinaCursada::STATUS_CURSANDO
+        ]];
+    }
+    
+    function findAprovadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findFinalizadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_REPROVADO,
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findEmAndamento(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa, $status = null) {
+        $statusIn = $status ? $status : [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ];
         return $this->orm->getRepository($this->getEntityClass())->createQueryBuilder('d')
             ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
             ->where('d.ativo = true')
             ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', [
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO
-            ])
+            ->andWhere('d.status IN (:status)')->setParameter('status', $statusIn)
             ->andWhere('etapa.id = :etapa')->setParameter('etapa', $etapa->getId())
             ->getQuery()->getResult();
     }
@@ -107,11 +141,17 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($disciplinaCursada) {
-        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_CURSANDO) {
+        if ($disciplinaCursada->getStatus() === DisciplinaCursada::STATUS_CURSANDO) {
             $this->gerarMedias($disciplinaCursada);
         }
     }
     
+    protected function beforeRemove($disciplinaCursada) {
+        if ($disciplinaCursada->getAuto() && $disciplinaCursada->getEnturmacao()) {
+            throw new IllegalOperationException('Disciplinas cursadas geradas pelo sistema não podem ser excluídas');
+        }
+    }
+
     function encerrar(DisciplinaCursada $disciplina, $status = null) {
         if ($status) {
             $disciplina->encerrar($status);

@@ -1,3 +1,23 @@
+@font-face {
+    font-family: Roboto;
+    src: url(../fonts/roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: RobotoThin;
+    src: url(../fonts/roboto/Roboto-Thin.ttf);
+}
+
+@font-face {
+    font-family: RobotoLight;
+    src: url(../fonts/roboto/Roboto-Light.ttf);
+}
+
+@font-face {
+    font-family: RobotoBlack;
+    src: url(../fonts/roboto/Roboto-Black.ttf);
+}
+
 .main-layout { min-height: 100% !important; }
 .fit-screen { position: static !important; height: 100% !important; }
 .submenu, .menu { padding: 0; margin: 0; cursor: pointer; }
@@ -9,14 +29,14 @@
 .main-menu md-menu-item button { font-size: 12px !important; }
 li:focus, a:focus { outline: 0; }
 .progresso { position: fixed; top: 0; z-index: 81; display: none; }
-.cortina { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: 0.5; z-index: 80; display: none; }
+.cortina { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: 0.5; z-index: 80; display: none; z-index: 1005 !important; }
 .white-content { background: #fff !important; }
 md-list-item:not(.not-hover):hover { background: #eee !important; cursor: pointer; }
 .no-padding { padding: 0 !important; }
 .add-btn { position: absolute !important; top: 100px; right: 15px; }
 .add-btn-mobile { position: fixed !important; bottom: 30px; right: 15px; }
-.back-btn { position: absolute; top: 9px; right: 0px; z-index: 22; }
-.link-list { text-decoration: none; }
+.back-btn { position: absolute; top: 8px; right: 0px; z-index: 1004; }
+.link-list { text-decoration: none;  width: 85% !important; }
 .md-list-item-text { margin-top: 15px !important; }
 .empty-state { width: 80%; height: 3%; position: absolute; left: 50%; margin-left: -39%; top: 50%; margin-top: 0; text-align: center; }
 .no-padding-up-down { padding-top: 0 !important; padding-bottom: 0 !important; }
@@ -38,10 +58,11 @@ md-list-item:not(.not-hover):hover { background: #eee !important; cursor: pointe
 .save-button-fix { margin-top: 11px !important; }
 form-input md-input-container { width: 100% !important; }
 form-select md-input-container { width: 100% !important; }
+.truncate { overflow: hidden !important; white-space: nowrap !important; text-overflow: ellipsis !important; }
 /*md-input-container { width: 100% !important; }*/
 input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px white inset; }
 .white-icon { color: #fff !important; }
-.scroll-toolbar { position: fixed; top: -64px; transition: all 0.3s ease !important; z-index: 21; }
+.scroll-toolbar { position: fixed; top: -64px; transition: all 0.3s ease !important; z-index: 1001; }
 md-list-item.md-2-line { height: 64px !important; min-height: 0 !important; }
 .input-ajuste { margin-top: 20px !important; }
 .form-errors { padding: 10px; font-size: 13px; background: #FFCDD2; display: none; }
@@ -51,6 +72,77 @@ md-input-container.md-icon-left { padding-left: 36px; padding-right: 0; }
 .paginador-relative-full { position: relative; width: 120px; margin: 0 auto; }
 .paginador-left, .paginador-right { float: left; width: 50%; text-align: center; background: #E0E0E0; font-size: 14px; }
 .mapaWrapper, #mapa { width: 100%; height: 300px; }
+.forbidden { width: calc(100% - 260px) !important; margin-left: 260px !important; display: none;}
+.select-alocacao div { font-size: 14px !important; font-weight: bold; }
+.text-alocacao { font-weight: normal !important; color: #999999;  }
+.md-select-alocacao .md-select-value span .md-text,.md-select-alocacao .md-select-value.md-select-placeholder { color: #fff !important; font-size: 14px !important; }
+.user-area form-select { width: 96% !important; padding-left: 13px !important; }
+.no-margin { margin: 0 !important; }
+.user-area form-select md-input-container { margin: 0 !important; }
+.nome-usuario { font-size: 14px; font-weight: bold; margin-left: 17px; margin-right: 17px; }
+.sem-alocacao-cortina, .sem-permissao-cortina { overflow-x: hidden !important; position: absolute; width: 100%; height: 100%; background: #000; opacity: 0.7; top: 0; left: 0; }
+.sem-alocacao-texto, .sem-permissao-texto { overflow-x: hidden !important; position: absolute; left: 50%; margin-left: -40%; color: #fff; top: 50%; }
+.sem-permissao-cortina, .sem-permissao-texto { display: none; }
+/*.sem-permissao-texto { position: absolute; width: 100%; left: 50%; margin-left: -25%; color: #fff; z-index: 22; margin-top: 50%; top: -2%; }*/
+#menu-lateral { display: none; }
+.autocomplete-label { color: #9f9f9f; }
+.calendar-table { border-collapse: collapse; }
+.calendar-table thead th { padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+.calendar-table tbody tr td { position: relative; height: 80px; vertical-align: top; border-bottom: 1px solid #eee; border-right: 1px solid #eee; margin: 10px; padding: 10px 0 0 10px; width: 14.28%; }
+.calendar-table tbody tr td:hover { background: #F8BBD0; }
+.no-calendar-right-border { border-right: none !important; }
+.calendario-dia-efetivo { background: #BBDEFB; }
+.calendario-dia-letivo { background: #F8BBD0; }
+.calendario-dia-nao-letivo { background: #eee; }
+.evento-calendario { position: absolute; bottom: 0; width: 100%; background: #E91E63; color: #fff; font-size: 12px; padding: 5px 0 5px 5px; }
+.botao-calendario { position: absolute; top: -6px; right: -10px;  }
+.botao-calendario-mobile { position: absolute; bottom: 5px; right: 5px; color: #E91E63; }
+.md-subheader-inner { margin: 0 !important; }
+.modal-image { height: 128px; width: auto; }
+.modal-title { padding-left: 15px; }
+.menu-modal { position: absolute !important; right: 0px; top: 130px; }
+.md-open-menu-container { z-index: 1005 !important; }
+.md-dialog-container, .btn-zindex { z-index: 1005 !important; }
+md-input-container:not(.md-input-has-value) input:not(:focus) { color: #000 !important; }
+.md-virtual-repeat-container.md-autocomplete-suggestions-container { z-index: 1005 !important; }
+.end-card { margin-top: 15px; }
+
+.condensed-panel {
+    padding: 15px;
+    margin: 0 7px 0 7px;
+    background: #fff;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+}
+
+tr th { padding: 15px 0px 15px 10px !important; }
+tr td, tr th { border-bottom: 1px solid #eee !important; padding: 10px 0 10px 10px; font-size: 14px; text-align: right; }
+.first-column, .left-text-table { text-align: left !important; }
+tr th.table-modal { text-align: center !important; padding: 15px 10px 15px 10px !important; }
+tr td.table-modal { text-align: center !important; padding: 10px 10px 10px 10px !important; }
+.last-column { padding-right: 10px !important; }
+.table-clicavel { text-decoration: underline; cursor: pointer; }
+.end-table { padding: 5px; }
+.odd-cell { background: #eee !important; }
+
+.expanded-panel {
+    margin: 15px 7px 15px 7px;
+    background: #fff;
+    display: none;
+}
+
+.ultimo-panel {
+    margin-bottom: 30px;
+}
+
+.expanded-title {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+}
 
 .md-subheader:not(.not-header) .md-subheader-inner {
     padding: 0 !important;
@@ -71,6 +163,8 @@ md-toolbar.content-bar {
     background-size: 100% auto;
 }
 
+.autocomplete-form { width: calc(100% - 24px) !important; margin-left: 24px; margin-top: -19px !important; height: 50px !important; }
+
 form-input, form-select, form-datepicker, md-select {
     width: 100%;
     box-sizing: border-box;
@@ -84,23 +178,10 @@ form-input, form-select, form-datepicker, md-select {
 }
 
 .hint {
-    /*position: absolute;
-    left: 2px;
-    right: auto;
-    bottom: 7px;*/
     font-size: 12px;
     line-height: 14px;
     transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
     color: grey;
-}
-
-/* APENAS NO DESKTOP */
-@media screen and (min-width: 1280px) {
-  .conteudo { width: calc(100% - 260px) !important; left: 260px; }
-  .md-sidenav-left { position: fixed !important; width: 260px; }
-  .paginador-wrapper { position: fixed; bottom: 0; width: calc(100% - 240px); }
-  .paginador-relative-full { position: relative; width: 180px; margin: 0 auto; }
-  .empty-state { width: 80%; height: 3%; position: absolute; left: 50%; margin-left: -39%; top: -1.5%; margin-top: 45%; text-align: center; }
 }
 
 .map-popup-content {
@@ -114,4 +195,120 @@ form-input, form-select, form-datepicker, md-select {
     text-align: center;
 }
 
-.md-select-menu-container { z-index: 1000 !important; }
+.md-select-menu-container { z-index: 1005 !important; }
+md-toast { z-index: 1004 !important; }
+
+.modal-content { background: #fff; margin-top: -15px; }
+
+.table-with-icons { padding: 0px !important; padding-right: 10px !important; }
+
+.modal-info, .modal-form {
+    padding: 0px 15px 0 15px;
+}
+
+.margin-top-bottom {
+    margin-top: 20px; margin-bottom: 20px;
+}
+
+.autocomplete-wrap { width: calc(100% - 12px) !important; padding-left: 12px; }
+md-input-container { width: calc(100% - 36px) !important; }
+
+.loader {
+    position: fixed;
+    right: 6px;
+    top: 9px;
+    z-index: 1005;
+    display: block;
+}
+
+.card-lista {
+    width: 25% !important;
+}
+
+fieldset {
+    margin-top: 20px;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-top: 1px solid #999;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+}
+
+._md-datepicker-floating-label>md-datepicker .md-datepicker-button {
+    float: left;
+    margin-top: -12px;
+    top: 9.5px;
+    left: -14px;
+    color: black;
+}
+
+.date-label {  left: 37px !important; }
+.md-datepicker-input-container { width: calc(100% - 36px); margin-left: -17px !important; }
+.md-datepicker-input-container input { max-width: none !important; }
+md-datepicker { width: 100% !important; display: block; }
+md-datepicker button md-icon { color: #000 !important; }
+
+md-sidenav { z-index: 1003; }
+md-backdrop { z-index: 1002 !important; }
+
+/* APENAS NO DESKTOP */
+@media screen and (min-width: 1280px) {
+  .back-btn { position: absolute; top: 10px; right: 17px; z-index: 1005; }
+  .conteudo { width: calc(100% - 260px) !important; left: 260px; }
+  .md-sidenav-left { position: fixed !important; width: 260px; }
+  .paginador-wrapper { position: fixed; bottom: 0; width: calc(100% - 240px); }
+  .paginador-relative-full { position: relative; width: 180px; margin: 0 auto; }
+  .empty-state { width: 80%; height: 3%; position: absolute; left: 50%; margin-left: -39%; top: -1.5%; margin-top: 45%; text-align: center; }
+  md-input-container.md-icon-left { padding-left: 36px; padding-right: 0; }
+  .sem-alocacao-texto, .sem-permissao-texto { overflow-x: hidden !important; position: absolute; left: 50%; margin-left: -25%; color: #fff; z-index: 22; margin-top: 50%; top: -25%; }
+  md-input-container { width: calc(100% - 36px) !important; }
+    .loader {
+        position: fixed;
+        right: 23px !important;
+        top: 10px !important;
+        z-index: 1005;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 960px) and (orientation: landscape) {
+  .back-btn { position: absolute; top: 4px; right: 0px; z-index: 22; }
+}
+
+/*LOGIN*/
+@media screen and (min-width: 960px) {
+    .corpoLogin {
+        background: url('../images/login.jpg') no-repeat center center;
+        background-size: 100% 100%;
+        font-size: Roboto;
+    }
+    .valign-login { position: absolute !important; top: 25% !important; height: auto !important; }
+    .valign-helper { display: block !important; position: absolute; bottom: 0%; right: 8px; }
+    .valign-helper-mobile { display: none !important; }
+}
+
+.corpoLogin {
+    background: url('../images/login.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    font-size: Roboto;
+}
+.valign-login { position: absolute; top: 0; height: 100%; margin: 0; }
+.valign-helper { display: none; }
+.valign-helper-mobile { display: block; position: absolute; bottom: 0; left: 8px; }
+.btn-login-mobile { position: absolute; bottom: 0; right: 8px; }
+.login-area { position: relative; height: 100%; }
+.logoLogin { width: 25%; }
+.login-wrap { margin-left: 20px !important; margin-right: 20px !important; margin-top: 10px !important; margin-bottom: 10px !important; }
+.title-login { font-size: 1.5rem; }
+.sub-text-login { color: #999; }
+.cortinaBranca {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    opacity: 0.5;
+    position: absolute;
+    display: none;
+    z-index: 5;
+}

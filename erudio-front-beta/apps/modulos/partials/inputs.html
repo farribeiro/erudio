@@ -1,11 +1,24 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="moduloNome" label="'Nome do Módulo'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="modulo" campo="nome" erro="'moduloForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="moduloCurso" label="'Curso'" nome="'curso'" obrigatorio="required" erro="'moduloForm.curso.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo();" ng-model="modulo.curso.id" required>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="modulo.nome" type="text" name="nome" required/>
+        <div ng-messages="moduloForm.modulo.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="curso">Curso</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="modulo.curso.id" id="curso" name="curso">
             <md-option value=""></md-option>
-            <md-option ng-repeat="curso in cursos" value="{{ curso.id }}">{{ curso.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+        <div ng-messages="moduloForm.modulo.curso.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
 </div>

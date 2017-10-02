@@ -30,5 +30,10 @@ namespace CursoBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo controle de cursos e turmas.
+ * Permite definir a estrutura dos cursos ofertados, como seu formato de avaliação
+ * e duração, e gerenciar todo o ciclo de vida das turmas destes cursos.
+ */
 class CursoBundle extends Bundle {
 }

@@ -1,0 +1,54 @@
+<div layout-gt-sm="row" style="margin-top: 20px;">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome do Aluno</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="ctrl.busca.nome" type="text" name="nome"/>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="codigo">Código de Matrícula</label>
+        <md-icon class="material-icons">filter_5</md-icon>
+        <input id="codigo" ng-model="ctrl.busca.codigo" type="text" class="maskNumeros" name="codigo"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nasc">Data de Nascimento</label>
+        <md-icon class="material-icons">event</md-icon>
+        <input id="nasc" ng-model="ctrl.busca.dataNascimento" class="maskData" type="text" name="nasc"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+    
+</div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="curso">Curso</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="ctrl.busca.curso" id="curso" name="curso">
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="status">Status</label>
+        <md-icon class="material-icons">speaker_notes</md-icon>
+        <md-select ng-model="ctrl.busca.status" id="status" name="status">
+            <md-option value=""></md-option>
+            <md-option value="CURSANDO">Cursando</md-option>
+            <md-option value="APROVADO">Aprovado</md-option>
+            <md-option value="REPROVADO">Reprovado</md-option>
+            <md-option value="TRANCADO">Trancado</md-option>
+            <md-option value="ABANDONO">Abandono</md-option>
+            <md-option value="FALECIDO">Falecido</md-option>
+        </md-select>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row" layout-align="end end" class="end-card">
+    <md-button ng-click="ctrl.buscarMatriculas(true)" class="md-primary">Buscar</md-button>
+</div>

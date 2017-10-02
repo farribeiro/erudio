@@ -1,4 +1,4 @@
-# API
+# API de gestão
 api_login_check:
     path: /api/login_check
 
@@ -27,8 +27,13 @@ api_calendario:
     type: rest
     prefix: /api
     
-api_avaliacao:
-    resource: "@AvaliacaoBundle/Controller/"
+api_quadro_horario:
+    resource: "@QuadroHorarioBundle/Controller/"
+    type: rest
+    prefix: /api
+    
+api_vaga:
+    resource: "@VagaBundle/Controller/"
     type: rest
     prefix: /api
     
@@ -37,10 +42,27 @@ api_auth:
     type: rest
     prefix: /api
     
-api_report:
+api_relatorio:
     resource: "@ReportBundle/Controller/"
     type: annotation
     prefix: /api/report
+
+#API do professor
+api_avaliacao:
+    resource: "@AvaliacaoBundle/Controller/"
+    type: rest
+    prefix: /api
+    
+api_aula:
+    resource: "@AulaBundle/Controller/"
+    type: rest
+    prefix: /api/professor
+
+#API do aluno
+api_aluno:
+    resource: "@AlunoBundle/Controller/"
+    type: annotation
+    prefix: /api/alunos
 
 # Integrações
 integracao_sig:

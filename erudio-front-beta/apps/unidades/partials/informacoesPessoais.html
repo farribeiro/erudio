@@ -1,23 +1,56 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="unidadeNome" label="'Nome da Unidade'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="unidade" campo="nome" erro="'unidadesForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="unidadeSigla" label="'Sigla'" tipo="'text'" nome="'sigla'" model="unidade" campo="sigla"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="unidadeTipo" label="'Tipo'" nome="'tipo'" obrigatorio="required" erro="'unidadesForm.tipo.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo()" ng-model="unidade.tipo.id" required>
-            <md-option value=""></md-option>
-            <md-option ng-repeat="tipo in tipos" value="{{ tipo.id }}">{{ tipo.nome }}</md-option>
-        </md-select>
-    </form-select>
     
-    <form-select grid="flex-gt-sm" identidade="unidadeInstituicao" label="'Instituição'" nome="'instituicao'" obrigatorio="required" erro="'unidadesForm.instituicao.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo()" ng-model="unidade.instituicaoPai.id" required>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="unidade.nome" type="text" name="nome" required/>
+        <div ng-messages="unidadeForm.unidade.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="tipo">Tipo</label>
+        <md-icon class="material-icons">contact_phone</md-icon>
+        <md-select ng-model="unidade.tipo.id" id="tipo" name="tipo" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="instituicao in instituicoes" value="{{ instituicao.id }}">{{ instituicao.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.tiposUnidade track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+        <div ng-messages="unidadeForm.unidade.tipo.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="instituicao">Instituição</label>
+        <md-icon class="material-icons">contact_phone</md-icon>
+        <md-select ng-model="unidade.instituicaoPai.id" id="instituicao" name="instituicao" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.instituicoes track by $index" value="{{ item.id }}">{{ item.nomeCompleto }}</md-option>
+        </md-select>
+        <div ng-messages="unidadeForm.unidade.instituicao.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
 </div>
+
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="unidadeCNPJ" maximo="14" classe="'maskCNPJ'" dica="'Apenas Números'" label="'CNPJ'" tipo="'text'" nome="'cpfCnpj'" model="unidade" campo="cpfCnpj"></form-input>
-    <form-input grid="flex-gt-sm" identidade="unidadeEmail" maximo="100" minimo="10" padrao="'/^.+@.+\..+$/'" troca="validaCampo()" label="'E-Mail'" tipo="'email'" obrigatorio="required" nome="'email'" model="unidade" campo="email" erro="'instituicoesForm.email.$error'" mensagem="'required,Este campo é obrigatório|pattern,Formato de E-Mail inválido.'"></form-input>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="cnpj">CNPJ</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="cnpj" class="maskCNPJ" ng-model="unidade.cpfCnpj" type="text" name="cnpj"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="email">E-Mail</label>
+        <md-icon class="material-icons">email</md-icon>
+        <input id="email" ng-model="unidade.email" type="text" name="email" required/>
+        <div ng-messages="unidadeForm.unidade.email.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
 </div>

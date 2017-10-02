@@ -1,7 +1,7 @@
 <md-input-container md-block>
     <label ng-if="tipo !== 'checkbox' && tipo !== 'switch'">{{ label }}</label>
     <md-icon ng-if="icone" class="material-icons">{{ icone }}</md-icon>
-    <span ng-if="tipo === 'text' || tipo === 'email' || tipo === 'number'"><input class="input-fix" ng-model="model[campo]" type="{{ tipo }}" name="{{ nome }}" /></span>
+    <span ng-if="tipo === 'text' || tipo === 'email' || tipo === 'number' || tipo === 'password'"><input class="input-fix" ng-model="model[campo]" type="{{ tipo }}" name="{{ nome }}" /></span>
     <span ng-if="tipo === 'textarea'"><textarea name="{{ nome }}"></textarea></span>
     <span ng-if="tipo === 'checkbox'"><md-checkbox class='md-primary' name="{{ nome }}">{{ label }}</md-checkbox></span>
     <span ng-if="tipo === 'switch'"><md-switch class='md-primary' name="{{ nome }}">{{ label }}</md-switch></span>

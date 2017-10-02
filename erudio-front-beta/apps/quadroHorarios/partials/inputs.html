@@ -1,32 +1,60 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="quadroNome" label="'Nome do Quadro'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="quadro" campo="nome" erro="'quadroForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="quadroModelo" label="'Modelo de Quadro de Horário'" nome="'quadro'" obrigatorio="required" erro="'quadroForm.quadro.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo()" ng-model="quadro.modelo.id" required>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="grade">Grade de Horário Modelo</label>
+        <md-icon class="material-icons">view_quilt</md-icon>
+        <md-select ng-model="grade.modelo.id" id="grade" name="grade" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="quadro in quadros" value="{{ quadro.id }}">{{ quadro.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.modelos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
-    <form-select grid="flex-gt-sm" identidade="quadroTurno" label="'Turno'" nome="'turno'" obrigatorio="required" erro="'quadroForm.turno.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo()" ng-model="quadro.turno.id" required>
-            <md-option value=""></md-option>
-            <md-option ng-repeat="turno in turnos" value="{{ turno.id }}">{{ turno.nome }}</md-option>
-        </md-select>
-    </form-select>
-</div>
-<div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="quadroInicio" classe="'maskHora'" label="'Horário de Início'" tipo="'text'" troca="validaCampo()" nome="'inicio'" obrigatorio="required" model="quadro" campo="inicio" erro="'quadroForm.inicio.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <md-input-container md-block class="w100">
-        <label>Unidade de Ensino</label>
-        <autocomplete class="w100"></autocomplete>
-        <div class="messages-wrapper"><div ng-messages="quadroForm.autoimput.$error"><div ng-message="required">Este campo é obrigatório.</div></div></div>
+        <div ng-messages="gradeForm.grade.modelo.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
     </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="">Turno</label>
+        <md-icon class="material-icons">brightness_medium</md-icon>
+        <md-select ng-model="grade.turno.id" id="turno" name="turno" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.turnos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+        </md-select>
+        <div ng-messages="gradeForm.grade.turno.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="inicio">Início</label>
+        <md-icon class="material-icons">access_time</md-icon>
+        <input id="nome" ng-model="grade.inicio" class="maskHora" type="text" name="inicio" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="gradeForm.grade.inicio.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+        <md-icon class="material-icons">account_balance</md-icon>
+        <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.unidade" 
+                md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
+                md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino" required>
+            <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>
+        </md-autocomplete>
+    </md-input-container>
+
+</div>
+
 <div layout="row" layout-wrap><div flex="100" layout="row">
-    <md-checkbox ng-checked="quadro.diasSemana[0].diaSemana" value="2" ng-model="quadro.diasSemana[0].diaSemana">SEGUNDA</md-checkbox>
-    <md-checkbox ng-checked="quadro.diasSemana[1].diaSemana" value="3" ng-model="quadro.diasSemana[1].diaSemana">TERÇA</md-checkbox>
-    <md-checkbox ng-checked="quadro.diasSemana[2].diaSemana" value="4" ng-model="quadro.diasSemana[2].diaSemana">QUARTA</md-checkbox>
-    <md-checkbox ng-checked="quadro.diasSemana[3].diaSemana" value="5" ng-model="quadro.diasSemana[3].diaSemana">QUINTA</md-checkbox>
-    <md-checkbox ng-checked="quadro.diasSemana[4].diaSemana" value="6" ng-model="quadro.diasSemana[4].diaSemana">SEXTA</md-checkbox>
+
+    <md-checkbox ng-checked="grade.diasSemana[0].diaSemana" value="2" ng-model="grade.diasSemana[0].diaSemana">SEGUNDA</md-checkbox>
+    <md-checkbox ng-checked="grade.diasSemana[1].diaSemana" value="3" ng-model="grade.diasSemana[1].diaSemana">TERÇA</md-checkbox>
+    <md-checkbox ng-checked="grade.diasSemana[2].diaSemana" value="4" ng-model="grade.diasSemana[2].diaSemana">QUARTA</md-checkbox>
+    <md-checkbox ng-checked="grade.diasSemana[3].diaSemana" value="5" ng-model="grade.diasSemana[3].diaSemana">QUINTA</md-checkbox>
+    <md-checkbox ng-checked="grade.diasSemana[4].diaSemana" value="6" ng-model="grade.diasSemana[4].diaSemana">SEXTA</md-checkbox>
+
 </div>

@@ -50,10 +50,6 @@ abstract class Nota extends AbstractEditableEntity {
     *  @ORM\ManyToOne(targetEntity = "Media", inversedBy = "notas")
     */
     private $media;
-    
-    function getAvaliacao() {
-        return $this->avaliacao;
-    }
 
     function getMedia() {
         return $this->media;

@@ -4,7 +4,7 @@ namespace MatriculaBundle\Traits;
 
 use MatriculaBundle\Entity\Media;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use CursoBundle\Entity\SistemaAvaliacao;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 
 /**
@@ -26,7 +26,7 @@ trait CalculosMedia {
         foreach ($disciplinaCursada->getMedias() as $media) {
             if (is_null($media->getValor())) {
                 throw new IllegalOperationException(
-                        'Média final não pode ser calculada sem o preenchimento de todas as parciais e/ou exame');
+                    'Média final não pode ser calculada sem o preenchimento de todas as parciais e/ou exame');
             }
             $somaNotas += $media->getValor();
             $somaPesos += $media->getPeso();

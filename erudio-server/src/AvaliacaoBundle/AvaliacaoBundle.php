@@ -30,5 +30,10 @@ namespace AvaliacaoBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo cadastro de avaliações.
+ * Permite que professores insiram avaliações no sistema e posteriormente publiquem as notas dos alunos.
+ * O uso desta funcionalidade permite que as notas das médias sejam calculadas automaticamente.
+ */
 class AvaliacaoBundle extends Bundle {
 }
