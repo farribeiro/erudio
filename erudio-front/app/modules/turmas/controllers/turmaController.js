@@ -128,16 +128,25 @@
                     var etapa = response.data;
                     if (!etapa.integral) {
                         $scope.mostraPeriodo = true; $scope.integral = false;
-                        var promise = Servidor.buscar('turmas/'+$scope.turma.id+'/disciplinas-ofertadas',null);
-                        promise.then(function(response){
-                            var disciplina = response.data[0];
-                            $scope.agrupamentoSelecionado.id = disciplina.agrupamento.id;
+                        if ($scope.turma.id !== undefined) {
+                            var promise = Servidor.buscar('turmas/'+$scope.turma.id+'/disciplinas-ofertadas',null);
+                            promise.then(function(response){
+                                var disciplina = response.data[0];
+                                $scope.agrupamentoSelecionado.id = disciplina.agrupamento.id;
+                                var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
+                                promise.then(function (response){
+                                    $scope.agrupamentos = response.data;
+                                    $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
+                                });
+                            });
+                        } else {
                             var promise = Servidor.buscar('agrupamentos-disciplinas',{etapa:etapa.id});
                             promise.then(function (response){
                                 $scope.agrupamentos = response.data;
                                 $timeout(function(){ $("#disciplinasTurmaFormulario").material_select('destroy'); $("#disciplinasTurmaFormulario").material_select(); },500);
                             });
-                        });
+                        }
+                            
                     } else {
                         $scope.mostraPeriodo = false; $scope.integral = true;
                     }
@@ -1104,7 +1113,7 @@
                 var promise = Servidor.buscarUm('disciplinas-ofertadas', $scope.disciplinaProfessor.id);
                 promise.then(function (response) {
                     $scope.disciplina = response.data;
-                    if ($scope.disciplina.professores.length) {
+                    /*if ($scope.disciplina.professores.length) {
                         $scope.disciplinaProfessor.professores.forEach(function (f) {
                             $scope.disciplina.professores.forEach(function (a) {
                                 if (f.id === a.id) {
@@ -1119,9 +1128,9 @@
                                 }
                             });
                         });
-                    } else {
+                    } else {*/
                         adicionaProfessor = true; $scope.disciplina.professores = $scope.disciplinaProfessor.professores;
-                    }
+                    //}
                     if (adicionaProfessor) {
                         var promise = Servidor.finalizar($scope.disciplina, 'disciplinas-ofertadas', null);
                         promise.then(function (response) {
