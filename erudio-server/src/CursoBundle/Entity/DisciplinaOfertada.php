@@ -151,7 +151,9 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     }
     
     function setProfessores(ArrayCollection $professores) {
-        $this->professores = $professores;
+        if (!$professores->isEmpty()) {
+            $this->professores = $professores;
+        }
     }
     
 }
