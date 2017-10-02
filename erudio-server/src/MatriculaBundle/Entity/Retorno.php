@@ -26,55 +26,39 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AvaliacaoBundle\Service;
+namespace MatriculaBundle\Entity;
 
-use Doctrine\ORM\QueryBuilder;
-use CoreBundle\ORM\AbstractFacade;
+use Doctrine\ORM\Mapping AS ORM;
+use JMS\Serializer\Annotation as JMS;
 
-class AvaliacaoQuantitativaFacade extends AbstractFacade {
+/**
+* @ORM\Entity
+* @ORM\Table(name = "edu_movimentacao_retorno")
+*/
+class Retorno extends Movimentacao {
     
-    function getEntityClass() {
-        return 'AvaliacaoBundle:AvaliacaoQuantitativa';
+    /** 
+    * @JMS\Groups({"LIST"})  
+    * @ORM\Column(type = "string") 
+    */
+    private $origem;
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Etapa") 
+    */
+    private $etapa;
+    
+    function getEtapa() {
+        return $this->etapa;
     }
     
-    function queryAlias() {
-        return 'a';
-    }
-    
-    function parameterMap() {
-        return array (
-            'nome' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
-            },            
-            'turma' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.disciplina', 'disciplina')
-                   ->andWhere('disciplina.turma = :turma')->setParameter('turma', $value);
-            },
-            'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.disciplina = :disciplina')->setParameter('disciplina', $value);
-            },
-            'dataEntrega' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.dataEntrega LIKE :data')
-                   ->setParameter('data', $value . '%');
-            },
-            'media' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('a.media = :media')->setParameter('media', $value);
-            }
-        );
-    }
-    
-    protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->addOrderBy('a.dataEntrega', 'DESC');
+    function getOrigem() {
+        return $this->origem;
     }
 
-    
-    protected function beforeRemove($avaliacao) {
-        $notas = $this->orm->getRepository('MatriculaBundle:NotaQuantitativa')->findBy(array('avaliacao' => $avaliacao));     
-        foreach($notas as $nota) {
-            $nota->getMedia()->removeNota($nota);
-            $nota->finalize();
-            $this->orm->getManager()->merge($nota);            
-        }
+    function setOrigem($origem) {
+        $this->origem = $origem;
     }
     
 }

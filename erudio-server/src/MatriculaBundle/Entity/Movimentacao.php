@@ -41,6 +41,7 @@ use CoreBundle\ORM\AbstractEditableEntity;
 *   "MOVIMENTACAO_TURMA" = "MovimentacaoTurma", 
 *   "TRANSFERENCIA" = "Transferencia", 
 *   "DESLIGAMENTO" = "Desligamento",
+*   "RETORNO" = "Retorno",
 *   "RECLASSIFICACAO" = "Reclassificacao" 
 * })
 * @JMS\Discriminator(disabled = true) 

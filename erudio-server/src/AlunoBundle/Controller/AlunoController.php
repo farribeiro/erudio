@@ -2,11 +2,9 @@
 
 namespace AlunoBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use MatriculaBundle\Service\MatriculaFacade;
 use MatriculaBundle\Service\EnturmacaoFacade;

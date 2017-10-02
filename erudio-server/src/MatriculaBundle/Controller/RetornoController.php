@@ -26,7 +26,7 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace AvaliacaoBundle\Controller;
+namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -35,22 +35,22 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use AvaliacaoBundle\Entity\AvaliacaoQuantitativa;
-use AvaliacaoBundle\Service\AvaliacaoQuantitativaFacade;
+use MatriculaBundle\Entity\Retorno;
+use MatriculaBundle\Service\RetornoFacade;
 
 /**
- * @FOS\NamePrefix("avaliacoes-quantitativas")
+ * @FOS\NamePrefix("retornos")
  */
-class AvaliacaoQuantitativaController extends AbstractEntityController {
+class RetornoController extends AbstractEntityController {
     
-    function __construct(AvaliacaoQuantitativaFacade $facade) {
+    function __construct(RetornoFacade $facade) {
         parent::__construct($facade);
     }
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("avaliacoes-quantitativas/{id}")
+    * @FOS\Get("retornos/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -59,46 +59,34 @@ class AvaliacaoQuantitativaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("avaliacoes-quantitativas") 
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
-    * @FOS\QueryParam(name = "nome", nullable = true)
-    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
-    * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
-    * @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
-    * @FOS\QueryParam(name = "media", requirements="\d+", nullable = true)
-    * @FOS\QueryParam(name = "dataEntrega", nullable = true)
+    * @FOS\Get("retornos") 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
     
     /**
-    *  @ApiDoc()
+    * @ApiDoc()
     * 
-    *  @FOS\Post("avaliacoes-quantitativas")
-    *  @ParamConverter("avaliacao", converter="fos_rest.request_body")
+    * @FOS\Post("retornos")
+    * @ParamConverter("retorno", converter="fos_rest.request_body")
     */
-    function postAction(Request $request, AvaliacaoQuantitativa $avaliacao, ConstraintViolationListInterface $errors) {
-        return $this->post($request, $avaliacao, $errors);
-    }
-    
-    /**
-    *  @ApiDoc()
-    * 
-    *  @FOS\Put("avaliacoes-quantitativas/{id}")
-    *  @ParamConverter("avaliacao", converter="fos_rest.request_body")
-    */
-    function putAction(Request $request, $id, AvaliacaoQuantitativa $avaliacao, ConstraintViolationListInterface $errors) {
-        return $this->put($request, $id, $avaliacao, $errors);
+    function postAction(Request $request, Retorno $retorno, ConstraintViolationListInterface $errors) {
+        return $this->post($request, $retorno, $errors);
     }
     
     /**
     * @ApiDoc()
-     * 
-    * @FOS\Delete("avaliacoes-quantitativas/{id}")
+    * 
+    * @FOS\Put("retornos/{id}")
+    * @ParamConverter("retorno", converter="fos_rest.request_body")
     */
-    function deleteAction(Request $request, $id) {
-        return $this->delete($request, $id);
+    function putAction(Request $request, $id, Retorno $retorno, ConstraintViolationListInterface $errors) {
+        return $this->put($request, $id, $retorno, $errors);
     }
-
+    
 }
+
+
