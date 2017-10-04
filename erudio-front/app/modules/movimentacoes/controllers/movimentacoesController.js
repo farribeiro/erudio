@@ -170,7 +170,7 @@
         $scope.etapaTurma = {id:null}; $scope.turmaNova = {id:null};
         $scope.buscarTurmasEnt = function (id) {
             $scope.mostraProgresso();
-            var promise = Servidor.buscar('turmas',{etapa: id, curso: $scope.enturmacao.matricula.curso.id, unidadeEnsino: $scope.enturmacao.matricula.unidadeEnsino.id});
+            var promise = Servidor.buscar('turmas',{etapa: id, curso: $scope.matricula.curso.id, unidadeEnsino: $scope.matricula.unidadeEnsino.id});
             promise.then(function(response){
                 $scope.turmasEnturmacao = response.data; $timeout(function(){ $('#enturmacaoTurma').material_select(); $('#enturmacaoTurma').material_select(); $scope.fechaProgresso();  },500);
             });
