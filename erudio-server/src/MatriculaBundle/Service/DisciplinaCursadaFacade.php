@@ -137,7 +137,9 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('d.disciplina', 'disciplina')->leftJoin('d.enturmacao', 'enturmacao')->orderBy('d.disciplina');
+        $qb->join('d.disciplina', 'disciplina')
+           ->leftJoin('d.enturmacao', 'enturmacao')
+           ->addOrderBy('disciplina.nomeExibicao', 'ASC');
     }
     
     protected function afterCreate($disciplinaCursada) {

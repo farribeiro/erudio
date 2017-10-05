@@ -32,6 +32,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Doctrine\ORM\EntityNotFoundException;
 use CoreBundle\Exception\PublishedException;
 
 /**
@@ -64,6 +65,10 @@ class ExceptionHandler implements EventSubscriberInterface {
         } else if ($exception instanceof AuthenticationException) {
             $event->setResponse(
                 $this->createResponse(JsonResponse::HTTP_UNAUTHORIZED, $exception->getMessage())
+            );
+        } else if ($exception instanceof EntityNotFoundException) {
+            $event->setResponse(
+                $this->createResponse(JsonResponse::HTTP_NOT_FOUND, $exception->getMessage())
             );
         }
     }

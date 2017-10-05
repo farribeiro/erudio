@@ -8,6 +8,7 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use MatriculaBundle\Service\MatriculaFacade;
 use MatriculaBundle\Service\EnturmacaoFacade;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 /**
  * @FOS\NamePrefix("alunos")
@@ -16,10 +17,13 @@ class AlunoController extends Controller {
     
     private $matriculaFacade;
     private $enturmacaoFacade;
+    private $disciplinaFacade;
     
-    function __construct(MatriculaFacade $matriculaFacade, EnturmacaoFacade $enturmacaoFacade) {
+    function __construct(MatriculaFacade $matriculaFacade, EnturmacaoFacade $enturmacaoFacade, 
+            DisciplinaCursadaFacade $disciplinaFacade) {
         $this->matriculaFacade = $matriculaFacade;
         $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->disciplinaFacade = $disciplinaFacade;
     }
     
     /**
@@ -100,8 +104,8 @@ class AlunoController extends Controller {
         if ($enturmacao->getAluno() != $this->getUser()->getPessoa()) {
             return JsonResponse::create(null, JsonResponse::HTTP_FORBIDDEN);
         }
-        $disciplinas = $enturmacao->getDisciplinasCursadas();
-        return new JsonResponse($disciplinas->map(function($d) {
+        $disciplinas = $this->disciplinaFacade->findAll(['enturmacao' => $enturmacao]);
+        return new JsonResponse(array_map(function($d) {
             return [
                 'id' => $d->getId(),
                 'disciplina' => $d->getNomeExibicao(),
@@ -119,7 +123,7 @@ class AlunoController extends Controller {
                     ];
                 })->toArray()
             ];
-        }, $disciplinas)->toArray());
+        }, $disciplinas));
     }
     
 }

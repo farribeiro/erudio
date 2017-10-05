@@ -11,6 +11,7 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
     secret:            ThisTokenIsNotSoSecretChangeIt
+    upload_path:       '%kernel.root_dir%/../uploads'
     jms_serializer.camel_case_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
     jwt_private_key_path: '%kernel.root_dir%/../var/jwt/private.pem' # ssh private key path
     jwt_public_key_path:  '%kernel.root_dir%/../var/jwt/public.pem'  # ssh public key path

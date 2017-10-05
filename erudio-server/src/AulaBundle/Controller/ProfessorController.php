@@ -75,6 +75,7 @@ class ProfessorController extends Controller {
                 'id' => $d->getId(),
                 'nome' => $d->getNome(),
                 'nomeExibicao' => $d->getNomeExibicao(),
+                'disciplinaId' => $d->getDisciplina()->getId(),
                 'turma' => [
                     'id' => $turma->getId(),
                     'nome' => $turma->getNomeCompleto(),
