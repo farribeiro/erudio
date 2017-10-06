@@ -110,7 +110,7 @@ abstract class AbstractFacade {
     function find($id) {
         $entidade = $this->loadEntity($id);
         if(!$entidade) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException('Objeto não encontrado');
         }
         return $entidade;
     }

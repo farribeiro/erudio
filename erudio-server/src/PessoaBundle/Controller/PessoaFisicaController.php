@@ -29,22 +29,28 @@
 namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
-use PessoaBundle\Entity\PessoaFisica;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use PessoaBundle\Service\PessoaFisicaFacade;
+use PessoaBundle\Service\FotoFacade;
+use PessoaBundle\Entity\PessoaFisica;
 
 /**
 *   @FOS\NamePrefix("pessoas")
 */
 class PessoaFisicaController extends AbstractEntityController {
     
-     function __construct(PessoaFisicaFacade $facade) {
+    private $fotoFacade;
+    
+    function __construct(PessoaFisicaFacade $facade, FotoFacade $fotoFacade) {
         parent::__construct($facade);
+        $this->fotoFacade = $fotoFacade;
     } 
     
     /**
@@ -64,6 +70,16 @@ class PessoaFisicaController extends AbstractEntityController {
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("pessoas/{id}/foto")
+    */
+    function getFotoAction($id) {
+        $imagem = $this->fotoFacade->carregar($id);
+        return new Response($imagem, 200, ['Content-Type' => 'image/jpg']);
     }
     
     /**
@@ -117,11 +133,35 @@ class PessoaFisicaController extends AbstractEntityController {
     
     /**
     *   @ApiDoc()
+    *   
+    *   @FOS\Post("pessoas/{id}/foto")
+    */
+    function postFotoAction(Request $request, $id) {
+        $foto = $request->files->get('foto');
+        if (!$foto) {
+            throw new IllegalOperationException('Nenhum arquivo válido enviado');
+        }
+        $this->fotoFacade->gravar($id, $foto);
+        return Response::create('', Response::HTTP_NO_CONTENT);
+    }
+    
+    /**
+    *   @ApiDoc()
     * 
     *   @FOS\Delete("pessoas/{id}") 
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("pessoas/{id}/foto") 
+    */
+    function deleteFotoAction($id) {
+        $this->fotoFacade->apagar($id);
+        return Response::create('', Response::HTTP_NO_CONTENT);
     }
 
 }

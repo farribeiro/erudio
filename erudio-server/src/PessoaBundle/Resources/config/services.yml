@@ -7,6 +7,10 @@ services:
     
     PessoaBundle\:
         resource: '../../{Service,Listener}'
+        
+    PessoaBundle\Service\FotoFacade:
+        arguments:
+            $uploadPath: '%upload_path%'
        
     PessoaBundle\Controller\:
         resource: '../../Controller'
