@@ -1373,13 +1373,17 @@
         };
 
         $scope.desligar = function () {
-            $scope.progresso = true;
-            $scope.desligamento.matricula = {id: $scope.matricula.id};
-            var promise = Servidor.finalizar($scope.desligamento, 'desligamentos', 'Desligamento');
-            promise.then(function (response) {
-                $scope.liberarVaga($scope.matricula.aluno.id);
-                $scope.fecharFormularioMovimentacoes();
-            });
+            if ($scope.desligamento.justificativa === null || $scope.desligamento.justificativa === undefined || $scope.desligamento.justificativa === '') {
+                Servidor.customToast('Justificativa é um campo obrigatório.');
+            } else {
+                $scope.progresso = true;
+                $scope.desligamento.matricula = {id: $scope.matricula.id};
+                var promise = Servidor.finalizar($scope.desligamento, 'desligamentos', 'Desligamento');
+                promise.then(function (response) {
+                    $scope.liberarVaga($scope.matricula.aluno.id);
+                    $scope.fecharFormularioMovimentacoes();
+                });
+            }
         };
 
         $scope.liberarVaga = function(pessoaId) {
