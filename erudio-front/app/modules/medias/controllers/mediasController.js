@@ -312,6 +312,7 @@
                             }
                             notaQualitativa.habilidadesAvaliadas = notas;
                             $timeout(function(){
+                                if (notaQualitativa.avaliacao.disciplina.professores !== undefined) { delete notaQualitativa.avaliacao.disciplina.professores; }
                                 var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
                                 promiseNota.then(function(response){ 
                                     var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
