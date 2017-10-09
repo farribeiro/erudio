@@ -65,7 +65,7 @@
                                         <th>Disciplina</th>
                                         <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias">{{media.numero}}ªM</th>
                                         <th>MF</th>
-                                        <th>Faltas</th>
+                                        <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias track by $index">Faltas M{{$index+1}}</th>
                                         <th>Status</th>
                                     </tr>                                        
                                 </thead>
