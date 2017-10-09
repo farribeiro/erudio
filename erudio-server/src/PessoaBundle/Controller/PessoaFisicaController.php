@@ -79,7 +79,11 @@ class PessoaFisicaController extends AbstractEntityController {
     */
     function getFotoAction($id) {
         $imagem = $this->fotoFacade->carregar($id);
-        return new Response($imagem, 200, ['Content-Type' => 'image/jpg']);
+        if($imagem) {
+            return new Response($imagem, Response::HTTP_OK, ['Content-Type' => 'image/jpg']);
+        } else {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
     }
     
     /**

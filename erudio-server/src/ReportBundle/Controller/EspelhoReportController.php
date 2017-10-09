@@ -136,6 +136,8 @@ class EspelhoReportController extends Controller {
             foreach ($disciplinasCursadas as $disciplinaCursada) {
                 $folhas[$disciplinaOfertada->getNomeExibicao()][] = [
                     'nomeAluno' => $disciplinaCursada->getMatricula()->getAluno()->getNome(),
+                    'disciplinaCursada' => $disciplinaCursada,
+                    'mediaFinal' => $disciplinaCursada->getMediaPreliminar(),
                     'medias' => $disciplinaCursada->getMedias()
                 ];
             }

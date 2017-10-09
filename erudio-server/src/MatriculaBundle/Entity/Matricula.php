@@ -158,6 +158,14 @@ class Matricula extends AbstractEditableEntity {
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
     */
+    function getIdAluno() {
+        return $this->aluno->getId();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
     function getNomeAluno() {
         return $this->aluno->getNome();
     }
