@@ -86,6 +86,13 @@ class PessoaFisica extends Pessoa {
     */
     private $nacionalidade;
     
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Pais") 
+    * @ORM\JoinColumn(name = "pais_nacionalidade_id", referencedColumnName = "id") 
+    */
+    private $paisOrigem;
+    
     /**
     * @JMS\Groups({"DETAILS"})
     * @ORM\Column(name = "certidao_nascimento_completa", length = 32) 
@@ -244,11 +251,14 @@ class PessoaFisica extends Pessoa {
     function getNacionalidade() {
         return $this->nacionalidade;
     }
+    
+    function getPaisOrigem() {
+        return $this->paisOrigem;
+    }
 
     function getCertidaoNascimento() {
         return $this->certidaoNascimento;
     }
-    
         
     function getDataExpedicaoCertidaoNascimento() {
         return $this->dataExpedicaoCertidaoNascimento;
@@ -324,6 +334,10 @@ class PessoaFisica extends Pessoa {
 
     function setNacionalidade($nacionalidade) {
         $this->nacionalidade = $nacionalidade;
+    }
+    
+    function setPaisOrigem($paisOrigem) {
+        $this->paisOrigem = $paisOrigem;
     }
 
     function setCertidaoNascimento($certidaoNascimento) {
