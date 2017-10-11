@@ -205,7 +205,8 @@ class PessoaFisica extends Pessoa {
     * @JMS\VirtualProperty
     */
     function getCodigo() {
-        return "{$this->getId()}-{$this->getDataCadastro()->format('y')}";
+        $anoCadastro = $this->getDataCadastro() ? $this->getDataCadastro()->format('y') : date('y');
+        return "{$this->getId()}-{$anoCadastro}";
     }
     
     function getResponsavelNome() {

@@ -154,4 +154,10 @@ class DisciplinaOfertada extends AbstractEditableEntity {
         }
     }
     
+    function setTurma($turma) {
+        if(is_null($this->turma)) {
+            $this->turma = $turma;
+        }
+    }
+    
 }

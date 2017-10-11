@@ -38,6 +38,7 @@ use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\Exception\PublishedException;
 
 /**
 * Controlador REST que serve como base aos demais.
@@ -163,7 +164,7 @@ abstract class AbstractEntityController extends Controller {
     }
     
     protected function handleValidationErrors(ConstraintViolationListInterface $errors) {
-        return $this->handleView(View::create($errors, Response::HTTP_BAD_REQUEST));
+        throw new PublishedException($errors[0]->getMessage());
     }
     
     protected function configureContext($context, array $viewGroups = null) {

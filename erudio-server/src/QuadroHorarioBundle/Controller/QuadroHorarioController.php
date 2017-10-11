@@ -39,7 +39,7 @@ use QuadroHorarioBundle\Entity\QuadroHorario;
 use QuadroHorarioBundle\Service\QuadroHorarioFacade;
 
 /**
- * @FOS\NamePrefix("quadro-horarios")
+ * @FOS\NamePrefix("quadros-horarios")
  */
 class QuadroHorarioController extends AbstractEntityController {
     
@@ -50,7 +50,7 @@ class QuadroHorarioController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("quadro-horarios/{id}")
+    *   @FOS\Get("quadros-horarios/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -59,7 +59,7 @@ class QuadroHorarioController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     *  
-    *   @FOS\Get("quadro-horarios")
+    *   @FOS\Get("quadros-horarios")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true)
     *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
@@ -71,7 +71,7 @@ class QuadroHorarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Post("quadro-horarios")
+    * @FOS\Post("quadros-horarios")
     * @ParamConverter("quadroHorario", converter="fos_rest.request_body")
     */
     function postAction(Request $request, QuadroHorario $quadroHorario, ConstraintViolationListInterface $errors) {
@@ -81,7 +81,7 @@ class QuadroHorarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("quadro-horarios/{id}")
+    * @FOS\Put("quadros-horarios/{id}")
     * @ParamConverter("quadroHorario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, QuadroHorario $quadroHorario, ConstraintViolationListInterface $errors) {
@@ -91,7 +91,7 @@ class QuadroHorarioController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Delete("quadro-horarios/{id}")
+    * @FOS\Delete("quadros-horarios/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
