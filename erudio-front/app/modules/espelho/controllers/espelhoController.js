@@ -105,9 +105,9 @@
                     promise.then(function(response) {
                         var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
-                            for (var i=0; $scope.atribuicoes.length; i++) {
-                                if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
-                                if (i === $scope.atribuicoes.length-1) {
+                            for (var i=0; i<response.data.atribuicoes.length; i++) {
+                                if (response.data.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(response.data.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
+                                if (i === response.data.atribuicoes.length-1) {
                                     if ($scope.isAdmin) {
                                         $scope.verificaAlocacao();
                                     } else {

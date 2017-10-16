@@ -89,7 +89,7 @@
                 var unidade = null;
                 if(!$scope.isAdmin) { unidade = sessionStorage.getItem('unidade'); } else { unidade = ''; }
                 if (unidade !== null) {
-                    var promise = Servidor.buscar('quadro-horarios', {unidadeEnsino: unidade});
+                    var promise = Servidor.buscar('quadros-horarios', {unidadeEnsino: unidade});
                     promise.then(function (response) {
                         $scope.quadroHorarios = response.data; $('.tooltipped').tooltip('remove');
                         $timeout(function () { $('.tooltipped').tooltip({delay: 50}); }, 50);
@@ -99,7 +99,7 @@
             };
 
             $scope.buscarUmQuadroHorario = function (id) {
-                var promise = Servidor.buscarUm('quadro-horarios', id);
+                var promise = Servidor.buscarUm('quadros-horarios', id);
                 promise.then(function (response) {
                     $scope.quadroHorario = response.data;
                     $scope.quadroHorario.inicio = Servidor.formatarHora($scope.quadroHorario.inicio);
@@ -177,7 +177,7 @@
             
             $scope.selecionaUnidadeBusca = function(id) {
                 //$scope.nomeUnidadeBusca = unidade.tipo.sigla + ' ' + unidade.nome;
-                var promise = Servidor.buscar('quadro-horarios',{'unidadeEnsino':id});
+                var promise = Servidor.buscar('quadros-horarios',{'unidadeEnsino':id});
                 promise.then(function(response){
                     $scope.quadroHorarios = response.data;
                 });
@@ -327,7 +327,7 @@
                             $scope.quadroHorario.inicio = $scope.quadroHorario.inicio.toString() + ':00';
                             $scope.selecionaTurno($scope.quadroHorario.turno.id);
                             $scope.selecionaModelo($scope.quadroHorario.modelo.id);
-                            var promise = Servidor.finalizar($scope.quadroHorario, 'quadro-horarios', 'Quadro de horario');
+                            var promise = Servidor.finalizar($scope.quadroHorario, 'quadros-horarios', 'Quadro de horario');
                             promise.then(function () {
                                 $scope.fecharFormulario();
                                 $('.tooltipped').tooltip('remove');
@@ -573,7 +573,7 @@
             /* Remove o modulo */
             $scope.remover = function () {
                 $scope.mostraProgresso();
-                Servidor.remover($scope.quadroHorarioRemover, 'quadro-horario');
+                Servidor.remover($scope.quadroHorarioRemover, 'quadros-horario');
                 $timeout(function () {
                     $scope.buscarQuadroHorarios();
                     $scope.fechaProgresso();
@@ -627,7 +627,7 @@
                         var res = null;
                         var unidade = null;
                         if(!$scope.isAdmin) { unidade = sessionStorage.getItem('unidade'); } else { unidade = ''; }
-                        res = Servidor.buscar('quadro-horarios',{'nome':query,'unidadeEnsino':unidade});
+                        res = Servidor.buscar('quadros-horarios',{'nome':query,'unidadeEnsino':unidade});
                         res.then(function(response){
                             $scope.quadroHorarios = response.data;
                             $timeout(function (){ $scope.inicializar(false); $('.collection li').css('opacity',1); });
@@ -680,7 +680,7 @@
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
                             console.log('Criando Quadro Matutino...');
-                            Servidor.finalizar($scope.qMat, 'quadro-horarios', 'Quadros de horario');
+                            Servidor.finalizar($scope.qMat, 'quadros-horarios', 'Quadros de horario');
                         }
                     } else if ( $scope.turnos[t].nome === "Vespertino") {
                         qVespertino.turno.id = $scope.turnos[t].id;
@@ -694,7 +694,7 @@
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
                             
-                            Servidor.finalizar($scope.qVesp, 'quadro-horarios', 'Quadros de horario');
+                            Servidor.finalizar($scope.qVesp, 'quadros-horarios', 'Quadros de horario');
                         }
                     }
                 }
@@ -720,7 +720,7 @@
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
                             console.log('Criando Quadro Integral...');
-                            Servidor.finalizar($scope.qIntegral, 'quadro-horarios', 'Quadros de horario');
+                            Servidor.finalizar($scope.qIntegral, 'quadros-horarios', 'Quadros de horario');
                         }
                     }
                 }
@@ -745,7 +745,7 @@
                             $scope.modelosNome.push($scope.modelosCompativeis[k].nome);
                         } else {
                             console.log('Criando Quadro Noturno...');
-                            Servidor.finalizar($scope.qNoturno, 'quadro-horarios', 'Quadros de horario');
+                            Servidor.finalizar($scope.qNoturno, 'quadros-horarios', 'Quadros de horario');
                         }
                     }
                 }
@@ -857,7 +857,7 @@
             $scope.fixQuadroHorarioPorEscola = function () {
                 $scope.mostraProgresso();
                 for (var c=0; c<$scope.criados.length; c++) {
-                    var promise = Servidor.finalizar($scope.criados[c], 'quadro-horarios', 'Quadros de horario');
+                    var promise = Servidor.finalizar($scope.criados[c], 'quadros-horarios', 'Quadros de horario');
                     if (c === $scope.criados.length-1) {
                         promise.then(function(){
                             $scope.fechaProgresso(); $scope.fix = false;
