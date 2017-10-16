@@ -108,10 +108,9 @@ class MediaFacade extends AbstractFacade {
         }
     }
 
-    protected function afterUpdate($media) {
-        if ($media->getValor() === null || $media->getValor() === 0) {
+    protected function beforeUpdate($media) {
+        if (!$media->getValor()) {
             $media->setValor($this->calcularMedia($media));
-            $this->orm->getManager()->flush();
         }
     }
 

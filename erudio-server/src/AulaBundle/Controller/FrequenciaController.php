@@ -71,16 +71,6 @@ class FrequenciaController extends AbstractEntityController {
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
-     
-    /**
-    * @ApiDoc()
-    * 
-    * @FOS\Post("frequencias")
-    * @ParamConverter("frequencia", converter="fos_rest.request_body")
-    */
-    function postAction(Request $request, $id, Frequencia $frequencia, ConstraintViolationListInterface $errors) {
-        return $this->post($request, $id, $frequencia, $errors);
-    }
     
     /**
     * @ApiDoc()
@@ -95,7 +85,7 @@ class FrequenciaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Post("frequencias/*")
+    * @FOS\Post("frequencias")
     * @ParamConverter("frequencias", converter="fos_rest.request_body")
     */
     function postBatchAction(Request $request, FrequenciaCollection $frequencias, ConstraintViolationListInterface $errors) {
@@ -117,7 +107,7 @@ class FrequenciaController extends AbstractEntityController {
 /**  Wrapper class for batch operations*/
 class FrequenciaCollection {
     
-    /** @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Frequencia>") */
+    /** @JMS\Type("ArrayCollection<AulaBundle\Entity\Frequencia>") */
     public $frequencias;
     
 }
