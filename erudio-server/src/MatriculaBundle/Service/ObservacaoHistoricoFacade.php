@@ -41,6 +41,13 @@ class ObservacaoHistoricoFacade extends AbstractFacade {
         return 'o';
     }
     
+    function uniqueMap($observacao) {
+        return [[
+            'matricula' => $observacao->getMatricula(), 
+            'texto' => $observacao->getTexto()
+        ]];
+    }
+    
     function parameterMap() {
         return [
             'matricula' => function(QueryBuilder $qb, $value) {

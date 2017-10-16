@@ -243,6 +243,18 @@ class DisciplinaCursada extends AbstractEditableEntity {
         return $this->frequenciaPreliminar;
     }
     
+    function getSomaNotas() {
+        return array_reduce($this->medias->toArray(), function($acc, $m) {
+            return $acc + $m->getValor();
+        }, 0);
+    }
+    
+    function getTotalFaltas() {
+        return array_reduce($this->medias->toArray(), function($acc, $m) {
+            return $acc + $m->getFaltas();
+        }, 0);
+    }
+    
     /**
     * @JMS\Groups({"medias"})
     * @JMS\VirtualProperty

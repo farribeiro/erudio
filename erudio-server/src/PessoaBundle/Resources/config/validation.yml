@@ -4,8 +4,25 @@ PessoaBundle\Entity\Pessoa:
             - NotBlank: ~
         genero:
             - Choice: [M, F]
+        dataNascimento:
+            - NotNull: ~
+        cpfCnpj:
+            - Regex: 
+                pattern: '/\d/'
+                message: "CPF / CNPJ deve possuir apenas dígitos numéricos"
+            - Length:
+                min: 11
+                max: 14
+            
+PessoaBundle\Entity\PessoaFisica:
+    properties:
+        certidaoNascimento:
+            - Regex:
+                pattern: '/[0-9]{32}/'
+                message: "Certidão de nascimento deve possuir 32 dígitos numéricos"
             
 PessoaBundle\Entity\Telefone:
     properties:
         descricao:
-            - Choice: [RESIDENCIAL, CELULAR, COMERCIAL]
+            - Choice: 
+                choices: ["RESIDENCIAL", "CELULAR", "COMERCIAL"]

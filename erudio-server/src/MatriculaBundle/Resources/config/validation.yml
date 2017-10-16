@@ -1,7 +1,7 @@
 MatriculaBundle\Entity\Matricula:
     properties:
         status:
-            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "CANCELADO", "TRANCADO", "ABANDONO", "FALECIDO"]
+            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "CANCELADO", "TRANCADO", "ABANDONO", "FALECIDO", "MUDANCA_DE_CURSO"]
             
 MatriculaBundle\Entity\Transferencia:
     properties:
@@ -21,4 +21,4 @@ MatriculaBundle\Entity\DisciplinaCursada:
 MatriculaBundle\Entity\Desligamento:
     properties:
         motivo:
-            - Choice: ["TRANSFERENCIA_EXTERNA", "ABANDONO", "FALECIMENTO", "CANCELAMENTO"]
+            - Choice: ["TRANSFERENCIA_EXTERNA", "ABANDONO", "FALECIMENTO", "CANCELAMENTO", "MUDANCA_DE_CURSO"]

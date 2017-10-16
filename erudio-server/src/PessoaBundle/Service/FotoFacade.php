@@ -44,7 +44,11 @@ class FotoFacade {
     }
  
     function carregar($id) {
-        return file_get_contents("{$this->uploadPath}/{$id}.jpg");
+        $file = "{$this->uploadPath}/{$id}.jpg";
+        if (!file_exists($file)) {
+            return null;
+        }
+        return file_get_contents($file);
     }
     
     function gravar($id, UploadedFile $foto) {

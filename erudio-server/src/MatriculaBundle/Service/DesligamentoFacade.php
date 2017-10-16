@@ -77,6 +77,9 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
                 break;
+            case Desligamento::MUDANCA_DE_CURSO:
+                $matricula->setStatus(Matricula::STATUS_MUDANCA_DE_CURSO);
+                break;
             case Desligamento::CANCELAMENTO:
                 $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
