@@ -1,0 +1,66 @@
+<img src="{{ config.dominio }}/apps/admin/historicos/assets/images/alunos.jpg" class="modal-image" alt="Médias Parciais">
+<h2 class="modal-title">Gerenciar disciplinas</h2>
+<md-content class="modal-content">
+    <div class="row" style="margin-bottom: 15px;">
+        <div class="modal-info"><small>Se a disciplina desejada não estiver na lista, entre em contato com o Administrador do Sistema para incluí-la.</small></div>
+    </div>
+
+    <form id="novaDisciplinaForm" name="novaDisciplinaForm" class="modal-form">
+        <div class="row">
+            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                <label for="disciplina">Disciplina</label>
+                <md-icon class="material-icons">import_contacts</md-icon>
+                <md-select ng-disabled="atualizacaoDisciplina" ng-model="cursada.disciplina.id" id="disciplina" name="disciplina" required>
+                    <md-option value=""></md-option>
+                    <md-option ng-repeat="item in todasDisciplinas track by $index" value="{{ item.id }}">{{ item.nomeExibicao }}</md-option>
+                </md-select>
+                <div ng-messages="novaDisciplinaForm.cursada.disciplina.id.$error" class="errors-wrapper">
+                    <div ng-message="required">Este campo é obrigatório.</div>
+                </div>
+            </md-input-container>
+        </div>
+
+        <div class="row">
+            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                <label for="media">Média Final</label>
+                <md-icon class="material-icons">filter_7</md-icon>
+                <input id="media" ng-model="cursada.mediaFinal" type="text" name="media" required/>
+                <div ng-messages="novaDisciplinaForm.cursada.mediaFinal.$error" class="errors-wrapper">
+                    <div ng-message="required">Este campo é obrigatório.</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                <label for="freq">Frequência(%)</label>
+                <md-icon class="material-icons">filter_5</md-icon>
+                <input id="freq" ng-model="cursada.frequenciaTotal" type="text" name="freq" required/>
+                <div ng-messages="novaDisciplinaForm.cursada.frequenciaTotal.$error" class="errors-wrapper">
+                    <div ng-message="required">Este campo é obrigatório.</div>
+                </div>
+            </md-input-container>
+        </div>
+
+        <div class="row">
+            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                <label for="status">Status</label>
+                <md-icon class="material-icons">location_on</md-icon>
+                <md-select ng-disabled="atualizacaoDisciplina" ng-model="cursada.status" id="status" name="status" required>
+                    <md-option value=""></md-option>
+                    <md-option value="APROVADO">Aprovado</md-option>
+                    <md-option value="DISPENSADO">Dispensado</md-option>
+                </md-select>
+                <div ng-messages="novaDisciplinaForm.cursada.cursada.$error" class="errors-wrapper">
+                    <div ng-message="required">Este campo é obrigatório.</div>
+                </div>
+            </md-input-container>
+        </div>
+
+        <div class="row"  ng-if="cursada.id === undefined">
+            <md-button ng-click="travarCampos()" class="md-accent salvar-nova-disciplina">Salvar</md-button>
+        </div>
+
+        <div class="row"  ng-if="cursada.id !== undefined">
+            <md-button class="md-accent atualizar-nova-disciplina">Atualizar</md-button>
+        </div>
+    </form>
+</md-content>

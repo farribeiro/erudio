@@ -1,0 +1,61 @@
+<div class="calendarHome" ng-cloak ng-controller="AulaController as ctrl">
+    <div style="border-bottom: 1px solid #eee; text-align: center; font-size: 2rem; padding: 10px 0 10px 0;">
+        {{ ctrl.nomeMes }} / {{ ctrl.ano }}
+    </div>
+    <table class="w100 calendar-table aulas-table" style="margin-bottom: 50px;">
+        <thead hide show-gt-sm><th>Domingo</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></thead>
+        <thead hide-gt-sm><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></thead>
+        <tbody>
+            <tr ng-repeat="semana in ctrl.mesCalendario">
+                <td ng-class="ctrl.classeTipoDia(semana[0])" md-truncate>
+                    {{ semana[0].data | date:'dd' }}<br />
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[1])" ng-click="ctrl.escolherDia(semana[1])" md-truncate>
+                    {{ semana[1].data | date:'dd' }}<br />
+                    <div class="horarios absolute bottom-zero lista-aulas-td">
+                        <div ng-if="ctrl.disciplina.id === aula.disciplinaAlocada.id" ng-repeat="aula in ctrl.aulasSemana.segunda track by $index">
+                            {{ $index+1 }}ª Aula - {{ aula.disciplinaAlocada.sigla }}
+                        </div>
+                    </div>
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[2])" ng-click="ctrl.escolherDia(semana[2])" md-truncate>
+                    {{ semana[2].data | date:'dd' }}<br />
+                    <div class="horarios absolute bottom-zero lista-aulas-td">
+                        <div ng-if="ctrl.disciplina.id === aula.disciplinaAlocada.id" ng-repeat="aula in ctrl.aulasSemana.terca track by $index">
+                            {{ $index+1 }}ª Aula - {{ aula.disciplinaAlocada.sigla }}
+                        </div>
+                    </div>
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[3])" ng-click="ctrl.escolherDia(semana[3])" md-truncate>
+                    {{ semana[3].data | date:'dd' }}<br />
+                    <div class="horarios absolute bottom-zero lista-aulas-td">
+                        <div ng-if="ctrl.disciplina.id === aula.disciplinaAlocada.id" ng-repeat="aula in ctrl.aulasSemana.quarta track by $index">
+                            {{ $index+1 }}ª Aula - {{ aula.disciplinaAlocada.sigla }}
+                        </div>
+                    </div>
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[4])" ng-click="ctrl.escolherDia(semana[4])" md-truncate>
+                    {{ semana[4].data | date:'dd' }}<br />
+                    <div class="horarios absolute bottom-zero lista-aulas-td">
+                        <div ng-if="ctrl.disciplina.id === aula.disciplinaAlocada.id" ng-repeat="aula in ctrl.aulasSemana.quinta track by $index">
+                            {{ $index+1 }}ª Aula - {{ aula.disciplinaAlocada.sigla }}
+                        </div>
+                    </div>
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[5])" ng-click="ctrl.escolherDia(semana[5])" md-truncate>
+                    {{ semana[5].data | date:'dd' }}<br />
+                    <div class="horarios absolute bottom-zero lista-aulas-td">
+                        <div ng-if="ctrl.disciplina.id === aula.disciplinaAlocada.id" ng-repeat="aula in ctrl.aulasSemana.sexta track by $index">
+                            {{ $index+1 }}ª Aula - {{ aula.disciplinaAlocada.sigla }}
+                        </div>
+                    </div>
+                </td>
+                <td ng-class="ctrl.classeTipoDia(semana[6])" class="no-calendar-right-border" md-truncate>
+                    {{ semana[6].data | date:'dd' }}<br />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <botao-voltar></botao-voltar>
+    <paginador></paginador>
+</div>

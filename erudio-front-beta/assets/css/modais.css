@@ -1,0 +1,8 @@
+.modal-image { height: 128px; width: auto; }
+.modal-title { padding-left: 15px; }
+.menu-modal { position: absolute !important; right: 0px; top: 130px; }
+.md-dialog-container, .btn-zindex { z-index: 1005 !important; }
+.modal-content { background: #fff; margin-top: -15px; }
+.modal-info, .modal-form { padding: 0px 15px 0 15px; }
+.mobile-modal-fix { float: right !important; }
+.modal-list .md-secondary-container { width: 20% !important; }

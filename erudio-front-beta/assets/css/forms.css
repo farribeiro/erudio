@@ -1,0 +1,23 @@
+.input-ajuste { margin-top: 20px !important; }
+.form-errors { padding: 10px; font-size: 13px; background: #FFCDD2; display: none; }
+.select-alocacao div { font-size: 14px !important; font-weight: bold; }
+.text-alocacao { font-weight: normal !important; color: #999999;  }
+.md-select-alocacao .md-select-value span .md-text,.md-select-alocacao .md-select-value.md-select-placeholder { color: #fff !important; font-size: 14px !important; }
+.autocomplete-label { color: #9f9f9f; }
+.md-open-menu-container { z-index: 1005 !important; }
+.md-virtual-repeat-container.md-autocomplete-suggestions-container { z-index: 1005 !important; }
+.autocomplete-form { width: calc(100% - 24px) !important; margin-left: 24px; margin-top: -19px !important; height: 50px !important; }
+form-input, form-select, form-datepicker, md-select {
+    width: 100%;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+.hint { font-size: 12px; line-height: 14px; transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2); color: grey; }
+.md-select-menu-container { z-index: 1005 !important; }
+.autocomplete-wrap { width: calc(100% - 12px) !important; padding-left: 12px; }

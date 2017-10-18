@@ -1,0 +1,13 @@
+.add-btn { position: absolute !important; top: 100px; right: 15px; }
+.add-btn-professor { position: absolute !important; top: 100px; right: 15px; }
+.add-btn-mobile { position: fixed !important; bottom: 30px; right: 15px; }
+.back-btn-mobile { position: fixed !important; bottom: 30px; right: 15px; }
+.add-btn-professor-mobile { position: fixed !important; bottom: 30px; right: 15px; }
+.back-btn { position: absolute; top: 8px; right: 0px; z-index: 1004; }
+.save-button-fix { margin-top: 11px !important; }
+.btn-add-avaliacao { position: fixed; right: 25px; top: -7px; }
+.btn-add-avaliacao-fix { position: fixed; right: 25px; top: 116px; }
+.btn-voltar-avaliacao { position: fixed; right: 25px; top: 53px; }
+.btn-voltar-avaliacao-fix { position: fixed; right: 25px; top: 116px; }
+.material-btn { border: none !important; background: transparent !important; width: 60px !important; text-align: center; }
+.btn-login-mobile { position: absolute; bottom: 0; right: 8px; }

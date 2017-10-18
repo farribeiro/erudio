@@ -1,0 +1,21 @@
+<img src="{{ config.dominio }}/apps/admin/calendarios/assets/images/dia.jpg" class="modal-image" alt="Dia">
+<md-menu md-position-mode="target-right target">
+    <md-button class="md-icon-button menu-modal" ng-click="abreMenu($mdMenu, $event)" aria-label="Mais"><md-icon md-menu-origin class="material-icons">expand_more</md-icon></md-button>
+    <md-menu-content>
+        <md-menu-item><md-button class="dia-item" data-value="E">Dia Efetivo</md-button></md-menu-item>
+        <md-menu-item><md-button class="dia-item" data-value="L">Dia Letivo</md-button></md-menu-item>
+        <md-menu-item><md-button class="dia-item" data-value="N">Dia Não Letivo</md-button></md-menu-item>
+    </md-menu-content>
+</md-menu>
+
+<h2 class="modal-title">Eventos do dia {{ dia.data | date:'dd/MM/yyyy' }}</h2>
+<md-list class="md-dense" flex>
+    <md-list-item class="md-3-line" ng-repeat="evento in dia.eventos">
+        <div class="md-list-item-text">
+            <h3>{{ evento.evento.nome }}</h3>
+            <h4>{{ evento.inicio | date:'HH:ii' }} - {{ evento.termino | date:'HH:ii' }}</h4>
+            <p>{{ evento.evento.descricao }}</p>
+        </div>
+    </md-list-item>
+</md-list>
+
