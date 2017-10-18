@@ -34,45 +34,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use CursoBundle\Service\TurmaFacade;
-use MatriculaBundle\Service\MatriculaFacade;
 use MatriculaBundle\Service\EnturmacaoFacade;
 
 class EnturmacaoReportController extends Controller {
     
-//      private $turmaFacade;
-//      private $matriculaFacade;
-//      private $enturmacaoFacade;
-//      
-//      function __construct(TurmaFacade $turmaFacade, MatriculaFacade $matriculaFacade, 
-//            EnturmacaoFacade $enturmacaoFacade) {
-//          $this->turmaFacade = $turmaFacade;
-//          $this->matriculaFacade = $matriculaFacade;
-//          $this->enturmacaoFacade = $enturmacaoFacade;
-//      }
-//
-//      function getTurmaFacade() {
-//          return $this->turmaFacade;
-//      }
-//
-//      function getMatriculaFacade() {
-//          return $this->matriculaFacade;
-//      }
-//
-//      function getEnturmacaoFacade() {
-//          return $this->enturmacaoFacade;
-//      }
-    
-    function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
-    }
-    
-    function getMatriculaFacade() {
-        return $this->get('facade.matricula.matriculas');
-    }
-    
-    function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
+    private $turmaFacade;
+    private $enturmacaoFacade;
+    private $logger;
+      
+    function __construct(TurmaFacade $turmaFacade, EnturmacaoFacade $enturmacaoFacade, LoggerInterface $logger) {
+        $this->turmaFacade = $turmaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -90,13 +65,13 @@ class EnturmacaoReportController extends Controller {
     */
     function nominalPorTurmaAction(Request $request) {
         try {
-            $turma = $this->getTurmaFacade()->find($request->query->get('turma'));
+            $turma = $this->turmaFacade->find($request->query->get('turma'));
             return $this->render('reports/enturmacao/nominalPorTurma.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turmas' => [$turma]
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500, array('Content-type' => 'text/html'));
         }
     }
@@ -116,13 +91,13 @@ class EnturmacaoReportController extends Controller {
     */
     function nominalPorUnidadeAction(Request $request) {
         try {
-            $turmas = $this->getTurmaFacade()->findAll(['unidadeEnsino' => $request->query->get('unidade')]);
+            $turmas = $this->turmaFacade->findAll(['unidadeEnsino' => $request->query->get('unidade'), 'encerrado' => false]);
             return $this->render('reports/enturmacao/nominalPorTurma.pdf.twig', [
                 'instituicao' => $turmas[0]->getUnidadeEnsino(),
                 'turmas' => $turmas
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500, array('Content-type' => 'text/html'));
         }
     }
@@ -142,7 +117,7 @@ class EnturmacaoReportController extends Controller {
     */
     function quantitativoPorInstituicaoAction(Request $request) {
         try {
-            $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->find(
+            $instituicao = $this->getDoctrine()->getRepository('PessoaBundle:Instituicao')->findOneBy(
                 ['id' => $request->query->getInt('instituicao', 0), 'ativo' => true]
             );
             $curso = $request->query->getInt('curso', 0);
@@ -158,7 +133,7 @@ class EnturmacaoReportController extends Controller {
                 'relatorios' => $relatorios
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -188,23 +163,23 @@ class EnturmacaoReportController extends Controller {
                 'totais' => $relatorio['totais']
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
     
     private function gerarRelatorio($unidadeEnsino, $cursoId = 0) {
-        $params = ['unidadeEnsino' => $unidadeEnsino->getId()];
+        $params = ['unidadeEnsino' => $unidadeEnsino->getId(), 'encerrado' => false];
         if ($cursoId) {
             $params['curso'] = $cursoId;
         }
-        $turmas = $this->getTurmaFacade()->findAll($params);
+        $turmas = $this->turmaFacade->findAll($params);
         $enturmados = [];
         $totais = ['masculino' => 0, 'feminino' => 0, 'total' => 0];
         foreach ($turmas as $turma) {
-            $total = $this->getEnturmacaoFacade()->countByTurma($turma);
-            $masc = $this->getEnturmacaoFacade()->countByTurma($turma, 'M');
-            $fem = $this->getEnturmacaoFacade()->countByTurma($turma, 'F');
+            $total = $this->enturmacaoFacade->countByTurma($turma);
+            $masc = $this->enturmacaoFacade->countByTurma($turma, 'M');
+            $fem = $this->enturmacaoFacade->countByTurma($turma, 'F');
             $enturmados[] = [
                 'turma' => $turma,
                 'masculino' => $masc,

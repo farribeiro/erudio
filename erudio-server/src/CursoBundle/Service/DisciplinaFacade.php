@@ -47,12 +47,10 @@ class DisciplinaFacade extends AbstractFacade {
                 $qb->andWhere('d.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('d.curso = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.etapa', 'etapa')
-                   ->andWhere('etapa.id = :etapa')->setParameter('etapa', $value);
+                $qb->andWhere('d.etapa = :etapa')->setParameter('etapa', $value);
             },
             'opcional' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('d.opcional = :opcional')->setParameter('opcional', $value);

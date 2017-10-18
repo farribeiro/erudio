@@ -31,7 +31,6 @@ namespace MatriculaBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
-use CursoBundle\Entity\Turma;
 
 /**
 * @ORM\Entity
@@ -42,8 +41,10 @@ use CursoBundle\Entity\Turma;
 *   "MOVIMENTACAO_TURMA" = "MovimentacaoTurma", 
 *   "TRANSFERENCIA" = "Transferencia", 
 *   "DESLIGAMENTO" = "Desligamento",
+*   "RETORNO" = "Retorno",
 *   "RECLASSIFICACAO" = "Reclassificacao" 
 * })
+* @JMS\Discriminator(disabled = true) 
 */
 abstract class Movimentacao extends AbstractEditableEntity {
     

@@ -1,0 +1,10 @@
+<div layout-gt-sm="column" ng-if="!ctrl.escrita && !ctrl.novo">
+    <div><strong>{{ curso.nome }}</strong><br /><br /></div>
+    <div>Modalidade: {{ curso.modalidade.nome }}<br /><br /></div>
+    <div ng-show="curso.alfabetizatorio">Curso Alfabetizatório: SIM</div>
+    <div ng-hide="curso.alfabetizatorio">Curso Alfabetizatório: NÃO</div>
+</div>
+
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && ctrl.novo">
+    Você não tem permissão para criar novos cursos.
+</div>

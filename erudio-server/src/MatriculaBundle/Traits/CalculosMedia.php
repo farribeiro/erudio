@@ -4,7 +4,7 @@ namespace MatriculaBundle\Traits;
 
 use MatriculaBundle\Entity\Media;
 use MatriculaBundle\Entity\DisciplinaCursada;
-use AvaliacaoBundle\Entity\SistemaAvaliacao;
+use CursoBundle\Entity\SistemaAvaliacao;
 use CoreBundle\ORM\Exception\IllegalOperationException;
 
 /**
@@ -26,12 +26,12 @@ trait CalculosMedia {
         foreach ($disciplinaCursada->getMedias() as $media) {
             if (is_null($media->getValor())) {
                 throw new IllegalOperationException(
-                        'Média final não pode ser calculada sem o preenchimento de todas as parciais e/ou exame');
+                    'Média final não pode ser calculada sem o preenchimento de todas as parciais e/ou exame');
             }
             $somaNotas += $media->getValor();
             $somaPesos += $media->getPeso();
         }
-        return $somaNotas / $somaPesos;
+        return round($somaNotas / $somaPesos, 2);
     }
     
     /**
@@ -41,6 +41,35 @@ trait CalculosMedia {
      * @return float porcentagem da frequência do aluno nas aulas
      */
     function calcularFrequenciaTotal(DisciplinaCursada $disciplinaCursada) {
+        $frequenciaUnificada = $disciplinaCursada->getDisciplina()->getEtapa()->getFrequenciaUnificada();
+        return $frequenciaUnificada 
+                ? $this->calcularFrequenciaPorDia($disciplinaCursada) 
+                : $this->calcularFrequenciaPorAula($disciplinaCursada);
+    }
+    
+    /**
+     * 
+     * @param DisciplinaCursada $disciplinaCursada
+     * @return float porcentagem de frequência calculada
+     */
+    function calcularFrequenciaPorDia(DisciplinaCursada $disciplinaCursada) {
+        $calendario = $disciplinaCursada->getEnturmacao()->getTurma()->getCalendario();
+        $numeroAulas = $calendario->getQuantidadeDiasEfetivos(
+            $disciplinaCursada->getEnturmacao()->getTurma()->getPeriodo()
+        );
+        $somaFaltas = 0;
+        foreach ($disciplinaCursada->getMedias() as $media) {
+            $somaFaltas += $media->getFaltas();
+        }
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
+    }
+    
+    /**
+    * 
+    * @param DisciplinaCursada $disciplinaCursada
+    * @return float porcentagem de frequência calculada
+    */
+    function calcularFrequenciaPorAula(DisciplinaCursada $disciplinaCursada) {
         $somaFaltas = 0;
         foreach ($disciplinaCursada->getMedias() as $media) {
             $somaFaltas += $media->getFaltas();
@@ -48,8 +77,8 @@ trait CalculosMedia {
         $cargaHoraria = $disciplinaCursada->getDisciplina()->getCargaHoraria();
         $duracaoAula = $disciplinaCursada->getEnturmacao()->getTurma()
                 ->getQuadroHorario()->getModelo()->getDuracaoAula();
-        $numeroAulas = floor($cargaHoraria / $duracaoAula);
-        return 100 - ($somaFaltas * 100) / $numeroAulas;
+        $numeroAulas = floor($cargaHoraria / ($duracaoAula / 60));
+        return round(100 - ($somaFaltas * 100) / $numeroAulas, 2);
     }
     
     /**

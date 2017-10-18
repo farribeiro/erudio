@@ -1,5 +1,11 @@
 security:
-            
+    
+    encoders:
+        AuthBundle\Entity\Usuario:
+            algorithm: md5
+            iterations: 0
+            encode_as_base64: false
+        
     providers:
         main:
             entity:
@@ -11,7 +17,18 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         
-        wsse_secured:
-            pattern: ^/apix/
+        api_authentication:
+            pattern: ^/api/tokens
             stateless: true
-            wsse: { lifetime: 133200 } 
+            anonymous: true
+        
+        api_interna:
+            pattern: ^/api/
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+                    
+    access_control:
+        - { path: ^/api/tokens, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

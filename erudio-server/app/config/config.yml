@@ -2,15 +2,6 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    # Serviços da API
-    - { resource: "@AuthBundle/Resources/config/services.yml" }
-    - { resource: "@ReportBundle/Resources/config/services.yml" }
-    - { resource: "@PessoaBundle/Resources/config/services.yml" }
-    - { resource: "@CursoBundle/Resources/config/services.yml" }
-    - { resource: "@CalendarioBundle/Resources/config/services.yml" }
-    - { resource: "@AvaliacaoBundle/Resources/config/services.yml" }
-    - { resource: "@VinculoBundle/Resources/config/services.yml" }
-    - { resource: "@MatriculaBundle/Resources/config/services.yml" }
 
 parameters:
     locale: pt_BR
@@ -24,7 +15,7 @@ framework:
         strict_requirements: ~
     form: ~
     csrf_protection: ~
-    validation: { enable_annotations: true }
+    validation: { enable_annotations: false }
     #serializer: { enable_annotations: true }
     templating:
         engines: ['twig']
@@ -80,11 +71,6 @@ sensio_framework_extra:
 jms_serializer:
     property_naming:
         separator:  false
-    metadata:
-        cache: none
-    subscribers:
-        doctrine_proxy:
-            initialize_virtual_types: false
  
     
 # FOS REST
@@ -107,14 +93,25 @@ fos_rest:
     serializer:
         serialize_null: false
 
+# JWT - Autenticação
+lexik_jwt_authentication:
+    private_key_path: '%jwt_private_key_path%'
+    public_key_path:  '%jwt_public_key_path%'
+    pass_phrase:      '%jwt_key_pass_phrase%'
+    token_ttl:        '%jwt_token_ttl%'
+    token_extractors:
+        authorization_header:
+            prefix:  Bearer
+            name:    JWT-Authorization
+
 # Nelmio cors
 nelmio_cors:
     paths:
         '^/':
             allow_credentials: true
             allow_origin: ['*']
-            allow_headers: ['X-Custom-Auth', 'Content-Type', 'Origin', 'Accept', 'X-WSSE', 'X-Requested-With']
-            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
+            allow_headers: ['Content-Type', 'Origin', 'Accept', 'X-Requested-With', 'JWT-Authorization']
+            allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'HEAD', 'OPTIONS']
             expose_headers: ['Content-Type', 'Link']
             max_age: 1209600
             hosts: []

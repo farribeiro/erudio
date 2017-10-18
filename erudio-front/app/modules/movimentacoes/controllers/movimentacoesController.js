@@ -157,6 +157,60 @@
         $scope.aceitar = true;
         $scope.enturmar = false;
 
+        $scope.prepararRemoverEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); 
+            var promise = Servidor.buscarUm('enturmacoes', enturmacao);
+            promise.then(function(response) {
+                $scope.enturmacao = response.data; console.log($scope.enturmacao);
+                $scope.buscarEtapasTurma(response.data.matricula.curso.id);
+                $scope.fechaProgresso();
+            });
+        };
+        
+        $scope.etapaTurma = {id:null}; $scope.turmaNova = {id:null};
+        $scope.buscarTurmasEnt = function (id) {
+            $scope.mostraProgresso();
+            var promise = Servidor.buscar('turmas',{etapa: id, curso: $scope.matricula.curso.id, unidadeEnsino: $scope.matricula.unidadeEnsino.id});
+            promise.then(function(response){
+                $scope.turmasEnturmacao = response.data; $timeout(function(){ $('#enturmacaoTurma').material_select(); $('#enturmacaoTurma').material_select(); $scope.fechaProgresso();  },500);
+            });
+        };
+        
+        $scope.verificarVagaDisponivel = function(finalizar) {
+            if ($scope.temEnturmacao && finalizar !== true) {
+                $('#remover-enturmacao-modal').openModal();
+            } else {
+                var enturmacao = { matricula: {id: $scope.enturmacao.matricula.id}, turma: {id: $scope.turmaNova.id} };
+                $scope.requisicoes++; $scope.mostraProgresso();
+                var promise = Servidor.finalizar(enturmacao, 'enturmacoes', 'Enturmação');
+                promise.then(function (response) {            
+                    $scope.fechaProgresso(); $scope.fecharFormulario();
+                }, function (response){
+                    if (response.status === 400) { Servidor.customToast(response.data); $scope.buscarMatriculas($scope.matriculaMovimentacoes,'','botao'); $scope.fechaProgresso(); }
+                });
+            }
+        };
+        
+         /*Busca de etapas no Curso*/
+        $scope.buscarEtapasTurma = function (id) {
+            $scope.etapas = [];
+            var promise = Servidor.buscar('etapas', {'curso': id});
+            promise.then(function (response) {
+                $scope.etapas = response.data;
+                $scope.editando = true;
+                $scope.fechaProgresso(); $timeout(function(){ $('#etapaTurma').material_select(); $('#etapaTurma').material_select(); $scope.fechaProgresso(); $('#enturmacaoTurma').material_select(); $('#enturmacaoTurma').material_select();  },500);
+            });
+        };
+        
+        $scope.alterarEtapa = false;
+        $scope.removerEnturmacao = function(enturmacao) {
+            $scope.mostraProgresso(); 
+            Servidor.remover(enturmacao, null);
+            $scope.alterarEtapa = true;
+            $scope.verificarVagaDisponivel(true);
+            $scope.fechaProgresso(); 
+        };
+
         $scope.buscarUnidades = function () {
             var promise = Servidor.buscar('unidades-ensino', null);
             promise.then(function (response) {
@@ -223,20 +277,23 @@
 
         $scope.enturmarAluno = function () {
             if($scope.turmas.length === 1) { $scope.turma = $scope.turmas[0]; }
-            var enturmacao = {
-                'matricula':{ 'id': $scope.transferencia.matricula.id },
-                'turma': {'id': parseInt($scope.turma.id) }
-            };
-            var promise = Servidor.finalizar(enturmacao, 'enturmacoes', 'Enturmaçao');
-            promise.then(function(response) {
-                $scope.enturmacao = response.data;
-//                $scope.desativarDisciplinasCursadas();
-                if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual) {
-                    $scope.salvarDisciplinasCursadas();
-                } else {
-//                    $scope.clonarDisciplinasCursadas();
-                }
-            });
+            $timeout(function(){
+                var enturmacao = {
+                    'matricula':{ 'id': $scope.transferencia.matricula.id },
+                    'turma': {'id': parseInt($scope.turma.id) }
+                };
+                var promise = Servidor.finalizar(enturmacao, 'enturmacoes', 'Enturmaçao');
+                promise.then(function(response) {
+                    $scope.enturmacao = response.data;
+    //                $scope.desativarDisciplinasCursadas();
+                    if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual) {
+                        $scope.salvarDisciplinasCursadas();
+                        $timeout(function(){ $scope.validarBusca(); },800);
+                    } else {
+    //                    $scope.clonarDisciplinasCursadas();
+                    }
+                });
+            },500);
         };
 
         $scope.salvarDisciplinasCursadas = function() {
@@ -291,20 +348,37 @@
 
         $scope.selecionarEtapa = function(id) {
             var promise = Servidor.buscarUm('etapas', id);
+            $scope.contadorDisciplinaMov = true;
             promise.then(function(response) {
                 $scope.etapa = response.data;
                 $scope.disciplinas = [];
-                if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual.ordem) {
-                    var promise = Servidor.buscar('disciplinas', {etapa: response.data.id});
-                    promise.then(function(response) {
-                        var disciplinas = response.data;
-                        disciplinas.forEach(function(d) {
-                            var promise = Servidor.buscarUm('disciplinas', d.id);
-                            promise.then(function(response) {
-                                $scope.disciplinas.push(response.data);
+                if ($scope.transferencia.matricula.etapaAtual !== undefined && $scope.transferencia.matricula.etapaAtual !== null) {
+                    if ($scope.etapa.ordem > $scope.transferencia.matricula.etapaAtual.ordem) {
+                        var promise = Servidor.buscar('disciplinas', {etapa: response.data.id});
+                        promise.then(function(response) {
+                            var disciplinas = response.data;
+                            disciplinas.forEach(function(d) {
+                                var promise = Servidor.buscarUm('disciplinas', d.id);
+                                promise.then(function(response) {
+                                    $scope.disciplinas.push(response.data);
+                                });
                             });
                         });
-                    });
+                    }
+                } else {
+                    if ($scope.contadorDisciplinaMov) {
+                        $scope.contadorDisciplinaMov = false;
+                        var promise = Servidor.buscar('disciplinas', {etapa: response.data.id});
+                        promise.then(function(response) {
+                            var disciplinas = response.data;
+                            disciplinas.forEach(function(d) {
+                                var promise = Servidor.buscarUm('disciplinas', d.id);
+                                promise.then(function(response) {
+                                    $scope.disciplinas.push(response.data);
+                                });
+                            });
+                        });
+                    }
                 }
             });
         };
@@ -332,7 +406,9 @@
                 $scope.aceitandoTransferencia = true;
                 $scope.turma.id = null;
                 $scope.disciplinas = [];
-                var promise = Servidor.buscar('disciplinas-cursadas', {matricula: transferencia.matricula.id, status: 'CURSANDO'});
+                $scope.turmaModal = null;
+                $('#aceitar-transferencia').openModal();
+                /*var promise = Servidor.buscar('disciplinas-cursadas', {matricula: transferencia.matricula.id, status: 'CURSANDO'});
                 promise.then(function(response) {
                     $scope.cursadas = response.data;
                     $scope.cursadas.forEach(function(c) {
@@ -349,8 +425,20 @@
                     //$('#aceitar-transferencia').modal('open');
                     $('#aceitar-transferencia').openModal();
                     //$('#selectTurmaTransferencia').material_select();
-                });
+                });*/
             });
+        };
+        
+        $scope.etapaModal = null;
+        $scope.trocaEtapaModal = function (etapa) {
+            $scope.buscarTurmas(etapa.id); $scope.selecionarEtapa(etapa.id);
+        };
+        
+        $scope.turmaModal = null;
+        $scope.trocaTurmaModal = function (turmaId) {
+            $scope.turmaModal = turmaId;
+            $scope.buscarDisciplinasOfertadasDestino(turmaId);
+            $scope.turma.id = turmaId;
         };
 
         $scope.inicializarControladorSelect = function() {
@@ -384,7 +472,7 @@
                     var id = $(this).attr('id'); var altura = $('.'+id).css('margin-top');
                     altura = parseInt(altura.replace('px','')); var novaAltura = altura - 32;
                     $('.'+id).css('margin-top',novaAltura+'px'); indexTurma++;
-                    var idTurma = parseInt($('.movimentacaoTurmaSelect li:nth-child(' + index + ')').attr('data-value'));
+                    var idTurma = parseInt($('.movimentacaoTurmaSelect li:nth-child(' + indexTurma + ')').attr('data-value'));
                     $scope.buscarDisciplinasOfertadasDestino(idTurma);
                     $scope.turma.id = idTurma;
                 }
@@ -396,7 +484,7 @@
                     var id = $(this).attr('id'); var altura = $('.'+id).css('margin-top');
                     altura = parseInt(altura.replace('px','')); var novaAltura = altura + 32;
                     $('.'+id).css('margin-top',novaAltura+'px'); indexTurma--;
-                    var idTurma = parseInt($('.movimentacaoTurmaSelect li:nth-child(' + index + ')').attr('data-value'));
+                    var idTurma = parseInt($('.movimentacaoTurmaSelect li:nth-child(' + indexTurma + ')').attr('data-value'));
                     $scope.buscarDisciplinasOfertadasDestino(idTurma);
                     $scope.turma.id = idTurma;
                 }
@@ -447,26 +535,30 @@
             promise.then(function (response) {
                 $scope.transferencia = response.data;
                 if (aceito) {
-                    $scope.transferencia.status = 'ACEITO';
-                    if (!$scope.transferencia.unidadeEnsinoOrigem.id) {
-                        $scope.transferencia.unidadeEnsinoOrigem = {id: $scope.matricula.unidadeEnsino.id};
-                    }
-                    var matricula = $scope.transferencia.matricula;
-                    $scope.transferencia.matricula = {id: matricula.id};
-                    $scope.transferencia.unidadeEnsinoDestino = {id: $scope.transferencia.unidadeEnsinoDestino.id};
-                    $scope.transferencia.unidadeEnsinoOrigem = {id: $scope.transferencia.unidadeEnsinoOrigem.id};
-                    var promise = Servidor.finalizar($scope.transferencia, 'transferencias', 'Transferencia');
-                    promise.then(function (response) {
-                        $scope.liberarVaga(matricula.aluno.id);
-                        $scope.transferencias.forEach(function (t) {
-                            if (t.id === response.data.id) {
-                                t.status = response.data.status;
-                            }
+                    if ($scope.turmaModal !== null) {
+                        $scope.transferencia.status = 'ACEITO';
+                        if (!$scope.transferencia.unidadeEnsinoOrigem.id) {
+                            $scope.transferencia.unidadeEnsinoOrigem = {id: $scope.matricula.unidadeEnsino.id};
+                        }
+                        var matricula = $scope.transferencia.matricula;
+                        $scope.transferencia.matricula = {id: matricula.id};
+                        $scope.transferencia.unidadeEnsinoDestino = {id: $scope.transferencia.unidadeEnsinoDestino.id};
+                        $scope.transferencia.unidadeEnsinoOrigem = {id: $scope.transferencia.unidadeEnsinoOrigem.id};
+                        var promise = Servidor.finalizar($scope.transferencia, 'transferencias', 'Transferencia');
+                        promise.then(function (response) {
+                            $scope.liberarVaga(matricula.aluno.id);
+                            $scope.transferencias.forEach(function (t) {
+                                if (t.id === response.data.id) {
+                                    t.status = response.data.status;
+                                }
+                            });
+                            if($scope.turmas.length) {
+                                $scope.enturmarAluno();
+                            }                        
                         });
-                        if($scope.turmas.length) {
-                            $scope.enturmarAluno();
-                        }                        
-                    });
+                    } else {
+                        Servidor.customToast('Selecione uma turma antes de realizar a transferência.');
+                    }
                 } else {
                     $scope.transferencia.status = 'RECUSADO';
                     if (resposta === '') {
@@ -543,23 +635,16 @@
             $scope.etapa.id = null;
             $scope.turmas = [];
             $scope.turma = {id: null};
-            var promiseEtapa = Servidor.buscarUm('etapas', $scope.transferencia.matricula.etapaAtual.id);
-            promiseEtapa.then(function(responseEtapa){
-                var etapa = responseEtapa.data;
-                var promise = Servidor.buscar('etapas', {curso: etapa.curso.id});
-                promise.then(function(response) {
-                    var etapas = response.data;
+            if ($scope.transferencia.matricula.etapaAtual === null || $scope.transferencia.matricula.etapaAtual === undefined) {
+                var promiseEtapa = Servidor.buscar('etapas', {curso: $scope.transferencia.matricula.curso.id});
+                promiseEtapa.then(function(responseEtapa){
+                    var etapas = responseEtapa.data;
                     if ($scope.aceitandoTransferencia) {
-    //                    $scope.etapas.forEach(function(etapa) {
-    //                        if (etapa.ordem === $scope.transferencia.matricula.etapaAtual.ordem) {
-    //                            $scope.buscarTurmas(etapa.id);
-    //                            $scope.selecionarEtapa(etapa.id);
-    //                        }
-    //                    });
                         if($scope.transferencia.matricula.etapaAtual !== undefined && $scope.transferencia.matricula.etapaAtual) {
-                            $scope.etapas = [];
+                            $scope.etapas = []; var contaEtapa = 0;
                             etapas.forEach(function(e) {
                                 if(e.ordem >= $scope.transferencia.matricula.etapaAtual.ordem) {
+                                    if (contaEtapa === 0) { $scope.etapaModal = e; contaEtapa++; }
                                     $scope.etapas.push(e);
                                 }
                             });
@@ -571,7 +656,38 @@
                         $scope.etapas = etapas;
                     }
                 });
-            });
+            } else {
+                var promiseEtapa = Servidor.buscarUm('etapas', $scope.transferencia.matricula.etapaAtual.id);
+                promiseEtapa.then(function(responseEtapa){
+                    var etapa = responseEtapa.data;
+                    var promise = Servidor.buscar('etapas', {curso: etapa.curso.id});
+                    promise.then(function(response) {
+                        var etapas = response.data;
+                        if ($scope.aceitandoTransferencia) {
+        //                    $scope.etapas.forEach(function(etapa) {
+        //                        if (etapa.ordem === $scope.transferencia.matricula.etapaAtual.ordem) {
+        //                            $scope.buscarTurmas(etapa.id);
+        //                            $scope.selecionarEtapa(etapa.id);
+        //                        }
+        //                    });
+                            if($scope.transferencia.matricula.etapaAtual !== undefined && $scope.transferencia.matricula.etapaAtual) {
+                                $scope.etapas = []; var contaEtapa = 0;
+                                etapas.forEach(function(e) {
+                                    if(e.ordem >= $scope.transferencia.matricula.etapaAtual.ordem) {
+                                        if (contaEtapa === 0) { $scope.etapaModal = e; contaEtapa++; }
+                                        $scope.etapas.push(e);
+                                    }
+                                });
+                            } else {
+                                $scope.etapas = etapas;
+                            }
+                            $scope.inicializarControladorSelect();
+                        } else {
+                            $scope.etapas = etapas;
+                        }
+                    });
+                });
+            }
         };
 
         $scope.preparaRecusar = function(transferencia){
@@ -680,7 +796,7 @@
                     Servidor.customToast('Não há transferencias.');
                     return $scope.reiniciarBusca();
                 }
-                $scope.transferencias.forEach(function(t) {
+                /*$scope.transferencias.forEach(function(t) {
                     var promise = Servidor.buscar('disciplinas-cursadas', {matricula: t.matricula.id, encerrado:0});
                     promise.then(function(response) {
                         if(response.data.length) {
@@ -692,7 +808,7 @@
                             t.matricula.etapaAtual = {id:null, nomeExibicao: ''};
                         }
                     });
-                });
+                });*/
                 $('.tooltipped').tooltip('remove');
                 $timeout(function () {
                     $('.tooltipped').tooltip({delay: 50});
@@ -905,29 +1021,45 @@
                                     }
                                 });
                             break
+                            case 'Etapa':
+                                $scope.aceitandoTransferencia = false;
+                                var promise = Servidor.buscar('enturmacoes', {'matricula': matricula.id, 'isEmAndamento': true});
+                                promise.then(function(response){ 
+                                    $scope.etapas = []; $scope.turmasEnturmacao = []; $scope.etapaTurma = {id:null}; $scope.turmaNova = {id:null};
+                                    if (response.data.length === 1) { 
+                                        $scope.alterarEtapa = true; $scope.temEnturmacao = true;
+                                        $scope.prepararRemoverEnturmacao(response.data[0].id); 
+                                    } else if (response.data.length > 1) { 
+                                        Servidor.customToast("Há mais de uma enturmação para a mesma matrícula na mesma unidade, favor verificar.");
+                                    } else {
+                                        $scope.alterarEtapa = true; $scope.temEnturmacao = false;
+                                        $scope.buscarEtapasTurma(matricula.curso.id);
+                                    }
+                                });
+                            break;
                             case 'Movimentação':
                                 $scope.aceitandoTransferencia = false;
                                 var promise = Servidor.buscar('enturmacoes', {'matricula': matricula.id, 'encerrado': false});
                                 promise.then(function (response) {
-                                    if (!response.data.length) {
+                                    /*if (!response.data.length) {
                                         Materialize.toast("Este aluno não possui nenhuma enturmação.", 2500);
                                         $scope.fecharFormulario();
                                         $scope.opcaoEnvio = '';
                                         $scope.editando = false;
-                                    } else {
-                                        $scope.enturmacao = response.data[0];
+                                    } else {*/
+                                        if (response.data.length > 0) { $scope.enturmacao = response.data[0]; }
                                         $scope.opcaoEnvio = 'Movimentação';
                                         $timeout(function(){
                                             $('#turma').material_select('destroy');
                                             $('#turma').material_select();
                                             $scope.editando = true;
-                                        }, 100);
-                                        if ($scope.enturmacao !== undefined) {
-                                            $scope.buscarTurmas($scope.enturmacao.turma.etapa.id);
-                                            $scope.buscarDisciplinasCursadas(matricula, $scope.enturmacao);
-                                            $scope.opcaoEnvio = 'Movimentação';
-                                        }
-                                    }
+                                            if ($scope.enturmacao !== undefined) {
+                                                $scope.buscarTurmas($scope.enturmacao.turma.etapa.id);
+                                                //$scope.buscarDisciplinasCursadas(matricula, $scope.enturmacao);
+                                                $scope.opcaoEnvio = 'Movimentação';
+                                            }
+                                        }, 100);       
+                                    //}
                                 });
                             break
                             case 'Transferência':
@@ -1003,6 +1135,7 @@
                     if (--$scope.requisicoes === 0) {
                         if ($scope.turmas.length) {
                             $timeout(function(){
+                                $scope.turma.id = $scope.turmas[0].id;
                                 if ($scope.aceitandoTransferencia) {
                                     $('#selectTurmaTransferencia').material_select();
                                 } else {
@@ -1068,7 +1201,9 @@
                         }
                         Materialize.toast('Nenhuma turma foi encontrada.', 2000);
                     } else {
-                        $scope.turmasCompativeis(response.data);
+                        $scope.turmas = response.data;
+                        $timeout(function(){ $('#turma').material_select('destroy'); $('#turma').material_select(); },500);
+                        //$scope.turmasCompativeis(response.data);
                     }
                 });
             }
@@ -1238,17 +1373,21 @@
         };
 
         $scope.desligar = function () {
-            $scope.progresso = true;
-            $scope.desligamento.matricula = {id: $scope.matricula.id};
-            var promise = Servidor.finalizar($scope.desligamento, 'desligamentos', 'Desligamento');
-            promise.then(function (response) {
-                $scope.liberarVaga($scope.matricula.aluno.id);
-                $scope.fecharFormularioMovimentacoes();
-            });
+            if ($scope.desligamento.justificativa === null || $scope.desligamento.justificativa === undefined || $scope.desligamento.justificativa === '') {
+                Servidor.customToast('Justificativa é um campo obrigatório.');
+            } else {
+                $scope.progresso = true;
+                $scope.desligamento.matricula = {id: $scope.matricula.id};
+                var promise = Servidor.finalizar($scope.desligamento, 'desligamentos', 'Desligamento');
+                promise.then(function (response) {
+                    $scope.liberarVaga($scope.matricula.aluno.id);
+                    $scope.fecharFormularioMovimentacoes();
+                });
+            }
         };
 
         $scope.liberarVaga = function(pessoaId) {
-            var promise = Servidor.buscar('solicitacao-vagas', {pessoa: pessoaId});
+            /*var promise = Servidor.buscar('solicitacao-vagas', {pessoa: pessoaId});
             promise.then(function(response) {
                 var solicitacoes = response.data;                
                 $scope.requisicoes = 0;
@@ -1278,11 +1417,11 @@
                         $scope.fecharFormulario();
                     }
                 });
-            });
+            });*/
         };
 
         $scope.movimentar = function () {
-            if ($scope.permissao) {
+            //if ($scope.permissao) {
                 $scope.progresso = true;
                 $scope.movimentacao.matricula = $scope.enturmacao.matricula;
                 $scope.movimentacao.enturmacaoOrigem = $scope.enturmacao;
@@ -1291,8 +1430,10 @@
                 promise.then(function(response) {
                     $scope.fecharFormulario();
 //                    $scope.liberarVaga($scope.movimentacao.matricula.aluno.id);                    
+                },function(){
+                    $scope.fecharFormulario();
                 });
-            }
+            //}
         };
 
         $scope.fecharFormulario = function () {

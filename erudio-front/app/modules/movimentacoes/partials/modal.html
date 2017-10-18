@@ -57,28 +57,19 @@
                     <h4 class="modal-alinha-texto">Aceitar Transferência</h4>
                 </div>
                 <div class="row">
-                    <div class="input-field col s12 m12 l6">
-                        <label class="active_label" for="selectEtapaEnturmacao">Etapa</label>
-                        <div class="row select-arrow-height select-arrow-border-bottom relative"><div class="block_select"></div><div id="movimentacaoCursoSelect" class="col s12 center-align arrow_up"><i class="material-icons">keyboard_arrow_up</i></div></div>
-                        <div class="select-wrap">
-                            <ul class="select-container movimentacaoCursoSelect">
-                                <li data-ng-repeat="etapa in etapas | orderBy:'nomeExibicao'" data-value="{{etapa}}" class="select-item center-align">{{etapa.nomeExibicao | uppercase}}</li>
-                            </ul>
+                    <div class="input-field col s12 m12 l12" ng-if='transferencia.matricula.etapaAtual !== undefined'>
+                        <div data-ng-repeat="etapa in etapas | orderBy:'nomeExibicao'">
+                            <input name="grupoEtapa" type="radio" id="gEtapa{{$index}}" ng-value="etapa" ng-model="etapaModal" ng-click="trocaEtapaModal(etapaModal)" /><label for="gEtapa{{$index}}">{{etapa.nomeExibicao | uppercase}}</label>
                         </div>
-                        <div class="row select-arrow-height select-arrow-border-top relative"><div class="block_select"></div><div id="movimentacaoCursoSelect" class="col s12 center-align arrow_down"><i class="material-icons">keyboard_arrow_down</i></div></div>
                     </div>
-                    <div class="input-field col s12 m12 l6">
-                        <label class="active_label" for="selectTurmaTransferencia">Turmas Disponíveis</label>
-                        <div class="row select-arrow-height select-arrow-border-bottom relative"><div class="block_select"></div><div id="movimentacaoTurmaSelect" class="col s12 center-align turma_arrow_up"><i class="material-icons">keyboard_arrow_up</i></div></div>
-                        <div class="select-wrap">
-                            <ul class="select-container movimentacaoTurmaSelect">
-                                <li data-ng-repeat="turma in turmas" data-value="{{turma.id}}" class="select-item center-align">{{turma.nomeCompleto | uppercase}}</li>
-                            </ul>
+                    <div class="input-field col s12 m12 l12">
+                        <hr />
+                        <div data-ng-repeat="turma in turmas">
+                            <input name="grupoTurma" type="radio" id="gTurma{{$index}}" ng-value="turma.id" ng-model="turmaModal" ng-click="trocaTurmaModal(turmaModal)" /><label for="gTurma{{$index}}">{{turma.nomeCompleto | uppercase}}</label>
                         </div>
-                        <div class="row select-arrow-height select-arrow-border-top relative"><div class="block_select"></div><div id="movimentacaoTurmaSelect" class="col s12 center-align turma_arrow_down"><i class="material-icons">keyboard_arrow_down</i></div></div>
                     </div>
                 </div>
-                <div class="row" data-ng-if="disciplinas.length && transferencia.matricula.etapaAtual.ordem < etapa.ordem">
+                <div style="margin-top: 20px;" class="row" data-ng-if="disciplinas.length && transferencia.matricula.etapaAtual.ordem < etapa.ordem">
                     <small data-ng-show="etapa.integral" class="obriga-campos"><em>Etapa integral, selecione as disciplinas optativas.</em></small>
                     <small data-ng-hide="etapa.integral" class="obriga-campos"><em>Desmarque as disciplinas opcionais que não serão cursadas.</em></small>
                     <p data-ng-repeat="disciplina in disciplinas" data-ng-if="disciplina.opcional">
@@ -87,7 +78,7 @@
                     </p>
                 </div>
             </div>
-            <div class="row modal-footer end-card">
+            <div class="row modal-footer end-card" style='margin-top: 30px;'>
                 <a data-ng-click='transferir(transferencia, true)' class="modal-action modal-close waves-effect waves-green btn-flat">Salvar</a>                        
             </div>
         </div>
@@ -118,6 +109,26 @@
                         <i class="material-icons left">save</i>
                         <span data-ng-click="solicitarTransferirenciaLocal(matricula, transferencia.justificativa)">Salvar</span>                        
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Exclusão -->
+<div id="remover-enturmacao-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 0 !important;">
+            <div class="modal-body">
+                <div class="modal-title-banner-matricula">
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 14rem; color: white;">Alterar etapa</h4>
+                </div>
+                <p>Você realmente deseja alterar a etapa deste aluno?</p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="removerEnturmacao(enturmacao)" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
                 </div>
             </div>
         </div>

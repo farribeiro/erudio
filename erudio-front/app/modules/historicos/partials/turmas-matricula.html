@@ -1,0 +1,133 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12">
+        <div class="row form-box show-form">          
+            <div class="card-panel">
+                <div class="col s12">
+                    <!--<div class="col s1" style="padding-left:0px;">
+                        <i class="material-icons" style="font-size:6rem;margin-bottom:40px;">people</i>
+                    </div>
+                    <div class="col s10">
+                        <h3 style="padding: 1.70rem 0rem 0rem 0rem;" class="no-margin">Enturmações</h3>
+                    </div>-->
+                </div>
+                <table data-ng-show="enturmacoes.length">
+                    <thead>
+                        <tr class="row col s12">
+                            <th class="col s3">Unidade de Ensino</th>
+                            <th class="col s2">Curso</th>
+                            <th class="col s2" style="padding-left: 0.7rem">Etapa</th>
+                            <th class="col s2" style="padding-left: 0.5rem">Turma</th>
+                        </tr>
+                    </thead>
+                </table>
+                <ul class="collapsible row" data-collapsible="accordion" style="margin-top: 0; box-shadow: none; border-top: none" data-ng-show="enturmacoes.length">
+                    <li id="collapsible-enturmacao-{{enturmacao.id}}" data-ng-repeat="enturmacao in enturmacoes| orderBy: 'turma.etapa.nomeExibicao'">
+                        <div class="row collapsible-header" data-ng-class="{'active': TurmaService.enturmacao.id === enturmacao.id}">
+                            <span class="col s3" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.unidadeEnsino.nomeCompleto }}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.matricula.curso.nome}}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.etapa.nomeExibicao}}</span>
+                            <span class="col s2" data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)">{{enturmacao.turma.nomeCompleto}}</span>
+                            <span class="col s2 right-align">                                
+                                <i data-ng-show="escrita" data-ng-click="prepararRemoverEnturmacao(enturmacao)" class="material-icons right delete-icon">delete</i>
+                                <i data-ng-click="buscarMediasFrequenciasAluno($index); buscarSistemaAvaliacao(enturmacao.turma.etapa)" id="btn-ent{{enturmacao.id}}" class="material-icons right">keyboard_arrow_down</i> 
+                            </span>
+                        </div>
+                        <div class="collapsible-body" style="background-color: #fafafa">
+                            <table class="table-pattern">
+                                <thead>
+                                    <tr>
+                                        <th>Disciplina</th>
+                                        <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias">{{media.numero}}ªM</th>
+                                        <th>MF</th>
+                                        <th>Faltas</th>
+                                        <th>Status</th>
+                                    </tr>                                        
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="disciplina in enturmacao.matricula.disciplinas">
+                                        <td>{{disciplina.nomeExibicao}}</td>
+                                        <td data-ng-repeat="media in disciplina.medias" data-ng-click="carregaMedia(media)">
+                                            <span class="clickable underline" data-ng-hide="media.valor">ND</span>
+                                            <span class="clickable underline" data-ng-show="media.valor">{{media.valor}}</span>
+                                        </td>
+                                        <td data-ng-hide="disciplina.mediaFinal">{{ disciplina.mediaPreliminar }}</td>
+                                        <td data-ng-show="disciplina.mediaFinal">{{ disciplina.mediaFinal }}</td>
+                                        <td data-ng-repeat="media in disciplina.medias"><span>{{ media.faltas }}</span></td>
+                                        <td>{{ disciplina.status }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- Reativar Enturmacao
+                            <div class="row end-card" data-ng-if="enturmacao.encerrado && $index === enturmacoes.length - 1">
+                                <a class="waves-effect waves-light btn-flat right" data-ng-click="reativarEnturmacao(enturmacao, $index)">Reativar</a>
+                            </div>-->
+                            <!-- Remover Enturmação
+                            <div class="row end-card" data-ng-if="!enturmacao.encerrado">
+                                <a class="waves-effect waves-light btn-flat right" data-ng-click="prepararRemoverEnturmacao(enturmacao)">Remover</a>
+                            </div>-->
+                        </div>
+                    </li>
+                </ul>                
+            </div>
+            <!-- <div class="card-panel" data-ng-show="escrita && (!enturmacoes.length || (matricula.curso.especializado && etapas.length) || verificaCadastroEnturmacoes(enturmacoes))"> -->
+            <!--<div class="card-panel" data-ng-show="escrita && !enturmacoes.length">
+                <h4 style="padding: 1rem 0 0 1rem"> Enturmar Aluno </h4>                   
+                <div class="row">
+                   
+                    <div class="col s12 m12 input-field" data-ng-class="{'l6': matricula.curso.especializado}">
+                        <i class="material-icons prefix">chrome_reader_mode</i>
+                        <select id="enturmacaoTurma" data-ng-model="enturmacao.turma.id">
+                            <option selected></option>
+                            <option data-ng-repeat="turma in turmas track by $index" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
+                        </select>
+                        <label for="enturmacaoTurma">Turma</label>
+                    </div>
+                </div>
+                <div class="row" data-ng-show="disciplinas.length">
+                    <small style="padding-left: 1rem"><em>Selecione as disciplinas que irá cursar.</em></small>
+                    <table class="striped">
+                        <tbody>
+                            <tr data-ng-repeat="disciplina in disciplinas" data-ng-show="disciplina.opcional">
+                                <td style="padding: 0.5rem 0 0 1.3rem; width: 10%">
+                                    <input id="dis{{disciplina.id}}" type="checkbox" class="filled-in">
+                                    <label for="dis{{disciplina.id}}"></label>
+                                </td>
+                                <td>{{disciplina.nomeExibicao}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row end-card">
+                    <a class="waves-effect waves-light btn-flat right" data-ng-click="verificarVagaDisponivel(matricula.aluno.id, enturmacao.turma.id)">Enturmar</a>
+                </div>
+            </div>-->
+            <matricula-controle></matricula-controle>
+        </div>
+    </div>
+</div>

@@ -30,6 +30,7 @@ namespace CursoBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -110,7 +111,11 @@ class Curso extends AbstractEditableEntity {
     }
     
     function getEtapas() {
-        return $this->etapas;
+        return $this->etapas->matching(
+            Criteria::create()
+                ->where(Criteria::expr()->eq('ativo', true))
+                ->orderBy(['ordem' => 'ASC'])
+        );
     }
 
     function getDisciplinas() {

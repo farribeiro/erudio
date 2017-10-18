@@ -29,7 +29,6 @@
 namespace AuthBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEntity;
 
@@ -50,13 +49,13 @@ class PermissaoGrupo extends AbstractEntity {
     
     /**
     * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Permissao")
+    * @ORM\ManyToOne(targetEntity = "Permissao", fetch = "EAGER")
     */
     private $permissao;
     
     /**
     * @JMS\Groups({"LIST"})   
-    * @ORM\ManyToOne(targetEntity = "Grupo")
+    * @ORM\ManyToOne(targetEntity = "Grupo", inversedBy = "permissoes")
     */
     private $grupo;
     

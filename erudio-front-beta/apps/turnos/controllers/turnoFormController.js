@@ -1,56 +1,94 @@
 (function (){
-    var turnosForm = angular.module('turnosForm',['ngMaterial', 'util', 'erudioConfig']);
-    turnosForm.controller('TurnoFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', function($scope, Util, ErudioConfig, $routeParams, $timeout){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class TurnoFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.scope.turno = null;
+            this.permissaoLabel = "TURNOS";
+            this.titulo = "Turnos";
+            this.linkModulo = "/#!/turnos/";
+            this.nomeForm = "turnoForm";
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Turnos');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //TURNO EM USO
-        $scope.turno = Util.getEstrutura('turno');
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('turnos','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações do Turno', href: this.util.getInputBlockCustom('turnos','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações'}];
-        
-        //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('turnos','inputs') }];
-        
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'turnoForm', subheaders: $scope.subheaders }];
-        
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/turnos/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
-        
-        //BUSCANDO TURNO
-        $scope.buscarTurno = function () {
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('turnos',$routeParams.id);
-                promise.then(function(response){ 
-                    $scope.turno = response.data;
-                    var inicioArr = $scope.turno.inicio.split(":"); var terminoArr = $scope.turno.termino.split(":");
-                    $scope.turno.inicio = inicioArr[0]+":"+inicioArr[1]; $scope.turno.termino = terminoArr[0]+":"+terminoArr[1];
-                    Util.aplicarMascaras();
+        buscarTurno() {
+            var self = this;
+            this.scope.turno = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((turno) => {
+                    this.scope.turno = turno;
+                    let temp = this.scope.turno.inicio.split(":");
+                    this.scope.turno.inicio = temp[0]+":"+temp[1];
+                    temp = this.scope.turno.termino.split(":");
+                    this.scope.turno.termino = temp[0]+":"+temp[1];
+                    this.util.aplicarMascaras();
                 });
-            } else { $timeout(function(){ Util.aplicarMascaras(); },300); }
-        };
-        
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //SALVAR INSTITUICAO
-        $scope.salvar = function () {
-            if ($scope.validar('turnoForm')) {
-                $scope.turno.inicio += ":00"; $scope.turno.termino += ":00";
-                var resultado = Util.salvar($scope.turno,'turnos','Turnos','M');
-                resultado.then(function (){ Util.redirect($scope.fab.href); });
+            } else {
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
             }
-        };
+        }
         
-        //VALIDAR FORM
-        $scope.validar = function (formId) { return Util.validar(formId); };
+        validaCampo() { this.util.validaCampo(); }
         
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarTurno();
-        Util.mudarImagemToolbar('turnos/assets/images/turnos.jpg');
-    }]);
+        validar() { return this.util.validar(this.nomeForm); }
+        
+        salvar() {
+            if (this.validar()) {
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.turno)) {
+                    resultado = this.service.salvar(this.scope.turno);
+                } else {
+                    resultado = this.service.atualizar(this.scope.turno);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
+        
+        iniciar(){
+            let permissao = this.verificarPermissao();
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('turnos/assets/images/turnos.jpg');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                $(".fit-screen").unbind('scroll');
+                this.preparaForm();
+                this.buscarTurno();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    TurnoFormController.$inject = ["TurnoService","Util","ErudioConfig","$routeParams","$timeout","$scope"];
+    angular.module('TurnoFormController',['ngMaterial', 'util', 'erudioConfig']).controller('TurnoFormController',TurnoFormController);
 })();

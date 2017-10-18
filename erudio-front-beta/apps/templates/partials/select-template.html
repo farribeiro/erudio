@@ -1,0 +1,14 @@
+<md-input-container class="md-icon-float" md-block flex-gt-sm>
+    <label for="{{ campoId }}">{{ label }}</label>
+    <md-icon class="material-icons">{{ icone }}</md-icon>
+    <md-select ng-model="model" id="{{ id }}">
+        <md-option value=""></md-option>
+        <md-option ng-if="simples" ng-repeat="item in items track by $index" value="{{ item }}">{{ item }}</md-option>
+        <md-option ng-if="nomeComum" ng-repeat="item in items track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+        <md-option ng-if="nomeExibicao" ng-repeat="item in items track by $index" value="{{ item.id }}">{{ item.nomeExibicao }}</md-option>
+        <md-option ng-if="nomeCompleto" ng-repeat="item in items track by $index" value="{{ item.id }}">{{ item.nomeCompleto }}</md-option>
+    </md-select>
+    <div class="hint" ng-if="dica">{{ dica }}</div>
+    <div ng-repeat="error in errors">{{ error.message }}</div>
+    <div ng-messages="{{ formError }}" class="errors-wrapper"></div>
+</md-input-container>

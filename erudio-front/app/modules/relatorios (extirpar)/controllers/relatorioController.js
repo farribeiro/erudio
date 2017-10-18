@@ -96,7 +96,8 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('RELATORIOS')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(promise.then(function(response){
                         var user = response.data[0];
                         for (var i=0; i<user.atribuicoes.length; i++) {

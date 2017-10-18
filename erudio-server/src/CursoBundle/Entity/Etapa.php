@@ -65,7 +65,8 @@ class Etapa extends AbstractEditableEntity {
     private $limiteAlunos;
     
     /** 
-    * @JMS\Groups({"LIST"}) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Modulo") 
     */
     private $modulo;
@@ -77,16 +78,17 @@ class Etapa extends AbstractEditableEntity {
     private $curso;
     
     /**
-    * @JMS\Groups({"DETAILS"})       
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\ModeloQuadroHorario")
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)   
+    * @ORM\ManyToOne(targetEntity = "ModeloQuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_modelo_id") 
     */
     private $modeloQuadroHorario;
     
     /**
     * @JMS\Groups({"DETAILS"})       
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
+    * @ORM\ManyToOne(targetEntity = "SistemaAvaliacao")
+    * @ORM\JoinColumn(name = "sistema_avaliacao_id")
     */
     private $sistemaAvaliacao;
     
@@ -109,6 +111,12 @@ class Etapa extends AbstractEditableEntity {
     private $frequenciaUnificada = false;
     
     /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = true, name = "observacao_aprovacao") 
+    */
+    private $observacaoAprovacao;
+    
+    /** 
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "etapa") 
     */
@@ -124,6 +132,10 @@ class Etapa extends AbstractEditableEntity {
     
     function isSistemaQualitativo() {
         return $this->getSistemaAvaliacao()->isQualitativo();
+    }
+    
+    function getUnidadeRegime() {
+        return $this->sistemaAvaliacao->getRegime()->getUnidade();
     }
     
     function getDisciplinas() {
@@ -206,6 +218,14 @@ class Etapa extends AbstractEditableEntity {
 
     function setIdadeRecomendada($idadeRecomendada) {
         $this->idadeRecomendada = $idadeRecomendada;
+    }
+    
+    function getObservacaoAprovacao() {
+        return $this->observacaoAprovacao;
+    }
+
+    function setObservacaoAprovacao($observacaoAprovacao) {
+        $this->observacaoAprovacao = $observacaoAprovacao;
     }
     
 }

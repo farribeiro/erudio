@@ -29,6 +29,7 @@
 namespace CursoBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -45,22 +46,39 @@ class AgrupamentoDisciplina extends AbstractEditableEntity {
     private $nome;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "Etapa") 
     */
     private $etapa;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "agrupamento")
+    */
+    private $disciplinas;
+    
     function getNome() {
         return $this->nome;
     }
 
+    function setNome($nome) {
+        $this->nome = $nome;
+    }
+    
     function getEtapa() {
         return $this->etapa;
     }
-
-    function setNome($nome) {
-        $this->nome = $nome;
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<CursoBundle\Entity\Disciplina>")
+    */
+    function getDisciplinas() {
+        return $this->disciplinas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
 }

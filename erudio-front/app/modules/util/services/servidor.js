@@ -52,7 +52,7 @@
         };
 
         /* Prepara a autenticação */
-        this.criarHeader = function () {
+        /*this.criarHeader = function () {
             var username = sessionStorage.getItem('username');
             var key = sessionStorage.getItem('key');
             var created = moment().format();
@@ -61,12 +61,33 @@
             var digest = btoa(sha1.hash(nonce + created + key));
             var header = 'UsernameToken Username="' + username + '", PasswordDigest="' + digest + '", Nonce="' + nonceSend + '", Created="' + created + '"';
             return header;
-        };
+        };*/
 
         /* Prepara a chamada restangular */
-        this.preparaRestangular = function () {
+        /*this.preparaRestangular = function () {
             var header = this.criarHeader();
-            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            //var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "X-WSSE": header }); });
+            var rest = Restangular;
+            return rest;
+        };*/
+            
+        //GET PDF
+        this.getPDF = function(url){
+            var token = "Bearer "+sessionStorage.getItem('token');
+            return $http.get(url,{headers: {"JWT-Authorization":token},responseType: 'arraybuffer'}).success(function(data){
+                var file = new Blob([data],{type: 'application/pdf'});
+                var fileURL = URL.createObjectURL(file);
+                window.open(fileURL);
+            });
+        };
+        
+        //PREPARA HEADER X-WSSE
+        this.criarHeader = function () { var token = sessionStorage.getItem('token'); var header = "Bearer "+token; return header; };
+
+        //INSERE O HEADER NA CHAMADA REST
+        this.preparaRestangular = function() {
+            var header = this.criarHeader();
+            var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
             return rest;
         };
 
@@ -177,7 +198,7 @@
                     } else {
                         result = false;
                     }
-                }, function(error) { Toast.show('','', error.status); });
+                }, function(error) { Toast.show(error.data.error.message,'', error.data.error.code); });
             } else {
                 var promise = this.buscarPromise(endereco);
                 result = promise.post(objeto);
@@ -187,7 +208,7 @@
                     } else {
                         result = false;
                     }
-                }, function(error) { Toast.show('','', error.status); });
+                }, function(error) { Toast.show(error.data.error.message,'', error.data.error.code); });
             }
             return result;
         };
@@ -197,7 +218,7 @@
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
-                headers: {'X-WSSE': this.criarHeader()}
+                headers: {'JWT-Authorization': this.criarHeader()}
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -214,7 +235,7 @@
                 method: "PUT",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
-                headers: {'X-WSSE': this.criarHeader()}
+                headers: {'JWT-Authorization': this.criarHeader() }
             });
             resultado.then(function(data){
                 if (data.status === 200 || data.status === 204) {
@@ -231,7 +252,8 @@
                 method: "DELETE",
                 url: Restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
-                headers: {'Content-Type': 'application/json', 'X-WSSE': this.criarHeader()}
+                headers: {'Content-Type': 'application/json', 'JWT-Authorization': this.criarHeader()}
+                //headers: {'Content-Type': 'application/json'}
             });
             return resultado;
         };
@@ -430,7 +452,10 @@
         this.validarCnpj = function (cnpj) {
             if (cnpj !== null && cnpj !== undefined) {
                 //cnpj = cnpj.toString();
-                console.log(cnpj);
+                cnpj = cnpj.replace(/[.]/g,"");
+                cnpj = cnpj.replace(/[//]/g,"");
+                cnpj = cnpj.replace(/[-]/g,"");
+                
                 /* Proibe Números Iguais */
                 if (cnpj === "00000000000000" || cnpj === "11111111111111" || cnpj === "22222222222222" ||
                     cnpj === "33333333333333" || cnpj === "44444444444444" || cnpj === "55555555555555" ||
@@ -470,7 +495,6 @@
                 /* Dígito verificador inválido */
                 var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
                 if (resultado !== parseInt(digitos.charAt(0))){
-                    console.log(document.getElementById("validate"));
                     if(!document.getElementById("validate")){
                         var $d = document.getElementById("validate-unidade").querySelectorAll('.input-field');
                     }else{
@@ -484,8 +508,7 @@
                             }
                         }
                     });
-                    alert('1');
-                    this.customToast("CNPJ Invalido");
+                    this.customToast("CNPJ Invalido - Dígito Verificador");
                     return false;
                 }
 
@@ -513,8 +536,8 @@
                             }
                         }
                     });
-                    alert('2');
-                    this.customToast("CNPJ Invalido");
+                    
+                    this.customToast("CNPJ Invalido - Dìgito Verificador");
                     return false;
                 }
 

@@ -24,28 +24,34 @@
             {% block content %}    
                 <table font-size="10px" border-type="none">
                     <tr>
-                        <td width="18">
+                        <td width="18px">
                             <strong>Nº</strong>
                         </td>
                         <td>
                             <strong>Aluno</strong>
                         </td>
                         {% for q in 1..quantidadeMedias %}
-                            <td width="70px">
-                                <strong>{{q}}º {{unidadeRegime}}</strong>
+                            <td width="45px">
+                                <strong>{{q}}º {{unidadeRegime|slice(0, 3)}}.</strong>
+                            </td>
+                            <td width="30px">
+                                <strong>F</strong>
                             </td>
                         {% endfor %}
-                        <td width="40px">
-                            <strong>Exame Final</strong>
+                        <td width="45px">
+                            <strong>Soma Notas</strong>
                         </td>
-                        <td width="70px">
-                            <strong>Resultado Final</strong>
+                        <td width="45px">
+                            <strong>Média Final</strong>
                         </td>
-                        <td width="90px">
-                            <strong>Faltas</strong>
+                        <td width="45px">
+                            <strong>Total Faltas</strong>
                         </td>
                     </tr>
+                    {% set faltasTurma = 0 %}
                     {% for i, aluno in alunos %}
+                        {% set faltasAluno = aluno.disciplinaCursada.totalFaltas %}
+                        {% set faltasTurma = faltasTurma + faltasAluno %}
                         <tr line-height="15px">
                             <td>{{i + 1}}</td>
                             <td text-align="left">
@@ -53,16 +59,19 @@
                             </td>
                             {% for m in aluno.medias %}
                                 <td>{{m.valor ? (m.valor|number_format(2)|last == 0 ? m.valor|number_format(1) : m.valor|number_format(2))}}</td>
+                                <td>{{m.faltas}}</td>
                             {% endfor %}
-                            <td>-</td>
-                            <td></td>
-                            {% set totalFaltas = 0 %}
-                            {% for media in aluno.medias %}
-                                {% set totalFaltas = totalFaltas + media.faltas %}
-                            {% endfor %}
-                            <td>{{totalFaltas}}</td>
+                            <td>{{aluno.disciplinaCursada.somaNotas}}</td>
+                            <td>{{aluno.mediaFinal ? aluno.mediaFinal : '-'}}</td>
+                            <td>{{faltasAluno}}</td>
                         </tr>
                     {% endfor %}
+                    <tr line-height="15px">
+                        <td colspan="{{4 + quantidadeMedias * 2}}"></td>
+                        <td>
+                            <strong>{{faltasTurma}}</strong>
+                        </td>
+                    </tr>
                 </table>
             {% endblock %}
     {% endembed %}

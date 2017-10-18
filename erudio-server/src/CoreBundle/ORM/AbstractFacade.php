@@ -28,11 +28,12 @@
 
 namespace CoreBundle\ORM;
 
-use Symfony\Bridge\Monolog\Logger;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 use CoreBundle\ORM\Exception\UniqueViolationException;
 
@@ -48,13 +49,17 @@ abstract class AbstractFacade {
     const ATTR_ID = 'id';
     const ATTR_ATIVO = 'ativo';
     const PAGE_SIZE = 50;
+    const MAX_RESULTS = 300;
     
     protected $orm;
     protected $logger;
+    protected $eventDispatcher;
     
-    function __construct (Registry $doctrine, Logger $logger = null) {
+    function __construct (RegistryInterface $doctrine, LoggerInterface $logger = null, 
+            EventDispatcherInterface $eventDispatcher = null) {
         $this->orm = $doctrine;
         $this->logger = $logger;
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     abstract function getEntityClass();
@@ -105,7 +110,7 @@ abstract class AbstractFacade {
     function find($id) {
         $entidade = $this->loadEntity($id);
         if(!$entidade) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException('Objeto não encontrado');
         }
         return $entidade;
     }
@@ -128,14 +133,14 @@ abstract class AbstractFacade {
     * @param array $params
     * @return array entidades encontradas, ou um array vazio
     */
-    function findAll($params = [], $page = null) {
+    function findAll($params = [], $page = null, $limit = self::MAX_RESULTS) {
         if(is_numeric($page)) {
             return $this->buildQuery($params)
                 ->setMaxResults(self::PAGE_SIZE)
                 ->setFirstResult(self::PAGE_SIZE * $page)
                 ->getQuery()->getResult();
         }
-        return $this->buildQuery($params)->getQuery()->getResult();
+        return $this->buildQuery($params)->setMaxResults($limit)->getQuery()->getResult();
     }
 
     /**
@@ -197,16 +202,17 @@ abstract class AbstractFacade {
     /**
     * 
     * @param type $id
-    * @param type $mergeObject
+    * @param type $entidade
     * @param type $isTransaction
-    * @return \CoreBundle\ORM\AbstractEditableEntity
+    * @return CoreBundle\ORM\AbstractEditableEntity
     * @throws \Exception
     * @throws IllegalUpdateException
     */
-    function update($id, $mergeObject, $isTransaction = true) {
+    function patch($id, $entidade, $isTransaction = true) {
         try {
-            $this->orm->getManager()->detach($mergeObject);
-            $entidade = $this->loadEntity($id);
+            $patch = clone $entidade;
+            $this->orm->getManager()->detach($patch);
+            $this->orm->getManager()->refresh($entidade);
             if ($entidade === null) {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_NOT_FOUND);
             }
@@ -214,11 +220,9 @@ abstract class AbstractFacade {
                 throw new IllegalUpdateException(IllegalUpdateException::OBJECT_IS_READONLY);
             }
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
-            $this->beforeUpdate($entidade);
-            $entidade->merge($mergeObject);
-            $this->orm->getManager()->flush();
-            $this->checkUniqueness($entidade, true);
-            $this->afterUpdate($entidade);
+            $this->beforeApplyChanges($entidade, $patch);
+            $entidade->merge($patch);
+            $this->update($entidade, false);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
         } catch(\Exception $ex) {
@@ -233,11 +237,11 @@ abstract class AbstractFacade {
     * @return boolean
     * @throws \Exception
     */
-    function updateBatch(ArrayCollection $mergeObjects) {
+    function patchBatch(ArrayCollection $mergeObjects) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($mergeObjects as $mergeObject) {
-                $this->update($mergeObject->getId(), $mergeObject, false);
+                $this->patch($mergeObject->getId(), $mergeObject, false);
             }
             $this->orm->getManager()->commit();
             return true;
@@ -245,6 +249,22 @@ abstract class AbstractFacade {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
+    }
+    
+    /**
+     * 
+     * @param type $entidade
+     * @param type $restrict
+     */
+    function update($entidade, $restrictFlush = true) {
+        $this->beforeUpdate($entidade);
+        if ($restrictFlush) {
+            $this->orm->getManager()->flush($entidade);
+        } else {
+            $this->orm->getManager()->flush();
+        }
+        $this->checkUniqueness($entidade, true);
+        $this->afterUpdate($entidade);
     }
     
     /**
@@ -264,8 +284,7 @@ abstract class AbstractFacade {
             if ($isTransaction) { $this->orm->getManager()->beginTransaction(); }
             $this->beforeRemove($entidade);
             $entidade->finalize();
-            $this->orm->getManager()->merge($entidade);
-            $this->orm->getManager()->flush();
+            $this->orm->getManager()->flush($entidade);
             $this->afterRemove($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return true;
@@ -296,14 +315,25 @@ abstract class AbstractFacade {
     }
     
     /**
+    * Define a string padrão a ser usada na cláusula select da query de busca. 
+    * Importante ressaltar que os joins necessários para carregar entidades associadas 
+    * devem ser realizados na query, tipicamente por meio do método prepareQuery.
+    * 
+    * @return array mapa de regras de unicidade
+    */
+    protected function selectMap() {
+        return [$this->queryAlias()];
+    }
+    
+    /**
     * 
     * @param type $id
     * @param type $entityClass
     * @return type
     */
     protected function loadEntity($id, $entityClass = null) {
-        $entityClass = $entityClass === null ? $this->getEntityClass() : $entityClass;
-        $qb = $this->orm->getRepository($entityClass)
+        $class = $entityClass === null ? $this->getEntityClass() : $entityClass;
+        $qb = $this->orm->getRepository($class)
             ->createQueryBuilder($this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true')
             ->andWhere($this->queryAlias() . '.' . self::ATTR_ID . ' = :id')
@@ -317,12 +347,13 @@ abstract class AbstractFacade {
     * @return type
     */
     protected function buildQuery(array $params) {
-        $qb = $this->orm->getRepository($this->getEntityClass())
-            ->createQueryBuilder($this->queryAlias())
+        $qb = $this->orm->getManager()->createQueryBuilder()
+            ->select($this->selectMap())
+            ->from($this->getEntityClass(), $this->queryAlias())
             ->where($this->queryAlias() . '.' . self::ATTR_ATIVO . ' = true');
         $this->prepareQuery($qb, $params);
         foreach($params as $k => $v) {
-            if(!is_null($v) && key_exists($k, $this->parameterMap())) {
+            if(!is_null($v) && $v !== '' && key_exists($k, $this->parameterMap())) {
                 $f = $this->parameterMap()[$k];
                 $f($qb, $v);
             }
@@ -368,6 +399,12 @@ abstract class AbstractFacade {
     * @param type $entidade
     */
     protected function afterCreate($entidade) {}
+    
+    /**
+    * 
+    * @param type $entidade
+    */
+    protected function beforeApplyChanges($entidade, $patch) {}
     
     /**
     * 

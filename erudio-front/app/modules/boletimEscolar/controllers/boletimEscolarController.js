@@ -203,8 +203,12 @@
                             var promise = Servidor.buscar('medias', {disciplinaCursada: d.id});
                             promise.then(function (response) {
                                 d.medias = response.data;
-                                d.medias.forEach(function(m) { m.frequencias = []; });
-                                var promise = Servidor.buscar('frequencias',{disciplina:d.id});
+                                $timeout(function() {
+                                    makePdf.boletimEscolar($scope.alunosSelecionados);
+                                }, 500);                                        
+                                //d.medias.forEach(function(m) { m.frequencias = []; });
+                                
+                                /*var promise = Servidor.buscar('frequencias',{disciplina:d.id});
                                 promise.then(function(response){
                                     d.frequencias = response.data;
                                     d.frequencias.forEach(function(f) {
@@ -219,7 +223,7 @@
                                             makePdf.boletimEscolar($scope.alunosSelecionados);
                                         }, 500);                                        
                                     }
-                                });
+                                });*/
                             });
                         });
                     });

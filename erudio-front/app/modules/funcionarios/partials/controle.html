@@ -54,12 +54,6 @@
         <a data-ng-click="carregarFuncionario(pessoa)">{{ pessoa.nome | uppercase }} <span class="right">{{pessoa.cpfCnpj}}</span></a>
     </li>
 </ul>
-<ul id="dropUnidadesAlocacao" class="dropdown-content">
-    <li class="divider"></li>
-    <li data-ng-repeat="unidade in unidades">
-        <a data-ng-click="selecionarUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{ unidade.nome | uppercase }}</a>
-    </li>
-</ul>
 
 <!-- Loader -->
 <div data-ng-show="loader" class="preloader-wrapper small active loader ajeita-loader">

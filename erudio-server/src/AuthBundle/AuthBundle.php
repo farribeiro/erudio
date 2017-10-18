@@ -28,17 +28,12 @@
 
 namespace AuthBundle;
 
-use AuthBundle\DependencyInjection\Security\Factory\WsseFactory;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class AuthBundle extends Bundle
-{
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $extension = $container->getExtension('security');
-        $extension->addSecurityListenerFactory(new WsseFactory());
-    }
+/**
+ * Bundle responsável pelo gerenciamento de usuários e permissões do sistema.
+ * Permite a criação de usuários e atribuição dos mesmos a grupos de acesso que
+ * possuem permissões específicas no sistema.
+ */
+class AuthBundle extends Bundle {
 }

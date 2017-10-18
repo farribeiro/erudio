@@ -39,6 +39,12 @@
     </div>
     
     <div class="row">
+        <div class="col s12" style="padding: 0;">
+            <ul class="tabs">
+                <li class="tab col s6"><a data-ng-click="ativo = 'faltas'; reiniciarBusca();" href="#faltas">Boletim por Turma</a></li>
+                <li class="tab col s6"><a data-ng-click="ativo = 'notas'; reiniciarBusca();" href="#notas">Boletim Individual</a></li>
+            </ul>
+        </div>
         <div id="faltas" class="col s12" style="padding: 0;">
             <!-- BUSCA -->
             <div class="row" data-ng-show="lista === true">
@@ -81,11 +87,59 @@
                         </select>
                         <label for="turma">Turma</label>
                     </div>
+                    <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA') && mostraMedia">
+                        <i class="material-icons prefix">filter_1</i>
+                        <select id="media" ng-model="turmaBusca.media.id">
+                            <option selected></option> 
+                            <option value="1">Média 1</option> 
+                            <option value="2">Média 2</option> 
+                            <option value="3">Média 3</option> 
+                        </select>
+                        <label for="media">Média</label>
+                    </div>
+                    <!--<div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                        <input type="checkbox" id="individual" ng-click="mostraIndividual()" />
+                        <label for="individual">Boletim Individual</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6" data-ng-show="mostraI">
+                        <i class="material-icons prefix">face</i>
+                        <select id="alunos" data-ng-model="turmaBusca.aluno.id" data-ng-disabled="!alunos.length">
+                            <option selected></option> 
+                            <option data-ng-selected="alunos.length === 1" value="{{ aluno.id }}" data-ng-repeat="aluno in alunos | orderBy: 'nome'">{{ aluno.matricula.nomeAluno }}</option>
+                        </select>
+                        <label for="alunos">Aluno</label>
+                    </div>-->
+                    
                     <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px;">
                         <a data-ng-click="reiniciarBusca()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
-                        <a href="{{ config.urlServidor }}/report/boletins?turma={{ turmaBusca.turma.id }}" target="_blank" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
+                        <a ng-click="gerarBoletim()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div id="notas" class="col s12" style="padding: 0; background: #fafafa;">
+            <div class="input-field col s12 m12 l12">
+                <i class="material-icons prefix">account_balance</i>
+                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                <input id="nomeAlunoAutoComplete" class="dropdown" type="text" data-ng-model="nomeAluno" data-ng-change="buscarAlunos(nomeAluno)" data-activates="dropUnidadesAlunosBusca">
+                <label for="nomeAlunoAutoComplete">Nome do Aluno</label>
+            </div>
+            <div class="row" style="margin-top: 80px;">
+                <ul class="collection" style="margin: 0;">
+                    <li data-ng-repeat="enturmacao in totalEnturmacoes" class="collection-item avatar">
+                        <i class="material-icons circle light-blue darken-4">school</i>
+                        <span class="title aluno-nome">{{ enturmacao.matricula.unidadeEnsino.nomeCompleto }} - {{ enturmacao.turma.nomeCompleto }}</span>
+                        <div class="secondary-content" style="margin-top: -17px;">
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUALITATIVO'">
+                                <input name="group1" type="radio" id="m1" ng-model="mediaNumero" value='1' ng-change='setNumero(1)' /><label for="m1">M1</label>
+                                <input name="group1" type="radio" id="m2" ng-model="mediaNumero" value='2' ng-change='setNumero(2)' /><label for="m2">M2</label>
+                                <input name="group1" type="radio" id="m3" ng-model="mediaNumero" value='3' ng-change='setNumero(3)' /><label for="m3">M3</label>
+                            </span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUALITATIVO'"><a target="_blank" ng-click="gerarBoletim(config.urlServidor+'/report/boletim?enturmacao='+enturmacao.id+'&media='+mediaNumero,'quali')"><i class="material-icons">print</i></a></span>
+                            <span ng-if="enturmacao.matricula.etapaAtual.sistemaAvaliacao.tipo === 'QUANTITATIVO'"><a target="_blank" ng-click="gerarBoletim(config.urlServidor+'/report/boletim?enturmacao='+enturmacao.id,'qu')"><i class="material-icons">print</i></a></span>
+                        </div>                    </li>
+                </ul>
             </div>
         </div>
     </div>

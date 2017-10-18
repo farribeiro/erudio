@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Transferencia;
+use MatriculaBundle\Service\TransferenciaFacade;
 
 /**
-* @FOS\RouteResource("transferencias")
+* @FOS\NamePrefix("transferencias")
 */
 class TransferenciaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.transferencias');
+    function __construct(TransferenciaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

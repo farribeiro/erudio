@@ -1,24 +1,75 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="disciplinaNome" label="'Nome da Disciplina'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="disciplina" campo="nome" erro="'disciplinaForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="disciplinaNomeExibicao" label="'Nome de Exibição'" tipo="'text'" troca="validaCampo()" nome="'nomeExibicao'" obrigatorio="required" model="disciplina" campo="nomeExibicao" erro="'disciplinaForm.nomeExibicao.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="disciplinaSigla" label="'Sigla'" tipo="'text'" nome="'sigla'" model="disciplina" campo="sigla"></form-input>
-    <form-input grid="flex-gt-sm" identidade="disciplinaCargaHoraria" classe="'maskCargaHoraria'" dica="'Apenas Números'" label="'Carga Horária'" obrigatorio="required" tipo="'text'" nome="'ordem'" model="disciplina" campo="cargaHoraria" erro="'disciplinaForm.cargaHoraria.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="disciplinaCurso" label="'Curso'" nome="'curso'" obrigatorio="required" erro="'disciplinaForm.curso.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo(); buscarEtapas();" ng-model="disciplina.curso.id">
-            <md-option value=""></md-option>
-            <md-option ng-repeat="curso in cursos" value="{{ curso.id }}">{{ curso.nome }}</md-option>
-        </md-select>
-    </form-select>
     
-    <form-select grid="flex-gt-sm" identidade="disciplinaEtapa" label="'Etapa'" nome="'etapa'" obrigatorio="required" erro="'disciplinaForm.etapa.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-change="validaCampo()" ng-model="disciplina.etapa.id" required>
-            <md-option value=""></md-option>
-            <md-option ng-repeat="etapa in etapas" value="{{ etapa.id }}">{{ etapa.nome }}</md-option>
-        </md-select>
-    </form-select>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome da Disciplina</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="disciplina.nome" type="text" name="nome" required/>
+        <div ng-messages="disciplinaForm.disciplina.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nomeExibicao">Nome de Exibição</label>
+        <md-icon class="material-icons">assignment_ind</md-icon>
+        <input id="nomeExibicao" ng-model="disciplina.nomeExibicao" type="text" name="nomeExibicao" required/>
+        <div ng-messages="disciplinaForm.disciplina.nomeExibicao.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="sigla">Sigla</label>
+        <md-icon class="material-icons">assignment_ind</md-icon>
+        <input id="sigla" md-maxlength="3" maxlength="3" ng-model="disciplina.sigla" type="text" name="sigla" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="disciplinaForm.disciplina.sigla.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>
+
+<div layout-gt-sm="row">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="carga">Carga Horária</label>
+        <md-icon class="material-icons">list</md-icon>
+        <input id="carga" ng-model="disciplina.cargaHoraria" class="maskCargaHoraria" type="text" name="carga" required/>
+        <div ng-messages="disciplinaForm.disciplina.cargaHoraria.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+        
+</div>
+
+<div layout-gt-sm="row">
+    
+    <md-input-container ng-show="ctrl.mostraCurso" class="md-icon-float" md-block flex-gt-sm>
+        <label for="curso">Curso</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="disciplina.curso.id" id="curso" ng-change="ctrl.buscarEtapas()" name="curso" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+        </md-select>
+        <div ng-messages="disciplinaForm.disciplina.etapa.curso.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container ng-show="ctrl.mostraEtapa" class="md-icon-float" md-block flex-gt-sm>
+        <label for="etapa">Etapa</label>
+        <md-icon class="material-icons">school</md-icon>
+        <md-select ng-model="disciplina.etapa.id" id="etapa" name="etapa" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+        </md-select>
+        <div ng-messages="disciplinaForm.disciplina.etapa.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+</div>
+
 <div layout="row" layout-wrap><div flex="100" layout="row"><md-checkbox ng-model="disciplina.opcional">Disciplina Opcional</md-checkbox></div></div>
+<div layout="row" layout-wrap><div flex="100" layout="row"><md-checkbox ng-model="disciplina.ofertado">Disciplina Ofertada</md-checkbox></div></div>

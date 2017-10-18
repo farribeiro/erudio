@@ -2,17 +2,17 @@
     <div class="form-errors md-whiteframe-2dp"><strong>Por favor, verifique os seguintes itens:</strong><br />
 </div>
 </div>
-<form id="{{ form.nome }}" ng-repeat="form in forms" name="{{ form.nome }}">
-    <div class="lista-items" ng-repeat="subheader in form.subheaders track by $index">
-        <md-subheader class="md-primary margin-top-subheader form-header">{{ subheader.label }}</md-subheader>
+<form id="{{ form.nome }}" ng-repeat="form in ctrl.forms" name="{{ form.nome }}">
+    <div class="lista-items" ng-repeat="formCard in form.formCards track by $index">
+        <md-subheader class="md-primary margin-top-subheader form-header">{{ formCard.label }}</md-subheader>
         <md-card class="no-margin-up-down">
             <md-card-content class="relative">
-                <div ng-include="inputs[$index].href"></div>
+                <div ng-include="formCard.href"></div>
             </md-card-content>
         </md-card>
     </div>
     
-    <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="salvar()" class="md-raised save-button-fix">Salvar</md-button>
+    <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvar()" class="md-raised save-button-fix">Salvar</md-button>
 </form>
 
 <botao-voltar></botao-voltar>

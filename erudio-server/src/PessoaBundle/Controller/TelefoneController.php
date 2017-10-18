@@ -36,15 +36,16 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\Telefone;
+use PessoaBundle\Service\TelefoneFacade;
 
 /**
- * @FOS\RouteResource("telefones")
+ * @FOS\NamePrefix("telefones")
  */
 class TelefoneController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.pessoa.telefones');
-    }
+    function __construct(TelefoneFacade $facade) {
+        parent::__construct($facade);
+    } 
     
     /**
     *   @ApiDoc(

@@ -29,26 +29,30 @@
 namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
-use MatriculaBundle\Model\RegistroFaltas;
 use MatriculaBundle\Entity\Media;
+use MatriculaBundle\Service\MediaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource("medias")
+ * @FOS\NamePrefix("medias")
  */
 class MediaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.medias');
+    private $turmaFacade;
+    
+    function __construct(MediaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
     
     /**
@@ -107,16 +111,16 @@ class MediaController extends AbstractEntityController {
     */
     function getFaltasAction(Request $request, ParamFetcherInterface $params) {
         try {
-            $turma = $this->get('facade.curso.turmas')->find($params->get('turma'));
+            $turma = $this->turmaFacade->find($params->get('turma'));
             $numero = $params->get('numero');
             $faltas = $turma->getEnturmacoes()->map(function($e) use ($numero) {
                 return $this->getFacade()->getFaltasUnificadas($e, $numero);
             }); 
-            $view = View::create($faltas, Codes::HTTP_OK);
-            $view->getSerializationContext()->setGroups(array(self::SERIALIZER_GROUP_LIST));
-            $view->getSerializationContext()->enableMaxDepthChecks();
+            $view = View::create($faltas, Response::HTTP_OK);
+            $view->getContext()->setGroups([self::SERIALIZER_GROUP_LIST]);
+            $view->getContext()->setMaxDepth(1);
         } catch (IllegalUpdateException $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } 
         return $this->handleView($view);
     }
@@ -134,11 +138,11 @@ class MediaController extends AbstractEntityController {
         try {
             foreach ($faltas->faltas as $registroFaltas) {
                 $this->getFacade()->inserirFaltasUnificadas(
-                        $registroFaltas->faltas, $registroFaltas->media, $registroFaltas->enturmacao);
+                        $registroFaltas->getFaltas(), $registroFaltas->getMedia(), $registroFaltas->getEnturmacao());
             }
-            $view = View::create(null, Codes::HTTP_NO_CONTENT);
+            $view = View::create(null, Response::HTTP_NO_CONTENT);
         } catch (IllegalUpdateException $ex) {
-            $view = View::create($ex->getMessage(), Codes::HTTP_BAD_REQUEST);
+            $view = View::create($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } 
         return $this->handleView($view);
     }

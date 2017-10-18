@@ -37,21 +37,26 @@ use JMS\Serializer\Annotation as JMS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CursoBundle\Entity\DisciplinaOfertada;
+use CursoBundle\Service\DisciplinaOfertadaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 /**
- * @FOS\RouteResource
+ * @FOS\NamePrefix("disciplinas-ofertadas")
  */
 class DisciplinaOfertadaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
+    private $turmaFacade;
+    
+    function __construct(DisciplinaOfertadaFacade $facade, TurmaFacade $turmaFacade) {
+        parent::__construct($facade);
+        $this->turmaFacade = $turmaFacade;
     }
 
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("disciplinas-ofertadas/{id}")
+    * @FOS\Get("disciplinas-ofertadas/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -61,6 +66,7 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     * @ApiDoc()
     * 
     * @FOS\Get("disciplinas-ofertadas")
+    * 
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true) 
@@ -72,10 +78,11 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
+    * @FOS\Get("turmas/{id}/disciplinas-ofertadas", requirements = {"id": "\d+"})
+    * 
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true) 
     * 
-    * @FOS\Get("turmas/{id}/disciplinas-ofertadas")
     */
     function getByTurmaAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
         $params = $paramFetcher->all();
@@ -100,7 +107,7 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     *  @ParamConverter("batch", converter="fos_rest.request_body")
     */
     function postBatchAction(Request $request, $turma, DisciplinaOfertadaCollection $batch, ConstraintViolationListInterface $errors) {
-        $turmaDisciplina = $this->get('facade.curso.turmas')->find($turma);
+        $turmaDisciplina = $this->turmaFacade->find($turma);
         foreach ($batch->disciplinasOfertadas as $d) {
             $d->setTurma($turmaDisciplina);
         }
@@ -110,7 +117,7 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     /**
     *  @ApiDoc()
     * 
-    *  @FOS\Put("disciplinas-ofertadas/{id}")
+    *  @FOS\Put("disciplinas-ofertadas/{id}", requirements = {"id": "\d+"})
     *  @ParamConverter("disciplinaOfertada", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, DisciplinaOfertada $disciplinaOfertada, ConstraintViolationListInterface $errors) {
@@ -120,7 +127,7 @@ class DisciplinaOfertadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     *   
-    * @FOS\Delete("disciplinas-ofertadas/{id}")
+    * @FOS\Delete("disciplinas-ofertadas/{id}", requirements = {"id": "\d+"})
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

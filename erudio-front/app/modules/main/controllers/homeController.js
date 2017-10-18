@@ -1340,7 +1340,7 @@
             var matricula = $scope.matricula.id;
             $scope.frequenciasAluno = [];
             $scope.aulas.forEach(function(a){
-                var promise = Servidor.buscar('frequencias',{'matricula': matricula, 'aula': a.id});
+                /*var promise = Servidor.buscar('frequencias',{'matricula': matricula, 'aula': a.id});
                 promise.then(function(response){
                     if(response.data.length) {
                         response.data.forEach(function(f) {
@@ -1354,7 +1354,7 @@
                     } else {
                         Servidor.customToast('Nenhuma frequência registrada');
                     }
-                });
+                });*/
             });
         };
 
@@ -1409,14 +1409,14 @@
                     if (freq.aula.id === $scope.aula.id) {
                         freq.status = status;
                         freq.justificativa = justificativa;
-                        var promise = Servidor.finalizar(freq, 'frequencias', 'Frequência');
+                        /*var promise = Servidor.finalizar(freq, 'frequencias', 'Frequência');
                         promise.then(function(response) {
                             $scope.aulas.forEach(function(a) {
                                 if (a.id === freq.aula.id) {
                                     a.justificativa = freq.justificativa;
                                 }
                             });
-                        });
+                        });*/
                     }
                 });
             } else {
@@ -1463,7 +1463,7 @@
             $scope.frequenciasAlunosTurma = [];
             $scope.enturmacoesDisciplinas.forEach(function (m, $index) {
                 $scope.aulas.forEach(function (a,i) {
-                    var promise = Servidor.buscar('frequencias', {'matricula': m.matricula.id, 'aula': a.id});
+                    /*var promise = Servidor.buscar('frequencias', {'matricula': m.matricula.id, 'aula': a.id});
                     promise.then(function (response) {
                         $scope.frequenciasTurma = response.data;
                         if ($scope.frequenciasTurma.length) {
@@ -1496,7 +1496,7 @@
                                 $scope.fechaCortina();
                             }, 500);
                         }
-                    });
+                    });*/
                 });
             });
         };
@@ -1883,9 +1883,10 @@
         /* INICIALIZA A PAGINA */
         $scope.inicializar = function () {
             if (sessionStorage.getItem('module') === 'main') {
-                var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                 promise.then(function(response) {
-                    var user = response.data[0];
+                    var user = response.data;
                     $scope.atribuicoes = user.atribuicoes;
                     $timeout(function () {
                         for (var i=0; i<$scope.atribuicoes.length; i++) {

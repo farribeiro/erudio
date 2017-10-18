@@ -108,6 +108,7 @@ class Vinculo extends AbstractEditableEntity {
     }
     
     /**
+    * @JMS\Groups({"DETAILS"})
     * @JMS\VirtualProperty
     */
     function getAlocacoes() {
@@ -117,9 +118,17 @@ class Vinculo extends AbstractEditableEntity {
     }
     
     function definirCodigo($codigo) {
-        if($this->codigo == null) {
+        if ($this->codigo == null) {
             $this->codigo = $codigo;
         }
+    }
+    
+    function cargaHorariaValida() {
+        $horasAlocacoes = 0;
+        foreach ($this->getAlocacoes() as $a) {
+            $horasAlocacoes += $a->getCargaHoraria();
+        }
+        return $horasAlocacoes <= $this->cargaHoraria;
     }
     
     function getCodigo() {

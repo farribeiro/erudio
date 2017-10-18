@@ -55,7 +55,11 @@
         $scope.FuncionarioService = FuncionarioService;
         $scope.PessoaService = PessoaService;        
         var unidadeEnsino = JSON.parse(sessionStorage.getItem('unidade'));
-        $scope.unidade = {id: unidadeEnsino.id}; $scope.unidadeId = unidadeEnsino.id;
+        if (unidadeEnsino !== null) {
+            $scope.unidade = {id: unidadeEnsino.id}; $scope.unidadeId = unidadeEnsino.id;
+        } else {
+            $scope.unidade = {id: null}; $scope.unidadeId = null;
+        }
         $scope.nomeRemover = '';
         $scope.nomeUnidade = '';
 
@@ -374,6 +378,7 @@
                     var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionário');
                     result.then(function(response) {
                         vinculo = response.data;
+                        $scope.fechaLoader();
                         if (!$scope.vinculo.id) {
                             $scope.vinculo = response.data;
                             $timeout(function() {
@@ -383,6 +388,7 @@
                         } else {
                             if($scope.alocacao.cargaHoraria && $scope.alocacao.instituicao.id) {
                                 if(!$scope.prepararSalvarAlocacao()) {
+                                    $scope.fechaLoader();
                                     return $scope.fechaLoader();
                                 }
                             }
@@ -447,7 +453,17 @@
                             $timeout(function(){ 
                                 $('.tooltipped').tooltip('remove'); 
                                 $('.tooltipped').tooltip({delay: 50});
-                            }, 50);
+                                $('#unidadeAlocacao, #cargosForm, #funcionario').dropdown({
+                                        inDuration: 300,
+                                        outDuration: 225,
+                                        constrain_width: true,
+                                        hover: false,
+                                        gutter: 45,
+                                        belowOrigin: true,
+                                        alignment: 'left'
+                                    }
+                                );
+                            }, 500);
                             $scope.prepararFormulario();
                         });
                     }

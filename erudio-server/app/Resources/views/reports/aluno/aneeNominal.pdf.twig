@@ -1,0 +1,58 @@
+<pdf>
+    {% embed 'reports/templates/page.twig' %}
+        {% block title %}
+            <h1>Alunos ANEE</h1>
+            <h3>Nominal</h3>
+        {% endblock %}
+        
+        {% block info %}{% endblock %}  
+        
+        {% block content %}
+            {% for relatorio in relatorios %}
+                {% for curso, alunos in relatorio.alunosPorCurso if alunos|length > 0  %}
+                    <div margin-top="30px" font-size="8px" breakable="false">
+                        {% if relatorios|length > 1 %}
+                            <h3 margin-bottom="5px">{{relatorio.unidadeEnsino.nomeCompleto}} - {{curso}}</h3>
+                        {% else %}
+                            <h3 margin-bottom="5px">{{curso}}</h3>
+                        {%  endif %}
+                        <table>
+                            <tr font-size="9px">
+                                <td width="90px"><strong>Matrícula</strong></td>
+                                <td><strong>Nome</strong></td>
+                                <td width="60px"><strong>Data Nasc</strong></td>
+                                <td width="38px"><strong>Gênero</strong></td>
+                                <td><strong>Turmas</strong></td>
+                                <td><strong>Deficiências</strong></td>
+                                <td><strong>Telefones</strong></td>
+                            </tr>
+                            {% for a in alunos %}
+                                <tr>
+                                    <td>{{a.codigo}}</td>
+                                    <td text-align="left">{{a.nome|upper}}</td>
+                                    <td>{{a.dataNascimento|date('d/m/Y')}}</td>
+                                    <td>{{a.genero}}</td>
+                                    <td>
+                                        {% for e in a.enturmacoes %}
+                                            <p>{{e.turma.nomeCompleto}}</p>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for p in a.particularidades %}
+                                            <li>{{p.nome}}</li>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for t in a.telefones %}
+                                            <li>{{t.numero}}</li>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {%  endfor %}
+            {%  endfor %}
+       {% endblock %}
+    {% endembed %}
+</pdf>

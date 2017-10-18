@@ -1,4 +1,19 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="tipoNome" label="'Tipo de Unidade'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="tipo" campo="nome" erro="'tiposUnidadeForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="tipoSigla" label="'Sigla'" tipo="'text'" nome="'sigla'" troca="validaCampo()" model="tipo" campo="sigla" obrigatorio="required" erro="'tiposUnidadeForm.sigla.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="tipo.nome" type="text" name="nome" required/>
+        <div ng-messages="tipoUnidadeForm.tipo.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="sigla">Sigla</label>
+        <md-icon class="material-icons">text_format</md-icon>
+        <input id="sigla" ng-model="tipo.sigla" type="text" name="sigla" required/>
+        <div ng-messages="tipoUnidadeForm.tipo.sigla.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
 </div>

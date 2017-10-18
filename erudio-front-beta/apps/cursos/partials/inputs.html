@@ -1,15 +1,33 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="cursoNome" label="'Nome do Curso'" model="curso" obrigatorio="required" campo="nome" tipo="'text'" nome="'nome'" classe="'input-ajuste'" erro="'cursoForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-select grid="flex-gt-sm" identidade="cursoModalidade" label="'Modalidade'" nome="'modalidade'" obrigatorio="required" erro="'cursoForm.modalidade.$error'" mensagem="'required,Este campo é obrigatório'">
-        <md-select ng-model="curso.modalidade.id" required >
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="curso.nome" type="text" name="nome" required/>
+        <div ng-messages="cursoForm.curso.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="modalidade">Modalidade</label>
+        <md-icon class="material-icons">extension</md-icon>
+        <md-select ng-model="curso.modalidade.id" id="modalidade" name="modalidade" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="modalidade in modalidades track by $index" value="{{ modalidade.id }}">{{ modalidade.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.modalidades track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
+        <div ng-messages="cursoForm.curso.modalidade.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
 </div>
+
 <div layout="row" layout-wrap>
+    
     <div flex="100" layout="row">
         <md-checkbox ng-model="curso.alfabetizatorio">Curso Alfabetizatório</md-checkbox>
         <!-- <md-checkbox ng-model="curso.especializado">Curso Especializado</md-checkbox> -->
     </div>
+    
 </div>

@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\MovimentacaoTurma;
+use MatriculaBundle\Service\MovimentacaoTurmaFacade;
 
 /**
- * @FOS\RouteResource("movimentacoes-turma")
+ * @FOS\NamePrefix("movimentacoes-turma")
  */
 class MovimentacaoTurmaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.matricula.movimentacoes_turma');
+    function __construct(MovimentacaoTurmaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

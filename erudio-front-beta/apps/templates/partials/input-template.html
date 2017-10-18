@@ -1,0 +1,10 @@
+<span data-ng-if="type !== 'select'">
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="{{ campoId }}">{{ label }}</label>
+        <md-icon class="material-icons">{{ icone }}</md-icon>
+        <input id="{{ id }}" ng-model="model" ng-pattern="{{ pattern }}" type="{{ type }}" name="{{ campoId }}" id="{{ campoId }}"/>
+        <div class="hint" ng-if="dica">{{ dica }}</div>
+        <div ng-repeat="error in errors">{{ error.message }}</div>
+        <div ng-messages="{{ formError }}" class="errors-wrapper"></div>
+    </md-input-container>
+</span>

@@ -31,6 +31,7 @@ namespace CursoBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
+use CoreBundle\ORM\Exception\IllegalUpdateException;
 
 /**
 * @ORM\Entity
@@ -89,8 +90,9 @@ class Disciplina extends AbstractEditableEntity {
     private $curso;
     
     /**
-    * @JMS\Groups({"DETAILS"})
-    * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina")
+    * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 1)
+    * @ORM\ManyToOne(targetEntity = "AgrupamentoDisciplina", inversedBy = "disciplinas")
     * @ORM\JoinColumn(name = "disciplina_agrupamento_id") 
     */
     private $agrupamento;
@@ -155,7 +157,13 @@ class Disciplina extends AbstractEditableEntity {
         $this->ofertado = $ofertado;
     }
     
-    function setAgrupamento($agrupamento) {
+    function setAgrupamento(AgrupamentoDisciplina $agrupamento = null) {
+        if ($agrupamento->getEtapa() != $this->getEtapa()) {
+            throw new IllegalUpdateException(
+                IllegalUpdateException::ILLEGAL_STATE_TRANSITION, 
+                'Etapa da disciplina e seu agrupamento devem coincidir'
+            );
+        }
         $this->agrupamento = $agrupamento;
     }
     

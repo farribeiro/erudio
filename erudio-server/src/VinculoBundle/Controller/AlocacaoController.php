@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use VinculoBundle\Entity\Alocacao;
+use VinculoBundle\Service\AlocacaoFacade;
 
 /**
-* @FOS\RouteResource("alocacoes")
-*/
+ * @FOS\NamePrefix("alocacoes")
+ */
 class AlocacaoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.vinculo.alocacoes');
+    function __construct(AlocacaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -63,6 +64,7 @@ class AlocacaoController extends AbstractEntityController {
     * @FOS\QueryParam(name = "instituicao", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "vinculo", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "professor", nullable = true)
+    * @FOS\QueryParam(name = "funcionario", requirements="\d+", nullable = true) 
     * @FOS\QueryParam(name = "funcionario_nome", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {

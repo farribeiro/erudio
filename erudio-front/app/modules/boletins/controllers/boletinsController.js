@@ -35,13 +35,17 @@
         $scope.tela = ErudioConfig.getTemplateLista('boletins'); $scope.lista = true;
         //ATRIBUTOS
         $scope.titulo = "Boletins"; $scope.progresso = false; $scope.cortina = false; $scope.unidades = []; $scope.unidadesNota = []; $scope.cursos = []; $scope.etapas = []; $scope.nomeUnidadeN = null;
-        $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.nomeUnidade = null; $scope.unidade = {id:null};
+        $scope.turmas = []; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}, aluno:{id:null}}; $scope.nomeUnidade = null; $scope.unidade = {id:null};
         $scope.notasBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.ativo = "faltas"; $scope.unidadeN = {id:null}; $scope.tipoAvaliacao = null;
+        $scope.mostraI = false;
         //ABRE AJUDA
         //$scope.ajuda = function () { $('#modal-ajuda-turma').modal('open'); };
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
+        
+        //MOSTRA VALOR CHECK
+        $scope.mostraIndividual = function () { if ($("#individual").is(":checked")) { $scope.mostraI = true; $timeout(function(){ $("#alunos").material_select('destroy'); $("#alunos").material_select(); },500); } else { $scope.mostraI = false; } };
         
         //CARREGA SELECT CURSOS
         $scope.buscarCursos = function () {
@@ -70,8 +74,8 @@
         
         //REINICIA A BUSCA
         $scope.reiniciarBusca = function () {
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; }
-            $scope.nomeUnidade = null; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.etapas = []; $scope.disciplinasTurma = [];
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.alunos = []; $scope.totalEnturmacoes = []; if ($scope.isAdmin) { $scope.cursos = []; }
+            $scope.nomeUnidade = null; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}, aluno:{id:null}}; $scope.etapas = []; $scope.disciplinasTurma = [];
             $scope.notasBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.turmas = []; $scope.medias = [];
             $timeout(function () { $('select').material_select('destroy'); $('select').material_select(); }, 100);
         };
@@ -92,9 +96,10 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
                             for (var i=0; i<$scope.atribuicoes.length; i++) {
                                 if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
@@ -146,12 +151,29 @@
         
         //SELECAO DE ETAPA
         $scope.frequenciaUnificada = true;
-        $scope.selecionarEtapa = function(etapaId) { $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.buscarTurmas('formBusca'); };
+        $scope.mostraMedia = false;
+        $scope.selecionarEtapa = function(etapaId) { 
+            var promise = Servidor.buscarUm('etapas',etapaId);
+            promise.then(function(response){
+                if (response.data.sistemaAvaliacao.tipo === "QUALITATIVO") {
+                    $scope.mostraMedia = true;
+                } else { $scope.mostraMedia = false; }
+            });
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.buscarTurmas('formBusca');
+        };
         
         //SELECIONA TURMA
-        $scope.selecionarTurma = function (turmaId) { $scope.turmaBusca.disciplina.id = null; };
+        $scope.alunos = [];
+        $scope.selecionarTurma = function (turmaId) { 
+            $scope.turmaBusca.disciplina.id = null;
+            /*var promise = Servidor.buscar("enturmacoes",{turma: turmaId});
+            promise.then(function(response){
+                $scope.alunos = response.data;
+                $timeout(function(){ $("#alunos").material_select('destroy'); $("#alunos").material_select(); },500);
+            });*/
+        };
         
-        //BUSCA ALUNOSw
+        //BUSCA ALUNOS
         $scope.enturmacoes = []; $scope.enturmacoesNotas = [];
         $scope.buscarBoletins = function (tipo) {
             $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso();
@@ -181,6 +203,75 @@
                 $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });
                 $('select').material_select('destroy'); $('select').material_select();
             }, 1000);
+        };
+        
+        //GERAR BOLETIM
+        $scope.mediaNumero = null;
+        $scope.gerarBoletim = function (url,tipo) {
+            if (url === undefined) {
+                if ($scope.mostraMedia) { url = ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id+'&media='+$scope.turmaBusca.media.id; }
+                else { url = ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id; }
+                $scope.getBoletim(url);
+            } else {
+                if (tipo === 'quali' && $scope.mediaNumero === null || $scope.mediaNumero === undefined) {
+                    Servidor.customToast('Selecione uma média antes de gerar o boletim.');
+                } else {
+                    $scope.getBoletim(url);
+                }
+            }
+                
+            
+            //window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank');
+            
+            //if ($("#individual").is(":checked") && $scope.turmaBusca.aluno.id !== null) { window.open(ErudioConfig.urlServidor+'/report/boletim?enturmacao='+$scope.turmaBusca.aluno.id,'_blank');
+            //} else { window.open(ErudioConfig.urlServidor+'/report/boletins?turma='+$scope.turmaBusca.turma.id,'_blank'); }
+        };
+        
+        $scope.setNumero = function(numero){ $scope.mediaNumero = numero; };
+        
+        $scope.getBoletim = function (url) {
+            $scope.mostraProgresso();
+            if (url !== undefined){
+                var promise = Servidor.getPDF(url,'_blank');
+            }
+            promise.then(function(){
+                $scope.fechaProgresso();
+            });
+        };
+        
+        $scope.nomeAluno = null;
+        $scope.buscarAlunos = function (nome) {
+            $timeout.cancel($scope.timeBuscaAlunos); $scope.alunos = []; $timeout(function(){ $("#alunos").material_select('destroy'); $("#alunos").material_select(); },100);
+            $scope.timeBuscaAlunos = $timeout(function(){
+                if (nome !== null && nome !== undefined && nome !== "" && nome.length > 2) {
+                    var promise = Servidor.buscar("matriculas",{aluno_nome: nome, encerrado: ''});
+                    promise.then(function(response){
+                        for (var i=0; i<response.data.length; i++) { 
+                            $scope.alunos.push(response.data[i]);
+                            if (i === response.data.length-1) { $timeout(function(){ $("#alunos").material_select('destroy'); $("#alunos").material_select(); },500); }
+                        }
+                        /*var matriculas = response.data;
+                        matriculas.forEach(function(m){                        
+                            
+                        });*/
+                    });
+                }
+            },300);
+        };
+        
+        $scope.totalEnturmacoes = [];
+        $scope.selecionaAluno = function (aluno) {
+            $scope.nomeAluno = aluno.nomeAluno;
+            var promise = Servidor.buscar("enturmacoes",{matricula: aluno.id, encerrado: ''});
+            promise.then(function(response){
+                $scope.totalEnturmacoes = response.data;
+                $scope.totalEnturmacoes.forEach(function(enturmacao){
+                    var promiseE = Servidor.buscarUm('etapas',enturmacao.matricula.etapaAtual.id);
+                    promiseE.then(function(responseE){
+                        enturmacao.matricula.etapaAtual = responseE.data;
+                    });
+                });
+            });
         };
 
         //INICIALIZANDO

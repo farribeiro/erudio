@@ -34,22 +34,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use CursoBundle\Entity\Turma;
 use ReportBundle\Util\StringUtil;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use CursoBundle\Service\TurmaFacade;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
+use MatriculaBundle\Service\MediaFacade;
+use AvaliacaoBundle\Service\ConceitoFacade;
 
 class EspelhoReportController extends Controller {
     
-    function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
-    }
+    private $turmaFacade;
+    private $disciplinaCursadaFacade;
+    private $mediaFacade;
+    private $conceitoFacade;
+    private $logger;
     
-    function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
-    }
-    
-    function getConceitoFacade() {
-        return $this->get('facade.avaliacao.conceitos');
+    function __construct(TurmaFacade $turmaFacade, ConceitoFacade $conceitoFacade, 
+            DisciplinaCursadaFacade $disciplinaCursadaFacade, MediaFacade $mediaFacade, LoggerInterface $logger) {
+        $this->turmaFacade = $turmaFacade;
+        $this->disciplinaCursadaFacade = $disciplinaCursadaFacade;
+        $this->conceitoFacade = $conceitoFacade;
+        $this->mediaFacade = $mediaFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -67,7 +75,7 @@ class EspelhoReportController extends Controller {
     */
     function turmaAction(Request $request) {
         try {
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             return $this->render('reports/espelho/quantitativo.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
                 'turma' => $turma,
@@ -75,10 +83,10 @@ class EspelhoReportController extends Controller {
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
                 'folhas' => $this->gerarEspelhoCompleto($turma),
                 'conceitos' => $turma->getEtapa()->isSistemaQualitativo() 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                    ? $this->conceitoFacade->findAll() : [],
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -90,7 +98,7 @@ class EspelhoReportController extends Controller {
     function mediaAction(Request $request) {
         try {
             $media = $request->query->getInt('media', 1);
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             $consolidado = $this->gerarEspelhoConsolidado($turma, $media);
             return $this->render('reports/espelho/quantitativoPorMedia.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
@@ -103,10 +111,10 @@ class EspelhoReportController extends Controller {
                 'mediasTurma' => $consolidado['mediasTurma'],
                 'professor' => $consolidado['professor'],
                 'conceitos' => $turma->getEtapa()->isSistemaQualitativo() 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                    ? $this->conceitoFacade->findAll() : [],
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -115,7 +123,7 @@ class EspelhoReportController extends Controller {
         $disciplinasOfertadas = $turma->getDisciplinas();
         $folhas = [];
         foreach ($disciplinasOfertadas as $disciplinaOfertada) {
-            $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
+            $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll([
                 'disciplinaOfertada' => $disciplinaOfertada,
                 'status' => DisciplinaCursada::STATUS_CURSANDO
             ]);
@@ -128,6 +136,8 @@ class EspelhoReportController extends Controller {
             foreach ($disciplinasCursadas as $disciplinaCursada) {
                 $folhas[$disciplinaOfertada->getNomeExibicao()][] = [
                     'nomeAluno' => $disciplinaCursada->getMatricula()->getAluno()->getNome(),
+                    'disciplinaCursada' => $disciplinaCursada,
+                    'mediaFinal' => $disciplinaCursada->getMediaPreliminar(),
                     'medias' => $disciplinaCursada->getMedias()
                 ];
             }
@@ -145,12 +155,12 @@ class EspelhoReportController extends Controller {
                 : '';
         }
         foreach($turma->getEnturmacoes() as $enturmacao) {
-            $disciplinasCursadas = $this->get('facade.matricula.disciplinas_cursadas')->findAll([
+            $disciplinasCursadas = $this->disciplinaCursadaFacade->findAll([
                 'enturmacao' => $enturmacao,
                 'status' => DisciplinaCursada::STATUS_CURSANDO
             ]);
             $medias = array_map(function($d) use ($media, &$mediasTurma) {
-                $media = $this->get('facade.matricula.medias')->findOne([
+                $media = $this->mediaFacade->findOne([
                     'disciplinaCursada' => $d,
                     'numero' => $media
                 ]);
@@ -169,4 +179,5 @@ class EspelhoReportController extends Controller {
         }
         return ['enturmacoes' => $enturmacoes, 'mediasTurma' => $mediasTurma, 'professor' => $professor];
     }
+    
 }

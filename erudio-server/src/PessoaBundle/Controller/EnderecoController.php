@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\Endereco;
+use PessoaBundle\Service\EnderecoFacade;
 
 /**
- * @FOS\RouteResource("enderecos")
+ * @FOS\NamePrefix("enderecos")
  */
 class EnderecoController extends AbstractEntityController {
-    
-    function getFacade() {
-        return $this->get('facade.pessoa.enderecos');
+
+    function __construct(EnderecoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

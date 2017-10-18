@@ -1,0 +1,78 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- Barra de Progresso -->
+<div data-ng-show="progresso" class="progress">
+      <div class="indeterminate"></div>
+</div>
+<div data-ng-show="progresso" class="cortinaProgresso"></div>
+
+<!-- Botão Voltar (Formulário) -->
+<div data-ng-click="fecharFormulario('')" data-ng-hide="editando || TurmaService.abrirFormulario" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+<div data-ng-click="matriculaService.abreForm();" data-ng-hide="editando || !TurmaService.abrirFormulario" class="btn-voltar hide-on-med-and-down">
+    <a href="/#/turmas" class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para Turmas"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+
+<!-- Botão Voltar para as informações da matrícula -->
+<div data-ng-click="selecionaOpcao('home')" data-ng-show="!informacaoatual && !editando && !facilAcesso && !matriculando" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para as Informações"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+
+<i data-ng-hide="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
+
+<div data-ng-click="voltarEnturmacao()" data-ng-show="disciplinasTurma" class="btn-voltar-enturmacao hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light red" data-position="left" data-delay="50" data-tooltip="Voltar Enturmação"><i class="material-icons">arrow_back</i></a>
+</div>
+
+<!-- Imprimir -->
+<div data-ng-click="" data-ng-show="imprimirhistorico" class="btn-add" style="margin-right:8px;">
+    <a class="btn-floating btn-large waves-effect waves-circle waves-light blue darken-1 tooltipped" data-position="left" data-delay="50" data-tooltip="Enturmar"><i class="material-icons">print</i></a>
+</div>
+
+<!-- Loader -->
+<div data-ng-show="loader" class="preloader-wrapper small active loader">
+    <div class="spinner-layer spinner-red-only">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+<ul id='dropUnidadesMatriculaBusca' class='dropdown-content' data-ng-show="unidades.length">
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades" data-ng-click="selecionaUnidade(unidade)">
+        <a>
+            {{unidade.tipo.sigla | uppercase}} {{unidade.nome | uppercase}}
+        </a>
+    </li>
+</ul>

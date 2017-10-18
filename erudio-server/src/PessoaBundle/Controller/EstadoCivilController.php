@@ -33,14 +33,15 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use PessoaBundle\Service\EstadoCivilFacade;
 
 /**
- * @FOS\RouteResource("estados-civis")
+ * @FOS\NamePrefix("estados-civis")
  */
 class EstadoCivilController extends AbstractEntityController {
-    
-    function getFacade() {
-        return $this->get('facade.pessoa.estados_civis');
+
+    function __construct(EstadoCivilFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

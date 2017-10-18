@@ -28,10 +28,12 @@
 
 namespace CoreBundle\ORM\Exception;
 
-class IllegalOperationException extends \Exception {
+use CoreBundle\Exception\PublishedException;
+
+class IllegalOperationException extends PublishedException {
     
-    function __construct($specificMessage = '') {
-        parent::__construct('Operação ilegal: ' . $specificMessage);
+    function __construct($message = '') {
+        parent::__construct('Operação ilegal: ' . $message);
     }
     
 }

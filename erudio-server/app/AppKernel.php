@@ -15,8 +15,9 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new JMS\SerializerBundle\JMSSerializerBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+            new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Ps\PdfBundle\PsPdfBundle(),
@@ -26,10 +27,17 @@ class AppKernel extends Kernel
             new PessoaBundle\PessoaBundle(),
             new CursoBundle\CursoBundle(),
             new CalendarioBundle\CalendarioBundle(),
+            new QuadroHorarioBundle\QuadroHorarioBundle(),
             new AvaliacaoBundle\AvaliacaoBundle(),
+            new AulaBundle\AulaBundle(),
             new MatriculaBundle\MatriculaBundle(),
             new VinculoBundle\VinculoBundle(),
+            new VagaBundle\VagaBundle(),
             new ReportBundle\ReportBundle(),
+            new AlunoBundle\AlunoBundle(),
+            
+            //Integrações SME
+            new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

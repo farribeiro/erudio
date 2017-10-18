@@ -78,6 +78,7 @@ class Turma extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"})
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
     * @ORM\JoinColumn(name = "unidade_ensino_id") 
     */
@@ -85,7 +86,8 @@ class Turma extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "Etapa") 
+    * @ORM\ManyToOne(targetEntity = "Etapa")
+    * @JMS\MaxDepth(depth = 2)
     */
     private $etapa;
     
@@ -97,14 +99,22 @@ class Turma extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"DETAILS"})
+    * @JMS\MaxDepth(depth = 1)
     * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Calendario")
     */
     private $calendario;
     
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\Periodo")
+    * @ORM\JoinColumn(name = "calendario_periodo_id", nullable = true) 
+    */
+    private $periodo;
+    
     /** 
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 1)
-    * @ORM\ManyToOne(targetEntity = "CalendarioBundle\Entity\QuadroHorario")
+    * @ORM\ManyToOne(targetEntity = "QuadroHorarioBundle\Entity\QuadroHorario")
     * @ORM\JoinColumn(name = "quadro_horario_id") 
     */
     private $quadroHorario;
@@ -130,14 +140,18 @@ class Turma extends AbstractEditableEntity {
     
     /** 
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Vaga", mappedBy = "turma", fetch="EXTRA_LAZY") 
+    * @ORM\OneToMany(targetEntity = "VagaBundle\Entity\Vaga", mappedBy = "turma", fetch="EXTRA_LAZY") 
     */
     private $vagas;
     
     function init() {
-        $this->status = self::STATUS_CRIADO;
+        $this->status = self::STATUS_EM_ANDAMENTO;
         $this->enturmacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
+    }
+    
+    function getAno() {
+        return $this->calendario->getAno();
     }
 
     function getDisciplinas() {
@@ -191,7 +205,7 @@ class Turma extends AbstractEditableEntity {
     }
     
     function getVagasAbertas() {
-         return $this->vagas->matching(
+        return $this->vagas->matching(
             Criteria::create()->where(Criteria::expr()->andX(              
                 Criteria::expr()->eq('ativo', true), 
                 Criteria::expr()->isNull('enturmacao')
@@ -208,11 +222,16 @@ class Turma extends AbstractEditableEntity {
     }
     
     /**
-    * @JMS\Groups({"LIST"})
+    * @JMS\Groups({"DETAILS", "contagem_enturmacoes"})
     * @JMS\VirtualProperty
     */
     function getQuantidadeAlunos() {
-        return $this->getEnturmacoes()->count();
+        return $this->enturmacoes->matching(
+            Criteria::create()->where(Criteria::expr()->andX(              
+                Criteria::expr()->eq('ativo', true), 
+                Criteria::expr()->eq('encerrado', false)
+            ))
+        )->count();
     }
     
     /**
@@ -220,13 +239,14 @@ class Turma extends AbstractEditableEntity {
     * @JMS\VirtualProperty
     */
     function getNomeCompleto() {
-        return $this->getApelido() ? $this->getNome() . ' - ' . $this->getApelido() : $this->getNome();
+        $nome = $this->apelido ?  "{$this->nome} - {$this->apelido}" : $this->nome;
+        return $this->periodo ?
+            "{$nome} - {$this->periodo->getNumero()}º {$this->etapa->getUnidadeRegime()}" 
+            : $nome;
     }
     
     function getNomeExibicao() {
-        return $this->apelido 
-                ? "{$this->etapa->getNomeExibicao()} - {$this->apelido}" 
-                : "{$this->etapa->getNomeExibicao()} - {$this->nome}";
+        return $this->getNomeCompleto();
     }
     
     function getNome() {
@@ -255,6 +275,10 @@ class Turma extends AbstractEditableEntity {
     
     function getCalendario() {
         return $this->calendario;
+    }
+    
+    function getPeriodo() {
+        return $this->periodo;
     }
     
     function getQuadroHorario() {
@@ -299,6 +323,10 @@ class Turma extends AbstractEditableEntity {
     
     function setQuadroHorario($quadroHorario) {
         $this->quadroHorario = $quadroHorario;
+    }
+    
+    function setPeriodo($periodo) {
+        $this->periodo = $periodo;
     }
     
 }

@@ -35,7 +35,7 @@
                 <div class="col s12 l12 mobile-full"> 
                     <div class="card">
                         <div class="card-content">
-                            <h3 class='card-title-h3'>Matrícula e Enturmação</h3>
+                            <h3 class='card-title-h3'>Matrícula</h3>
                             <div class='row hide-on-small-only'>
                                 <div class='col s6 m6 l6'>
                                     <p style='font-family: Roboto'>
@@ -75,6 +75,11 @@
                             <input id="codigoBuscaMatricula" type="text" length="11" class="validate counter numeros"  data-ng-model="matriculaBusca.codigo"/>
                             <label for="codigoBuscaMatricula">Código de Matrícula</label>
                         </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">perm_identity</i>
+                            <input id="nascAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.dataNascimento"/>
+                            <label for="nascAlunoMatricula">Data de Nascimento</label>
+                        </div>
                         <!--<div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
                             <i class="material-icons prefix">account_balance</i>
                             <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
@@ -106,6 +111,7 @@
                                 <option value="TRANCADO">TRANCADO</option>
                                 <option value="ABANDONO">ABANDONO</option>
                                 <option value="FALECIDO">FALECIDO</option>
+                                <option value="MUDANCA_DE_CURSO">MUDANÇA DE CURSO</option>
                             </select>
                             <label for="statusBuscaMatricula">Status</label>
                         </div>
@@ -171,7 +177,7 @@
                                         <i data-ng-click="mostraOpcoes(matricula, 'enturmacoes', true)" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Enturmações' class="material-icons info-icon tooltipped">people</i>
                                         <i data-ng-click="mostraOpcoes(matricula, 'disciplinas', true)" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Etapas' class="material-icons info-icon tooltipped">local_library</i>
                                         <i data-ng-click="mostraOpcoes(matricula, 'movimentacoes', true)" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Movimentações' class="material-icons info-icon tooltipped">swap_horiz</i>
-                                        <a target="_blank" href="{{config.urlServidor}}/report/atestados/matricula?matricula={{matricula.id}}"><i data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i></a>
+                                        <a target="_blank" ng-click="getPDF(config.urlServidor+'/report/atestados/matricula?matricula='+matricula.id)"><i data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i></a>
                                         <!-- <i data-ng-click="mostraOpcoes(matricula, 'pdf', true)" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i> -->
                                         <!--<i data-ng-click="abrirModalTransferenciaLocal(matricula)" data-ng-show="matricula.unidadeEnsino.id !== unidadeAlocacao && (matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO')" data-position="top" data-delay="50" data-tooltip="Transferir para minha Unidade" class="material-icons info-icon tooltipped">swap_vert</i>-->
                                         <i data-ng-click="reativarMatricula(matricula)" data-ng-show="(matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO') && (isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao)" data-position="top" data-delay="50" data-tooltip="Reativar" class="material-icons info-icon tooltipped">arrow_upward</i>
