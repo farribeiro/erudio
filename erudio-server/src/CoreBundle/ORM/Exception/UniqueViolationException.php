@@ -28,7 +28,9 @@
 
 namespace CoreBundle\ORM\Exception;
 
-class UniqueViolationException extends \Exception {
+use CoreBundle\Exception\PublishedException;
+
+class UniqueViolationException extends PublishedException {
     
      function __construct($message = null) {
         parent::__construct($message ? $message : 'Já existe um objeto salvo com estes dados');

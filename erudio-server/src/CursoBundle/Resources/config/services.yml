@@ -1,53 +1,16 @@
 services:
-    facade.curso.cursos:
-      class: CursoBundle\Service\CursoFacade
-      arguments: ["@doctrine"]
-    
-    facade.curso.cursos_ofertados:
-      class: CursoBundle\Service\CursoOfertadoFacade
-      arguments: ["@doctrine"]
-    
-    facade.curso.modulos:
-      class: CursoBundle\Service\ModuloFacade
-      arguments: ["@doctrine"]
-    
-    facade.curso.etapas:
-      class: CursoBundle\Service\EtapaFacade
-      arguments: ["@doctrine"]
         
-    facade.curso.disciplinas:
-      class: CursoBundle\Service\DisciplinaFacade
-      arguments: ["@doctrine"]
-      
-    facade.curso.agrupamentos_disciplina:
-        class: CursoBundle\Service\AgrupamentoDisciplinaFacade
-        arguments: ["@doctrine"]
-        
-    facade.curso.disciplinas_ofertadas:
-      class: CursoBundle\Service\DisciplinaOfertadaFacade
-      arguments: ["@doctrine"]
-      calls:
-          - [setDisciplinaCursadaFacade, ["@facade.matricula.disciplinas_cursadas"]]
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
     
-    facade.curso.turmas:
-      class: CursoBundle\Service\TurmaFacade
-      arguments: ["@doctrine"]
-      calls:
-          - [setVagaFacade, ["@facade.curso.vagas"]]
-          - [setDisciplinaOfertadaFacade, ["@facade.curso.disciplinas_ofertadas"]]
-          
-    facade.curso.agrupamentos_turma:
-        class: CursoBundle\Service\AgrupamentoTurmaFacade
-        arguments: ["@doctrine"]
-
-    facade.curso.vagas:
-      class: CursoBundle\Service\VagaFacade
-      arguments: ["@doctrine"]
-      
-    facade.curso.modalidades_ensino:
-      class: CursoBundle\Service\ModalidadeEnsinoFacade
-      arguments: ["@doctrine"]
-        
-    facade.curso.turnos:
-      class: CursoBundle\Service\TurnoFacade
-      arguments: ["@doctrine"]
+    CursoBundle\:
+        resource: '../../{Service,Listener}'
+       
+    CursoBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]

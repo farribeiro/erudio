@@ -55,6 +55,13 @@
             },500);
         };
         
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+        
         //CARREGA SELECT CURSOS
         $scope.buscarCursos = function () {
             $scope.mostraProgresso(); var promise = null; $scope.turmaBusca.curso.id = null;
@@ -93,13 +100,14 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
-                            for (var i=0; $scope.atribuicoes.length; i++) {
-                                if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
-                                if (i === $scope.atribuicoes.length-1) {
+                            for (var i=0; i<response.data.atribuicoes.length; i++) {
+                                if (response.data.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push(response.data.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }
+                                if (i === response.data.atribuicoes.length-1) {
                                     if ($scope.isAdmin) {
                                         $scope.verificaAlocacao();
                                     } else {

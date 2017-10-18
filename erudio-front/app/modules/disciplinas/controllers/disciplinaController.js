@@ -51,7 +51,7 @@
             $scope.alterarDisciplina = '';
 
             /* Estrutura de Disciplina */
-            $scope.disciplina = {nome: null, nomeExibicao: null, cargaHoraria: null, opcional: false, curso: {id: null}, etapa: {id: null}};
+            $scope.disciplina = {nome: null, nomeExibicao: null, cargaHoraria: null, opcional: false, curso: {id: null}, etapa: {id: null}, ofertado: true};
             $scope.limparDisciplina =  function() { $scope.disciplina = {nome: null, nomeExibicao: null, cargaHoraria: null, opcional: false, curso: {id: null}, etapa: {id: null}}; };
             $scope.limparBusca = $scope.etapa = {'id': null, 'curso': {'id': null} };
             $scope.disciplinasModulares = [];

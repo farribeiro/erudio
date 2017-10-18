@@ -5,7 +5,9 @@
             
            {% block title %}
                 <h1>Diário de Notas</h1>
-                <h3>{{media}}º {{unidadeRegime}}</h3>
+                {% if turma.etapa.sistemaAvaliacao.quantidadeMedias > 1 %}
+                    <h3>{{media}}º {{unidadeRegime}}</h3>
+                {% endif %}
             {% endblock %}
             
             {% block headerHeight %}70px{% endblock %}

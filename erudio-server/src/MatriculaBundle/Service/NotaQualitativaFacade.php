@@ -64,8 +64,7 @@ class NotaQualitativaFacade extends AbstractFacade {
     }
     
     function uniqueMap($nota) {
-        return [[
-            'avaliacao' => $nota->getAvaliacao(), 
+        return [[ 
             'media' => $nota->getMedia(),
             'avaliacao_tipo' => $nota->getAvaliacao()->getTipo()
         ]];

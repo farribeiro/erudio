@@ -43,16 +43,14 @@ class PeriodoFacade extends AbstractFacade {
     
     function parameterMap() {
         return array (
+            'numero' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('p.numero = :numero')->setParameter('numero', $value);
+            },
             'media' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('p.media = :media')->setParameter('media', $value);
+                $qb->andWhere('p.numero = :numero')->setParameter('numero', $value);
             },
             'calendario' => function(QueryBuilder $qb, $value) {
-                $qb->join('p.calendario', 'calendario')
-                   ->andWhere('calendario.id = :calendario')->setParameter('calendario', $value);
-            },
-            'sistemaAvaliacao' => function(QueryBuilder $qb, $value) {
-                $qb->join('p.sistemaAvaliacao', 'sistemaAvaliacao')
-                   ->andWhere('sistemaAvaliacao.id = :sistemaAvaliacao')->setParameter('sistemaAvaliacao', $value);
+                $qb->andWhere('p.calendario = :calendario')->setParameter('calendario', $value);
             }
         );
     }

@@ -33,14 +33,15 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use PessoaBundle\Service\EstadoFacade;
 
 /**
- * @FOS\RouteResource("estados")
+ * @FOS\NamePrefix("estados")
  */
 class EstadoController extends AbstractEntityController {
-    
-    function getFacade() {
-        return $this->get('facade.pessoa.estados');
+
+    function __construct(EstadoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -74,7 +75,7 @@ class EstadoController extends AbstractEntityController {
     * 
     *   @FOS\Get("estados")
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "sigla", default = null) 
+    *   @FOS\QueryParam(name = "sigla", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

@@ -42,15 +42,28 @@
         }
         $scope.isAdmin = Servidor.verificaAdmin();
 
+        //getpdf
+        $scope.getPDF = function (url){
+            $scope.mostraProgresso();
+            var promise = Servidor.getPDF(url);
+            promise.then(function(){ $scope.fechaProgresso(); });
+        };
+        
+        $scope.mostraProgresso = function () { $scope.progresso = true; $scope.mostraLoader(); };
+        $scope.fechaProgresso = function () { $scope.progresso = false; $scope.fechaLoader(); };
+        $scope.mostraLoader = function () { $scope.loader = true; };
+        $scope.fechaLoader = function () { $scope.loader = false; };
+
         //VERIFICA SE HÁ ALOCAÇÃO SELECIONADA
         $scope.verificaAlocacao = function (nomeUnidade) {
             if ($scope.isAdmin) {
                 $scope.buscarUnidades("");
             } else {
                 if (Servidor.verificarPermissoes('DIARIO_FREQUENCIA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
                             for (var i=0; i<$scope.atribuicoes.length; i++) {
                                 if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } else { $scope.isAdmin = true; }

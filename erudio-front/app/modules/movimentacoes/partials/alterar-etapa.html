@@ -1,0 +1,42 @@
+<div class="card-panel" data-ng-show="escrita && alterarEtapa">
+    <h4 style="padding: 1rem 0 0 1rem"> Enturmar Aluno </h4>                   
+    <div class="row">
+        <div class="col s12 m12 input-field">
+            <i class="material-icons prefix">chrome_reader_mode</i>
+            <select ng-change="buscarTurmasEnt(etapaTurma.id)" id="etapaTurma" data-ng-model="etapaTurma.id">
+                <option selected></option>
+                <option data-ng-repeat="etapa in etapas track by $index" value="{{etapa.id}}">{{etapa.nomeExibicao | uppercase}}</option>
+            </select>
+            <label for="etapaTurma">Etapa</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m12 input-field" data-ng-class="{'l6': matricula.curso.especializado}">
+            <i class="material-icons prefix">chrome_reader_mode</i>
+            <select id="enturmacaoTurma" data-ng-model="turmaNova.id">
+                <option selected></option>
+                <option data-ng-repeat="turma in turmasEnturmacao track by $index" value="{{turma.id}}">{{turma.nomeCompleto| uppercase}}</option>
+            </select>
+            <label for="enturmacaoTurma">Turma</label>
+        </div>
+    </div>
+    <div class="row" data-ng-show="disciplinas.length">
+        <small style="padding-left: 1rem"><em>Selecione as disciplinas que irá cursar.</em></small>
+        <table class="striped">
+            <tbody>
+                <tr data-ng-repeat="disciplina in disciplinas" data-ng-show="disciplina.opcional">
+                    <td style="padding: 0.5rem 0 0 1.3rem; width: 10%">
+                        <input id="dis{{disciplina.id}}" type="checkbox" class="filled-in">
+                        <label for="dis{{disciplina.id}}"></label>
+                    </td>
+                    <td>{{disciplina.nomeExibicao}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="row end-card">
+            <a class="waves-effect waves-light btn-flat right" data-ng-click="verificarVagaDisponivel()">Enturmar</a>
+        </div>
+    </div>
+</div>

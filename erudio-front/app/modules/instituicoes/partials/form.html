@@ -111,12 +111,12 @@
                             </div>
                             <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">directions</i>
-                                <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="logradouroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.logradouro" data-ng-disabled="!escrita" required />
+                                <input id="logradouroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.logradouro" data-ng-disabled="!escrita" required />
                                 <label for="logradouroInstituicao">Logradouro*</label>
                             </div>
                             <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">filter_1</i>
-                                <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="numeroInstituicao" type="text" length="10" class="validate counter numeros" data-ng-model="instituicao.endereco.numero" data-ng-disabled="!escrita" />
+                                <input id="numeroInstituicao" type="text" length="10" class="validate counter numeros" data-ng-model="instituicao.endereco.numero" data-ng-disabled="!escrita" />
                                 <label for="numeroInstituicao">Número</label>
                             </div>
                             <div class="col s12 m12 l12 input-field">
@@ -126,7 +126,7 @@
                             </div>
                             <div class="col s12 m12 l12 input-field">
                                 <i class="material-icons prefix">location_on</i>
-                                <input data-ng-change="buscaCoordenadasPorEnderecoCompleto()" id="bairroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.bairro" data-ng-disabled="!escrita" required />
+                                <input id="bairroInstituicao" type="text" class="validate" data-ng-model="instituicao.endereco.bairro" data-ng-disabled="!escrita" required />
                                 <label for="bairroInstituicao">Bairro*</label>
                             </div>
                             <div class="col s12 m12 l12 input-field">

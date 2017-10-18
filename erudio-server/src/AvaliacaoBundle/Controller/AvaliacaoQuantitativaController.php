@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\AvaliacaoQuantitativa;
+use AvaliacaoBundle\Service\AvaliacaoQuantitativaFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes-quantitativas")
+ * @FOS\NamePrefix("avaliacoes-quantitativas")
  */
 class AvaliacaoQuantitativaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.avaliacoes_quantitativas');
+    function __construct(AvaliacaoQuantitativaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
@@ -65,6 +66,7 @@ class AvaliacaoQuantitativaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "media", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "dataEntrega", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

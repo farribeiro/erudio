@@ -176,24 +176,50 @@
                 var novo = false;
                 if (!$scope.instituicao.id) { $scope.pagina = 0; novo = true; }
                 var endereco = Restangular.copy($scope.instituicao.endereco);
-                var resultadoEndereco = Servidor.finalizar(endereco,'enderecos','Instituição(Endereço)');
+                var resultadoEndereco = null;
+                if (endereco.id === undefined || endereco.id === null) { resultadoEndereco = Servidor.finalizar(endereco, 'enderecos', 'Endereço'); }
+                else { var resultadoEndereco = Servidor.customPut(endereco, 'enderecos/'+endereco.id, 'Endereço'); }
                 if (resultadoEndereco) {
-                    var novoEndereco = resultadoEndereco.$object;
+                    //var novoEndereco = resultadoEndereco.$object;
                     $timeout(function(){
-                        $scope.instituicao.endereco = { 'id':novoEndereco.id };
-                        $timeout(function(){                            
-                            var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
-                            if (result) { 
-                                var instituicaoId = result.$object;
-                                if ($scope.telefone.numero && $scope.telefone.descricao) { $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g,''); $scope.instituicao.telefones.push($scope.telefone); }
-                                if ($scope.instituicao.telefones.length > 0) {
-                                    $timeout(function(){
-                                        for (var i=0; i < $scope.instituicao.telefones.length; i++) {
-                                            if(!$scope.instituicao.telefones[i].id) {
-                                                $scope.instituicao.telefones[i].pessoa.id = instituicaoId.id;
-                                                Servidor.finalizar($scope.instituicao.telefones[i], 'telefones', 'Telefone');
-                                            }                                            
-                                        }
+                        resultadoEndereco.then(function(response){
+                            $scope.instituicao.endereco = { id:response.data.id };
+                            if ($scope.instituicao.cpfCnpj !== undefined && $scope.instituicao.cpfCnpj !== null){
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[.]/g,"");
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[//]/g,"");
+                                $scope.instituicao.cpfCnpj = $scope.instituicao.cpfCnpj.replace(/[-]/g,"");
+                            }
+                                
+                            $timeout(function(){                            
+                                var result = Servidor.finalizar($scope.instituicao,'instituicoes','Instituição');
+                                if (result) { 
+                                    var instituicaoId = result.$object;
+                                    if ($scope.telefone.numero && $scope.telefone.descricao) { $scope.telefone.numero = $scope.telefone.numero.replace(/\D/g,''); $scope.instituicao.telefones.push($scope.telefone); }
+                                    if ($scope.instituicao.telefones.length > 0) {
+                                        $timeout(function(){
+                                            for (var i=0; i < $scope.instituicao.telefones.length; i++) {
+                                                if(!$scope.instituicao.telefones[i].id) {
+                                                    $scope.instituicao.telefones[i].pessoa.id = instituicaoId.id;
+                                                    Servidor.finalizar($scope.instituicao.telefones[i], 'telefones', 'Telefone');
+                                                }                                            
+                                            }
+                                            $timeout(function (){ 
+                                                $scope.inicializar(false);
+                                                $scope.fechaLoader();
+                                                $scope.fecharFormulario();
+                                                if (!novo) {
+                                                    $scope.instituicoes.forEach(function(i,index){
+                                                        if(i.id === instituicaoId.id){
+                                                            $scope.instituicoes[index] = instituicaoId;
+                                                        }
+                                                    });
+                                                } else {
+                                                    $scope.instituicoes = [];
+                                                    $scope.buscarInstituicoes(false);
+                                                }
+                                            },300);
+                                        },300);
+                                    } else {
                                         $timeout(function (){ 
                                             $scope.inicializar(false);
                                             $scope.fechaLoader();
@@ -209,27 +235,11 @@
                                                 $scope.buscarInstituicoes(false);
                                             }
                                         },300);
-                                    },300);
-                                } else {
-                                    $timeout(function (){ 
-                                        $scope.inicializar(false);
-                                        $scope.fechaLoader();
-                                        $scope.fecharFormulario();
-                                        if (!novo) {
-                                            $scope.instituicoes.forEach(function(i,index){
-                                                if(i.id === instituicaoId.id){
-                                                    $scope.instituicoes[index] = instituicaoId;
-                                                }
-                                            });
-                                        } else {
-                                            $scope.instituicoes = [];
-                                            $scope.buscarInstituicoes(false);
-                                        }
-                                    },300);
+                                    }
                                 }
-                            }
-                        },500);
-                    },500);
+                            },500); 
+                        });
+                    },1000);
                 }
             }
         };
@@ -241,10 +251,10 @@
         
         /* Validando Formulário */
         $scope.validar = function (id) {
-            var result = Servidor.validar(id);            
-            if ($scope.instituicao.cpfCnpj && $scope.instituicao.cpjCnpj !== undefined) { var res = Servidor.validarCnpj($scope.instituicao.cpfCnpj); } else { $scope.instituicao.cpjCnpj = null; res = true; }
+            var result = Servidor.validar(id);
+            if ($scope.instituicao.cpfCnpj !== null && $scope.instituicao.cpfCnpj !== '' && $scope.instituicao.cpfCnpj !== undefined) { var res = Servidor.validarCnpj($scope.instituicao.cpfCnpj); } else { $scope.instituicao.cpfCnpj = null; res = true; }
             if (result && res) { 
-                $scope.instituicao.cpfCnpj = cnpj;
+                //$scope.instituicao.cpfCnpj = cnpj;
                 return true; 
             }
         }; 
@@ -363,7 +373,7 @@
             $scope.estadoId = estado.id; $scope.instituicao.endereco.cidade.estado = estado;
             $scope.cidadeId = null; $scope.instituicao.endereco.cidade.id = null;
             $scope.instituicao.endereco.cidade.nome = null; $scope.buscaCidades();
-            $timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
+            //$timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
         };
         
         /* Seleciona select de cidade */
@@ -372,14 +382,14 @@
             for (var i=0; i<$scope.cidades.length;i++) { if ($scope.cidades[i].id === parseInt($scope.cidadeId)) { cidade = $scope.cidades[i]; } }
             $scope.instituicao.endereco.cidade = cidade; $scope.instituicao.endereco.bairro = null;
             $scope.instituicao.endereco.logradouro = null;
-            $timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
+            //$timeout(function(){ $scope.buscaCoordenadasPorEnderecoCompleto(); },500);
         };
         
         /* Busca estados  - SelectBox */
         $scope.buscaEstados = function () {
             Servidor.buscarEstados().getList().then(function(response){ 
                 $scope.estados = response.plain();
-                $timeout(function (){ $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); },500);
+                $timeout(function (){ $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); },1000);
             });                            
         };
         
@@ -388,7 +398,7 @@
             var promise = Servidor.buscar('cidades',{'estado': $scope.instituicao.endereco.cidade.estado.id });
             promise.then(function(response){
                 $scope.cidades = response.data;
-                $timeout(function (){ $('#cidadeInstituicao').material_select('destroy'); $('#cidadeInstituicao').material_select(); },500);
+                $timeout(function (){ $('#cidadeInstituicao').material_select('destroy'); $('#cidadeInstituicao').material_select(); },1000);
             });
         };          
         
@@ -441,7 +451,7 @@
                                 $scope.estadoId = estado[0].id; $scope.cidadeId = null;
                                 $scope.instituicao.endereco.cidade.id = null; $scope.instituicao.endereco.cidade.nome = null;
                                 $scope.buscaCidades();
-                                $timeout(function() { $('#estado').material_select('destroy'); $('#estado').material_select(); }, 50);
+                                $timeout(function() { $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); }, 50);
                                 if (endereco[2]) {
                                     /* Buscando Cidade */
                                     var promise = Servidor.buscar('cidades',{'nome': endereco[2],'estado': $scope.instituicao.endereco.cidade.estado.id });
@@ -450,9 +460,10 @@
                                         $timeout(function(){
                                             $scope.buscaCoordenadasPorEndereco();
                                             $('#cidade').material_select('destroy'); $('#cidade').material_select();
+                                            $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select();
                                             Servidor.verificaLabels();
                                             if(!$scope.instituicao.id){ if(!$scope.instituicao.endereco.bairro){ $("#logradouro").focus(); }else{ $("#numero").focus(); } }
-                                        },50);
+                                        },500);
                                     });
                                 } else {
                                     $scope.cidadeId = null;                                    

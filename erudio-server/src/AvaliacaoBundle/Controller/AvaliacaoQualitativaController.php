@@ -36,20 +36,21 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AvaliacaoBundle\Entity\AvaliacaoQualitativa;
+use AvaliacaoBundle\Service\AvaliacaoQualitativaFacade;
 
 /**
- * @FOS\RouteResource("avaliacoes-qualitativas")
+ * @FOS\NamePrefix("avaliacoes-qualitativas")
  */
 class AvaliacaoQualitativaController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.avaliacao.avaliacoes_qualitativas');
+    function __construct(AvaliacaoQualitativaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("avaliacoes-qualitativas/{id}")
+    * @FOS\Get("avaliacoes-qualitativas/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);

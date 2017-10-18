@@ -1,7 +1,35 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="regimeNome" label="'Nome do Regime'" tipo="'text'" troca="validaCampo()" nome="'nome'" obrigatorio="required" model="turno" campo="nome" erro="'turnoForm.nome.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="turno.nome" type="text" name="nome" required/>
+        <div ng-messages="turnoForm.turno.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="regimeInicio" label="'Início'" tipo="'text'" dica="'Apenas Números'" classe="'maskHora'"  troca="validaCampo()" nome="'inicio'" obrigatorio="required" model="turno" campo="inicio" erro="'turnoForm.inicio.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-    <form-input grid="flex-gt-sm" identidade="regimeFinal" label="'Final'" tipo="'text'" dica="'Apenas Números'" classe="'maskHora'" troca="validaCampo()" nome="'final'" obrigatorio="required" model="turno" campo="termino" erro="'turnoForm.final.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="inicio">Início</label>
+        <md-icon class="material-icons">access_time</md-icon>
+        <input id="nome" ng-model="turno.inicio" class="maskHora" type="text" name="inicio" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="turnoForm.turno.inicio.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="inicio">Término</label>
+        <md-icon class="material-icons">access_time</md-icon>
+        <input id="nome" ng-model="turno.termino" class="maskHora" type="text" name="inicio" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="turnoForm.turno.termino.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
 </div>

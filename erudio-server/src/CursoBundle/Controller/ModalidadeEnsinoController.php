@@ -33,14 +33,15 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use CursoBundle\Service\ModalidadeEnsinoFacade;
 
 /**
- * @FOS\RouteResource("modalidades-ensino")
+ * @FOS\NamePrefix("modalidades-ensino")
  */
 class ModalidadeEnsinoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.curso.modalidades_ensino');
+    function __construct(ModalidadeEnsinoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

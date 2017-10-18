@@ -36,14 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use VinculoBundle\Entity\Vinculo;
+use VinculoBundle\Service\VinculoFacade;
 
 /**
- * @FOS\RouteResource("vinculos")
+ * @FOS\NamePrefix("vinculos")
  */
 class VinculoController extends AbstractEntityController {
-    
-    public function getFacade() {
-        return $this->get('facade.vinculo.vinculos');
+
+    function __construct(VinculoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

@@ -36,15 +36,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\PermissaoGrupo;
-use FOS\RestBundle\Request\ParamFetcher;
+use AuthBundle\Service\GrupoPermissaoFacade;
 
 /**
- * @FOS\RouteResource("permissoes-grupo")
+ * @FOS\NamePrefix("permissoes-grupo")
  */
 class PermissaoGrupoController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.permissoesGrupo');
+    function __construct(GrupoPermissaoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

@@ -82,9 +82,9 @@
                 </form>
             </div>
             <div class="card-panel">
-                <div data-ng-show="usuario.rolesAtribuidas.length" class="row">
+                <div data-ng-show="usuario.atribuicoes.length" class="row">
                     <div class="col s12">
-                        <h3 class='card-title-h3' style="padding: 20px">Permissões de {{atribuicao.usuario.pessoa.nome}}</h3>
+                        <h3 class='card-title-h3' style="padding: 20px">Grupos e permissões de {{atribuicao.usuario.pessoa.nome}}</h3>
                     </div>
                     <table class='highlight striped table-pattern'>
                         <thead>
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr data-ng-repeat="perm in usuario.rolesAtribuidas" data-ng-show="usuario.rolesAtribuidas.length">
+                            <tr data-ng-repeat="perm in usuario.atribuicoes" data-ng-show="usuario.atribuicoes.length">
                                 <td class="celula-link relative mobile-full">
                                     <div data-ng-hide="verificaGrupo(perm.grupo)" style="padding: 15px">{{ perm.permissao.nomeExibicao }}</div>
                                     <div data-ng-show="verificaGrupo(perm.grupo)" style="padding: 15px">{{ perm.grupo.nome }}</div>

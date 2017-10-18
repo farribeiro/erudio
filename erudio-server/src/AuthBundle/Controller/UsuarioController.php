@@ -36,25 +36,39 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use AuthBundle\Entity\Usuario;
+use AuthBundle\Service\UsuarioFacade;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @FOS\RouteResource("users")
+ * @FOS\NamePrefix("users")
  */
 class UsuarioController extends AbstractEntityController {
     
-    public function getFacade() {
-        return $this->get('facade.auth.usuarios');
+    function __construct(UsuarioFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("users/{id}")
+    * @FOS\Get("users/eu")
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
+    function getCurrentAction() {
+        $user = $this->getUser();
+        return new JsonResponse([
+            'id' => $user->getId(),
+            'nomeExibicao' => $user->getNomeExibicao()
+        ]);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\QueryParam(name = "view", nullable = true)
+    * @FOS\Get("users/{id}", requirements = {"id": "\d+"})
+    */
+    function getAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
+        return $this->getOne($request, $id, $paramFetcher->get('view'));
     }
     
     /**
@@ -68,8 +82,9 @@ class UsuarioController extends AbstractEntityController {
     * )
     * 
     * @FOS\Get("users")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    * @FOS\QueryParam(name = "username", nullable = true) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", nullable = true) 
+    * @FOS\QueryParam(name = "username", nullable = true)
     * @FOS\QueryParam(name = "nomeExibicao", nullable = true) 
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
@@ -83,27 +98,23 @@ class UsuarioController extends AbstractEntityController {
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->post($request, $usuario, $errors);
     }
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("users/{id}")
+    * @FOS\Put("users/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("usuario", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Usuario $usuario, ConstraintViolationListInterface $errors) {
-        if(count($errors) > 0) {
-            return $this->handleValidationErrors($errors);
-        }
         return $this->put($request, $id, $usuario, $errors);
     }
     
     /**
     * @ApiDoc()
+    * 
+    * @FOS\Delete("users/{id}", requirements = {"id": "\d+"})
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

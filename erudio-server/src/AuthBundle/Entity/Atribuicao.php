@@ -31,12 +31,19 @@ namespace AuthBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
+use PessoaBundle\Entity\Instituicao;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="edu_acesso_atribuicao")
  */
 class Atribuicao extends AbstractEditableEntity {
+    
+    /**
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column
+    */
+    private $apelido;
     
     /**
     * @JMS\Groups({"LIST"}) 
@@ -52,10 +59,19 @@ class Atribuicao extends AbstractEditableEntity {
     
     /**
     * @JMS\Groups({"LIST"})
+    * @JMS\MaxDepth(depth = 3)
     * @JMS\Type("PessoaBundle\Entity\Instituicao")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\Instituicao")
     */
     private $instituicao;
+    
+    function getApelido() {
+        return $this->apelido;
+    }
+
+    function setApelido($apelido) {
+        $this->apelido = $apelido;
+    }
     
     function getUsuario() {
         return $this->usuario;
@@ -69,11 +85,12 @@ class Atribuicao extends AbstractEditableEntity {
         return $this->instituicao;
     }
     
-    static function criarAtribuicao($usuario, $grupo, $instituicao) {
+    static function criarAtribuicao(Usuario $usuario, Grupo $grupo, Instituicao $instituicao, $apelido = null) {
         $atribuicao = new Atribuicao();
         $atribuicao->usuario = $usuario;
         $atribuicao->grupo = $grupo;
         $atribuicao->instituicao = $instituicao;
+        $atribuicao->apelido = $apelido ? $apelido : $grupo->getNome();
         return $atribuicao;
     }
     

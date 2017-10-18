@@ -42,14 +42,19 @@ class UnidadeEnsinoFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'nome' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('u.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'tipo' => function(QueryBuilder $qb, $value) {
-                $qb->join('u.tipo', 't')->andWhere('t.id LIKE :tipo')->setParameter('tipo', '%' . $value . '%');
+                $qb->andWhere('t.id LIKE :tipo')->setParameter('tipo', '%' . $value . '%');
             }
-        );
+        ];
+    }
+    
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('u.tipo', 'tipo');
+        $qb->addOrderBy('tipo.sigla')->addOrderBy('u.nome');
     }
     
 }

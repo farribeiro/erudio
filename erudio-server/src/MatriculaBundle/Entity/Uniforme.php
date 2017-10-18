@@ -46,13 +46,13 @@ class Uniforme extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(name = "uniforme_numero", type = "integer", nullable = true) 
+    * @ORM\Column(name = "uniforme_numero") 
     */
     private $uniformeNumero;
     
     /**  
     * @JMS\Groups({"LIST"})
-    * @ORM\Column(name = "calcado_numero", type = "integer", nullable = true) 
+    * @ORM\Column(name = "calcado_numero") 
     */
     private $calcadoNumero;
     

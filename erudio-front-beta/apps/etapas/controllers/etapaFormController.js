@@ -1,58 +1,117 @@
 (function (){
-    var etapasForm = angular.module('etapasForm',['ngMaterial', 'util', 'erudioConfig', 'shared']);
-    etapasForm.controller('EtapaFormController',['$scope', 'Util', 'ErudioConfig', '$routeParams', '$timeout', 'Shared', function($scope, Util, ErudioConfig, $routeParams, $timeout, Shared){
+    /*
+     * @ErudioDoc Instituição Form Controller
+     * @Module instituicoesForm
+     * @Controller InstituicaoFormController
+     */
+    class EtapaFormController {
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, sharedService, cursoService, moduloService, sistemaAvaliacaoService, modeloGradeHorarioService){
+            this.service = service;
+            this.scope = $scope;
+            this.util = util;
+            this.routeParams = routeParams;
+            this.erudioConfig = erudioConfig;
+            this.timeout = $timeout;
+            this.cursoService = cursoService;
+            this.moduloService = moduloService;
+            this.sharedService = sharedService;
+            this.sistemaAvaliacaoService = sistemaAvaliacaoService;
+            this.modeloGradeHorarioService = modeloGradeHorarioService;
+            this.scope.etapa = null;
+            this.mostraCurso = false;
+            this.permissaoLabel = "ETAPAS";
+            this.titulo = "Etapas";
+            this.linkModulo = "/#!/etapas/";
+            this.nomeForm = "etapaForm";
+            this.iniciar();
+        }
         
-        //SETA O TITULO
-        Util.setTitulo('Etapas');
+        verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
+        verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
+        validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
         
-        //ETAPA EM USO
-        $scope.etapa = Util.getEstrutura('etapa'); $scope.curso = {id: null};
+        preparaForm() {
+            this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
+            this.leitura = this.util.getTemplateLeitura();
+            this.leituraHref = this.util.getInputBlockCustom('etapas','leitura');
+            this.form = this.util.getTemplateForm();
+            this.formCards =[
+                {label: 'Informações da Etapa', href: this.util.getInputBlockCustom('etapas','inputs')}
+            ];
+            this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
+        }
         
-        //SETA SUBHEADER DO FORM
-        $scope.subheaders =[{label: 'Informações da Etapa'}];
+        buscarCursos() { this.cursoService.getAll(null,true).then((cursos) => this.cursos = cursos); }
+        buscarModulos() { this.moduloService.getAll(null,true).then((modulos) => this.modulos = modulos); }
+        buscarSistemaAvaliacoes() { this.sistemaAvaliacaoService.getAll(null,true).then((sistemasAvaliacoes) => this.sistemasAvaliacoes = sistemasAvaliacoes); }
+        buscarModeloGradeHorario() { this.modeloGradeHorarioService.getAll(null,true).then((modeloGradeHorario) => this.modeloGradeHorario = modeloGradeHorario); }
         
-        //TEMPLATE DOS BLOCOS DE INPUTS
-        $scope.inputs = [{ href: Util.getInputBlockCustom('etapas','inputs') }];
+        buscarCurso() { 
+            this.cursoEtapa = this.sharedService.getCursoEtapa();
+            if (this.util.isVazio(this.cursoEtapa)) {
+                this.mostraCurso = true;
+                this.buscarCursos();
+            } else {
+                this.mostraCurso = false;
+            }
+        }
         
-        //CRIAR FORMS
-        $scope.forms = [{ nome: 'etapaForm', subheaders: $scope.subheaders }];
+        buscarEtapa() {
+            var self = this;
+            this.scope.etapa = this.service.getEstrutura();
+            if (!this.util.isNovo(this.routeParams.id)) {
+                this.novo = false;
+                this.service.get(this.routeParams.id).then((etapa) => {
+                    this.scope.etapa = etapa;
+                    this.util.aplicarMascaras();
+                });
+            } else {
+                if (!this.util.isVazio(this.cursoEtapa)) { this.scope.etapa.curso.id = this.cursoEtapa; }
+                this.novo = true;
+                this.timeout(function(){ self.util.aplicarMascaras(); },300);
+            }
+        }
         
-        //OPCOES DO BOTAO VOLTAR
-        $scope.link = '/#!/etapas/';
-        $scope.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: ErudioConfig.dominio + $scope.link};
+        validaCampo() { this.util.validaCampo(); }
         
-        //BUSCANDO CURSO
-        $scope.buscarEtapa = function () {
-            $scope.etapa.curso.id = Shared.getCursoEtapa();
-            if (!Util.isNovo($routeParams.id)) {
-                var promise = Util.um('etapas',$routeParams.id);
-                promise.then(function(response){ $scope.etapa = response.data; $timeout(function(){ Util.aplicarMascaras(); $scope.buscarCursos(); $scope.buscarModeloQuadro(); $scope.buscarModulos(); $scope.buscarSistemaAvaliacao(); },500); });
-            } else { $timeout(function(){ Util.aplicarMascaras(); $scope.buscarModeloQuadro(); $scope.buscarModulos(); $scope.buscarSistemaAvaliacao(); $scope.buscarCursos(); },500); }
-        };
+        validar() { return this.util.validar(this.nomeForm); }
         
-        //BUSCANDO CURSOS
-        $scope.buscarCursos = function () { var promise = Util.buscar('cursos',null); promise.then(function(response){ $scope.cursos = response.data; }); };
+        salvar() {
+            if (this.validar()) {
+                var resultado = null;
+                if (this.util.isNovoObjeto(this.scope.etapa)) {
+                    resultado = this.service.salvar(this.scope.etapa);
+                } else {
+                    resultado = this.service.atualizar(this.scope.etapa);
+                }
+                resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
+            }
+        }
         
-        //VALIDA CAMPO
-        $scope.validaCampo = function () { Util.validaCampo(); };
-        
-        //BUSCANDO MODALIDADES
-        $scope.buscarModulos = function () { var promise = Util.buscar('modulos',null); promise.then(function(response){ $scope.modulos = response.data; }); };
-        
-        //BUSCANDO SISTEMAS DE AVALIACAO
-        $scope.buscarSistemaAvaliacao = function () { var promise = Util.buscar('sistemas-avaliacao',null); promise.then(function(response){ $scope.sistemas = response.data; }); };
-        
-        //BUSCANDO MODELO DE QUADRO DE HORARIO
-        $scope.buscarModeloQuadro = function () { var promise = Util.buscar('modelo-quadro-horarios',null); promise.then(function(response){ $scope.quadros = response.data; }); };
-            
-        //SALVAR UNIDADE
-        $scope.salvar = function () { if ($scope.validar('etapaForm')) { var resultado = Util.salvar($scope.etapa,'etapas'); resultado.then(function (){ Util.redirect($scope.fab.href); }); } };
-        
-        //VALIDAR FORM
-        $scope.validar = function (formId) { return Util.validar(formId); };
-        
-        //INICIANDO
-        $scope.form = Util.getTemplateForm(); Util.inicializar(); $scope.buscarEtapa();
-        Util.mudarImagemToolbar('etapas/assets/images/etapas.jpg');
-    }]);
+        iniciar(){
+            let permissao = this.verificarPermissao(); var self = this;
+            if (permissao) {
+                this.util.comPermissao();
+                this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.util.setTitulo(this.titulo);
+                this.escrita = this.verificaEscrita();
+                this.isAdmin = this.util.isAdmin();
+                this.util.mudarImagemToolbar('etapas/assets/images/etapas.jpg');
+                $(".fit-screen").unbind('scroll');
+                this.timeout(()=>{ this.validaCampo(); },500);
+                this.scope.etapa = this.service.getEstrutura();
+                this.buscarCurso();
+                this.buscarModulos();
+                this.buscarSistemaAvaliacoes();
+                this.buscarModeloGradeHorario();
+                this.preparaForm();
+                this.buscarEtapa();
+                this.timeout(() => { $("input").keypress(function(event){ var tecla = (window.event) ? event.keyCode : event.which; if (tecla === 13) { self.salvar(); } }); }, 1000);
+                this.util.inicializar();
+            } else { this.util.semPermissao(); }
+        }
+    }
+    
+    EtapaFormController.$inject = ["EtapaService","Util","ErudioConfig","$routeParams","$timeout","$scope","Shared","CursoService","ModuloService","SistemaAvaliacaoService","ModeloGradeHorarioService"];
+    angular.module('EtapaFormController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('EtapaFormController',EtapaFormController);
 })();

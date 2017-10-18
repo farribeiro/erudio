@@ -61,7 +61,7 @@ class DiaEvento extends AbstractEditableEntity {
     
     /** 
      * @JMS\Groups({"LIST"})  
-     * @ORM\ManyToOne(targetEntity = "Evento", inversedBy = "dias") 
+     * @ORM\ManyToOne(targetEntity = "Evento") 
      */
     private $evento;
     

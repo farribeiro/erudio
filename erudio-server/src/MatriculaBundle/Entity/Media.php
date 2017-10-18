@@ -62,6 +62,7 @@ class Media extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
     * @ORM\Column
     */
     private $peso;
@@ -119,7 +120,7 @@ class Media extends AbstractEditableEntity {
      * @return Traversable habilidades avaliadas
      */
     function getHabilidadesAvaliadas() {
-        $notasFechamento = $this->notas->filter(function($n) {
+        $notasFechamento = $this->getNotas()->filter(function($n) {
            return $n instanceof NotaQualitativa && $n->getAvaliacao()->getFechamentoMedia();
         });
         return $notasFechamento->count()
@@ -127,10 +128,8 @@ class Media extends AbstractEditableEntity {
                 : [];
     }
     
-    function removeNota($nota) {
-        if($this->notas->contains($nota)) {  
-            $this->notas->removeElement($nota);
-        }        
+    function removeNota($nota) {   
+        $this->notas->removeElement($nota);
     }
     
     function resetar() {

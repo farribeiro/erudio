@@ -28,13 +28,14 @@
 
 namespace MatriculaBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use MatriculaBundle\Traits\CalculosMedia;
 use CoreBundle\ORM\AbstractEditableEntity;
 use CursoBundle\Entity\Disciplina;
 use CursoBundle\Entity\DisciplinaOfertada;
-use MatriculaBundle\Traits\CalculosMedia;
 
 /**
 * @ORM\Entity
@@ -60,7 +61,7 @@ class DisciplinaCursada extends AbstractEditableEntity {
     /** 
     * @JMS\Groups({"LIST"}) 
     * @JMS\MaxDepth(depth = 2)
-    * @ORM\ManyToOne(targetEntity = "Matricula") 
+    * @ORM\ManyToOne(targetEntity = "Matricula", inversedBy = "disciplinasCursadas") 
     */
     private $matricula;
     
@@ -71,13 +72,14 @@ class DisciplinaCursada extends AbstractEditableEntity {
     private $disciplina;
     
     /**
-    * @JMS\Groups({"LIST"})  
+    * @JMS\Groups({"LIST"})
     * @ORM\Column(name = "media_final")
     */
     private $mediaFinal;
     
     /**
-    * @JMS\Groups({"LIST"})  
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("float")
     * @ORM\Column(name = "frequencia_total")
     */
     private $frequenciaTotal;
@@ -98,11 +100,17 @@ class DisciplinaCursada extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 3)
+    * @JMS\MaxDepth(depth = 2)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\DisciplinaOfertada")
     * @ORM\JoinColumn(name = "turma_disciplina_id")  
     */
     private $disciplinaOfertada;
+    
+    /**
+    * @JMS\Exclude
+    * @ORM\Column(type = "boolean", name = "insercao_manual")
+    */
+    private $insercaoManual = true;
     
     /**  
     * @JMS\Exclude
@@ -110,9 +118,25 @@ class DisciplinaCursada extends AbstractEditableEntity {
     */
     private $medias;
     
-    function __construct(Matricula $matricula, Disciplina $disciplina) {
+    /**
+    * @JMS\Exclude
+    */
+    private $mediaPreliminar;
+    
+    /**
+    * @JMS\Exclude
+    */
+    private $frequenciaPreliminar;
+    
+    /**
+    * @JMS\Exclude
+    */
+    private $statusPrevisto;
+    
+    function __construct(Matricula $matricula, Disciplina $disciplina, $insercaoManual = false) {
         $this->matricula = $matricula;
         $this->disciplina = $disciplina;
+        $this->insercaoManual = $insercaoManual;
         $this->init();
     }
     
@@ -150,27 +174,96 @@ class DisciplinaCursada extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
+    * @JMS\Type("integer")
     */
     function getAno() {
         return $this->dataEncerramento ? $this->dataEncerramento->format('Y') : date('Y');
     }
-    
+        
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("boolean")
     * @JMS\VirtualProperty
-    */
-    function getMediaPreliminar() {
-        try {
-            return $this->calcularMediaFinal($this);
-        } catch (\Exception $ex) {
-            return null;
-        }
+    */   
+    function getAuto() {
+        return !$this->insercaoManual;
     }
     
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
     function emAberto() {
         return $this->status === self::STATUS_CURSANDO 
                 || $this->status === self::STATUS_EXAME 
                 || is_null($this->mediaFinal);
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\MaxDepth(depth = 2)
+    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Media>")
+    * @JMS\VirtualProperty
+    */
+    function getMedias() {
+        return $this->medias->matching(
+            Criteria::create()->where(
+                Criteria::expr()->eq('ativo', true)
+            )->orderBy(['numero' => 'ASC'])
+        );
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getMediaPreliminar() {
+        if (!$this->mediaPreliminar) {
+            try {
+                $this->mediaPreliminar = $this->calcularMediaFinal($this);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+        return $this->mediaPreliminar;
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getFrequenciaPreliminar() {
+        if (!$this->frequenciaPreliminar) {
+            try {
+                $this->frequenciaPreliminar = $this->calcularFrequenciaTotal($this);
+            } catch (\Exception $ex) {
+                return null;
+            }
+        }
+        return $this->frequenciaPreliminar;
+    }
+    
+    function getSomaNotas() {
+        return array_reduce($this->medias->toArray(), function($acc, $m) {
+            return $acc + $m->getValor();
+        }, 0);
+    }
+    
+    function getTotalFaltas() {
+        return array_reduce($this->medias->toArray(), function($acc, $m) {
+            return $acc + $m->getFaltas();
+        }, 0);
+    }
+    
+    /**
+    * @JMS\Groups({"medias"})
+    * @JMS\VirtualProperty
+    */
+    function getStatusPrevisto() {
+        if (!$this->statusPrevisto) {
+            $this->statusPrevisto = self::determinarStatus($this, true);
+        }
+        return $this->statusPrevisto;
     }
     
     function encerrar($status = null) {
@@ -182,16 +275,16 @@ class DisciplinaCursada extends AbstractEditableEntity {
     }
     
     function atualizarStatus() {
-        $sistemaAvaliacao = $this->getDisciplina()->getEtapa()->getSistemaAvaliacao();
-        if ($this->status === self::STATUS_EXAME) {
-            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
-                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
-        } else if ($sistemaAvaliacao->getExame() === false) {
-            $this->status = $this->mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
-                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
-        } else {
-            $this->status = self::STATUS_EXAME;
+        $this->status = self::determinarStatus($this);
+    }
+    
+    function possuiEquivalente(array $disciplinasOfertadas) {
+         foreach ($disciplinasOfertadas as $disciplinaOfertada) {
+            if ($disciplinaOfertada->getDisciplina() === $this->disciplina) {
+                return true;
+            }
         }
+        return false;
     }
     
     function vincularEnturmacao(Enturmacao $enturmacao, DisciplinaOfertada $disciplinaOfertada) {
@@ -207,8 +300,27 @@ class DisciplinaCursada extends AbstractEditableEntity {
         $this->disciplinaOfertada = null;
     }
     
-    function getMedias() {
-        return $this->medias;
+    static function determinarStatus(DisciplinaCursada $disciplina, $preliminar = false) {
+        $mediaFinal = $preliminar ? $disciplina->getMediaPreliminar() : $disciplina->getMediaFinal();
+        $frequenciaTotal = $preliminar ? $disciplina->getFrequenciaPreliminar() : $disciplina->getFrequenciaTotal();
+        if (is_null($mediaFinal)) {
+            return $disciplina->getStatus();
+        }
+        $sistemaAvaliacao = $disciplina->getDisciplina()->getEtapa()->getSistemaAvaliacao();
+        if ($frequenciaTotal < $sistemaAvaliacao->getFrequenciaAprovacao()) {
+            return self::STATUS_REPROVADO;
+        }
+        if ($disciplina->getStatus() === self::STATUS_EXAME) {
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacaoExame() 
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else if ($sistemaAvaliacao->getExame() === false) {
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+                    ? self::STATUS_APROVADO : self::STATUS_REPROVADO;
+        } else {
+            $status = $mediaFinal >= $sistemaAvaliacao->getNotaAprovacao()
+                    ? self::STATUS_APROVADO : self::STATUS_EXAME;
+        }
+        return $status;
     }
     
     function getMatricula() {

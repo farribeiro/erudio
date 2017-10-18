@@ -30,5 +30,10 @@ namespace MatriculaBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo controle das matrículas de alunos nos cursos.
+ * Permite gerenciar toda a vida escolar dos alunos, como seu histório de disciplinas
+ * cursadas, com suas respectivas notas e frequências, e movimentações realizadas.
+ */
 class MatriculaBundle extends Bundle {
 }

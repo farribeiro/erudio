@@ -28,17 +28,18 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
-use Doctrine\Common\Collections\Criteria;
 
 class DesligamentoFacade extends AbstractFacade {
     
     private $enturmacaoFacade;
     
-    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade) {
+        parent::__construct($doctrine);
         $this->enturmacaoFacade = $enturmacaoFacade;
     }
     
@@ -76,16 +77,17 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::TRANSFERENCIA_EXTERNA:
                 $matricula->setStatus(Matricula::STATUS_TRANCADO);
                 break;
+            case Desligamento::MUDANCA_DE_CURSO:
+                $matricula->setStatus(Matricula::STATUS_MUDANCA_DE_CURSO);
+                break;
             case Desligamento::CANCELAMENTO:
                 $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
-        $this->orm->getManager()->merge($matricula);
-        $this->orm->getManager()->flush();
+        $this->orm->getManager()->flush($matricula);
     }
     
     private function encerrarEnturmacoes(Matricula $matricula) {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq('encerrado', false));
-        $enturmacoes = $matricula->getEnturmacoes()->matching($criteria);
+        $enturmacoes = $matricula->getEnturmacoesEmAndamento();
         foreach ($enturmacoes as $e) {
             $this->enturmacaoFacade->encerrarPorMovimentacao($e, false);
         }

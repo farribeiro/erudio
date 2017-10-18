@@ -47,9 +47,7 @@ class CursoFacade extends AbstractFacade {
                 $qb->andWhere('c.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
             },
             'instituicao' => function(QueryBuilder $qb, $value) {
-                $qb->join('c.instituicao', 'instituicao')
-                   ->andWhere('instituicao.id = :instituicao')
-                   ->setParameter('instituicao', $value);
+                $qb->andWhere('c.instituicao = :instituicao')->setParameter('instituicao', $value);
             }
         ];
     }

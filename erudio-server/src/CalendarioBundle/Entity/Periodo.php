@@ -40,10 +40,11 @@ use CoreBundle\ORM\AbstractEditableEntity;
 class Periodo extends AbstractEditableEntity {
     
     /**
-    * @JMS\Groups({"LIST"}) 
-    * @ORM\Column(nullable = false) 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
+    * @ORM\Column(name = "media", nullable = false)
     */
-    private $media;
+    private $numero;
     
     /**
     * @JMS\Groups({"LIST"}) 
@@ -61,21 +62,40 @@ class Periodo extends AbstractEditableEntity {
     
     /** 
     * @JMS\Groups({"LIST"})
-    * @ORM\ManyToOne(targetEntity = "Calendario") 
-    * @ORM\JoinColumn(name = "calendario_id") 
+    * @JMS\MaxDepth(depth = 2)
+    * @ORM\ManyToOne(targetEntity = "Calendario", inversedBy="periodos") 
+    * @ORM\JoinColumn(name = "calendario_id")
     */
     private $calendario;
     
-    /** 
-    * @JMS\Groups({"LIST"})
-    * @JMS\Type("AvaliacaoBundle\Entity\SistemaAvaliacao")
-    * @ORM\ManyToOne(targetEntity = "AvaliacaoBundle\Entity\SistemaAvaliacao") 
-    * @ORM\JoinColumn(name = "sistema_avaliacao_id") 
-    */
-    private $sistemaAvaliacao;
+    function __construct(Calendario $calendario, $numero, \DateTime $dataInicio, \DateTime $dataTermino) {
+        $this->calendario = $calendario;
+        $this->numero = $numero;
+        $this->dataInicio = $dataInicio;
+        $this->dataTermino = $dataTermino;
+    }
     
+    function getNumero() {
+        return $this->numero;
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\Type("integer")
+    * @JMS\VirtualProperty
+    */
+    function getQuantidadeDiasEfetivos() {
+        return $this->calendario->getQuantidadeDiasEfetivos($this);
+    }
+    
+    /**
+    * @deprecated Usar getNumero()
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("integer")
+    * @JMS\VirtualProperty
+    */
     function getMedia() {
-        return $this->media;
+        return $this->numero;
     }
 
     function getDataInicio() {
@@ -88,10 +108,6 @@ class Periodo extends AbstractEditableEntity {
 
     function getCalendario() {
         return $this->calendario;
-    }
-
-    function getSistemaAvaliacao() {
-        return $this->sistemaAvaliacao;
     }
 
     function setDataInicio($dataInicio) {

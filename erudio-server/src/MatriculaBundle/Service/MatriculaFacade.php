@@ -28,19 +28,20 @@
 
 namespace MatriculaBundle\Service;
 
-use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\Event\EntityEvent;
 use CoreBundle\ORM\Exception\IllegalOperationException;
+use Doctrine\ORM\QueryBuilder;
 use MatriculaBundle\Entity\Matricula;
-use AuthBundle\Entity\Usuario;
-use AuthBundle\Service\UsuarioFacade;
+use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MatriculaFacade extends AbstractFacade {
     
-    private $usuarioFacade;
-    
-    function setUsuarioFacade(UsuarioFacade $usuarioFacade) {
-        $this->usuarioFacade = $usuarioFacade;
+    function __construct(RegistryInterface $doctrine, LoggerInterface $logger, 
+            EventDispatcherInterface $eventDispatcher) {
+        parent::__construct($doctrine, $logger, $eventDispatcher);
     }
     
     function getEntityClass() {
@@ -52,44 +53,63 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'aluno' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
+                $qb->andWhere('aluno.id = :aluno')->setParameter('aluno', $value);
             },
             'aluno_nome' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.aluno', 'aluno')
-                   ->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+                $qb->andWhere('aluno.nome LIKE :nome')->setParameter('nome', '%' . $value . '%');
+            },
+            'aluno_dataNascimento' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('aluno.dataNascimento = :dataNascimento')->setParameter('dataNascimento', $value);
+            },
+            'aluno_deficiente' => function(QueryBuilder $qb, $value) {
+                $operador = $value ? 'NOT' : '';
+                $qb->andWhere("aluno.particularidades IS {$operador} EMPTY");
             },
             'curso' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.curso', 'curso')
-                   ->andWhere('curso.id = :curso')->setParameter('curso', $value);
+                $qb->andWhere('curso.id = :curso')->setParameter('curso', $value);
             },
             'etapa' => function(QueryBuilder $qb, $value) {
-                $qb->leftJoin('m.etapa', 'etapa')
-                   ->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
+                $qb->andWhere('etapa.id IS NULL OR etapa.id = :etapa')->setParameter('etapa', $value);
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
-                $qb->join('m.unidadeEnsino', 'unidadeEnsino')
-                   ->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
+                $qb->andWhere('unidadeEnsino.id = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             },
             'codigo' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.codigo LIKE :codigo')->setParameter('codigo', '%' . $value . '%');
             },
             'status' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('m.status = :status')->setParameter('status', $value);
+            },
+            'enturmado' => function(QueryBuilder $qb, $value) {
+                $operator = $value ? '>' : '=';
+                $qb->andWhere('(SELECT COUNT(en.id) FROM MatriculaBundle:Enturmacao AS en WHERE en.matricula = m'
+                    . " AND en.ativo = true AND en.encerrado = false AND en.concluido = false) {$operator} 0");
             }
-        );
+        ];
     }
     
     function uniqueMap($matricula) {
-        return [
-            [
-                'curso' => $matricula->getCurso()->getId(), 
-                'aluno' => $matricula->getAluno()->getId(), 
-                'status' => Matricula::STATUS_CURSANDO
-            ]
-        ];
+        return [[
+            'curso' => $matricula->getCurso()->getId(), 
+            'aluno' => $matricula->getAluno()->getId(), 
+            'status' => Matricula::STATUS_CURSANDO
+        ]];
+    }
+    
+    protected function selectMap() {
+        return ['m', 'aluno', 'curso', 'unidadeEnsino', 'etapa', 'tipoUnidadeEnsino', 'instituicao'];
+    }
+    
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->join('m.aluno', 'aluno')
+           ->join('m.unidadeEnsino', 'unidadeEnsino')
+           ->join('m.curso', 'curso')
+           ->join('unidadeEnsino.tipo', 'tipoUnidadeEnsino')
+           ->leftJoin('unidadeEnsino.instituicaoPai', 'instituicao')
+           ->leftJoin('m.etapa', 'etapa')
+           ->orderBy('aluno.nome', 'ASC');
     }
     
     protected function beforeCreate($matricula) {
@@ -100,11 +120,8 @@ class MatriculaFacade extends AbstractFacade {
     }
     
     protected function afterCreate($matricula) {
-        $this->gerarUsuario($matricula);
-    }
-    
-    protected function afterUpdate($matricula) {
-        $this->orm->getManager()->flush();
+        $this->orm->getManager()->detach($matricula);
+        EntityEvent::createAndDispatch($matricula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
     private function jaExiste(Matricula $matricula) {
@@ -129,21 +146,10 @@ class MatriculaFacade extends AbstractFacade {
             ->where('m.codigo LIKE :codigo')
             ->setParameter('codigo', $ano . $matricula->getCurso()->getId() . '%');
         $numero = $qb->getQuery()->getSingleScalarResult();
-        if(!$numero) {
+        if (!$numero) {
             $numero = $ano . $matricula->getCurso()->getId() . '00000';
         }
         $matricula->definirCodigo($numero + 1);
-    }
-    
-    private function gerarUsuario($matricula) {
-        $pessoa = $matricula->getAluno();
-        if (!$pessoa->getUsuario()) {
-            $usuario = Usuario::criarUsuario($pessoa, $matricula->getCodigo());
-            $this->usuarioFacade->create($usuario);
-            $matricula->getAluno()->setUsuario($usuario);
-            $this->orm->getManager()->merge($pessoa);
-            $this->orm->getManager()->flush();
-        }
     }
     
 }

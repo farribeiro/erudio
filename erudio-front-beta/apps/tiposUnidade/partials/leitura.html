@@ -1,0 +1,6 @@
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && !ctrl.novo">
+    <strong>Nome:&nbsp;</strong> {{ tipo.nome }} - {{ tipo.sigla }}
+</div>
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && ctrl.novo">
+    Você não tem permissão para criar novos tipos de unidade.
+</div>

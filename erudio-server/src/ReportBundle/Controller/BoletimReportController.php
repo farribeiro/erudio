@@ -29,26 +29,30 @@
 namespace ReportBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use MatriculaBundle\Entity\Enturmacao;
-use MatriculaBundle\Entity\DisciplinaCursada;
+use CursoBundle\Service\TurmaFacade;
+use MatriculaBundle\Service\EnturmacaoFacade;
+use AvaliacaoBundle\Service\ConceitoFacade;
 
 class BoletimReportController extends Controller {
     
-    function getEnturmacaoFacade() {
-        return $this->get('facade.matricula.enturmacoes');
-    }
-    
-    function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
-    }
-    
-    function getConceitoFacade() {
-        return $this->get('facade.avaliacao.conceitos');
+    private $turmaFacade;
+    private $enturmacaoFacade;
+    private $conceitoFacade;
+    private $logger;
+            
+    function __construct(TurmaFacade $turmaFacade, EnturmacaoFacade $enturmacaoFacade, 
+            ConceitoFacade $conceitoFacade, LoggerInterface $logger) {
+        $this->turmaFacade = $turmaFacade;
+        $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->conceitoFacade = $conceitoFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -66,7 +70,7 @@ class BoletimReportController extends Controller {
     */
     function individualAction(Request $request) {
         try {
-            $enturmacao = $this->getEnturmacaoFacade()->find($request->query->getInt('enturmacao'));
+            $enturmacao = $this->enturmacaoFacade->find($request->query->getInt('enturmacao'));
             $turma = $enturmacao->getTurma();
             $template = $this->isSistemaQualitativo($turma->getEtapa()) 
                 ? 'reports/boletim/qualitativo.pdf.twig'
@@ -76,12 +80,13 @@ class BoletimReportController extends Controller {
                 'turma' => $turma,
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
-                'boletins' => $this->gerarBoletim($enturmacao),
+                'boletins' => [$this->gerarBoletim($enturmacao)],
+                'media' => $request->query->getInt('media', 1),
                 'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                    ? $this->conceitoFacade->findAll() : [],
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -101,10 +106,9 @@ class BoletimReportController extends Controller {
     */
     function turmaAction(Request $request) {
         try {
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             $enturmacoes = $turma->getEnturmacoes();
             $boletins = [];
-            $this->gerarBoletim($enturmacoes[0]);
             foreach ($enturmacoes as $e) {
                 $boletins[] = $this->gerarBoletim($e);
             }
@@ -116,26 +120,20 @@ class BoletimReportController extends Controller {
                 'turma' => $turma,
                 'quantidadeMedias' => $turma->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias(),
                 'unidadeRegime' => $turma->getEtapa()->getSistemaAvaliacao()->getRegime()->getUnidade(),
+                'media' => $request->query->getInt('media', 1),
                 'boletins' => $boletins,
-                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) 
-                    ? $this->getConceitoFacade()->findAll() : [],
+                'conceitos' => $this->isSistemaQualitativo($turma->getEtapa()) ? $this->conceitoFacade->findAll() : [],
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
     
-    private function gerarBoletim(Enturmacao $enturmacao) { 
-        $disciplinas = $enturmacao->getDisciplinasCursadas();
-        $disciplinasCursadas = array();
-        foreach ($disciplinas as $disciplina) {
-            $status = $disciplina->getStatus();
-            if ($status == DisciplinaCursada::STATUS_CURSANDO) { array_push($disciplinasCursadas, $disciplina); }
-        }
+    private function gerarBoletim(Enturmacao $enturmacao) {
         return [
             'matricula' => $enturmacao->getMatricula(), 
-            'disciplinas' => $disciplinasCursadas
+            'disciplinas' => $enturmacao->getDisciplinasCursadas()
         ];
     }
     

@@ -30,5 +30,9 @@ namespace CalendarioBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Bundle responsável pelo controle de calendários escolares.
+ * Permite criação e extensão de calendários por instituição e por unidade de ensino.
+ */
 class CalendarioBundle extends Bundle {
 }

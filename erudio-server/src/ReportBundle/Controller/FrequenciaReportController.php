@@ -34,24 +34,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use ReportBundle\Util\DateTimeUtil;
+use CursoBundle\Service\TurmaFacade;
+use CursoBundle\Service\DisciplinaOfertadaFacade;
+use AulaBundle\Service\AulaFacade;
 
 class FrequenciaReportController extends Controller {
     
-    function getAulaFacade() {
-        return $this->get('facade.calendario.aulas');
-    }
+    private $turmaFacade;
+    private $disciplinaOfertadaFacade;
+    private $aulaFacade;
+    private $logger;
     
-    function getDiaFacade() {
-        return $this->get('facade.calendario.dias');
-    }
-    
-    function getDisciplinaOfertadaFacade() {
-        return $this->get('facade.curso.disciplinas_ofertadas');
-    }
-    
-    function getTurmaFacade() {
-        return $this->get('facade.curso.turmas');
+    function __construct(TurmaFacade $turmaFacade, DisciplinaOfertadaFacade $disciplinaOfertadaFacade, 
+            AulaFacade $aulaFacade, LoggerInterface $logger) {
+        $this->turmaFacade = $turmaFacade;
+        $this->disciplinaOfertadaFacade = $disciplinaOfertadaFacade;
+        $this->aulaFacade = $aulaFacade;
+        $this->logger = $logger;
     }
     
     /**
@@ -70,7 +71,7 @@ class FrequenciaReportController extends Controller {
     function diarioPorDisciplinaAction(Request $request) {
         try {
             $mes = $request->query->getInt('mes', 1);
-            $disciplina = $this->getDisciplinaOfertadaFacade()->find(
+            $disciplina = $this->disciplinaOfertadaFacade->find(
                 $request->query->getInt('disciplina')
             );
             return $this->render('reports/frequencia/diarios.pdf.twig', [
@@ -81,7 +82,7 @@ class FrequenciaReportController extends Controller {
                 'diarios' => [ $this->gerarDiarioDisciplina($disciplina, $mes) ]
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -101,7 +102,7 @@ class FrequenciaReportController extends Controller {
     */
     function diariosPorTurmaAction(Request $request) {
         try {
-            $turma = $this->getTurmaFacade()->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
             $mes = $request->query->getInt('mes', 1);
             $auto = $request->query->get('auto', true);
             $diarios = $this->gerarDiariosTurma($turma, $mes, $auto);
@@ -113,7 +114,7 @@ class FrequenciaReportController extends Controller {
                 'diarios' => $diarios
             ]);
         } catch (\Exception $ex) {
-            $this->get('logger')->error($ex->getMessage());
+            $this->logger->error($ex->getMessage());
             return new Response($ex->getMessage(), 500);
         }
     }
@@ -130,7 +131,6 @@ class FrequenciaReportController extends Controller {
     private function gerarDiariosTurma($turma, $mes, $auto = true) {
         $diarios = [];
         if ($turma->getEtapa()->getFrequenciaUnificada()) {
-            $this->get('logger')->info('>> BINGO');
             $modelos = $this->gerarModelosDiariosPorProfessor($turma);
             foreach ($modelos as $modelo) {
                 $diarios[] = $this->gerarDiarioMultidisciplina(
@@ -177,7 +177,7 @@ class FrequenciaReportController extends Controller {
         if ($autoPreenchimento) {
             $aulas = array_map(
                function($a) { return $a->getDia(); },
-               $this->getAulaFacade()->findAll(['mes' => $mes, 'disciplina' => $disciplina->getId()])
+               $this->aulaFacade->findAll(['mes' => $mes, 'disciplina' => $disciplina->getId()])
            );
         }
         $professor = $disciplina->getProfessores()->count() > 0 
@@ -203,7 +203,7 @@ class FrequenciaReportController extends Controller {
         $aulas = [];
         if ($autoPreenchimento) {
             $disciplinaIds = array_map(function($d) { return $d->getId(); }, $disciplinas); 
-            $aulasDisciplina = $this->getAulaFacade()->findAll(['mes' => $mes, 'disciplinas' => $disciplinaIds]);
+            $aulasDisciplina = $this->aulaFacade->findAll(['mes' => $mes, 'disciplinas' => $disciplinaIds]);
             foreach ($aulasDisciplina as $a) {
                 if (array_key_exists($a->getDia()->getId(), $aulas) == false) {
                     $aulas[$a->getDia()->getId()] = $a->getDia();

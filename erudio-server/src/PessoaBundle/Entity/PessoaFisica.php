@@ -29,7 +29,6 @@
 namespace PessoaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use PessoaBundle\Entity\Pessoa;
 use PessoaBundle\Entity\EstadoCivil;
@@ -86,6 +85,13 @@ class PessoaFisica extends Pessoa {
     * @ORM\Column(name = "nacionalidade_tipo") 
     */
     private $nacionalidade;
+    
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Pais") 
+    * @ORM\JoinColumn(name = "pais_nacionalidade_id", referencedColumnName = "id") 
+    */
+    private $paisOrigem;
     
     /**
     * @JMS\Groups({"DETAILS"})
@@ -165,7 +171,7 @@ class PessoaFisica extends Pessoa {
     private $alfabetizado = false;
     
     /**
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"DETAILS", "DEFICIENCIAS"})
     * @ORM\ManyToMany(targetEntity="Particularidade")
     * @ORM\JoinTable(name="sme_pessoa_fisica_particularidade",
     *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
@@ -190,16 +196,25 @@ class PessoaFisica extends Pessoa {
      */
     private $responsavelNome;
     
+    function __construct() {
+        parent::__construct();
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getCodigo() {
+        $anoCadastro = $this->getDataCadastro() ? $this->getDataCadastro()->format('y') : date('y');
+        return "{$this->getId()}-{$anoCadastro}";
+    }
+    
     function getResponsavelNome() {
         return $this->responsavelNome;
     }
     
     function setResponsavelNome($responsavelNome) {
         $this->responsavelNome = $responsavelNome;
-    }
-    
-    public function __construct() {
-        parent::__construct();
     }
     
     function getIdade() {
@@ -237,11 +252,14 @@ class PessoaFisica extends Pessoa {
     function getNacionalidade() {
         return $this->nacionalidade;
     }
+    
+    function getPaisOrigem() {
+        return $this->paisOrigem;
+    }
 
     function getCertidaoNascimento() {
         return $this->certidaoNascimento;
     }
-    
         
     function getDataExpedicaoCertidaoNascimento() {
         return $this->dataExpedicaoCertidaoNascimento;
@@ -318,6 +336,10 @@ class PessoaFisica extends Pessoa {
     function setNacionalidade($nacionalidade) {
         $this->nacionalidade = $nacionalidade;
     }
+    
+    function setPaisOrigem($paisOrigem) {
+        $this->paisOrigem = $paisOrigem;
+    }
 
     function setCertidaoNascimento($certidaoNascimento) {
         $this->certidaoNascimento = $certidaoNascimento;
@@ -359,7 +381,7 @@ class PessoaFisica extends Pessoa {
         $this->carteiraTrabalhoEstado = $carteiraTrabalhoEstado;
     }
     
-    function setParticularidades(ArrayCollection $particularidades) {
+    function setParticularidades($particularidades) {
         $this->particularidades = $particularidades;
     }
     

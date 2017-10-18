@@ -72,17 +72,17 @@ abstract class AbstractEditableEntity extends AbstractEntity {
     
     function merge($entity) {
         $this->dataModificacao = new \DateTime();
-        $class = new \ReflectionClass($entity);
+        $class = new \ReflectionClass($this);
         $methods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
         $size = count($methods);
         for($i = 0; $i < $size; $i++) {
             if(strpos($methods[$i]->name, 'set') === 0) {
                 $getter = $class->getMethod(str_replace('set', 'get', $methods[$i]->name));
                 $value = $getter ? $getter->invoke($entity) : null;
-                if(is_array($value)) {
+                if (is_array($value)) {
                     $value = new ArrayCollection($value);
                 }
-                if($value !== null) {
+                if (!is_null($value)) {
                     $methods[$i]->invoke($this, $value);
                 }
             }

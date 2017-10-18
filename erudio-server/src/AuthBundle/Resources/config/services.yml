@@ -1,31 +1,21 @@
-parameters:
-    user_provider.class: AuthBundle\Service\UserProvider
-    md5_encoder.class: AuthBundle\Service\MD5Encoder
-
 services:
-    user_provider:
-      class: "%user_provider.class%"
-      arguments: ["@doctrine"]
-      
-    md5_encoder:
-      class: "%md5_encoder.class%"
-      
-    facade.auth.usuarios:
-      class: AuthBundle\Service\UsuarioFacade
-      arguments: ["@doctrine"]
     
-    facade.auth.atribuicoes:
-      class: AuthBundle\Service\AtribuicaoFacade
-      arguments: ["@doctrine"]
-      
-    facade.auth.permissoes:
-      class: AuthBundle\Service\PermissaoFacade
-      arguments: ["@doctrine"]
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
     
-    facade.auth.grupos:
-      class: AuthBundle\Service\GrupoFacade
-      arguments: ["@doctrine"]
-     
-    facade.auth.permissoesGrupo:
-      class: AuthBundle\Service\GrupoPermissaoFacade
-      arguments: ["@doctrine"]
+    AuthBundle\:
+        resource: '../../{Service,Listener}'
+       
+    AuthBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]
+          
+    AuthBundle\Controller\AuthenticationController:
+        public: true
+        tags: ['controller.service_arguments']
+    

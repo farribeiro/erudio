@@ -100,7 +100,7 @@
                         </div>
                         <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin && !turma.id">
                             <i class="material-icons prefix">account_balance</i>
-                            <select id="unidade"  data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
+                            <select id="unidade" data-ng-model="turma.unidadeEnsino.id" data-ng-disabled="turma.id" required>
                                 <option disabled selected></option>
                                 <option value="{{ unidade.id }}" data-ng-selected="verificaUnidade(unidade.id)" data-ng-repeat="unidade in unidades">{{unidade.nomeCompleto | uppercase }}</option>
                             </select>
@@ -142,9 +142,9 @@
                         </div>                                
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">event</i>
-                            <select id="calendarioTurmaForm" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
+                            <select id="calendarioTurmaForm" data-ng-change="buscarPeriodos(turma.calendario.id, turma.etapa.id)" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
                                 <option value disabled selected></option>
-                                <option value="{{ calendario.id }}" data-ng-selected="verificaCalendario(calendario.id) || calendario.instituicao.id === instituicao" data-ng-repeat="calendario in calendarios">{{ calendario.nome | uppercase }}</option>
+                                <option value="{{ calendario.id }}" data-ng-selected="verificaCalendario(calendario.id)" data-ng-repeat="calendario in calendarios">{{ calendario.nome | uppercase }}</option>
                             </select>
                             <label for="calendarioTurmaForm">Calendário Escolar*</label>
                         </div>  
@@ -158,11 +158,23 @@
                             </select>
                             <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
                         </div>
+                        <div class="input-field col s12 m12 l6" data-ng-hide="integral">
+                            <i class="material-icons prefix">view_module</i>
+                            <select id="periodoTurmaFormulario" data-ng-model="turma.periodo.id"  data-ng-disabled="!isAdmin && turma.periodo.id" required>
+                                <option></option>
+                                <option value="{{ periodo.id }}" data-ng-selected="periodo.id === turma.periodo.id" data-ng-repeat="periodo in periodos">{{ periodo.numero }}º {{ periodoLabel }}</option>
+                            </select>
+                            <label for="periodoTurmaFormulario">Período*</label>
+                        </div>
                     </div>
-                    <div class="row" data-ng-hide="integral">
-                        <div class="col s12" style="margin-bottom: 10px;">
-                            <div class="subtitulo-typo" style="font-size: 25px;">Disciplinas Ofertadas:</div>
-                            <div class="chip d{{ disciplina.id }}" id="{{ disciplina.id }}" style="cursor: pointer; width: initial; margin-right: 5px;" data-ng-repeat="disciplina in disciplinas" data-ng-click="situacaoDisciplina(disciplina)">{{ disciplina.nomeExibicao }}</div>
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6" data-ng-hide="integral">
+                            <i class="material-icons prefix">view_quilt</i>
+                            <select id="disciplinasTurmaFormulario" data-ng-model="agrupamentoSelecionado.id" data-ng-change="buscaDisciplinas(agrupamentoSelecionado.id)" data-ng-disabled="turma.id" required>
+                                <option></option>
+                                <option value="{{ agrupamento.id }}" data-ng-selected="agrupamento.id === agrupamentoSelecionado.id" data-ng-repeat="agrupamento in agrupamentos">{{ agrupamento.nome | uppercase }}</option>
+                            </select>
+                            <label for="disciplinasTurmaFormulario">Módulo*</label>
                         </div>
                     </div>
                     <div data-ng-show="verificarEscrita()" class="row end-card">

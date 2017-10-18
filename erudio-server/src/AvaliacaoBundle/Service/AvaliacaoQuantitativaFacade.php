@@ -51,12 +51,11 @@ class AvaliacaoQuantitativaFacade extends AbstractFacade {
                    ->andWhere('disciplina.turma = :turma')->setParameter('turma', $value);
             },
             'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.disciplina', 'disciplina')
-                   ->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
+                $qb->andWhere('a.disciplina = :disciplina')->setParameter('disciplina', $value);
             },
-            'dia' => function(QueryBuilder $qb, $value) {
-                $qb->join('a.aulaEntrega', 'aula')
-                   ->andWhere('aula.dia = :dia')->setParameter('dia', $value);
+            'dataEntrega' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('a.dataEntrega LIKE :data')
+                   ->setParameter('data', $value . '%');
             },
             'media' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('a.media = :media')->setParameter('media', $value);
@@ -64,7 +63,12 @@ class AvaliacaoQuantitativaFacade extends AbstractFacade {
         );
     }
     
-    function beforeRemove($avaliacao) {
+    protected function prepareQuery(QueryBuilder $qb, array $params) {
+        $qb->addOrderBy('a.dataEntrega', 'DESC');
+    }
+
+    
+    protected function beforeRemove($avaliacao) {
         $notas = $this->orm->getRepository('MatriculaBundle:NotaQuantitativa')->findBy(array('avaliacao' => $avaliacao));     
         foreach($notas as $nota) {
             $nota->getMedia()->removeNota($nota);

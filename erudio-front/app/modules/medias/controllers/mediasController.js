@@ -27,7 +27,7 @@
 (function () {
     var mediaModule = angular.module('mediaModule', ['servidorModule', 'mediaDirectives','erudioConfig']);
     //DEFINIÇÃO DO CONTROLADOR
-    mediaModule.controller('MediasController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$rootScope', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $rootScope) {
+    mediaModule.controller('MediasController', ['$scope', 'Servidor', '$timeout', '$templateCache', 'ErudioConfig', '$rootScope', 'Restangular', function ($scope, Servidor, $timeout, $templateCache, ErudioConfig, $rootScope, Restangular) {
         //VERIFICA PERMISSÕES E LIMPA CACHE
         $templateCache.removeAll(); $scope.config = ErudioConfig; $scope.cssUrl = ErudioConfig.extraUrl;
         $scope.escrita = Servidor.verificaEscrita('MEDIAS'); $scope.isAdmin = Servidor.verificaAdmin();
@@ -61,7 +61,7 @@
         
         //REINICIA A BUSCA
         $scope.reiniciarBusca = function () {
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; }
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; if ($scope.isAdmin) { $scope.cursos = []; } $scope.umaMediaEtapa = true;
             $scope.nomeUnidade = null; $scope.turmaBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.etapas = []; $scope.disciplinasTurma = [];
             $scope.notasBusca = {curso: {id:null}, etapa:{id:null}, turma:{id:null}, media:{id:null}, disciplina:{id:null}}; $scope.turmas = []; $scope.medias = [];
             $timeout(function () { $('select').material_select('destroy'); $('select').material_select(); }, 100);
@@ -83,9 +83,10 @@
                 });
             } else {
                 if (Servidor.verificarPermissoes('TURMA')) {
-                    var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    //var promise = Servidor.buscar('users',{username:sessionStorage.getItem('username')});
+                    var promise = Servidor.buscarUm('users',sessionStorage.getItem('pessoaId'));
                     promise.then(function(response) {
-                        var user = response.data[0]; $scope.atribuicoes = user.atribuicoes;
+                        var user = response.data; $scope.atribuicoes = user.atribuicoes;
                         $timeout(function () {
                             for (var i=0; i<$scope.atribuicoes.length; i++) {
                                 if ($scope.atribuicoes[i].instituicao.instituicaoPai !== undefined) { $scope.unidades.push($scope.atribuicoes[i].instituicao); } 
@@ -101,20 +102,23 @@
         };
         
         //CARREGA MEDIAS
-        $scope.medias = [];
+        $scope.medias = []; $scope.mostraMedia = 1; $scope.umaMediaEtapa = true;
         $scope.buscarMedias = function (id) {
             var promise = Servidor.buscarUm('etapas',id);
             promise.then(function(response){
-                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.turmaBusca.media.id = null;
+                if (response.data.sistemaAvaliacao.quantidadeMedias === 1) { $scope.umaMediaEtapa = true; } else { $scope.umaMediaEtapa = false; }
+                $scope.tipoAvaliacao = response.data.sistemaAvaliacao.tipo; $scope.mostraMedia = response.data.sistemaAvaliacao.quantidadeMedias-1; $scope.turmaBusca.media.id = null;
                 if (response.data.frequenciaUnificada) { $scope.frequenciaUnificada = true; } else { $scope.frequenciaUnificada = false; }
                 var unidade = response.data.sistemaAvaliacao.regime.unidade; var medias = [];
                 var qtdeMedias = response.data.sistemaAvaliacao.quantidadeMedias;
-                for (var i=0; i<qtdeMedias; i++) { 
-                    var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
-                    if (i === qtdeMedias-1) { 
-                        $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                if (qtdeMedias > 1) {
+                    for (var i=0; i<qtdeMedias; i++) { 
+                        var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
+                        if (i === qtdeMedias-1) { 
+                            $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
+                        }
                     }
-                }
+                } else { $scope.turmaBusca.media.id = 1; }
             });
         };
         
@@ -172,20 +176,20 @@
             $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso();
             if ($scope.ativo === 'faltas') {
                 if ($scope.frequenciaUnificada) {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null) {
                         var promise = Servidor.buscar('medias/faltas', {'turma': $scope.turmaBusca.turma.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
-                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
+                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i].plain()); }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); }); 
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
                             if ($scope.enturmacoes.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
                         });
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 } else {
-                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                    if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
-                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i]); }
+                            for (var i=0; i<response.data.length; i++) { $scope.enturmacoes.push(response.data[i].plain()); }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); });
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
                             if (response.data.length === 0) { Servidor.customToast("Não há alunos matriculados nesta turma."); }
@@ -193,11 +197,11 @@
                     } else { Servidor.customToast('Preencha todos os parâmetros de busca para encontrar os alunos.'); $scope.fechaProgresso(); }
                 }
             } else {
-                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.media.id !== null && $scope.turmaBusca.disciplina.id !== null) {
+                if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null && $scope.turmaBusca.disciplina.id !== null) {
                         var promise = Servidor.buscar('medias', {'disciplinaOfertada': $scope.turmaBusca.disciplina.id, 'numero': $scope.turmaBusca.media.id});
                         promise.then(function (response) {
                             for (var i=0; i<response.data.length; i++) { 
-                                if (response.data[i].valor === undefined) { response.data[i].valor = null; } $scope.enturmacoesNotas.push(response.data[i]);
+                                if (response.data[i].valor === undefined) { response.data[i].valor = null; } $scope.enturmacoesNotas.push(response.data[i].plain());
                             }
                             $('label').click(function(){ var id = $(this).attr('for'); $('#'+id).trigger('click'); });
                             $timeout(function(){Servidor.verificaLabels(); $scope.fechaProgresso();},500);
@@ -308,6 +312,7 @@
                             }
                             notaQualitativa.habilidadesAvaliadas = notas;
                             $timeout(function(){
+                                if (notaQualitativa.avaliacao.disciplina.professores !== undefined) { delete notaQualitativa.avaliacao.disciplina.professores; }
                                 var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
                                 promiseNota.then(function(response){ 
                                     var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
@@ -391,11 +396,13 @@
                     }
                 });
             } else {
+                var efaltas = Restangular.copy($scope.enturmacoes);
                 $('.input-col:not(.ng-hide)').each(function(i){
+                    delete efaltas[i].disciplinaCursada;
                     var val = $(this).val();
-                    if (val !== "" && val !== null && val !== undefined) { $scope.enturmacoes[i].faltas = parseInt(val); }
+                    if (val !== "" && val !== null && val !== undefined) { efaltas[i].faltas = parseInt(val); }
                 }).promise().done(function(){ 
-                    var result = Servidor.salvarLote({medias: $scope.enturmacoes},'medias','Faltas');
+                    var result = Servidor.salvarLote({medias: efaltas},'medias','Faltas');
                     if (!result) { $scope.fechaProgresso(); } else { result.then(function(){$scope.fechaProgresso();}); }
                 });
             }
@@ -404,9 +411,11 @@
         //SALVA NOTAS
         $scope.salvarNotas = function (){
             var notas = []; $scope.mostraProgresso();
+            var eNotas = Restangular.copy($scope.enturmacoesNotas);
             $('.input-col').each(function(i){
+                delete eNotas[i].disciplinaCursada;
                 var val = $(this).val(); if (val.indexOf(",") !== -1) { val = val.replace(",","."); }
-                if (val !== "" && val !== null && val !== undefined) { $scope.enturmacoesNotas[i].valor = parseFloat(val); notas.push($scope.enturmacoesNotas[i]); }
+                if (val !== "" && val !== null && val !== undefined) { eNotas[i].valor = parseFloat(val); notas.push(eNotas[i]); }
                 //else if (val === "" || val === null || val === undefined) { val = null; $scope.enturmacoesNotas[i].valor = val; notas.push($scope.enturmacoesNotas[i]); }
             }).promise().done(function(){ 
                 var result = Servidor.salvarLote({medias: notas},'medias','Notas');

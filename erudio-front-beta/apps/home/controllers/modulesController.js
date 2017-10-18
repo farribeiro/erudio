@@ -1,6 +1,111 @@
 (function (){
     //LISTANDO TODOS OS MODULOS
-    var modules = angular.module('modules',['erudioConfig', 'util', 'structure', 'validator', 'shared', 'home', 'instituicoes','instituicoesForm','tipoUnidade','tipoUnidadeForm',
-    'unidades','unidadesForm','regimes','regimesForm','cursos','cursosForm','etapas','etapasForm','disciplinas','disciplinasForm','modulos','modulosForm','turnos','turnosForm',
-    'modelosGradeHorario','modelosGradeHorarioForm','quadroHorarios','quadroHorariosForm']);
+    var configs = [
+        'erudioConfig',
+        'auth',
+        'rest',
+        'util',
+        'structure',
+        'validator',
+        'shared',
+        'home'
+    ];
+    
+    var controllers = [
+        'InstituicaoController',
+        'InstituicaoFormController',
+        'TipoUnidadeController',
+        'TipoUnidadeFormController',
+        'UnidadeController',
+        'UnidadeFormController',
+        'RegimeController',
+        'RegimeFormController',
+        'CursoController',
+        'CursoFormController',
+        'EtapaController',
+        'EtapaFormController',
+        'DisciplinaController',
+        'DisciplinaFormController',
+        'ModuloController',
+        'ModuloFormController',
+        'TurnoController',
+        'TurnoFormController',
+        'ModeloGradeHorarioController',
+        'ModeloGradeHorarioFormController',
+        'QuadroHorarioController',
+        'QuadroHorarioFormController',
+        'CalendarioController',
+        'CalendarioFormController',
+        'CalendarioViewController',
+        'EventoController',
+        'EventoFormController',
+        'HistoricoController',
+        'HistoricoViewController',
+        'teste'
+    ];
+    
+    var directives = [
+        'turmaDirectives',
+        'cargosDirectives',
+        'tipoAvaliacaoDirectives',
+        'habilidadeDirectives',
+        'avaliacaoDirectives',
+        'grupoDirectives',
+        'grupoPermissaoDirectives',
+        'usuarioDirectives'
+    ];
+    
+    var services = [
+        'BaseService',
+        'EnderecoService',
+        'TelefoneService',
+        'InstituicaoService',
+        'TipoUnidadeService',
+        'CursoOfertadoService',
+        'UnidadeService',
+        'RegimeService',
+        'ModalidadeEnsinoService',
+        'CursoService',
+        'EtapaService',
+        'ModuloService',
+        'SistemaAvaliacaoService',
+        'ModeloGradeHorarioService',
+        'QuadroHorarioService',
+        'DisciplinaService',
+        'TurnoService',
+        'CalendarioService',
+        'EventoService',
+        'PeriodoService',
+        'TurmaService',
+        'MatriculaService',
+        'EnturmacaoService',
+        'TransferenciaService',
+        'DesligamentoService',
+        'MovimentacaoService',
+        'EstadoCivilService',
+        'RacaService',
+        'NacionalidadeService',
+        'ParticularidadeService',
+        'NecessidadeEspecialService',
+        'PessoaService',
+        'GrupoService',
+        'CargoService',
+        'TipoAvaliacaoService',
+        'HabilidadeService',
+        'AvaliacaoService',
+        'GrupoPermissaoService',
+        'GrupoService',
+        'PermissaoGrupoService',
+        'AtribuicaoService',
+        'PermissaoService',
+        'UsuarioService',
+        'EstadoService',
+        'CidadeService',
+        'EtapaCursadaService',
+        'DisciplinaCursadaService',
+        'MediaService'
+    ];
+    
+    var todosModulos = configs.concat(services,controllers,directives);
+    var modules = angular.module('modules',todosModulos);
 })();

@@ -28,6 +28,7 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use MatriculaBundle\Entity\Matricula;
@@ -42,7 +43,8 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     
     private $mediaFacade;
     
-    function setMediaFacade(MediaFacade $mediaFacade) {
+    function __construct(RegistryInterface $doctrine, MediaFacade $mediaFacade) {
+        parent::__construct($doctrine);
         $this->mediaFacade = $mediaFacade;
     }
     
@@ -55,7 +57,7 @@ class DisciplinaCursadaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'dataCadastro' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('d.dataCadastro LIKE :dataCadastro')->setParameter('dataCadastro', '%' . $value . '%');
             },
@@ -81,45 +83,78 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                     ->andWhere('m.id = :matricula')->setParameter('matricula', $value);
             },
             'disciplinaOfertada' => function(QueryBuilder $qb, $value) {
-                $qb->join('d.disciplinaOfertada', 'disciplinaOfertada')
-                   ->andWhere('disciplinaOfertada.id = :disciplinaOfertada')
+                $qb->andWhere('d.disciplinaOfertada = :disciplinaOfertada AND d.status <> :statusIncompleto')
+                   ->setParameter('statusIncompleto', DisciplinaCursada::STATUS_INCOMPLETO)
                    ->setParameter('disciplinaOfertada', $value);
             }
-        );
+        ];
     }
     
-    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa) {
+    function uniqueMap($disciplina) {
+        return [[
+            'matricula' => $disciplina->getMatricula(),
+            'disciplina' => $disciplina->getDisciplina(),
+            'status' => DisciplinaCursada::STATUS_CURSANDO
+        ]];
+    }
+    
+    function findAprovadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findFinalizadas(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_APROVADO, 
+            DisciplinaCursada::STATUS_REPROVADO,
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findEmAndamento(Matricula $matricula, Etapa $etapa) {
+        return $this->findByMatriculaAndEtapa($matricula, $etapa, [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ]);
+    }
+    
+    function findByMatriculaAndEtapa(Matricula $matricula, Etapa $etapa, $status = null) {
+        $statusIn = $status ? $status : [
+            DisciplinaCursada::STATUS_CURSANDO, 
+            DisciplinaCursada::STATUS_EXAME, 
+            DisciplinaCursada::STATUS_DISPENSADO
+        ];
         return $this->orm->getRepository($this->getEntityClass())->createQueryBuilder('d')
             ->join('d.matricula', 'matricula')->join('d.disciplina', 'disciplina')->join('disciplina.etapa', 'etapa')
             ->where('d.ativo = true')
             ->andWhere('matricula.id = :matricula')->setParameter('matricula', $matricula->getId())
-            ->andWhere('d.status IN (:status)')->setParameter('status', [
-                DisciplinaCursada::STATUS_CURSANDO, 
-                DisciplinaCursada::STATUS_DISPENSADO
-            ])
+            ->andWhere('d.status IN (:status)')->setParameter('status', $statusIn)
             ->andWhere('etapa.id = :etapa')->setParameter('etapa', $etapa->getId())
             ->getQuery()->getResult();
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('d.disciplina', 'disciplina')->leftJoin('d.enturmacao', 'enturmacao')->orderBy('d.disciplina');
+        $qb->join('d.disciplina', 'disciplina')
+           ->leftJoin('d.enturmacao', 'enturmacao')
+           ->addOrderBy('disciplina.nomeExibicao', 'ASC');
     }
     
     protected function afterCreate($disciplinaCursada) {
-        if ($disciplinaCursada->getStatus() == DisciplinaCursada::STATUS_CURSANDO) {
+        if ($disciplinaCursada->getStatus() === DisciplinaCursada::STATUS_CURSANDO) {
             $this->gerarMedias($disciplinaCursada);
         }
     }
     
-    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
-        $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
-        for ($i = 1; $i <= $numeroMedias; $i++) {
-            $media = new Media($disciplinaCursada, $i);
-            $this->mediaFacade->create($media);
+    protected function beforeRemove($disciplinaCursada) {
+        if ($disciplinaCursada->getAuto() && $disciplinaCursada->getEnturmacao()) {
+            throw new IllegalOperationException('Disciplinas cursadas geradas pelo sistema não podem ser excluídas');
         }
     }
-    
-    private function encerrar(DisciplinaCursada $disciplina, $status = null) {
+
+    function encerrar(DisciplinaCursada $disciplina, $status = null) {
         if ($status) {
             $disciplina->encerrar($status);
         } else {
@@ -132,7 +167,15 @@ class DisciplinaCursadaFacade extends AbstractFacade {
                 $disciplina->encerrar();
             }
         }
-        $this->orm->flush();
+        $this->orm->getManager()->flush();
+    }
+    
+    private function gerarMedias(DisciplinaCursada $disciplinaCursada) {
+        $numeroMedias = $disciplinaCursada->getDisciplina()->getEtapa()->getSistemaAvaliacao()->getQuantidadeMedias();
+        for ($i = 1; $i <= $numeroMedias; $i++) {
+            $media = new Media($disciplinaCursada, $i);
+            $this->mediaFacade->create($media);
+        }
     }
     
     private function criarMediaExame(DisciplinaCursada $disciplina) {

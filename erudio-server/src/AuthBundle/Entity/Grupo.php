@@ -30,6 +30,7 @@ namespace AuthBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use JMS\Serializer\Annotation as JMS;
+use Doctrine\Common\Collections\Criteria;
 use CoreBundle\ORM\AbstractEditableEntity;
 
 /**
@@ -44,12 +45,29 @@ class Grupo extends AbstractEditableEntity {
     */
     private $nome;
     
+    /**
+    * @JMS\Exclude 
+    * @ORM\OneToMany(targetEntity = "PermissaoGrupo", mappedBy = "grupo")
+    */
+    private $permissoes;
+   
     function getNome() {
         return $this->nome;
     }
 
     function setNome($nome) {
         return $this->nome = $nome;
+    }
+    
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<AuthBundle\Entity\PermissaoGrupo>")
+    */
+    function getPermissoes() {
+        return $this->permissoes->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
 
 }

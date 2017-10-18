@@ -67,6 +67,10 @@ abstract class AbstractEntity {
         $this->ativo = false;
     }
     
+    function getRepository() {
+        return str_replace('\\Entity\\', ':', get_class($this));
+    }
+    
     function __toString() {
         return get_class($this) . ':' . $this->id;
     }

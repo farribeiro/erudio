@@ -37,14 +37,15 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use MatriculaBundle\Entity\Uniforme;
+use MatriculaBundle\Service\UniformeFacade;
 
 /**
-* @FOS\RouteResource("uniformes")
+* @FOS\NamePrefix("uniformes")
 */
 class UniformeController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.matricula.uniformes');
+    function __construct(UniformeFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

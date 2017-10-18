@@ -61,7 +61,7 @@ class Dia extends AbstractEditableEntity {
     
     /** 
     * @JMS\Exclude
-    * @ORM\ManyToOne(targetEntity = "Calendario") 
+    * @ORM\ManyToOne(targetEntity = "Calendario", inversedBy = "dias") 
     */
     private $calendario;
     
@@ -105,14 +105,14 @@ class Dia extends AbstractEditableEntity {
     }
     
     /**  
-        * @JMS\VirtualProperty 
-        * @JMS\Groups({"LIST"})   
-        */
+    * @JMS\VirtualProperty 
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("ArrayCollection<CalendarioBundle\Entity\DiaEvento>")
+    */
     function getEventos() {
-        return $this->eventos;
-        //return $this->eventos->matching(
-            //Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        //);
+        return $this->eventos->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
 
 }

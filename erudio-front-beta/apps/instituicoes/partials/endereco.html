@@ -1,24 +1,81 @@
 <div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoCep" label="'CEP'" dica="'Apenas Números'" classe="'maskCEP'" maximo="'8'" tipo="'text'" nome="'cep'" model="instituicao.endereco" campo="cep"></form-input>
-    <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoLogradouro" label="'Logradrouro'" tipo="'text'" nome="'logradouro'" model="instituicao.endereco" campo="logradouro"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoNumero" dica="'Apenas Números'" classe="maskNumeroCasa" label="'Número'" tipo="'text'" nome="'numero'" model="instituicao.endereco" campo="numero"></form-input>
-    <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoComplemento" label="'Complemento'" tipo="'text'" nome="'complemento'" model="instituicao.endereco" campo="complemento"></form-input>
-    <form-input grid="flex-gt-sm" identidade="instituicaoEnderecoBairro" label="'Bairro'" tipo="'text'" nome="'bairro'" model="instituicao.endereco" campo="bairro"></form-input>
-</div>
-<div layout-gt-sm="row">
-    <form-select grid="flex-gt-sm" identidade="instituicaoEnderecoEstado" label="'Estado'" nome="'estado'" obrigatorio="required">
-        <md-select ng-model="instituicao.endereco.cidade.estado.id" ng-change="buscarCidades(instituicao.endereco.cidade.estado.id)">
-            <md-option value=""></md-option>
-            <md-option ng-repeat="estado in estados" value="{{ estado.id }}">{{ estado.nome }}</md-option>
-        </md-select>
-    </form-select>
     
-    <form-select grid="flex-gt-sm" identidade="instituicaoEnderecoCidade" label="'Cidade'" nome="'cidade'" obrigatorio="required">
-        <md-select ng-model="instituicao.endereco.cidade.id">
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="cep">CEP</label>
+        <md-icon class="material-icons">home</md-icon>
+        <input id="cep" class="maskCEP" ng-change="ctrl.buscaCEP()" ng-model="instituicao.endereco.cep" type="text" name="cep" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="instituicoesForm.instituicao.endereco.cep.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="logradouro">Logradouro</label>
+        <md-icon class="material-icons">location_on</md-icon>
+        <input id="logradouro" ng-model="instituicao.endereco.logradouro" type="text" name="logradouro" required/>
+        <div ng-messages="instituicoesForm.instituicao.endereco.logradouro.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+</div>
+
+<div layout-gt-sm="row">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="numero">Número</label>
+        <md-icon class="material-icons">looks_one</md-icon>
+        <input id="numero" class="maskNumeroCasa" ng-model="instituicao.endereco.numero" type="text" name="numero" required/>
+        <div class="hint">Apenas Números</div>
+        <div ng-messages="instituicoesForm.instituicao.endereco.numero.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="complemento">Complemento</label>
+        <md-icon class="material-icons">change_history</md-icon>
+        <input id="complemento" ng-model="instituicao.endereco.complemento" type="text" name="complemento"/>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="bairro">Bairro</label>
+        <md-icon class="material-icons">card_travel</md-icon>
+        <input id="bairro" ng-model="instituicao.endereco.bairro" type="text" name="bairro" required/>
+        <div ng-messages="instituicoesForm.instituicao.endereco.bairro.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+</div>
+
+<div layout-gt-sm="row">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="estados">Estado</label>
+        <md-icon class="material-icons">my_location</md-icon>
+        <md-select ng-model="instituicao.endereco.cidade.estado.id" id="estados" name="estados" required>
             <md-option value=""></md-option>
-            <md-option ng-repeat="cidade in cidades" value="{{ cidade.id }}">{{ cidade.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.estados track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
-    </form-select>
-</div>  
+        <div ng-messages="instituicoesForm.instituicao.endereco.cidade.estado.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float autocomplete-wrap" md-block flex-gt-sm>
+        <md-icon class="material-icons">location_city</md-icon>
+        <md-autocomplete class="autocomplete-form" flex md-input-name="cidades" md-input-minlength="3" md-selected-item="ctrl.cidade" md-search-text="ctrl.nomeCidade" md-items="item in ctrl.buscarCidades(ctrl.nomeCidade, instituicao)" md-item-text="item.nome" md-floating-label="Cidade" md-require-match required>
+            <span md-highlight-text="ctrl.nomeCidade">{{ item.nome }}</span>
+        </md-autocomplete>
+        <div ng-messages="instituicoesForm.cidades.$error" class="errors-wrapper">
+            <div ng-message="required" class="autocomplete-error">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+</div>
+
+<div layout-gt-sm="row">
+    <mapa class="mapaWrapper"></mapa>
+</div>

@@ -29,22 +29,29 @@
 namespace PessoaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use CoreBundle\ORM\Exception\IllegalOperationException;
+use PessoaBundle\Service\PessoaFisicaFacade;
+use PessoaBundle\Service\FotoFacade;
 use PessoaBundle\Entity\PessoaFisica;
 
 /**
-*   @FOS\RouteResource("pessoas")
+*   @FOS\NamePrefix("pessoas")
 */
 class PessoaFisicaController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.pessoa.pessoas_fisicas');
-    }
+    private $fotoFacade;
+    
+    function __construct(PessoaFisicaFacade $facade, FotoFacade $fotoFacade) {
+        parent::__construct($facade);
+        $this->fotoFacade = $fotoFacade;
+    } 
     
     /**
     *    @ApiDoc(
@@ -66,6 +73,20 @@ class PessoaFisicaController extends AbstractEntityController {
     }
     
     /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Get("pessoas/{id}/foto")
+    */
+    function getFotoAction($id) {
+        $imagem = $this->fotoFacade->carregar($id);
+        if($imagem) {
+            return new Response($imagem, Response::HTTP_OK, ['Content-Type' => 'image/jpg']);
+        } else {
+            return new Response('', Response::HTTP_NOT_FOUND);
+        }
+    }
+    
+    /**
     *   @ApiDoc(
     *       resource = true,
     *       section = "Módulo Pessoa",
@@ -76,9 +97,11 @@ class PessoaFisicaController extends AbstractEntityController {
     *   )
     *  
     *   @FOS\Get("pessoas")
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    *   @FOS\QueryParam(name = "view", nullable = true)
     *   @FOS\QueryParam(name = "nome", nullable = true) 
     *   @FOS\QueryParam(name = "sobrenome", nullable = true) 
+    *   @FOS\QueryParam(name = "codigo", nullable = true) 
     *   @FOS\QueryParam(name = "dataNascimento", nullable = true) 
     *   @FOS\QueryParam(name = "cpf", nullable = true) 
     *   @FOS\QueryParam(name = "certidaoNascimento", requirements="\d+", nullable = true) 
@@ -86,6 +109,7 @@ class PessoaFisicaController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "nomePai", nullable = true)    
     *   @FOS\QueryParam(name = "avatar", nullable = true)
     *   @FOS\QueryParam(name = "usuario", nullable = true)
+     *  @FOS\QueryParam(name = "deficiente", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
@@ -113,11 +137,35 @@ class PessoaFisicaController extends AbstractEntityController {
     
     /**
     *   @ApiDoc()
+    *   
+    *   @FOS\Post("pessoas/{id}/foto")
+    */
+    function postFotoAction(Request $request, $id) {
+        $foto = $request->files->get('foto');
+        if (!$foto) {
+            throw new IllegalOperationException('Nenhum arquivo válido enviado');
+        }
+        $this->fotoFacade->gravar($id, $foto);
+        return Response::create('', Response::HTTP_NO_CONTENT);
+    }
+    
+    /**
+    *   @ApiDoc()
     * 
     *   @FOS\Delete("pessoas/{id}") 
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
+    }
+    
+    /**
+    *   @ApiDoc()
+    * 
+    *   @FOS\Delete("pessoas/{id}/foto") 
+    */
+    function deleteFotoAction($id) {
+        $this->fotoFacade->apagar($id);
+        return Response::create('', Response::HTTP_NO_CONTENT);
     }
 
 }

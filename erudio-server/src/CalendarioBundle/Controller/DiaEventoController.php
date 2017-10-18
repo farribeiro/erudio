@@ -38,11 +38,12 @@ use FOS\RestBundle\Util\Codes;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use CalendarioBundle\Entity\DiaEvento;
+use CalendarioBundle\Service\DiaEventoFacade;
 
 class DiaEventoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.calendario.dias_evento');
+    function __construct(DiaEventoFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**

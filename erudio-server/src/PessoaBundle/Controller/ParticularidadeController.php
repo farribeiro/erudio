@@ -33,15 +33,16 @@ use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
+use PessoaBundle\Service\ParticularidadeFacade;
 
 /**
- * @FOS\RouteResource("particularidades")
+ * @FOS\NamePrefix("particularidades")
  */
 class ParticularidadeController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.pessoa.particularidades');
-    }
+     function __construct(ParticularidadeFacade $facade) {
+        parent::__construct($facade);
+    } 
     
     /**
     *   @ApiDoc(

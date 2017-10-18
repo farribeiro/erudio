@@ -32,6 +32,7 @@ use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
+use CursoBundle\Entity\Turma;
 
 /**
 * @ORM\Entity
@@ -66,6 +67,10 @@ class Alocacao extends AbstractEditableEntity {
     */ 
     private $disciplinasMinistradas;
     
+    function getFuncionario() {
+        return $this->vinculo->getFuncionario();
+    }
+    
     function getCargaHoraria() {
         return $this->cargaHoraria;
     }
@@ -80,6 +85,12 @@ class Alocacao extends AbstractEditableEntity {
     
     function getDisciplinasMinistradas() {
         return $this->disciplinasMinistradas;
+    }
+    
+    function getDisciplinasMinistradasEmAndamento() {
+        return $this->disciplinasMinistradas->filter(function($d) {
+            return $d->getTurma()->getStatus() === Turma::STATUS_EM_ANDAMENTO;
+        });
     }
     
     function setDisciplinasMinistradas(ArrayCollection $disciplinasMinistradas) {

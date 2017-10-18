@@ -29,44 +29,51 @@
 namespace MatriculaBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use JMS\Serializer\Annotation as JMS;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations as FOS;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use JMS\Serializer\Annotation as JMS;
 use CoreBundle\REST\AbstractEntityController;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use MatriculaBundle\Entity\DisciplinaCursada;
+use MatriculaBundle\Service\DisciplinaCursadaFacade;
 
 /**
- * @FOS\RouteResource("disciplinas-cursadas")
+ * @FOS\NamePrefix("disciplinas-cursadas")
  */
 class DisciplinaCursadaController extends AbstractEntityController {
-    
-    public function getFacade() {
-        return $this->get('facade.matricula.disciplinas_cursadas');
+
+    function __construct(DisciplinaCursadaFacade $facade) {
+        parent::__construct($facade);
     }
     
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("disciplinas-cursadas/{id}")
+    * @FOS\QueryParam(name = "view", nullable = true)
+    * @FOS\Get("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     */
-    function getAction(Request $request, $id) {
-        return $this->getOne($request, $id);
+    function getAction(Request $request, $id, ParamFetcherInterface $paramFetcher) {
+        return $this->getOne($request, $id, $paramFetcher->get('view'));
     }
     
     /**
     * @ApiDoc()
     * 
     * @FOS\Get("disciplinas-cursadas")
-    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
+    * @FOS\QueryParam(name = "view", nullable = true) 
     * @FOS\QueryParam(name = "dataCadastro", nullable = true) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "disciplinaOfertada", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "etapa", requirements="\d+", nullable = true)
     * 
     */
@@ -77,7 +84,7 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("matriculas/{id}/disciplinas-cursadas")
+    * @FOS\Get("matriculas/{id}/disciplinas-cursadas", requirements = {"id": "\d+"})
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "status", nullable = true) 
     * @FOS\QueryParam(name = "enturmacao", requirements="\d+", nullable = true) 
@@ -100,6 +107,38 @@ class DisciplinaCursadaController extends AbstractEntityController {
     function postAction(Request $request, DisciplinaCursada $disciplina, ConstraintViolationListInterface $errors) {
         return $this->post($request, $disciplina, $errors);
     }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("disciplinas-cursadas/{id}/media-final", requirements = {"id": "\d+"})
+    */
+    function postMediaFinalAction($id) {
+        $disciplina = $this->getFacade()->find($id);
+        $this->getFacade()->encerrar($disciplina);
+        $view = View::create($disciplina);
+        $this->configureContext($view->getContext());
+        return $this->handleView($view);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Post("disciplinas-ofertadas/{id}/media-final", requirements = {"id": "\d+"})
+    */
+    function postMediasFinaisAction($id) {
+        $disciplinas = $this->getFacade()->findAll(['disciplinaOfertada' => $id]);
+        foreach($disciplinas as $disciplina) {
+            try {
+                $this->getFacade()->encerrar($disciplina);
+            } catch (IllegalOperationException $ex) {
+                $aluno = $disciplina->getMatricula()->getAluno()->getNome();
+                throw new IllegalOperationException("Não foi possível calcular a média do aluno {$aluno}.");
+            }
+        }
+        $view = View::create(null, Response::HTTP_NO_CONTENT);
+        return $this->handleView($view);
+    }
 
     /**
     * @ApiDoc()
@@ -114,11 +153,20 @@ class DisciplinaCursadaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("disciplinas-cursadas/{id}")
+    * @FOS\Put("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("disciplina", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, DisciplinaCursada $disciplina, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $disciplina, $errors);
+    }
+    
+    /**
+    * @ApiDoc()
+    * 
+    * @FOS\Delete("disciplinas-cursadas/{id}", requirements = {"id": "\d+"})
+    */
+    function deleteAction(Request $request, $id) {
+        return $this->delete($request, $id);
     }
     
 }

@@ -28,6 +28,7 @@
 
 namespace MatriculaBundle\Service;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\ORM\Exception\IllegalOperationException;
@@ -37,7 +38,8 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
     
     private $enturmacaoFacade;
     
-    function setEnturmacaoFacade(EnturmacaoFacade $enturmacaoFacade) {
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade) {
+        parent::__construct($doctrine);
         $this->enturmacaoFacade = $enturmacaoFacade;
     }
     

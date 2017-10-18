@@ -1,0 +1,44 @@
+<div layout-gt-sm="column" ng-if="!ctrl.escrita && !ctrl.novo">
+    <h1>{{ instituicao.nome }} <span ng-if="instituicao.sigla">-</span> {{ instituicao.sigla }}</h1>
+    <div layout="row" class="margin-top-bottom">
+        <div ng-if="instituicao.cnpj.length > 0" flex flex-gt-sm><strong>CNPJ:</strong> {{ instituicao.cnpj }}</div>
+        <div flex flex-gt-sm><strong>E-mail:</strong> {{ instituicao.email }}</div>
+    </div>
+    <md-divider ng-if="ctrl.telefones.length > 0"></md-divider>
+    <h3 ng-if="ctrl.telefones.length > 0">Contatos</h3>
+    <md-list class="md-dense" ng-if="ctrl.telefones.length > 0">
+        <md-list-item class="md-2-line not-hover" ng-repeat="telefone in ctrl.telefones">
+            <md-icon class="material-icons list-icon-fix">phone</md-icon>
+            <div class="md-list-item-text phone-list-fix"><h3>{{ telefone.numero }}</h3><p>{{ telefone.descricao }}</p></div>
+        </md-list-item>
+    </md-list>
+    <div layout="row" class="margin-top-bottom">
+        <div ng-if="instituicao.endereco.cep.length > 0" flex flex-gt-sm><strong>CEP:</strong> {{ instituicao.endereco.cep }}</div>
+        <div ng-if="instituicao.endereco.logradouro.length > 0" flex flex-gt-sm hide show-gt-sm>
+            <strong>Endereço:</strong> {{ instituicao.endereco.logradouro }}
+            <span ng-show="instituicao.endereco.numero">, {{ instituicao.endereco.numero }}</span>
+            <span ng-show="instituicao.endereco.bairro">, {{ instituicao.endereco.bairro }}</span>
+            <span ng-show="instituicao.endereco.cidade.nome">, {{ instituicao.endereco.cidade.nome }}</span>
+            <span ng-show="instituicao.endereco.cidade.estado.nome">, {{ instituicao.endereco.cidade.estado.nome }}</span><br /><br />
+            <span ng-show="instituicao.endereco.complemento">Complemento: {{ instituicao.endereco.complemento }}</span>
+        </div>
+    </div>
+    <div layout="row" class="margin-top-bottom">
+        <div ng-if="instituicao.endereco.logradouro.length > 0" flex flex-gt-sm hide-gt-sm>
+            <strong>Endereço:</strong> {{ instituicao.endereco.logradouro }}
+            <span ng-show="instituicao.endereco.numero">, {{ instituicao.endereco.numero }}</span>
+            <span ng-show="instituicao.endereco.bairro">, {{ instituicao.endereco.bairro }}</span>
+            <span ng-show="instituicao.endereco.cidade.nome">, {{ instituicao.endereco.cidade.nome }}</span>
+            <span ng-show="instituicao.endereco.cidade.estado.nome">, {{ instituicao.endereco.cidade.estado.nome }}</span><br /><br />
+            <span ng-show="instituicao.endereco.complemento">Complemento: {{ instituicao.endereco.complemento }}</span>
+        </div>
+    </div>
+
+    <div layout-gt-sm="row">
+        <mapa class="mapaWrapper" ng-init="ctrl.initMapa()"></mapa>
+    </div>
+</div>
+
+<div layout-gt-sm="row" ng-if="!ctrl.escrita && ctrl.novo">
+    Você não tem permissão para criar novas instituições.
+</div>

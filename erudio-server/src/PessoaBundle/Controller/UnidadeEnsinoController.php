@@ -36,15 +36,16 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
 use PessoaBundle\Entity\UnidadeEnsino;
+use PessoaBundle\Service\UnidadeEnsinoFacade;
 
 /**
  * @FOS\RouteResource("unidades-ensino")
  */
 class UnidadeEnsinoController extends AbstractEntityController {
     
-    function getFacade() {
-        return $this->get('facade.pessoa.unidades_ensino');
-    }
+    function __construct(UnidadeEnsinoFacade $facade) {
+        parent::__construct($facade);
+    } 
     
     /**
     * @ApiDoc(
