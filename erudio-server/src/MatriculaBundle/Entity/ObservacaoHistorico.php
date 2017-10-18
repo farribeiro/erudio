@@ -67,5 +67,9 @@ class ObservacaoHistorico extends AbstractEditableEntity {
     function setTexto($texto) {
         $this->texto = $texto;
     }
+    
+    static function criar(Matricula $matricula, $texto) {
+        return new ObservacaoHistorico($matricula, $texto);
+    }
 
 }

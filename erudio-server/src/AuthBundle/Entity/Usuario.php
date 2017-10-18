@@ -69,7 +69,7 @@ class Usuario extends AbstractEditableEntity implements UserInterface {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "Atribuicao", mappedBy = "usuario", fetch = "EXTRA_LAZY", cascade = {"all"}) 
+    * @ORM\OneToMany(targetEntity = "Atribuicao", mappedBy = "usuario", fetch = "EXTRA_LAZY", cascade = {"persist"}) 
     */
     private $atribuicoes;
     

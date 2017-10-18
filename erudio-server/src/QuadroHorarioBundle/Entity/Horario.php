@@ -77,7 +77,7 @@ class Horario extends AbstractEditableEntity {
     
     /**
     * @JMS\Exclude
-    * @ORM\OneToMany(targetEntity = "HorarioDisciplina", mappedBy = "horario", fetch = "EAGER") 
+    * @ORM\OneToMany(targetEntity = "HorarioDisciplina", mappedBy = "horario") 
     */
     private $disciplinasAlocadas;
     
@@ -122,26 +122,26 @@ class Horario extends AbstractEditableEntity {
         }
     }
     
+    function getDisciplinasAlocadas() {
+        return $this->disciplinasAlocadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
     */
-    function getDisciplinasAlocadas() {
-        return $this->disciplinasAlocadas->matching(
-            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
-        )->map(function($h) {
+    function getDisciplinaAlocada() {
+        return $this->getDisciplinasAlocadas()->map(function($h) {
             $d = $h->getDisciplina();
             return [
                 'id' => $d->getId(),
                 'nome' => $d->getNome(),
                 'nomeExibicao' => $d->getNomeExibicao(),
-                'sigla' => $d->getSigla(),
-                'turma' => [
-                    'id' => $d->getTurma()->getId(),
-                    'nome' => $d->getTurma()->getNome()
-                ]
+                'sigla' => $d->getSigla()
             ];
-        });
+        })->first();
     }
     
 }
