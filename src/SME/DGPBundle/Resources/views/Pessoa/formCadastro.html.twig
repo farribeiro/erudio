@@ -1,0 +1,52 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Cadastro de Pessoa{% endblock %}
+
+{% block body %}    
+     <div id="ajaxContent">
+     	<div class="row" id="formErrors">
+            {{ erros | raw }}
+        </div>
+        {{ form_start(form, { 'attr': { 'id': 'createForm' }}) }}
+            <div class="row">
+                <div class="col-lg-6">
+                        {{ form_row(form.id) }}
+                    {{ form_row(form.nome) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.cpfCnpj) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.dataNascimento, { 'attr': { 'class': 'form-control datepickerSME' }}) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.numeroRg) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.estadoCivil) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.email) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.Salvar) }}
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+	{{parent()}}
+	<script type="text/javascript">
+		$(document).ready(function (){
+			$("#createForm ul").remove();			
+		});
+	</script>
+{% endblock %}

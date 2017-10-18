@@ -1,0 +1,100 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Formações > {{formacao.nome}} > Matrículas{% endblock %}
+
+{% block body %}
+    <form method="post">
+        <div class="btn-group">
+            <button id="btnSalvar" class="btn btn-primary" formaction="{{path('dgp_formacao_atualizarMatriculas', {'formacao': formacao.id, 'page': page})}}" type="submit">Atualizar</button>
+            <button id="btnExcluir" class="btn btn-primary" formaction="{{path('dgp_formacao_excluirMatriculas', {'formacao': formacao.id, 'page': page})}}" type="submit">Excluir</button>
+            <a target="__blank" class="btn btn-primary" href="{{path('dgp_formacao_imprimirChamada', {'formacao': formacao.id})}}">Lista de Chamada</a>
+            <a class="btn btn-danger" href="{{path('dgp_formacao_atualizar', {'formacao': formacao.id})}}">Voltar para a Tela de Edição</a>
+        </div>
+        <div>
+            <em>{{formacao.matriculas.count}} matrícula(s) ativa(s)</em>
+        </div>
+        <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 5em;"></th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">CPF</th>
+                        <th class="text-center">E-mail</th>
+                        <th class="text-center">Cargo / Ocupação</th>
+                        <th class="text-center">
+                            Aprovado <input id="checkAllAprovado" title="Aprovar todos" type="checkbox" /> 
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for matricula in matriculas %}
+                        <tr {% if matricula.aprovado %}class="success"{% endif %} >
+                            <td class="text-right">
+                                {% if matricula.pessoa.vinculosTrabalho.empty %}
+                                    <span title="Inscrição externa" class="glyphicon glyphicon-transfer text-danger" />
+                                {% endif %}
+                                <input name="selecionados[]" value="{{matricula.id}}" type="checkbox" />
+                            </td>
+                            <td class="text-center">{{matricula.pessoa.nome}}</td>
+                            <td class="text-center">{{matricula.pessoa.cpfCnpj|cpf}}</td>
+                            <td class="text-center">{{matricula.pessoa.email}}</td>
+                            <td class="text-center">
+                                {% for vinculo in matricula.pessoa.vinculosTrabalho %}
+                                    {{vinculo.cargo.nome}} - {{vinculo.tipoVinculo.nome}} <br/>
+                                {% else %}
+                                    {{matricula.pessoa.profissao}}
+                                {% endfor %}
+                            </td>
+                            <td class="text-center">
+                                <input class="chkAprovado" name="aprovado[]" type="checkbox" value="{{matricula.id}}" {% if matricula.aprovado %}checked{% endif %} />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+        </table>
+                
+        {% if totalPaginas > 1 %}
+            <ul class="pagination">
+                {% if page == 1 %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% else %}
+                    <li><a href="{{ path('dgp_formacao_listarMatriculas', { page: 1, formacao: formacao.id }) }}">&laquo;</a></li>
+                {% endif %}
+                {% for i in 1..totalPaginas %}
+                    {% if page == i %}
+                        <li class="active"><span>{{ i }}</span></li>
+                    {% else %}
+                        <li><a href="{{ path('dgp_formacao_listarMatriculas', { page: i, formacao: formacao.id }) }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page == totalPaginas %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% else %}
+                    <li><a href="{{ path('dgp_formacao_listarMatriculas', { page: totalPaginas, formacao: formacao.id }) }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </form>
+    <form method="post" action="{{path('dgp_formacao_cadastrarMatriculaPorCpf', {'formacao': formacao.id})}}">
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="cpf">Adicionar por CPF:</label>
+                <div class="input-group">
+                    <input id="cpf" name="cpf" type="text" class="form-control" />
+                    <span class="input-group-btn">
+                        <button id="btnAdicionar" class="btn btn-primary" type="submit">+</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>                        
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#checkAllAprovado").change(function() {
+           $(".chkAprovado").prop("checked", $(this).is(":checked") ? true : false);
+        });
+    </script>
+{% endblock %}

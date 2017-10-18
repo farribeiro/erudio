@@ -1,0 +1,72 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+{% endblock %}
+
+{% block headerTitle %}Estágios Deferidos{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                {% for inscricao in inscricoes %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading{{ inscricao.id }}">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ inscricao.id }}" aria-expanded="true" aria-controls="collapse{{ inscricao.id }}">
+                                    {{ inscricao.estagiario.nome }}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse{{ inscricao.id }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{ inscricao.id }}">
+                            <div class="panel-body">
+                                <h3>Dados do Estagiário</h3>
+                                <strong>Nome:</strong> {{ inscricao.estagiario.nome }}
+                                <br />
+                                <strong>E-mail:</strong> {{ inscricao.estagiario.email }}
+                                <br />
+                                {% if inscricao.telefone is not empty %}
+                                    <strong>Telefone:</strong> {{ inscricao.telefone }}
+                                    <br />
+                                {% endif %}
+                                <hr />
+                                <h3>Dados do Estágio</h3>
+                                <strong>Unidade de Estágio:</strong> {{ inscricao.vaga.unidade.nome }}
+                                <br />
+                                <strong>Etapa / Modalidade:</strong> {{ inscricao.vaga.titulo }} - {{ inscricao.vaga.disciplina }}
+                                <br />
+                                <strong>Turno:</strong> {{ turnos[inscricao.vaga.turno] }}
+                                <br />
+                                {% if inscricao.inicioObservacao != '0000-00-00' and inscricao.fimObservacao != '0000-00-00' %}
+                                    <strong>Período de Observação:</strong> {{ inscricao.inicioObservacao | date("d/m/Y") }} - {{ inscricao.fimObservacao | date("d/m/Y") }}
+                                    <br />
+                                {% endif %}
+                                {% if inscricao.inicio != '0000-00-00' and inscricao.fim != '0000-00-00' %}
+                                    <strong>Período de Intervenção:</strong> {{ inscricao.inicio | date("d/m/Y") }} - {{ inscricao.fim | date("d/m/Y") }}
+                                    <br />
+                                {% endif %}
+                                
+                                <hr />
+                                <h3>Dados do Orientador</h3>
+                                <strong>Orientador:</strong> {{ inscricao.orientador.nome }}
+                                <br />
+                                {% if inscricao.orientador.instituicao is defined %}
+                                    <strong>Instituição:</strong> {{ instituicoes[inscricao.orientador.instituicao] }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+        });
+    </script>
+{% endblock %}

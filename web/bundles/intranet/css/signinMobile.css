@@ -1,0 +1,81 @@
+body {
+  padding: 60px 10px 40px 10px;
+  background-color: #eee;
+  background-image: url('../../../lib/images/homePattern.jpg');
+}
+
+#top_menu_access {
+    width: 100%;
+    text-align: center;
+    float: left;
+    padding-bottom: 70px;
+}
+
+.logo {
+    display:block;
+    width: 80%;
+    margin:auto;
+}
+
+#login_area {
+    float: left;
+    width: 100%;
+}
+
+#form_login, #form_recovery {
+    display: block;
+    width: 80%;
+    margin: auto;
+}
+
+.loginInput {
+    width: 100%;
+    margin-bottom: 5%;
+}
+
+.loginButton {
+    width: 100%;
+    margin-bottom: 5%;
+}
+
+.menuSigninItem {
+    display: block;
+    width: 50%;
+    background: #DAEFED;
+    border: 1px solid #B6E0DB;
+}
+
+.nav-tabs > li > a {
+  background: transparent;
+  display: block;
+  width: 100%;
+  line-height: 1.428571429;
+  border-radius:  0 0 0 0;
+  color: #0F4955;
+}
+
+.nav-tabs > li > a:hover {
+  background: #B6E0DB;
+  color: #0F4955;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: #0F4955;
+  background-color: #ffffff;
+  border: 1px solid #B6E0DB;
+  cursor: default;
+}
+
+.tab-content {
+    background: #fff;
+    border-left: 1px solid #B6E0DB;
+    border-right: 1px solid #B6E0DB;
+    border-bottom: 1px solid #B6E0DB;
+    padding-top: 5%;
+}
+
+.input-group {
+    margin-bottom: 1%;
+}

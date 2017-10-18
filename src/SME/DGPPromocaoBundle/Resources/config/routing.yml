@@ -1,0 +1,136 @@
+# Ações do DGP - CI
+
+dgp_promocao_ciGeral_formPesquisa:
+    path: /admin/promocao/ci-geral/pesquisar
+    methods: [GET]
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:formPesquisa }
+    
+dgp_promocao_ciGeral_pesquisar:
+    path: /admin/promocao/ci-geral/pesquisar
+    methods: [POST]
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:pesquisar }
+
+dgp_promocao_ciGeral_cadastrar:
+    path: /admin/promocao/ci-geral/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:cadastrar }
+
+dgp_promocao_ciGeral_alterar:
+    path: /admin/promocao/ci-geral/{ci}/alterar
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:alterar }
+    
+dgp_promocao_ciGeral_excluir:
+    path: /admin/promocao/ci-geral/{ci}/excluir
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:excluir }
+
+dgp_promocao_ciGeral_formPesquisaPromocoes:
+    path: /admin/promocao/ci-geral/{ci}/promocoes/pesquisar
+    methods: [GET]
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:formPesquisaPromocoes }
+    
+dgp_promocao_ciGeral_pesquisarPromocoes:
+    path: /admin/promocao/ci-geral/{ci}/promocoes/pesquisar
+    methods: [POST]
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:pesquisarPromocoes }
+
+dgp_promocao_ciGeral_adicionarPromocoes:
+    path: /admin/promocao/ci-geral/{ci}/promocoes/adicionar
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:adicionarPromocoes }
+
+dgp_promocao_ciGeral_removerPromocao:
+    path: /admin/promocao/ci-geral/{ci}/promocoes/{promocao}/remover
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:removerPromocao }
+    
+dgp_promocao_ciGeral_imprimir:
+    path: /admin/promocao/ci-geral/{ci}/imprimir
+    defaults: { _controller: DGPPromocaoBundle:CIGeral:imprimir }
+
+# Ações do DGP - Promoções Horizontais
+
+dgp_promocaoHorizontal_listar:
+    path: /admin/promocao/{vinculo}/horizontal
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:listar }
+
+dgp_promocaoHorizontal_cadastrar:
+    path: /admin/promocao/{vinculo}/horizontal/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:cadastrar }
+
+dgp_promocaoHorizontal_alterar:
+    path: /admin/promocao/{vinculo}/horizontal/{promocao}/alterar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:alterar }
+    
+dgp_promocaoHorizontal_imprimir:
+    path: /admin/promocao/{vinculo}/horizontal/{promocao}/imprimir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:imprimir }
+
+dgp_promocaoHorizontal_formacaoInterna_incluir:
+    path: /admin/promocao/horizontal/{promocao}/formacoes-internas/incluir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:incluirFormacao }
+    
+dgp_promocaoHorizontal_formacaoInterna_excluir:
+    path: /admin/promocao/horizontal/{promocao}/formacoes-internas/{formacao}/excluir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:excluirFormacao }
+    
+dgp_promocaoHorizontal_formacaoExterna_cadastrar:
+    path: /admin/promocao/horizontal/{promocao}/formacoes-externas/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:FormacaoExterna:cadastrar }
+    
+dgp_promocaoHorizontal_formacaoExterna_excluir:
+    path: /admin/promocao/horizontal/{promocao}/formacoes-externas/{formacao}/excluir
+    defaults: { _controller: DGPPromocaoBundle:FormacaoExterna:excluir }
+
+# Ações do DGP - Promoções Verticais    
+    
+dgp_promocaoVertical_listar:
+    path: /admin/promocao/{vinculo}/vertical
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:listar }
+    
+dgp_promocaoVertical_cadastrar:
+    path: /admin/promocao/{vinculo}/vertical/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:cadastrar }
+    
+dgp_promocaoVertical_alterar:
+    path: /admin/promocao/{vinculo}/vertical/{promocao}/alterar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:alterar }
+    
+dgp_promocaoVertical_imprimir:
+    path: /admin/promocao/{vinculo}/vertical/{promocao}/imprimir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:imprimir }
+    
+# Ações do servidor
+
+dgp_servidor_promocao_listar:
+    path: /servidor/promocao/{vinculo}/listar
+    defaults: { _controller: DGPPromocaoBundle:Servidor:listar }
+    
+dgp_servidor_promocaoHorizontal_cadastrar:
+    path: /servidor/promocao/{vinculo}/horizontal/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:solicitar }
+
+dgp_servidor_promocaoHorizontal_visualizar:
+    path: /servidor/promocao/horizontal/{promocao}/visualizar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:visualizar }
+    
+dgp_servidor_promocaoHorizontal_cancelar:
+    path: /servidor/promocao/horizontal/{promocao}/cancelar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:cancelar }
+    
+dgp_servidor_promocaoHorizontal_imprimir:
+    path: /servidor/promocao/horizontal/{promocao}/imprimir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoHorizontal:imprimir }
+    
+dgp_servidor_promocaoVertical_cadastrar:
+    path: /servidor/promocao/{vinculo}/vertical/cadastrar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:solicitar }
+    
+dgp_servidor_promocaoVertical_visualizar:
+    path: /servidor/promocao/vertical/{promocao}/visualizar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:visualizar }
+    
+dgp_servidor_promocaoVertical_cancelar:
+    path: /servidor/promocao/vertical/{promocao}/cancelar
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:cancelar }
+    
+dgp_servidor_promocaoVertical_imprimir:
+    path: /servidor/promocao/vertical/{promocao}/imprimir
+    defaults: { _controller: DGPPromocaoBundle:PromocaoVertical:imprimir }
+

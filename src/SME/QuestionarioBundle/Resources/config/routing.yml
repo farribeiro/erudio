@@ -1,0 +1,83 @@
+questionario_index:
+    path: /
+    defaults: { _controller: QuestionarioBundle:Questionario:index }
+
+questionario_editar:
+    path: /{id}
+    defaults: { _controller: QuestionarioBundle:Questionario:editarQuestionarios }
+
+questionario_adicionar_perguntas:
+    path: /add/perguntas
+    defaults: { _controller: QuestionarioBundle:Questionario:adicionarPerguntasQuestionario }
+
+questionario_adicionar_perguntas_quick:
+    path: /questionario/quickadd/perguntas
+    defaults: { _controller: QuestionarioBundle:Questionario:quickAddPerguntasQuestionario }
+
+questionario_remover_perguntas:
+    path: /remover/perguntas
+    defaults: { _controller: QuestionarioBundle:Questionario:removerPerguntasQuestionario }
+
+questionario_remover:
+    path: /{id}/remover
+    defaults: { _controller: QuestionarioBundle:Questionario:removerQuestionario }
+
+perguntas_index:
+    path: /categoria/{id}/perguntas/lista/
+    defaults: { _controller: QuestionarioBundle:Questionario:perguntas }
+
+perguntas_cadastro:
+    path: /perguntas/cadastrar
+    defaults: { _controller: QuestionarioBundle:Questionario:cadastrarPerguntas }
+
+perguntas_editar:
+    path: /perguntas/editar/{id}
+    defaults: { _controller: QuestionarioBundle:Questionario:editarPerguntas }
+
+perguntas_remover:
+    path: /perguntas/remover/{id}
+    defaults: { _controller: QuestionarioBundle:Questionario:removerPerguntas }
+
+perguntas_busca:
+    path: /busca/perguntas
+    defaults: { _controller: QuestionarioBundle:Questionario:buscaPerguntas }
+
+questionarios_listados:
+    path: /user/listados
+    defaults: { _controller: QuestionarioBundle:Questionario:questionariosListados }
+
+questionarios_responder:
+    path: /{id}/responder
+    defaults: { _controller: QuestionarioBundle:Questionario:questionarioResponder }
+    
+questionarios_salvar_respostas:
+    path: /{id}/salvar/respostas
+    defaults: { _controller: QuestionarioBundle:Questionario:questionarioSalvarRespostas }
+
+questionarios_ver_respostas:
+    path: /respostas/ver
+    defaults: { _controller: QuestionarioBundle:Questionario:respostasPorQuestionario }
+
+questionarios_busca_respostas:
+    path: /respostas/busca
+    defaults: { _controller: QuestionarioBundle:Questionario:buscarRespostas }
+
+questionarios_mostrar_respostas:
+    path: /{id}/respostas/mostrar/{userId}
+    defaults: { _controller: QuestionarioBundle:Questionario:mostrarRespostas }
+
+categorias_index:
+    path: /categorias/lista
+    defaults: { _controller: QuestionarioBundle:Questionario:categorias }
+
+categorias_adicionar:
+    path: /categorias/adicionar
+    defaults: { _controller: QuestionarioBundle:Questionario:categoriasAdicionar }
+
+categorias_editar:
+    path: /categorias/{id}
+    defaults: { _controller: QuestionarioBundle:Questionario:editarCategorias }
+
+categorias_remover:
+    path: /categorias/{id}/remover
+    defaults: { _controller: QuestionarioBundle:Questionario:removerCategorias }

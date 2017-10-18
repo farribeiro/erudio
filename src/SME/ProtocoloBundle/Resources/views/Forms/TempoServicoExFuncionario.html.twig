@@ -1,0 +1,98 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}Requerimento de Tempo de Serviço no Magistério Público Municipal{% endblock %}
+
+{% block body %}
+<!-- 
+Perguntar pro jhony como faz com o campo oculto "outro" sem gambiarra de javascript
+-->
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="cpf">CPF:</label>
+                <input type="text" name="cpf" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="rg">RG:</label>
+                <input type="text" name="rg" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="email">E-mail:</label>
+                <input type="text" name="email" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="telefone">Telefone:</label>
+                <input type="text" name="telefone" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="celular">Celular:</label>
+                <input type="text" name="celular" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="objetivo">Finalidade do documento:</label>
+                <select name="objetivo" id="objetivo" class="form-control" required="true">
+                    <option value="Averbação para aposentadoria">Averbação para aposentadoria</option>
+                    <option value="Processo seletivo">Processo seletivo</option>
+                    <option value="Concurso público">Concurso público</option>
+                    <option value="Outro">Outro</option>
+                 </select>
+            </div>
+            <div class="col-lg-6">
+                <label id="outro_label" for="outro" style="display: none;">Outro:</label>
+                <input id="outro" name="outro" type="text" size="30" style="display: none;" class="form-control"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="anoInicio">Quando trabalhou pela primeira vez no município:</label>
+                <select name="anoInicio" class="form-control" required="true">
+                    <option value="Antes de 1970">Antes de 1970</option>
+                    <option value="Entre 1970 e 1975">Entre 1970 e 1975</option>
+                    <option value="Entre 1975 e 1980">Entre 1975 e 1980</option>
+                    <option value="Entre 1980 e 1985">Entre 1980 e 1985</option>
+                    <option value="Entre 1985 e 1990">Entre 1985 e 1990</option>
+                    <option value="Entre 1990 e 1995">Entre 1990 e 1995</option>
+                    <option value="Entre 1995 e 2000">Entre 1995 e 2000</option>
+                    <option value="Entre 2000 e 2005">Entre 2000 e 2005</option>
+                    <option value="Após 2005">Após 2005</option>
+                 </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="confira">Antes de clicar em Incluir, confira todos os seus dados.</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-info">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#objetivo").change(function() {
+            if($(this).val() === "Outro") {
+                $("#outro").show();
+                $("#outro_label").show();
+            } else {
+                $("#outro").hide();
+                $("#outro_label").hide();
+            }
+        });
+    </script>
+{% endblock %}

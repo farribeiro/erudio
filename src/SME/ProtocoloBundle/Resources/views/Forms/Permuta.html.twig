@@ -1,0 +1,83 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Solicitação de Permuta{% endblock %}
+
+{% block page %}
+<!-- 
+Ver como puxar todos os locais e todos os cargos
+-->
+    <form method="post" action="{{path('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" name="matricula" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="vinculo">Selecione seu cargo atual:</label>
+                <select name="vinculo" class="form-control" required="true">
+                    {% for vinculo in vinculos %}
+                        <option value="{{vinculo.id}}"> {{vinculo.cargo.nome}} - {{vinculo.cargaHoraria}} horas ({{vinculo.tipoVinculo.nome}})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="alocacao">Selecione sua função atual:</label>
+                <select name="alocacao" class="form-control" required="true">
+                    {% for vinculo in vinculos %}
+                        {% for alocacao in vinculo.alocacoes %}
+                            <option value="{{alocacao.id}}">{{alocacao.funcaoAtual}} - {{alocacao.localTrabalho.pessoaJuridica.nome}}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="vagaPermuta">Vaga para permuta:</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="permuta_local">Local:</label>
+                <select name="permuta_local" class="form-control" required="true">
+                    <option></option>
+                    {% for unidade in unidades %}
+                        <option value="{{unidade.pessoaJuridica.nome}}">{{unidade.pessoaJuridica.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="permuta_servidor">Servidor com o qual irá permutar:</label>
+                <input type="text" name="permuta_servidor" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="permuta_cargo">Cargo:</label>
+                <select name="permuta_cargo" class="form-control" required="true">
+                    <option></option>
+                    {% for cargo in cargos %}
+                        <option value="{{cargo.nome}}">{{cargo.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="permuta_ch">Carga horária:</label>
+                <input type="text" name="permuta_ch" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="permuta_periodo">Períodos do dia:</label>
+                <input type="text" name="permuta_periodo" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-primary">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

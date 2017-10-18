@@ -1,0 +1,19 @@
+SME\DGPBundle\Entity\Vinculo:
+  properties:
+    cargo:
+      - NotBlank: { message: "O Campo <strong>CARGO</strong> é obrigatório." }
+    cargaHoraria:
+      - NotBlank: { message: "O Campo <strong>CARGA HORÁRIA</strong> é obrigatório." }
+    tipoVinculo:
+      - NotBlank: { message: "O Campo <strong>TIPO DE VÍNCULO</strong> é obrigatório." }
+    dataInicio:
+      - NotBlank: { message: "O Campo <strong>DATA DE NOMEAÇÃO / INÍCIO DO CONTRATO</strong> é obrigatório." }
+    dataTermino:
+      - NotBlank: { message: "O Campo <strong>DATA DE POSSE / FIM DO CONTRATO</strong> é obrigatório." }
+      
+SME\DGPBundle\Entity\Alocacao:
+  properties:
+    localTrabalho:
+      - NotBlank: { message: "O Campo <strong>LOCAL DE TRABALHO</strong> é obrigatório." }
+    cargaHoraria:
+      - NotBlank: { message: "O Campo <strong>CARGA HORÁRIA</strong> é obrigatório." }

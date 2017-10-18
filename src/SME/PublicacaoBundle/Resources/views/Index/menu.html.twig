@@ -1,0 +1,78 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/publicacoes/css/publicacoes.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/publicacoes/css/metro_icons/css/metro-bootstrap.css')}}" />
+    <link rel="stylesheet" href="{{asset('bundles/publicacoes/css/metro_icons/min/iconFont.min.css')}}" />
+    <script src="{{asset('bundles/publicacoes/css/metro_icons/min/metro.min.js')}}"></script>
+{% endblock %}
+
+{% block headerTitle %}Publicações SME{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <menu class="col-lg-2">
+            <div class="list-group">
+                <a class="list-group-item" href="{{path('publicacao_grupos')}}">Grupos</a>
+                <a class="list-group-item" href="{{path('publicacao_grupos_categorias')}}">Categorias</a>
+                <br /><br />
+                <a class="list-group-item" href="{{path('publicacao_raiz')}}">Publicações</a>
+            </div>
+            
+            {% block upload %}
+            {% endblock %}
+        </menu>
+        <div id="page" class="col-lg-10">
+            {% block page %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+            $('.lnkExcluir').click(function(ev){
+                ev.preventDefault();
+                var url = $(this).attr('href');
+                bootbox.confirm("Tem certeza que deseja excluir?", function (result) {
+                    if (result) {
+                        window.location.assign(url);
+                    }
+                });
+            });
+            
+            
+            $('.glyphicon').each(function(){
+                $(this).addClass('fix_font_bootstrap');
+            });
+            
+            var handler = function (e) {
+                e.preventDefault();
+                $('.loadingModal').show();
+                $.ajax({ 
+                    url: $(this).attr('href'),
+                    type: 'GET',
+                    success: function (data) {
+                        $('.fileId').val(data[0]);
+                        $('.fileNome').val(data[1]);
+                        $('.fileData').val(data[3]);
+                        $('.fileVisibilidade').find('option').each(function(){
+                            if (parseInt($(this).val()) === data[4]) {
+                                $(this).attr('selected','selected');
+                            }
+                            $('.loadingModal').hide();
+                        });
+                    }
+                });
+                
+                $("#editarArquivo").modal('show');
+                e.stopImmediatePropagation();
+                return false;
+            };
+            
+            $('.itemOpcoes').on('click', handler);
+        });
+    </script>
+{% endblock %}

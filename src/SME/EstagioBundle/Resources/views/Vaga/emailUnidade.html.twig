@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">    
+
+{% block body %}
+	<div style="background: #6699cc; width: 100%; float: left; box-shadow: 0px 5px 10px #000;">
+		<img src="http://educacao.itajai.sc.gov.br/images/stories/logoo.png" style="width: 30%;" />
+	</div>
+	<div id="content" style="float: left; margin-top: 10px;">
+		<h1>Olá {{ name }}.</h1>
+		<p>
+		Um pedido de estágio foi deferido para a sua unidade.
+		<br />
+		Segue abaixo a identificação do estagiário.
+		<br /><br />
+		Nome: {{ estagiario }}
+                <br />
+                Email: {{ email }}
+                {% if inicioObs != '0000-00-00' %}
+                <br />
+                Início do Estágio(Observação): {{ inicioObs | date("d/m/Y") }}
+                {% endif %}
+                {% if fimObs != '0000-00-00' %}
+                <br />
+                Final do Estágio(Observação): {{ fimObs | date("d/m/Y") }}
+                {% endif %}
+                {% if inicio != '0000-00-00' %}
+                <br />
+                Início do Estágio(Intervenção): {{ inicio | date("d/m/Y") }}
+                {% endif %}
+                {% if fim != '0000-00-00' %}
+                <br />
+                Final do Estágio(Intervenção): {{ fim | date("d/m/Y") }}
+                {% endif %}
+                <br />
+                Turno: {{ turno }}
+                <br />
+                Vaga: {{ vagaStr }}
+		<br /><br />
+		Atenciosamente.
+		<br />
+		Secretaria Municipal de Educação.
+		</p>
+	</div>
+{% endblock %}
+    
+</html>    

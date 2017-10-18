@@ -1,0 +1,100 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}Protocolo{% endblock %}
+
+{% block body %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Número</th>
+                <th>Abertura</th>
+                <th>Requerente</th>
+                <th>Solicitação</th>
+                <th>Situação</th>
+                <th>Responsável</th>
+                <th style="width: 13%;">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for protocolo in protocolos %}
+                <tr>
+                    <td> 
+                        {% if protocolo.encaminhado %}
+                            <span class="glyphicon glyphicon-flag text-danger" title="Encaminhado"></span> 
+                        {% elseif protocolo.responsavelAtual and protocolo.ativo %}
+                            <span class="glyphicon glyphicon-flag text-info" title="Em atividade"></span>
+                        {% elseif protocolo.ativo %}
+                            <span class="glyphicon glyphicon-flag text-success" title="Novo"></span>
+                        {% else %}
+                            <span class="glyphicon glyphicon-folder-close text-warning" title="Arquivado"></span>
+                        {% endif %}
+                    </td>
+                    <td>{{protocolo.protocolo}}</td>
+                    <td>{{protocolo.dataCadastro|date('d/m/Y')}}</td>
+                    <td>
+                        <a class="ajaxLink" href="{{path('protocolo_admin_consultarRequerente', {'protocolo': protocolo.id})}}">{{protocolo.requerente.nome}}</a>
+                    </td>
+                    <td>{{protocolo.solicitacao.nome}}</td>
+                    <td>{{protocolo.situacao.nome}}</td>
+                    <td>
+                        {% if protocolo.responsavelAtual %} {{protocolo.responsavelAtual.nome}} {% endif %}
+                    </td>
+                    <td>
+                        {% if protocolo.encaminhado %}
+                            <a class="ajaxAction" href="{{url('protocolo_admin_cancelarEncaminhamento', {'protocolo': protocolo.id})}}">Retornar</a> 
+                        {% elseif protocolo.responsavelAtual and protocolo.responsavelAtual.id == app.user.pessoa.id and protocolo.ativo %}
+                            <a class="ajaxLink" href="{{url('protocolo_admin_formAtualizacao', {'protocolo': protocolo.id})}}">Editar</a>
+                            | <a class="ajaxLink" href="{{url('protocolo_admin_formEncaminhamento', {'protocolo': protocolo.id})}}">Encaminhar</a>
+                        {% elseif protocolo.responsavelAtual and is_granted('ROLE_PROTOCOLO_GERENTE') and protocolo.ativo %}
+                            <a class="ajaxAction" href="{{url('protocolo_admin_tomarPosse', {'protocolo': protocolo.id})}}">Tomar posse</a>
+                        {% elseif protocolo.ativo %}
+                            <a class="ajaxAction" href="{{url('protocolo_admin_receber', {'protocolo': protocolo.id})}}">Receber</a>
+                        {% else %}
+                            <a class="ajaxLink" href="{{url('protocolo_admin_visualizar', {'protocolo': protocolo.id})}}">Detalhes</a>
+                        {% endif %}
+                        {% if protocolo.solicitacao.impresso %}
+                            <br />
+                            <a target="_blank" href="{{url('protocolo_admin_imprimir', {'protocolo': protocolo.id})}}">Imprimir</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr> <td class="text-center" colspan="8"> <em>Nenhum protocolo encontrado</em> </td> </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 75%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxLink").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            $('#modalDialog').modal({"show": true});
+            ev.preventDefault();
+        });
+        
+        $(".ajaxAction").click(function(ev) {
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("href"),
+                data: $("#formPesquisaProtocolo").serialize(),
+                success: function(retorno) {
+                    $("#divListaProtocolos").html(retorno);
+                }
+            });
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

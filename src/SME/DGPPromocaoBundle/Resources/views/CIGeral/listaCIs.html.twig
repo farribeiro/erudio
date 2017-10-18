@@ -1,0 +1,61 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block body %}
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">Número</th>
+                <th class="text-center">Ano</th>
+                <th class="text-center">Promoção</th>
+                <th class="text-center">Opções</th>
+            </tr>
+        </thead>
+        <tbody style="max-height: 100px;">
+            {% for ci in cis %}
+                <tr>
+                    <td class="text-center">{{ci.numero}}</td>
+                    <td class="text-center">{{ci.ano}}</td>
+                    <td class="text-center">{{ci.tipoPromocao}}</td>                    
+                    <td class="text-center">
+                        <a href="{{path('dgp_promocao_ciGeral_alterar', {'ci': ci.id})}}">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a> | 
+                        {% if ci.promocoes.empty %}
+                            <a class="ajaxAction text-danger" href="{{path('dgp_promocao_ciGeral_excluir', {'ci': ci.id})}}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                        {% else %}
+                            <a target="_blank" href="{{path('dgp_promocao_ciGeral_imprimir', {'ci': ci.id})}}">
+                                <span class="glyphicon glyphicon-print"></span>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-center" colspan="4">
+                        <em>Nenhuma CI encontrada</em>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxAction").click(function(ev) {
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("href"),
+                data: $("#formPesquisaCI").serialize(),
+                success: function(retorno) {
+                    $("#divCIs").html(retorno);
+                }
+            });
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends '::paginaExterna.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+{% endblock %}
+
+{% block body %}
+    <div class="row vagas" style="margin: 1rem;">
+        <div class="col-md-12">
+            <h1>Consulta de Estágio</h1>
+            
+            <div class="col-md-12">
+                <small>Digite seu nome para verificar o status da inscrição à vaga de estágio.</small>
+            </div>
+            
+            <div class="col-md-6">
+                <label>Nome:</label>
+                <input type="text" class="form-control" name="nome" id="nome" />
+            </div>
+            <div class="col-md-6">
+                <button style="margin-top: 2.4rem;" class="buscaNomeEstagio btn btn-primary">Buscar</button>
+            </div>
+                
+            <div class="vagas_box"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".buscaNomeEstagio").click(function(){
+                var nome = $("#nome").val();
+                if (nome !== '') {
+                    $.ajax({
+                        url: '{{ path('public_consulta_estagio') }}',
+                        dataType: 'html',
+                        type: 'POST',
+                        data: { 'nome': nome },
+                        success: function (data) {
+                            $('.vagas_box').html(data);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

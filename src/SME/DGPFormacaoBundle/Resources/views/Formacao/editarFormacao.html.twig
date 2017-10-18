@@ -1,0 +1,24 @@
+{% extends 'DGPFormacaoBundle:Formacao:novaFormacao.html.twig' %}
+
+{% block headerTitle %}DGP > Formações > {{formacao.nome}}{% endblock %}
+
+{% block opcoes %}
+    <a class="btn btn-primary" href="{{path('dgp_formacao_listarMatriculas', {'formacao': formacao.id, 'page': 1})}}">
+        <span class="glyphicon glyphicon-edit"></span> Matrículas
+    </a>
+    <a class="btn btn-primary" href="{{path('dgp_formacao_listarEncontros', {'formacao': formacao.id})}}">
+        <span class="glyphicon glyphicon-edit"></span> Encontros
+    </a>
+    <hr />
+    <a class="btn btn-primary" href="{{path('dgp_formacao_cadastrar')}}">
+        <span class="glyphicon glyphicon-plus"></span> Nova Formação
+    </a>
+    <a class="btn btn-danger" href="{{path('dgp_formacao_listar')}}">
+        <span class="glyphicon glyphicon-remove"></span> Sair da Edição
+    </a>
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/formacoes/formacoes.css')}}" />	
+{% endblock %}

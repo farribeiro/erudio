@@ -1,0 +1,4 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block headerTitle %}Intranet - Gestão Escolar{% endblock %}
+

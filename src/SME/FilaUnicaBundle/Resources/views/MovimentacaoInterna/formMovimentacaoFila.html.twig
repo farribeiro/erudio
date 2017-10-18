@@ -1,0 +1,51 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block headerTitle %} Fila Única > Inscrição > Movimentação Interna{% endblock %}
+
+{% block page %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{path('fu_movimentacaoInterna_pesquisar')}}">Pesquisa</a></li>
+        <li  class="active"><a href="#">Cadastro</a></li>
+    </ul>
+    <form id="formMovimentacaoInterna" method="post" action="{{path('fu_movimentacaoInterna_cadastrar')}}">
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="protocolo">Protocolo da inscrição:</label>
+                <input id="protocolo" name="protocolo" type="text" class="form-control" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="unidade">Alterar unidade pretendida para:</label>
+                <select id="unidade" name="unidade" class="form-control" required >
+                    <option>Selecione uma unidade</option>
+                    {% for unidade in unidades %}
+                        <option value="{{unidade.id}}">{{unidade.nome}} | {{unidade.zoneamento.nome}} - {{unidade.zoneamento.descricao}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="anoEscolar">Alterar ano escolar para:</label>
+                <select id="anoEscolar" name="anoEscolar" class="form-control" required >
+                    <option>Selecione um ano escolar</option>
+                    {% for ano in anosEscolares %}
+                        <option value="{{ano.id}}">{{ano.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="justificativa">Justificativa da movimentação:</label>
+                <textarea id="justificativa" name="justificativa" class="form-control" required ></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <button id="btnCadastrar" type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
