@@ -1,0 +1,10 @@
+erudio-server/vendor
+erudio-server/var
+erudio-server/web/bundles
+erudio-server/composer\.lock
+erudio-server/app/config/parameters\.yml
+erudio-server/nbproject
+erudio-front-beta/nbproject
+erudio-front-beta/node_modules
+erudio-front/nbproject
+/erudio-server/uploads/
