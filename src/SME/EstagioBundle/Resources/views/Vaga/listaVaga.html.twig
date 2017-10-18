@@ -1,0 +1,62 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+{% endblock %}
+
+{% block headerTitle %}Vagas de Estágio{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('adicionar_vaga') }}" class="btn btn-primary">Adicionar Vaga de Estágio</a>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <label>Unidade:</label>
+                <select id="unidade_vagas" name="unidade_vagas" class="form-control">
+                    <option></option>
+                    {% for entidade in entidades %}
+                        <option value="{{ entidade.pessoaJuridica.id }}">{{ entidade.pessoaJuridica.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                
+            <div class="col-md-6">
+                <label>Turno:</label>
+                <select id="turno_vagas" name="turno_vagas" class="form-control">
+                    <option></option>
+                    {% for turno in turnos %}
+                        <option value="{{ turno.id }}">{{ turno.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 vagas_box"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+           $("#unidade_vagas, #turno_vagas").change(function(){
+                var unidade = $("#unidade_vagas").val();
+                var turno = $("#turno_vagas").val();
+                if (unidade !== '' || turno !== '') {
+                    $.ajax({
+                        url: '{{ path('buscar_vagas_geral') }}',
+                        dataType: 'html',
+                        type: 'POST',
+                        data: { 'unidade_vagas': unidade, 'turno_vagas': turno },
+                        success: function (data) {
+                            $('.vagas_box').html(data);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

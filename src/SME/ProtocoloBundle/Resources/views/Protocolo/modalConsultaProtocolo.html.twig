@@ -1,0 +1,63 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Protocolo {{protocolo.protocolo}}</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped table-hover">
+            <tr>
+                <th style="width: 20%;">Requerente</th>
+                <td>{{protocolo.requerente.nome}}</td>
+            </tr>
+            <tr>
+                <th>Solicitação</th>
+                <td>{{protocolo.solicitacao.nome}}</td>
+            </tr>
+            <tr>
+                <th>Situação</th>
+                <td>{{protocolo.situacao.nome}}</td>
+            </tr>
+            <tr>
+                <th>Data de Abertura</th>
+                <td>{{protocolo.dataCadastro|date('d/m/Y')}}</td>
+            </tr>
+            <tr>
+                <th>Última atualização</th>
+                <td>{% if protocolo.dataModificacao %} {{protocolo.dataModificacao|date('d/m/Y')}} {% endif %}</td>
+            </tr>
+            <tr>
+                <th>Data de Encerramento</th>
+                <td>{% if protocolo.dataEncerramento %} {{protocolo.dataEncerramento|date('d/m/Y')}} {% endif %}</td>
+            </tr>
+            <tr>
+                <th>Observação</th>
+                <td>{{protocolo.observacao|trim}}</td>
+            </tr>
+        </table>
+        <p> <strong>Histórico:</strong> </p>
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>Data</th>
+                <th>Encaminhado por</th>
+                <th>Recebido por</th>
+                <th>Motivo</th>
+            </tr>
+            {% for encaminhamento in protocolo.encaminhamentos %}
+                <tr>
+                    <td>{{encaminhamento.dataCadastro|date('d/m/Y')}}</td>
+                    <td>{{encaminhamento.pessoaEncaminha.nome}}</td>
+                    <td>{{encaminhamento.pessoaRecebe.nome}}</td>
+                    {% if encaminhamento.motivo is not null %}
+                        <td>{{encaminhamento.motivo.descricao}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr> 
+                    <td class="text-center" colspan="4"> <em>Nenhum encaminhamento realizado</em> </td> 
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>

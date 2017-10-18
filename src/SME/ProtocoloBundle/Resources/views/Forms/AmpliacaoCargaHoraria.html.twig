@@ -1,0 +1,52 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Requerimento de Ampliação de Carga Horária (ACTs){% endblock %}
+
+{% block page %}
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="vinculo">Vínculo:</label>
+                <select name="vinculo" class="form-control">
+                    {% for vinculo in vinculos %}
+                        <option value="{{vinculo.id}}">{{vinculo.cargo.nome}} - {{vinculo.cargaHoraria}} horas</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="alocacao">Local de trabalho:</label>
+                <select name="alocacao" class="form-control">
+                    <option>Não informado</option>
+                    {% for vinculo in vinculos %}
+                        {% for alocacao in vinculo.alocacoes %}
+                            <option value="{{alocacao.funcaoAtual}}">{{alocacao.funcaoAtual}} - {{alocacao.localTrabalho.pessoaJuridica.nome}}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="carga_horaria_disponivel">Quantas horas deseja ampliar:</label>
+                <select name="carga_horaria_disponivel" class="form-control"  required >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="periodo_disponivel">Período disponível:</label>
+                <select name="periodo_disponivel" class="form-control" required >
+                    <option value="Matutino">Matutino</option>
+                    <option value="Vespertino">Vespertino</option>
+                    <option value="Matutino/Vespertino">Matutino/Vespertino</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-primary">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

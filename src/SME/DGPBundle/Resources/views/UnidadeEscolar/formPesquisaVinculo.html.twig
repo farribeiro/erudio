@@ -1,0 +1,44 @@
+{% extends 'IntranetBundle:Index:unidadeEscolar.html.twig' %}
+
+{% block headerTitle %}Pesquisa de Vínculo{% endblock %}
+
+{% block body %}
+    <form id="formPesquisaVinculo">
+        <div class="row">
+            <div class="col-lg-5">
+                <label for="cargo">Cargo: </label>
+                <select id="cargo" name="cargo" class="form-control">
+                    <option value=""></option>
+                    {% for cargo in cargos %}
+                        <option value="{{cargo.id}}">{{cargo.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-5">
+                <label for="nome">Nome: </label>
+                <input id="nome" name="nome" type="text" class="form-control"/>
+            </div>
+            <div class="col-lg-2">
+                <br />
+                <button id="btnPesquisar" type="button" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+        <div id="divVinculos"></div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#btnPesquisar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: "{{path('dgp_unidade_pesquisarVinculo')}}",
+                data: $("#formPesquisaVinculo").serialize(),
+                success: function(retorno){
+                    $("#divVinculos").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

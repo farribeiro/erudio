@@ -1,0 +1,90 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Servidor > Requerimentos{% endblock %}
+
+{% block page %}
+    <div id="div100">
+        <form method="post" action="{{url('protocolo_servidor_formSolicitacao')}}">
+            <div class="row">
+                <div class="col-lg-6">
+                    <label for="solicitacao">Fazer novo requerimento:</label>
+                    <div class="input-group">
+                        <select id="solicitacao" name="solicitacao" class="form-control" required="true">
+                            <option value=""></option>
+                            {% for solicitacao in solicitacoes %}
+                                <option value="{{solicitacao.id}}">{{solicitacao.nome}}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <br />
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Número</th>
+                    <th>Categoria</th>
+                    <th>Solicitação</th>
+                    <th>Situação</th>
+                    <th>Abertura</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for protocolo in protocolos %}
+                    <tr>
+                        <td>
+                            {% if protocolo.responsavelAtual and protocolo.ativo %}
+                                <span class="glyphicon glyphicon-flag text-info" title="Em atividade"></span>
+                            {% elseif protocolo.ativo %}
+                                <span class="glyphicon glyphicon-flag text-success" title="Novo"></span>
+                            {% else %}
+                                <span class="glyphicon glyphicon-folder-close text-warning" title="Arquivado"></span>
+                            {% endif %}
+                        </td>
+                        <td>{{protocolo.protocolo}}</td>
+                        <td>{{protocolo.solicitacao.categoria.nome}}</td>
+                        <td>{{protocolo.solicitacao.nome}}</td>
+                        <td>{{protocolo.situacao.nome}}</td>
+                        <td>{{protocolo.dataCadastro|date('d/m/Y')}}</td>
+                        <td>
+                            <a class="ajaxLink" href="{{url('protocolo_servidor_visualizar', {'protocolo': protocolo.id})}}">Detalhes</a>
+                            {% if protocolo.solicitacao.impresso %}
+                                <br />
+                                <a target="_blank" href="{{url('protocolo_servidor_imprimir', {'protocolo': protocolo.id})}}">Imprimir</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr> <td class="text-center" colspan="7">Nenhum protocolo cadastrado nesta categoria.</td> </tr>
+                {% endfor %}
+            </tbody>
+        </table>    
+    </div>
+    
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 75%;"></div>
+    </div>
+{% endblock %}
+    
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxLink").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            $('#modalDialog').modal({"show": true});
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block page %}
+    <div style="margin-top: 1em;" id="mapa"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    
+    <script type="text/javascript">        
+        $(document).ready( function() {
+            function criarMarcador(marcador) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(marcador.latitude, marcador.longitude),
+                    map: mapa
+                });
+                (marcador !== undefined) ? marker.setIcon(icone) : '';
+                var infowindow = new google.maps.InfoWindow(), marker;
+                infowindow.idWindow = windowsContents.length - 1;
+                infoWindows.push(infowindow);
+                latlngbounds.extend(marker.position);
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        for (var p=0; p<infoWindows.length; p++) {
+                            if (infoWindows[p].idWindow !== infowindow.idWindow) {
+                                infoWindows[p].close();
+                            }
+                        }
+                        infowindow.setContent(windowsContents[infowindow.idWindow]);
+                        infowindow.open(mapa, marker);
+                    };
+                })(marker));
+                mapa.fitBounds(latlngbounds);
+                windowContent = null;
+                icone = null;
+                prioridade = null;
+            }
+            
+            var local = null;
+            var prioridade = null;
+            var icone = null;
+            var infoWindows = [];
+            var windowContent = null;
+            var windowsContents = [];
+
+            var opcoesMapa = { zoom: 14, center: { lat: -26.908422, lng: -48.701378}, mapTypeId: google.maps.MapTypeId.HYBRID };
+            var mapa = new google.maps.Map(document.getElementById("mapa"), opcoesMapa);
+            var latlngbounds = new google.maps.LatLngBounds();
+            var markers = JSON.parse("{{marcadores}}".replace(/&quot;/g, '"'));
+            $.each(markers, function(i) {
+                var bandeira = null;
+                if (markers[i].prioridade === 4) {
+                    bandeira = '<span class="glyphicon glyphicon-exclamation-sign text-danger" title="Urgente"></span>';
+                } else if (markers[i].prioridade === 3) {
+                    bandeira = '<span class="glyphicon glyphicon-flag text-warning" title="Alta"></span>';
+                } else if (markers[i].prioridade === 2) {
+                    bandeira = '<span class="glyphicon glyphicon-flag text-info" title="Normal"></span>';
+                } else {
+                    bandeira = '<span class="glyphicon glyphicon-flag text-success" title="Baixa"></span>';
+                }
+                
+                if (local !== markers[i].local) {
+                    if (windowContent !== null) { criarMarcador(markers[i-1]); }
+                    local = markers[i].local;
+                    prioridade = markers[i].prioridade;
+                    icone = markers[i].icone;
+                    if (local !== null) {
+                        windowContent = "<strong>" + markers[i].local + "</strong> <hr style='margin-top: 10px; margin-bottom: 0px;' /> <br /> " + bandeira + " <a href='" + markers[i].href + "'>Chamado #" + markers[i].id + "</a> - " + markers[i].status + " - <em>" + markers[i].categoria + "</em>";
+                        windowsContents.push(windowContent);
+                    }
+                } else {
+                    if (markers[i].prioridade > prioridade) { prioridade = markers[i].prioridade; icone = markers[i].icone; }
+                    windowsContents[windowsContents.length - 1] += '<br /> ' + bandeira + ' <a href="' + markers[i].href + '">Chamado #' + markers[i].id + '</a> - ' + markers[i].status + ' - <em>' + markers[i].categoria + '</em>';
+                }
+            });
+            if (windowContent !== null) { criarMarcador(markers[markers.length - 1]); }
+        });
+    </script>
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <style type="text/css">
+        #mapa {
+            width: 100%;
+            height: 35em;
+            border: 2px solid #ddd; 
+        }
+    </style>
+{% endblock %}

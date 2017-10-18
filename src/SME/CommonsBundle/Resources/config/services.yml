@@ -1,0 +1,16 @@
+parameters:
+    cadastro_unico.class: SME\CommonsBundle\Service\CadastroUnico
+    form_helper.class: SME\CommonsBundle\Service\FormHelper
+
+services:
+    cadastro_unico:
+      class: "%cadastro_unico.class%"
+      arguments: ["@doctrine", "@validator"]
+    
+    form_helper:
+      class: "%form_helper.class%"
+    
+    sme.twig.commons_extension:
+      class: SME\CommonsBundle\Util\CommonsTwigExtension
+      tags:
+        - { name: twig.extension }

@@ -1,0 +1,97 @@
+{% extends 'DGPContratacaoBundle:Index:index.html.twig' %}
+
+{% block body %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="text-center">Nome</th>
+                <th class="text-center">Cargo</th>
+                {% if not chamadaPublica %}
+                    <th class="text-center">Classificação</th>
+                    <th class="text-center">Inscrição</th>
+                    <th class="text-center">Pontuação</th>
+                {% endif %}
+                <th class="text-center">Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscricao in inscricoes %}
+                <tr {% if inscricao.vinculoAssociado %}class="warning text-warning"{% endif %}>
+                    <td>{{inscricao.candidato.nome}}</td>
+                    <td>{{inscricao.cargo.nome}}</td>
+                    {% if not chamadaPublica %}
+                        <td class="text-center">{{inscricao.classificacao}}</td>
+                        <td class="text-center">{{inscricao.numero}}</td>
+                        <td class="text-center">{{inscricao.avaliacao}}</td>
+                    {% endif %}
+                    <td class="text-center">
+                        <a target="_blank" href="{{path('dgp_pessoa_alterar', {'pessoa': inscricao.candidato.id})}}">
+                            <span class="glyphicon glyphicon-ok" title="Abrir cadastro"></span>
+                        </a> |
+                        <a class="btnDesistencia" href="{{path('dgp_processoAdmissao_formDesistencia', {'processo': inscricao.processo.id, 'inscricao': inscricao.id})}}">
+                            <span class="glyphicon glyphicon-remove" title="Desistência de vaga"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr> 
+                    <td colspan="6" class="text-center">Nenhuma inscrição encontrada</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if chamadaPublica %}
+        <form id="formChamadaPublica">
+            <div class="row">
+                <div class="col-lg-4">
+                    <label for="nome">Nome:</label>
+                    <input id="nome" name="nome" type="text" class="form-control"/>
+                </div>
+                <div class="col-lg-4">
+                    <label for="cpf">CPF:</label>
+                    <input id="cpf" name="cpf" type="text" class="form-control"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <button id="btnCadastrar" type="button" class="btn btn-primary">Incluir</button>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+    
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModalDesistencia" class="modal-dialog" style="width: 80%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).ready(function (){
+           $(".btnDesistencia").click(function (ev){
+               ev.preventDefault();
+               $.ajax({
+                   url: $(this).attr('href'),
+                   type: 'GET',
+                   success: function (data) {
+                       $('#divModalDesistencia').html(data);
+                   }
+               });
+               $('#modalDialog').modal("show");
+           });
+        });
+        
+        $("#btnCadastrar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: "{{path('dgp_processoAdmissao_cadastrarInscricao', {'processo': cargo.processo.id, 'cargo': cargo.id})}}",
+                data: $("#formChamadaPublica").serialize(),
+                success: function(retorno) {
+                    $("#divInscricoes").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block headerTitle %}Servidor > Meus Cargos{% endblock %}
+
+{% block body %}
+    {% if not app.request.isXmlHttpRequest %}
+        <div class="row">
+            <menu class="col-lg-2">
+                <div class="list-group"> 
+                    <a class="list-group-item" href="{{path('dgp_servidor_listarVinculos')}}">Meus Cargos</a>
+                    <a class="list-group-item" href="{{path('protocolo_servidor_listar', {'categoria': 1})}}">Requerimentos</a>
+                    <a class="list-group-item" href="{{path('dgp_servidor_listarFormacoes')}}">Formações</a>
+                    <a class="list-group-item" href="{{path('dgp_servidor_permuta_listarIntencoes')}}">Intenção de Permuta</a>
+                    <a class="list-group-item" href="{{path('dgp_servidor_processoAnual_listarDisponiveis')}}">Processos Anuais</a>
+                </div>
+            </menu>
+            <div id="page" class="col-lg-10" style="margin-top: 1em;">
+                {% block page %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Cód.</th>
+                                    <th class="text-center">Cargo</th>
+                                    <th class="text-center">Vínculo</th>
+                                    <th class="text-center">C.H.</th>
+                                    <th class="text-center">Data de Início</th>
+                                    <th class="text-center">Requerimentos Específicos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vinculo in vinculos %}
+                                    <tr>
+                                        <td class="text-center">{{vinculo.id}}</td>
+                                        <td class="text-center">{{vinculo.cargo.nome}}</td>
+                                        <td class="text-center">{{vinculo.tipoVinculo.nome}}</td>
+                                        <td class="text-center">{{vinculo.cargaHoraria}}</td>
+                                        <td class="text-center">{{vinculo.dataInicio|date('d/m/Y')}}</td>
+                                        <td class="text-center">
+                                            <a href="{{url('dgp_servidor_consultarVinculo', {'vinculo': vinculo.id})}}">Informações</a>
+                                            {% if vinculo.tipoVinculo.id == constant('SME\\DGPBundle\\Entity\\TipoVinculo::EFETIVO') %}
+                                                <br /> <a href="{{path('dgp_servidor_promocao_listar', {'vinculo': vinculo.id})}}">Requerimento de Promoção</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="5">Você não possui vínculos ativos</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <p>
+                            <em>* Caso seu cargo não conste no quadro, entrar em contato com o Departamento de Gestão de Pessoas - DGP para realizar o cadastro.</em>
+                        </p>
+                {% endblock %}
+            </div>
+        </div>
+    {% else %}
+        {{block('page')}}
+    {% endif %}
+{% endblock %}

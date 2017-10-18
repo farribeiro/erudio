@@ -1,0 +1,63 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}Cadastro de Vínculo{% endblock %}
+
+{% block body %}
+    {{form_start(form)}}
+        <div class="row" id="formErrors"> {{ errors|raw }} </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{form_label(form.cargo)}}
+                {{form_widget(form.cargo, {'attr': {'class': 'form-control'} })}}
+            </div>
+            <div class="col-lg-6">
+                {{form_label(form.tipoVinculo)}}
+                {{form_widget(form.tipoVinculo, {'attr': {'class': 'form-control'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                {{form_label(form.matricula)}}
+                {{form_widget(form.matricula, {'attr': {'class': 'form-control'} })}}
+            </div>
+            <div class="col-lg-4">
+                {{form_label(form.cargaHoraria)}}
+                {{form_widget(form.cargaHoraria, {'attr': {'class': 'form-control'} })}}
+            </div>
+            <div class="col-lg-4">
+                {{form_label(form.dataInicio)}}
+                {{form_widget(form.dataInicio, {'attr': {'class': 'form-control datepickerSME'} })}}
+            </div>
+        </div>
+        <div id="divVinculoOriginal" class="row">
+            <div class="col-lg-12">
+                {{form_label(form.vinculoOriginal)}}
+                {{form_widget(form.vinculoOriginal, {'attr': {'class': 'form-control'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    {{form_end(form)}}
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        if($("#{{form.tipoVinculo.vars.id}}").val() == {{constant('SME\\DGPBundle\\Entity\\TipoVinculo::COMISSIONADO')}}) {
+            $("#divVinculoOriginal").show();
+        } else {
+            $("#divVinculoOriginal").hide();
+        }
+        
+        $("#{{form.tipoVinculo.vars.id}}").change(function() {
+            if($(this).val() == {{constant('SME\\DGPBundle\\Entity\\TipoVinculo::COMISSIONADO')}}) {
+                $("#divVinculoOriginal").show();
+            } else {
+                $("#divVinculoOriginal").hide();
+            }
+        });
+    </script>
+{% endblock %}

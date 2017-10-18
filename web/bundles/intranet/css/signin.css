@@ -1,0 +1,260 @@
+body {
+  padding-top: 10px;
+  padding-bottom: 40px;
+  background-color: #eee;
+  background-image: url('../../../lib/images/homePattern.jpg');
+}
+
+.fu_table tr td { padding: 1%; }
+
+#form_login {
+    margin-right: 10%;
+}
+
+.loginInput {
+    display: inline !important;
+    width: 30% !important;
+}
+
+.loginButton {
+    width: 15%;
+    display: inline;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.label-hidden {
+    color: #eee;
+}
+.cor1 {
+    background-color:red;
+    text-align: center;
+}
+.centralizar {
+    margin: 0 auto;
+}
+
+.loading { 
+	width: 100%; 
+	height: 101.5%; 
+	background: black; 
+	position: absolute; 
+	margin-top: -4%; 
+	padding: 0;
+	z-index: 10;
+	opacity: 0.6;
+	display: none;
+}
+
+.loader {
+	width: 100px;
+	position: absolute;
+	left: 50%;
+	margin-left: -50px;
+	top: 50%;
+	margin-top: -50px;
+}
+
+.public-link{
+	position: fixed;
+	right: 2%;
+	bottom: 2%;
+}
+
+.ul_public_services {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	margin-top: 7%;
+}
+
+.ul_public_services li {
+	padding: 1%;
+	margin-bottom: 4%;
+}
+
+.title {
+	text-shadow: 2px 2px #F4F4F4;
+	color: #464646;
+}
+
+.adjust-text-public{
+	width: 50%;
+	position: absolute;
+	left: 50%;
+	margin-left: -25%;
+	text-align: center;
+}
+
+.fu_table {
+	border: 1px solid #999;
+	margin-bottom: 5%;
+}
+
+.fu_title {
+	text-align: right;
+	font-weight: bold;
+	width: 40%;
+}
+
+.fu_text {
+	text-align: left;
+}
+
+#results {
+	display: none;
+}
+
+#top_menu_access {
+    float: left;
+    width: 50%;
+}
+
+.logo {
+    width: 50%;
+    margin-left: 10%;
+}
+
+#login_area {
+    float: left;
+    width: 50%;
+    padding-top: 1.5%;
+    padding-right: 1%;
+    text-align: right;
+}
+
+.blue_login{
+    color: blue;
+    margin-right: 1%;
+}
+
+#carousel {
+    float: right;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1%;
+    display: none;
+}
+
+#carousel_wrapper {
+    height: 300px;
+}
+
+.carousel-item {
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+    width: 100%;
+    height: 300px;
+    float: left;
+}
+
+.bg1 {
+    background: url('/lib/images/carousel/bg1.jpeg') no-repeat center center;
+    background-size: 100% Auto;
+}
+
+.bg2 {
+    background: url('/lib/images/carousel/bg2.jpg') no-repeat center center;
+    background-size: 100% Auto;
+}
+
+.bg3 {
+    background: url('/lib/images/carousel/bg3.jpg') no-repeat center center;
+    background-size: 100% Auto;
+}
+
+.next {
+    background: url('/lib/images/nextCarousel.png') no-repeat center center;
+    background-size: 30% Auto;
+    position: absolute;
+    height: 300px;
+    width: 5%;
+    right: 0px;
+    z-index: 2;
+    cursor: pointer;
+    -webkit-box-shadow: inset -15px -8px 28px -15px #000000;
+    -moz-box-shadow: inset -15px -8px 28px -15px #000000;
+    box-shadow: inset -15px -8px 28px -15px #000000;
+}
+
+.next:hover {
+    -webkit-box-shadow: inset -20px -8px 28px -15px #000000;
+    -moz-box-shadow: inset -20px -8px 28px -15px #000000;
+    box-shadow: inset -20px -8px 28px -15px #000000;
+}
+
+.prev {
+    background: url('/lib/images/prevCarousel.png') no-repeat center center;
+    background-size: 30% Auto;
+    position: absolute;
+    height: 300px;
+    width: 5%;
+    left: 0px;
+    z-index: 2;
+    cursor: pointer;
+    -webkit-box-shadow: inset 15px -8px 28px -15px #000000;
+    -moz-box-shadow: inset 15px -8px 28px -15px #000000;
+    box-shadow: inset 15px -8px 28px -15px #000000;
+}
+
+.prev:hover {
+    -webkit-box-shadow: inset 20px -8px 28px -15px #000000;
+    -moz-box-shadow: inset 20px -8px 28px -15px #000000;
+    box-shadow: inset 20px -8px 28px -15px #000000;
+}
+
+.tab-pane {
+    background: #ffffff;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    /*margin-top: -5px;*/
+}
+
+.resultsCertify {
+    float: left;
+    width: 100%;
+}
+
+.paddingTop {
+    padding-top: 2%;
+}
+
+.input-group {
+    margin-bottom: 2%;
+}

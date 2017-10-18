@@ -1,0 +1,33 @@
+<div id="anotacoes" class="panel panel-default">
+    <div class="panel-heading">
+        <strong>Anotações</strong>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Autor</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anotacao in chamado.anotacoes %}
+                    <tr>
+                        <td>{{anotacao.dataCadastro|date('d/m/Y H:i')}}</td>
+                        <td>{{anotacao.pessoaCadastrou.nome}}</td>
+                        <td style="width: 50%;">{{anotacao.descricao}}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">Nenhuma anotação cadastrada</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if not chamado.encerrado %}
+            <a  class="ajaxLink btn btn-primary" href="{{path('suporte_anotacao_cadastrar', {'chamado': chamado.id})}}">Adicionar</a>
+        {% endif %}
+    </div>
+</div>
+

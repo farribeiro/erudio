@@ -1,0 +1,249 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+    <style>
+        .pergunta {
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        
+        .pergunta:hover {
+            background: #ccc;
+        }
+        
+        .auto-complete-perguntas {
+            margin-top: -21px;
+        }
+    </style>
+{% endblock %}
+
+{% block headerTitle %}<a href="{{ path('questionario_index') }}"><button style="margin-top: -5px;" class="btn btn-danger">Voltar</button></a> Editar Questionario{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-lg-12"><label for="QuestionarioForm_nome">Nome do questionário: *</label></div>
+                    <div class="col-lg-12">
+                        {{ form_widget(form.nome) }}
+                    </div>
+                </div>
+                
+                <div class="row perguntas-box">
+                    <div class="col-lg-12">
+                        <h3>Perguntas do Questionário</h3>
+                    </div>
+                    <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-lg-6"><label for="categoria-box">Procurar Categoria:</label></div>
+                                <div class="col-lg-6"><label for="categoria_nome">ou Adicionar Categoria:</label></div>
+                                <div class="col-lg-6">
+                                    <select class='form-control categoria-box' name='categoria-box'>
+                                        <option></option>
+                                        {% for categoria in categorias %}
+                                            <option value='{{ categoria.id }}'>{{ categoria.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="text" class="form-control categoria_nome" name="categoria_nome" />
+                                </div>
+                                <div class="col-lg-1">
+                                    <a href="#" class="btn btn-primary addCategoria">Adicionar</a>
+                                </div>
+                            </div>
+                                    
+                            <div class="row pergunta-area" style='display:none;'>
+                                <div class="col-lg-6"><label for="pergunta_box">Procurar Pergunta: </label></div>
+                                <div class="col-lg-6"><label for="pergunta_nome">ou Adicionar Pergunta:</label></div>
+                                <div class="col-lg-6">
+                                    <select class='form-control pergunta-box' name='pergunta-box'>
+                                        <option></option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="text" class="form-control pergunta_nome" name="pergunta_nome" />
+                                </div>
+                                <div class="col-lg-1">
+                                    <a href="#" class="btn btn-primary quickAdd">Adicionar</a>
+                                </div>
+                            </div>
+                        
+                            <div style="display:none;" class="row auto-search">
+                                <div class="col-md-12 auto-complete-perguntas">
+                                    
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-lg-12 perguntas-area">
+                        <hr />
+                        <table class="table table-striped table-hover tableDGP">
+                            <thead>
+                                <tr>
+                                    <th>Pergunta</th>
+                                    <th>Categoria</th>
+                                    <th>Opções</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pergunta in perguntas %}
+                                    <tr>
+                                        <td>{{ pergunta.perguntaId.pergunta }}</td>
+                                        <td>{{ pergunta.categoriaId.nome }}</td>
+                                        <td><span id="p{{ pergunta.id }}" style="color: red; cursor: pointer;" class="glyphicon glyphicon-remove-circle remove-pergunta" aria-hidden="true"></span></td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">Nenhuma pergunta cadastrada</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    
+                <div class="row">
+                    <div class="col-lg-12">
+                        <hr />
+                        {{ form_row(form.Salvar) }}
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+            var ultimoValor = $('.pergunta_nome').val();
+            var request = null;
+            var categoria = null;
+            
+            /* Remover pergunta */
+            $(document).on('click', '.remove-pergunta', function(){
+               var parent = $(this).parent();
+               var pid = $(this).attr('id');
+               var id = pid.replace('p','');
+               var questionarioId = {{ questionario.id }};
+               $.ajax({
+                   url: '{{ path('questionario_remover_perguntas') }}',
+                   dataType: 'html',
+                   type: 'POST',
+                   data: { 'id': id, 'questionarioId': questionarioId },
+                   success: function (data){
+                        if (data !== 'error') {
+                            $('.perguntas-area').html(data);
+                            $.bootstrapGrowl("Pergunta removida com sucesso", { type: 'info', delay: 5000 });
+                        } else {
+                            $.bootstrapGrowl("A pergunta não pode ser removida, tente novamente.", { type: 'danger', delay: 5000 });
+                        }
+                   }
+               });
+               parent.remove();
+            });
+           
+            /* Salvar nova pergunta */
+            $('.quickAdd').click(function(event){
+                event.preventDefault();
+                var questionarioId = {{ questionario.id }};
+                var pergunta = $('.pergunta_nome').val();
+                $('.pergunta_nome').val('');
+                
+                if (pergunta !== '') {
+                    $.ajax({
+                        url: '{{ path('questionario_adicionar_perguntas_quick') }}',
+                        dataType:'html',
+                        type:'POST',
+                        data: { 'questionarioId': questionarioId, 'pergunta': pergunta, 'categoria': categoria },
+                        success: function (data) {
+                            if (data !== 'error') {
+                                $('.perguntas-area').html(data);
+                                $('.categoria-box').trigger("change");
+                                $.bootstrapGrowl("Pergunta adicionada com sucesso", { type: 'info', delay: 5000 });
+                            } else {
+                                $.bootstrapGrowl("A pergunta não pode ser incluída, tente novamente.", { type: 'danger', delay: 5000 });
+                            }
+                        }
+                    });
+                }
+            });
+            
+            $('.addCategoria').click(function(event){
+                event.preventDefault();
+                var questionarioId = {{ questionario.id }};
+                var categoria = $('.categoria_nome').val();
+                $('.categoria_nome').val('');
+                
+                if (categoria !== '') {
+                    $.ajax({
+                        url: '{{ path('categorias_adicionar') }}',
+                        dataType:'html',
+                        type:'POST',
+                        data: { 'nome': categoria },
+                        success: function (data) {
+                            if (data !== 'error') {
+                                window.location.reload(true);
+                            } else {
+                                $.bootstrapGrowl("A pergunta não pode ser incluída, tente novamente.", { type: 'danger', delay: 5000 });
+                            }
+                        }
+                    });
+                }
+            });
+            
+            $('.categoria-box').change(function (){
+                var val = $(this).val();
+                categoria = val;
+                if (val !== '') {
+                    $('.pergunta-area').show();
+                    $.ajax({
+                        url: '{{ path('perguntas_busca') }}',
+                        dataType: 'JSON',
+                        type: 'POST',
+                        data: { 'categoria': categoria },
+                        success: function (data) {
+                            if (data === "no_results") {
+                                var str = "<option>Nenhuma pergunta encontrada.</option>";
+                                $('.pergunta-box').html(str);
+                            } else {
+                                var array = JSON.parse(data);
+                                $('.pergunta-box').html('<option></option>');
+                                for (var i=0; i<array.length; i++) {
+                                    var str = "<option value='" + array[i].id + "'>" + array[i].pergunta + "</option>";
+                                    $('.pergunta-box').append(str);
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $('.pergunta-area').hide();
+                }
+            });
+            
+            $('.pergunta-box').change(function (){
+                var val = $(this).val();
+                var questionarioId = {{ questionario.id }};
+                
+                $.ajax({
+                    url: '{{ path('questionario_adicionar_perguntas') }}',
+                    dataType: 'html',
+                    type: 'POST',
+                    data: {'questionarioId': questionarioId, 'perguntaId': val },
+                    success: function (data) {
+                        if (data !== 'error') {
+                            $('.perguntas-area').html(data);
+                            $.bootstrapGrowl("Pergunta adicionada com sucesso", { type: 'info', delay: 5000 });
+                        } else {
+                            $.bootstrapGrowl("A pergunta não pode ser incluída, tente novamente.", { type: 'danger', delay: 5000 });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

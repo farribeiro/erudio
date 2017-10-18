@@ -1,0 +1,50 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} DGP > CI Geral > {{ci.numero}}/{{ci.ano}} {% endblock %}
+
+{% block modalBody %}
+    <form id="formPesquisaVinculo" action="{{path('dgp_ciGeral_pesquisarVinculos', {'ci': ci.id})}}" method="post">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="convocacao">Convocação:</label>
+                <select id="convocacao" name="convocacao" class="form-control">
+                    <option></option>
+                    {% for convocacao in convocacoes %}
+                        <option value="{{convocacao.id}}" > {{convocacao.nome}} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="cargo">Cargo concorrido:</label>
+                <div class="input-group" style="padding-top: 0;">
+                    <select id="cargo" name="cargo" class="form-control">
+                        <option></option>
+                        {% for cargo in cargos %}
+                            <option value="{{cargo.id}}" > {{cargo.nome}} </option>
+                        {% endfor %}
+                    </select>
+                    <span class="input-group-btn">
+                        <button id="btnBuscar" type="button" class="btn btn-primary">Buscar</button>
+                    </span>                 
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="divVinculos"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#btnBuscar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: $("#formPesquisaVinculo").attr("action"),
+                data: $("#formPesquisaVinculo").serialize(),
+                success: function(retorno){
+                    $("#divVinculos").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+parameters:
+    fila_unica.class: SME\FilaUnicaBundle\Service\FilaUnica
+
+services:
+    fila_unica:
+      class: "%fila_unica.class%"
+      arguments: ["@doctrine"]

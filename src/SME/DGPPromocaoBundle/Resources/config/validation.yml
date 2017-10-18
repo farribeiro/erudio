@@ -1,0 +1,15 @@
+SME\DGPPromocaoBundle\Entity\FormacaoExterna:
+  properties:
+    nome:
+      - NotBlank: { message: "O Campo <strong>NOME</strong> é obrigatório." }
+    cargaHoraria:
+      - NotBlank: { message: "O Campo <strong>CARGA HORÁRIA</strong> é obrigatório." }
+    instituicao:
+      - NotBlank: { message: "O Campo <strong>INSTITUIÇÃO</strong> é obrigatório." }
+    dataConclusao:
+      - NotBlank: { message: "O Campo <strong>DATA CONCLUSÃO</strong> é obrigatório." }
+      
+SME\DGPPromocaoBundle\Entity\Promocao:
+  properties:
+    ano:
+      - NotBlank: { message: "O Campo <strong>ANO</strong> é obrigatório." }

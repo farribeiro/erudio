@@ -1,0 +1,69 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Requerimento de Licença-Prêmio{% endblock %}
+
+{% block page %}
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="vinculo">Cargo da licença:</label>
+                <select name="vinculo" class="form-control" required="true">
+                    {% for vinculo in vinculos %}
+                        <option value="{{vinculo.id}}"> {{vinculo.cargo.nome}} - {{vinculo.cargaHoraria}} horas ({{vinculo.tipoVinculo.nome}})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="alocacao">Função atual:</label>
+                <select name="alocacao" class="form-control" required >
+                    {% for vinculo in vinculos %}
+                        {% for alocacao in vinculo.alocacoes %}
+                            <option value="{{alocacao.id}}">{{alocacao.funcaoAtual}} - {{alocacao.localTrabalho.pessoaJuridica.nome}}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+             <div class="col-lg-4">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" name="matricula" class="form-control" required />
+            </div>
+            <div class="col-lg-4">
+                <label for="quinquenio">Quinquênio (Ex: 2010/2014):</label>
+                <input type="text" name="quinquenio" class="form-control" required placeholder="Ano / ano"/>
+            </div>
+            <div class="col-lg-4">
+                <label for="data_inicio">Data de início da licença:</label>
+                <input type="text" name="data_inicio" class="form-control datepickerSME" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="conversao_abono">Conversão de 1/3 (um mês) em abono pecuniário:</label>
+                <select id="conversaoAbono" name="conversao_abono" class="form-control" required >
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-primary">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#conversaoAbono").change(function() {
+            if($(this).val() === "Sim") {
+                $("#divDataAbono").show();
+            } else {
+                $("#divDataAbono").hide();
+            }
+        });
+    </script>
+{% endblock %}

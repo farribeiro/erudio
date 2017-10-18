@@ -1,0 +1,225 @@
+dgp_contratacao:
+    resource: "@DGPContratacaoBundle/Resources/config/routing.yml"
+    prefix:   /admin/admissao/
+    
+dgp_promocao:
+    resource: "@DGPPromocaoBundle/Resources/config/routing.yml"
+
+dgp_formacao:
+    resource: "@DGPFormacaoBundle/Resources/config/routing.yml"
+    
+dgp_permuta:
+    resource: "@DGPPermutaBundle/Resources/config/routing.yml"
+    
+dgp_processo_anual:
+    resource: "@DGPProcessoAnualBundle/Resources/config/routing.yml"
+    
+    
+dgp_index:
+    path: /
+    methods: [GET]
+    defaults: { _controller: DGPBundle:Servidor:index }
+
+# Cadastro de Pessoa -> Dados Pessoais -----------------------------------------------
+
+dgp_pessoa_pesquisar:
+    path: /admin/pessoas/pesquisar   
+    defaults: { _controller: DGPBundle:Pessoa:pesquisar }
+
+dgp_pessoa_cadastrar:
+    path: /admin/pessoas/cadastrar
+    defaults: { _controller: DGPBundle:Pessoa:cadastrar }
+
+dgp_pessoa_alterar:
+    path: /admin/pessoas/{pessoa}/alterar
+    defaults: { _controller: DGPBundle:Pessoa:alterar }
+
+dgp_pessoa_endereco_alterar:
+    path: /admin/pessoas/{pessoa}/endereco/alterar  
+    defaults: { _controller: DGPBundle:Pessoa:alterarEndereco }
+
+# Cadastro de Pessoa -> Telefone -----------------------------------------------------
+
+dgp_pessoa_telefone_cadastrar:
+    path: /admin/pessoas/{pessoa}/telefones/cadastrar 
+    defaults: { _controller: DGPBundle:Telefone:cadastrar }
+
+dgp_pessoa_telefone_excluir:
+    path: /admin/pessoas/{pessoa}/telefones/{telefone}/excluir
+    defaults: { _controller: DGPBundle:Telefone:excluir }
+
+
+# Cadastro de Pessoa -> Usuário -----------------------------------------------------
+
+dgp_pessoa_usuario_alterarSenha:
+    path: /admin/pessoas/{pessoa}/usuario/alterar-senha  
+    defaults: { _controller: DGPBundle:Usuario:alterarSenha }
+
+# Cadastro de Pessoa -> Formacoes ---------------------------------------------------
+
+dgp_pessoa_formacao_listar:
+    path: /admin/pessoas/{pessoa}/titulos   
+    defaults: { _controller: DGPBundle:Formacao:listar }
+
+dgp_pessoa_formacao_cadastrar:
+    path: /admin/pessoas/{pessoa}/titulos/cadastrar 
+    defaults: { _controller: DGPBundle:Formacao:cadastrar }
+
+dgp_pessoa_formacao_alterar:
+    path: /admin/pessoas/{pessoa}/titulos/{formacao}/alterar 
+    defaults: { _controller: DGPBundle:Formacao:alterar }
+
+dgp_pessoa_formacao_excluir:
+    path: /admin/pessoas/{pessoa}/titulos/{formacao}/excluir     
+    defaults: { _controller: DGPBundle:Formacao:excluir }
+
+# Cadastro de Pessoa -> Vinculos -----------------------------------------------------
+
+dgp_pessoa_vinculo_listar:
+    path: /admin/pessoas/{pessoa}/vinculos
+    defaults: { _controller: DGPBundle:Vinculo:listarPorPessoa }
+    
+dgp_pessoa_vinculo_cadastrar:
+    path: /admin/pessoas/{pessoa}/vinculos/cadastrar
+    defaults: { _controller: DGPBundle:Vinculo:cadastrar }
+    
+dgp_pessoa_vinculo_alterar:
+    path: /admin/pessoas/{pessoa}/vinculos/{vinculo}/alterar
+    defaults: { _controller: DGPBundle:Vinculo:alterar }
+    
+dgp_pessoa_vinculo_excluir:
+    path: /admin/pessoas/{pessoa}/vinculos/{vinculo}/excluir
+    defaults: { _controller: DGPBundle:Vinculo:excluir }
+
+dgp_vinculo_imprimirDocumentos:
+    path: /admin/vinculos/{vinculo}/imprimir-documentos
+    defaults: { _controller: DGPBundle:Vinculo:imprimirDocumentos }
+
+dgp_vinculo_formAlteracaoRapida:
+    path: /admin/vinculos/{vinculo}/alterar-rapido
+    methods: [GET]
+    defaults: { _controller: DGPBundle:Vinculo:formAlteracaoRapida }
+    
+dgp_vinculo_alterarRapido:
+    path: /admin/vinculos/{vinculo}/alterar-rapido
+    methods: [POST]
+    defaults: { _controller: DGPBundle:Vinculo:alterarRapido }
+
+# Cadastro de Pessoa -> Alocações ---------------------------------------------------
+
+dgp_vinculo_alocacao_listar:
+    path: /admin/vinculos/{vinculo}/alocacoes
+    defaults: { _controller: DGPBundle:Alocacao:listarPorVinculo }
+
+dgp_vinculo_alocacao_cadastrar:
+    path: /admin/vinculos/{vinculo}/alocacoes/cadastrar
+    defaults: { _controller: DGPBundle:Alocacao:cadastrar }
+    
+dgp_vinculo_alocacao_alterar:
+    path: /admin/vinculos/{vinculo}/alocacoes/{alocacao}/alterar
+    defaults: { _controller: DGPBundle:Alocacao:alterar }
+    
+dgp_vinculo_alocacao_excluir:
+    path: /admin/vinculos/{vinculo}/alocacoes/{alocacao}/excluir
+    defaults: { _controller: DGPBundle:Alocacao:excluir }
+
+# Ações do servidor ---------------------------------------------------------------
+
+dgp_servidor_listarVinculos:
+    path:  /servidor/vinculos
+    methods: [GET]
+    defaults: { _controller: DGPBundle:Servidor:listarVinculos }
+    
+dgp_servidor_consultarVinculo:
+    path: /servidor/vinculos/{vinculo}/consultar
+    defaults: { _controller: DGPBundle:Servidor:consultarVinculo }
+    
+# Ações da unidade escolar -----------------------------------------------------
+
+dgp_unidade_criarRoles:
+    path: /unidade/roles/gerar
+    defaults: { _controller: DGPBundle:UnidadeEscolar:criarRoles }
+
+dgp_unidade_listarAlocacoes:
+    path: /unidade/servidores
+    methods: [GET]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:listarAlocacoes }
+
+dgp_unidade_buscarEmailByUsuario:
+    path: /unidade/servidor/email
+    methods: [POST]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:buscarEmailByUsuario }
+
+dgp_unidade_salvarEmailServidor:
+    path: /unidade/servidor/salvar/email
+    methods: [POST]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:salvarEmailServidor }
+
+dgp_unidade_formPesquisaVinculo:
+    path: /unidade/servidores/pesquisar
+    methods: [GET]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:formPesquisaVinculo }
+
+dgp_unidade_pesquisarVinculo:
+    path: /unidade/servidores/pesquisar
+    methods: [POST]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:pesquisarVinculo }
+
+dgp_unidade_formAlocacao:
+    path: /unidade/servidores/incluir/{vinculo}
+    methods: [GET]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:formAlocacao }
+
+dgp_unidade_alocarVinculo:
+    path: /unidade/servidores/incluir/{vinculo}
+    methods: [POST]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:alocarVinculo }
+    
+dgp_unidade_desalocarVinculo:
+    path: /unidade/servidores/excluir/{alocacao}
+    methods: [GET, POST]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:desalocarVinculo }
+   
+dgp_unidade_formPonto:
+    path: /unidade/servidores/registro-ponto
+    methods: [GET]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:formPonto }
+    
+dgp_unidade_imprimirPonto:
+    path: /unidade/alocacao/registro-ponto/imprimir
+    methods: [GET]
+    defaults: { _controller: DGPBundle:UnidadeEscolar:imprimirPonto }
+
+# Ações de Entidade
+
+dgp_entidade_listar:
+    path: /admin/entidades
+    defaults: { _controller: DGPBundle:Entidade:listar }
+
+dgp_entidade_cadastrar:
+    path: /admin/entidades/cadastrar
+    defaults: { _controller: DGPBundle:Entidade:cadastrar }
+  
+dgp_entidade_alterar:
+    path: /admin/entidades/{entidade}/alterar
+    defaults: { _controller: DGPBundle:Entidade:alterar }
+    
+dgp_entidade_endereco_alterar:
+    path: /admin/entidades/{entidade}/endereco/alterar  
+    defaults: { _controller: DGPBundle:Entidade:alterarEndereco }
+
+dgp_entidade_telefone_cadastrar:
+    path: /admin/entidades/{entidade}/telefones/cadastrar 
+    defaults: { _controller: DGPBundle:Entidade:adicionarTelefone }
+    
+dgp_entidade_telefone_excluir:
+    path: /admin/entidades/{entidade}/telefones/{telefone}/excluir 
+    defaults: { _controller: DGPBundle:Entidade:removerTelefone }
+
+dgp_entidade_listar_alocados:
+    path: /admin/entidades/{entidade}/alocacoes
+    defaults: { _controller: DGPBundle:Entidade:listarAlocadosEntidade }
+
+dgp_entidade_excluir_alocacao:
+    path: /admin/entidades/{entidade}/alocacoes/excluir/{alocacao}
+    defaults: { _controller: DGPBundle:Entidade:excluirAlocacao }

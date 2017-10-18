@@ -1,0 +1,74 @@
+{% extends 'DGPPromocaoBundle:Index:index.html.twig' %}
+
+{% set activeTab = '1' %}
+
+{% block tabContent %}
+    <div class="row" style="margin-top: 10px; cursor: pointer;">
+        <form method="POST" action="{{path('dgp_promocaoHorizontal_cadastrar', {'vinculo': vinculo.id})}}">
+            <div class="col-md-2">         
+                <select name="ano" id="ano" class="form-control">
+                    {% for ano in anos %}
+                        <option {% if anoAtual == ano %} selected="SELECTED" {% endif %} value="{{ ano }}">Ano: {{ ano }}</option>
+                    {% endfor %}
+                </select>    
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary"><span style="color:#fff;" class="glyphicon glyphicon-plus"></span> Cadastrar</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Protocolo</th>
+                    <th>Cadastrado Em</th>
+                    <th>Status</th>
+                    <th>A Contar de</th>
+                    <th>CI</th>
+                    <th class="text-center">Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for promocao in promocoes %}
+                    <tr>
+                        <td>{{ promocao.protocolo }}</td>
+                        <td>{{ promocao.dataCadastro | date('d/m/Y H:i:s') }}</td>
+                        <td>
+                            {% if promocao.deferido %}
+                                <span class="text-success">{{ promocao.status.nome }}</span>
+                            {% elseif promocao.indeferido or promocao.cancelado %}
+                                <span class="text-danger">{{ promocao.status.nome }}</span>
+                            {% else %}
+                                {{ promocao.status.nome }}
+                            {% endif %}
+                        </td>
+                        <td>{{ promocao.dataInicio | date('d/m/Y') }}</td>
+                        <td>
+                            {% if promocao.ciGeral %}
+                                {{promocao.ciGeral.numeroAno}}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a class="lnkAlterar" href="{{ path('dgp_promocaoHorizontal_alterar', {'vinculo': vinculo.id, 'promocao': promocao.id}) }}">
+                                <span title="Alterar" class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            | <a class="lnkImprimir" target="_blank" 
+                               href="{{ path('dgp_promocaoHorizontal_imprimir', {'vinculo': vinculo.id, 'promocao': promocao.id}) }}">
+                                <span title="Imprimir" class="glyphicon glyphicon-print"></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="text-center" colspan="6">
+                            <em>Nenhuma promoção cadastrada nesta categoria</em>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

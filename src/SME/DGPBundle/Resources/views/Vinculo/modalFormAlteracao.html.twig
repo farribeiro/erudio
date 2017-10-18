@@ -1,0 +1,81 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} DGP > Vínculos > {{vinculo.id}} {% endblock %}
+
+{% block modalBody %}
+    <form id="formAlteracaoVinculo" action="{{path('dgp_vinculo_alterarRapido', {'vinculo': vinculo.id})}}" method="post">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="cargo">Cargo: </label>
+                <select id="cargo" name="cargo" class="form-control" required>
+                    {% for cargo in cargos %}
+                        <option value="{{cargo.id}}" {% if cargo.id == vinculo.cargo.id %}selected{% endif %} >
+                            {{cargo.nome}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="tipoVinculo">Vínculo: </label>
+                <select id="tipoVinculo" name="tipoVinculo" class="form-control" required>
+                    {% for tipo in tiposVinculo %}
+                        <option value="{{tipo.id}}" {% if tipo.id == vinculo.tipoVinculo.id %}selected{% endif %} >
+                            {{tipo.nome}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="cargaHoraria">Carga Horária: </label>
+                <select id="cargaHoraria" name="cargaHoraria" class="form-control" required>
+                    {% for ch in 1..4   %}
+                        <option value="{{ch * 10}}" {% if ch * 10 == vinculo.cargaHoraria %}selected{% endif %} >
+                            {{ch*10}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="quadroEspecial">Quadro: </label>
+                <select id="quadroEspecial" name="quadroEspecial" class="form-control" required>
+                    <option value="0">Permanente</option>
+                    <option value="1" {% if vinculo.quadroEspecial %}selected{% endif %} >Especial</option>
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="ativo">Ativo: </label>
+                <select id="ativo" name="ativo" class="form-control" required>
+                    <option value="0">Não</option>
+                    <option value="1" {% if vinculo.ativo %}selected{% endif %} >Sim</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="gratificacao">Gratificação: </label>
+                <input id="gratificacao" name="gratificacao" value="{{vinculo.gratificacao}}" type="text" class="form-control"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="lotacaoSecretaria">Lotação Secretaria: </label>
+                <input id="lotacaoSecretaria" name="lotacaoSecretaria" value="{{vinculo.lotacaoSecretaria}}" type="text" class="form-control"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="codigoDepartamento">Código Departamento: </label>
+                <input id="codigoDepartamento" name="codigoDepartamento" value="{{vinculo.codigoDepartamento}}" type="text" class="form-control"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="codigoSetor">Código Setor: </label>
+                <input id="codigoSetor" name="codigoSetor" value="{{vinculo.codigoSetor}}" type="text" class="form-control"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnAlterarVinculo" type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

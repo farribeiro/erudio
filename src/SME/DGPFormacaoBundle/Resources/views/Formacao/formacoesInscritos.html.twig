@@ -1,0 +1,83 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}<a href="{{ path('dgp_formacao_listar_no_local') }}"><button class="btn btn-danger">Voltar</button></a>&nbsp;&nbsp;Matrículas{% endblock %}
+
+{% block body %}
+    <form class="cad_form" method="post" action="{{path('dgp_formacao_inscrever', {'id': formacao.id})}}">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Curso: {{ formacao.nome }}</h3>
+                <br /><br />
+                <label for="cpf">Inscrever por CPF:</label>
+                <div class="input-group">
+                    <input style="font-size: 3rem; height: 6rem;" id="cpf" name="cpf" type="text" class="form-control" />
+                    <span class="input-group-btn">
+                        <button style="font-size: 3rem; height: 6rem;" id="btnAdicionar" class="btn btn-primary addCpf" type="submit">Assinar</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmação de inscrição.</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Olá.<br/>
+                        A pessoa <strong><span class="pessoaNome"></span></strong> irá ser inscrita nesta formação, continuar?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-primary salvar">Sim</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('#menu').hide();
+        $('.addCpf').click(function(ev){
+            ev.preventDefault();
+            var cpf = $('#cpf').val();
+            $.ajax({
+                url: '{{ path('dgp_formacao_buscar_nome') }}',
+                dataType: 'html',
+                type: 'post',
+                data: { 'pessoaCpf': cpf },
+                success: function (data) {
+                    if (data !== "Pessoa não encontrada com este CPF" && data !== "CPF não enviado.") {
+                        $('.pessoaNome').html(data);
+                        $('#myModal').modal('show');
+                    } else {
+                        $.bootstrapGrowl(data, { type: 'danger', delay: 5000 });
+                    }
+                }
+            });
+            
+        });
+        
+        $('.salvar').click(function () {
+            var url = $('.cad_form').attr('action');
+            var cpf = $('#cpf').val();
+            $.ajax({
+                url: url,
+                dataType: 'html',
+                type: 'post',
+                data: { 'pessoaCpf': cpf },
+                success: function () {
+                    $('#myModal').modal('hide');
+                    window.location.reload(true);
+                }
+            });
+        });
+    </script>
+{% endblock %}

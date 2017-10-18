@@ -1,0 +1,33 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Requerimento de Desincompatibilização{% endblock %}
+
+{% block page %}
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" name="matricula" class="form-control" required />
+            </div>
+            <div class="col-lg-6">
+                <label for="cargo_eletivo">Cargo eletivo ao que concorre:</label>
+                <input type="text" name="cargo_eletivo" class="form-control" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="pleito">Pleito:</label>
+                <input type="text" name="pleito" class="form-control" required />
+            </div>
+            <div class="col-lg-6">
+                <label for="data_inicio">Data de afastamento:</label>
+                <input type="text" name="data_inicio" class="form-control" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-primary">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

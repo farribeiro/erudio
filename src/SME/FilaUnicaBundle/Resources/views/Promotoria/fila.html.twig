@@ -1,0 +1,79 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block body %}
+    <p class="text-info" style="padding-top: 5px;">
+        <em>Existem {{inscricoes|length}} inscrições nesta fila</em>
+        {% if aviso %} - {{aviso}}{% endif %}
+    </p>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Categoria</th>
+                <th>Protocolo</th>
+                <th>Criança</th>
+                <th>Pontuação</th>
+                <th>Zoneamento</th>
+                <th>Turma</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set cont = 0 %}
+            {% for inscricao in inscricoes %}
+                {% set cont = cont + 1 %}
+                <tr {% if protocolo == inscricao.protocolo %}class="success"
+                    {% elseif inscricao.movimentacaoInterna or inscricao.processoJudicial %}class="danger"{% endif %} >
+                    <td><strong>{{cont}}</strong></td>
+                    <td>
+                        {{inscricao.tipoInscricao.nome}} 
+                        {% if inscricao.movimentacaoInterna %}
+                            [M.I.]
+                        {% elseif inscricao.processoJudicial %} 
+                            [P.J.]
+                        {% endif %}
+                    </td>
+                    <td> 
+                        <span title="{{inscricao.dataModificacao|date('d/m/Y G:i:s')}}">{{inscricao.protocolo}}</span>
+                    </td>
+                    <td>{{inscricao.crianca.nome}}</td>
+                    <td>
+                        {% if inscricao.tipoInscricao.id == constant('SME\\FilaUnicaBundle\\Entity\\TipoInscricao::REGULAR') %} 
+                            {{inscricao.rendaPontuada}} 
+                        {% else %} N/A {% endif %}
+                    </td>
+                    <td>{{inscricao.zoneamento.nome}} - {{inscricao.zoneamento.descricao}}</td>
+                    <td>{{inscricao.anoEscolar.nome}}</td>
+                    <td>
+                        <a target="_blank" href="{{path('fu_promotoria_imprimir', {'inscricao': inscricao.id})}}">Visualizar</a> 
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-center" colspan="8"> <em>Não existem inscritos na fila para este zoneamento e ano</em> </td>
+                </tr>
+            {% endfor %}
+         </tbody>
+    </table>
+
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 75%;"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(".ajaxLink").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divModal").html(retorno);
+                }
+            });
+            $('#modalDialog').modal("show");
+            ev.preventDefault();
+        });
+    </script>
+{% endblock %}

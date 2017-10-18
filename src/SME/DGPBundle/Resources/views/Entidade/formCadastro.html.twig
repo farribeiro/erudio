@@ -1,0 +1,50 @@
+{% extends 'DGPBundle:Entidade:cadastroEntidade.html.twig' %}
+
+{% block headerTitle %}DGP > Entidades > {{entidade is defined ? entidade.nome : 'Novo'}} {% endblock %}
+
+{% set activeTab = '1' %}
+
+{% block tabContent %}
+    <div class="row" id="formErrors">
+        {{ erros | raw }}
+    </div>
+    {{ form_start(form, { 'attr': { 'id': 'entidadeForm' }}) }}
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.nome, {'attr': {'class': 'form-control'} }) }}
+            </div>
+            <div class="col-lg-6">
+                 {{ form_row(form.classe, {'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.cpfCnpj, {'attr': {'class': 'form-control'} }) }}
+            </div>
+            <div class="col-lg-6">
+                 {{ form_row(form.dataNascimento, {'attr': {'class': 'form-control datepickerSME'} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.email, {'attr': {'class': 'form-control'} }) }}
+            </div>
+            <div class="col-lg-6">
+                {{ form_row(form.entidadePai, {'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.codigoInep, { 'attr': { 'class': 'form-control' } }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.btnSalvar, { 'attr': { 'class': 'btn btn-primary btn-block' } }) }}
+            </div>
+            <div class="col-lg-6">
+                <a class="btn btn-danger btn-block" href="{{ path('dgp_entidade_listar')}}">Cancelar</a>
+            </div>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

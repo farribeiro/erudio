@@ -1,0 +1,46 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} <h2>Incluir Formação Externa</h2> {% endblock %}
+
+{% block modalBody %}
+    <div class="row" id="formErrors">
+        {{ erros | raw }}
+    </div>
+    
+    <div class="row">
+        {{ form_start(form, {'attr': {'class': 'formFormacaoExterna'} }) }}
+            <div class="col-md-4">Nome:<br />{{ form_widget(form.nome, { 'attr': {'class': 'form-control'} }) }}</div>
+            <div class="col-md-4">Carga Horária:<br />{{ form_widget(form.cargaHoraria, { 'attr': {'class': 'form-control'} }) }}</div>
+            <div class="col-md-4">Instituição:<br />{{ form_widget(form.instituicao, { 'attr': {'class': 'form-control'} }) }}</div>
+            <div class="col-md-4">Data Conclusão:<br />{{ form_widget(form.dataConclusao, { 'attr': {'class': 'form-control datepickerSME'} }) }}</div>
+            <div class="col-md-4">&nbsp;<br />{{ form_widget(form.btnSalvar, { 'attr': {'class': 'btn btn-primary btnSalvar'} }) }}</div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+ 
+{% block javascript %}
+    {{parent()}}
+    <script type='text/javascript'>
+        $('document').ready(function (){
+            $('.btnSalvar').click(function (ev){
+                ev.preventDefault();
+                $.ajax({
+                    url: '{{ path('dgp_promocaoHorizontal_formacaoExterna_cadastrar', {'promocao': promocao.id}) }}',
+                    type: 'POST',
+                    data: $('.formFormacaoExterna').serialize(),
+                    success: function (data) {
+                        if (typeof data === "object") {
+                            if (data.result === "success") {
+                                $('#modalDialog').modal("hide");
+                            } else {
+                                $.bootstrapGrowl(data.message, { type: 'danger', delay: 5000 });
+                            }
+                        } else {
+                            $('#divModalFormacaoExterna').html(data);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

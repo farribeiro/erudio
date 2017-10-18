@@ -1,0 +1,103 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Equipes > {{equipe.nome}} {% endblock %}
+
+{% block page %}   
+    <h4>Sobre a Equipe</h4>
+        {{ form_start(form_equipe, { 'action': path('suporte_equipe_atualizar', { 'equipe': equipe.id }), 'attr': { 'id': 'atualizarEquipe' }}) }}
+            <div class="float spacing_input">
+                <div class="input-group">
+                  <span class="input-group-addon">Nome</span>
+                  {{ form_widget(form_equipe.nome, { 'attr': { 'style': 'display: inline;', 'class': 'form-control', 'placeholder': 'Digite o nome da equipe.' }}) }}
+                </div>
+            </div>
+            <div class="float spacing_input">
+                    <div class="input-group">
+                      <span class="input-group-addon">Departamento</span>
+                      {{ form_widget(form_equipe.departamento, { 'attr': { 'style': 'display: inline;', 'class': 'form-control', 'placeholder': 'Digite o nome do departamento.' }}) }}
+                    </div>			  
+            </div>
+            <div class="floatBtn">
+                {{ form_widget(form_equipe.btnSalvar, { 'attr': { 'style': 'margin-top: 7%; display: inline;', 'class': 'btn btn-primary' }}) }}
+            </div>
+	{{ form_end(form_equipe) }}
+	<hr class="clear" />
+        
+	<h4>Inserir novo integrante</h4>
+	{{ form_start(form, { 'attr': { 'id': 'cadastrarIntegrante' }}) }}
+            <div class="input-group" id="scrollable-dropdown-menu">
+	      {{ form_widget(form.nome, { 'attr': { 'style': 'display: inline;', 'class': 'form-control', 'placeholder': 'Digite o nome da pessoa.' }}) }}
+	      <span class="loadingMember">Procurando...</span>
+	      <span class="input-group-btn">
+	        {{ form_widget(form.btnSalvar, { 'attr': { 'style': 'display: inline;', 'class': 'btn btn-primary' }}) }}
+	      </span>
+	    </div>
+	    <div id="newMember" style="display: none;">
+	    	<input type="text" name="cpf" class="form-control" placeholder="Digite o CPF." />
+	      	<input type="text" name="dataNascimento" class="form-control datepickerSME" placeholder="Digite a Data de Nascimento." />
+	    	<input type="text" name="email" class="form-control" placeholder="Digite o email." />
+	    </div>
+	{{ form_end(form) }}
+	<hr />
+	
+	<h4>Integrantes</h4>
+	
+	{% for integrante in equipe.integrantes %}
+		<div class="input-group">
+		  <span class="member-item border">{{ integrante.nome }}</span>
+	      <span class="input-group-btn">
+	        <a href="{{ path('suporte_equipe_excluirIntegrante', { 'equipe': equipe.id, 'integrante': integrante.id }) }}"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span> Remover</button></a>
+	      </span>
+	    </div>
+	{% endfor %}
+	
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/suportetecnico/css/teams.css')}}" />
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('lib/jquery/typeahead.bundle.js')}}"></script>
+    <script type="text/javascript">
+        $(document).ready( function () {
+            var request = null; 
+
+            $('#cadastroIntegrante_nome').val('');
+
+            $('#cadastroIntegrante_nome').typeahead(null, {
+                name: 'Servidores',
+                displayKey: 'nome',
+                source: function (query, process) {
+                    $(".loadingMember").show();
+                    $("#cadastroIntegrante_btnSalvar").attr('disabled','disabled');
+                    if (request !== null) {
+                        request.abort();
+                    }
+                    request = $.ajax({
+                        url: '{{ path('suporte_equipe_buscarIntegrante') }}',
+                        type: 'POST',
+                        dataType: 'JSON',
+                        global: false,
+                        data: { query: query },
+                        success: function (data) {
+                            $(".loadingMember").hide();
+                            $("#cadastroIntegrante_btnSalvar").removeAttr('disabled');
+
+                            if (data.length > 0) {
+                                return process(data);
+                            } else {
+                                $("#newMember").show();
+                            }
+                        }
+                    });
+                },
+                templates: {
+                    suggestion: Handlebars.compile('<p><strong>{{ "{{" }}nome{{ "}}" }}</strong> – {{ "{{" }}cpfCnpj{{ "}}" }}</p>')
+                }
+            });
+        });
+    </script>
+{% endblock %}
