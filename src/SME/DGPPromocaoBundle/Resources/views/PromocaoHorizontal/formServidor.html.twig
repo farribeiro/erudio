@@ -1,0 +1,95 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Servidor > Promoção Horizontal > Solicitar{% endblock %}
+
+{% block page %}
+    <div class="row" id="formErrors">
+        <div class="alert alert-info" style="padding: 7px; font-size: 12px; width: 95%; margin-left: 2.5%; margin-bottom: 1%; margin-top: 2%;">
+            Clique nos campos da coluna Incluir para anexar as formações. Carga horária necessária: 40 horas
+        </div>
+        {{ erros | raw }}
+    </div>
+    
+    {{form_start(form)}}
+        <div class="row">
+            <div class="col-md-6">
+                <label>Número da Matrícula *</label>
+                {{ form_widget(form.matricula, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+        
+        <div class="panel panel-default" style="margin-top: 1em;">
+            <div class="panel-heading">Formações da Secretaria (Certificados Digitais)</div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Incluir</th>
+                            <th>Formação</th>
+                            <th class="text-center">Carga Horária</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set i = 0 %}
+                        {% for c in form.formacoesInternas %}
+                            <tr>
+                                <td class="text-center">{{form_widget(c)}}</td>
+                                <td>{{formacoesInternas[i].formacao.nomeCertificado}}</td>
+                                <td class="text-center">{{formacoesInternas[i].formacao.cargaHoraria}}</td>
+                            </tr>
+                            {% set i = i + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>
+                    <em>* Somente os certificados que não foram usados em outra promoção e estão dentro do prazo são listados aqui</em>
+                </p>
+            </div>
+        </div>
+        <div class="panel panel-default" style="margin-top: 1em;">
+            <div class="panel-heading">Outras Formações</div>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Incluir</th>
+                            <th class="text-center">Formação *</th>
+                            <th class="text-center">Instituição</th>
+                            <th class="text-center">Carga Horária *</th>
+                            <th class="text-center">Data Conclusão *</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ext in 1..8 %}
+                            <tr>
+                                <td class="text-center">
+                                    {{form_widget(form['formacaoExterna' ~ ext], { 'attr': {'class': 'form-control'} })}}
+                                </td>
+                                <td>
+                                    {{form_widget(form['formacaoExterna' ~ ext ~ '_nome'], { 'attr': {'class': 'form-control'} })}}
+                                </td>
+                                <td>
+                                    {{form_widget(form['formacaoExterna' ~ ext ~ '_instituicao'], { 'attr': {'class': 'form-control'} })}}
+                                </td>
+                                <td>
+                                    {{form_widget(form['formacaoExterna' ~ ext ~ '_cargaHoraria'], { 'attr': {'class': 'form-control'} })}}
+                                </td>
+                                <td>
+                                    {{form_widget(form['formacaoExterna' ~ ext ~ '_dataConclusao'], { 'attr': {'class': 'form-control datepickerSME'} })}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {{form_widget(form.btnSalvar, {'attr': {'class': 'btn btn-primary'} })}}
+                <a href="{{path('dgp_servidor_promocao_listar', {'vinculo': vinculo.id})}}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </div>
+    {{form_end(form)}}
+
+{% endblock %}
+

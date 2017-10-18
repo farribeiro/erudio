@@ -1,0 +1,61 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > Pessoas > Busca{% endblock %}
+
+{% block body %}
+    {{ form_start(form, { 'attr': { 'id': 'searchForm' }}) }}
+        {{ form_errors(form) }}
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.pessoaFisicaMinified.nome) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.pessoaFisicaMinified.email) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.pessoaFisicaMinified.cpfCnpj) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_row(form.vinculos.cargo) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.vinculos.tipoVinculo) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    {{ form_row(form.Buscar) }}
+                </div>
+            </div>
+    {{ form_end(form) }}
+    <hr />
+    <div class="container">
+        <div class="row" id="ajaxList">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#{{form.Buscar.vars.id}}").click(function(ev){
+                ev.preventDefault();
+                $.ajax({
+                    url: "{{ path('dgp_pessoa_pesquisar') }}",
+                    type: 'POST',
+                    data: $("#searchForm").serialize(),
+                    success: function (data)
+                    {
+                        $("#ajaxList").html(data);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

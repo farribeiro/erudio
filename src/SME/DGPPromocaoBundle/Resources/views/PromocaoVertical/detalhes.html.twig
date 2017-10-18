@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-lg-6">
+        <label>Status:</label>
+        <span class="form-control">{{promocao.status.nome}}</span>
+    </div>
+    <div class="col-lg-6">
+        <label>Data do pedido:</label>
+        <span class="form-control">{{promocao.dataCadastro|date('d/m/Y')}}</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <label>Resposta:</label>
+        <span class="form-control">{{promocao.resposta}}</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <label>Observações:</label>
+        <span class="form-control">{{promocao.observacao}}</span>
+    </div>
+    <div class="col-lg-6">
+        <label>A contar de:</label>
+        <span class="form-control">{{promocao.dataInicio ? promocao.dataInicio|date('d/m/Y') : ''}}</span>
+    </div>
+</div>
+    
+<div class="panel panel-default" style="margin-top: 1em;">
+    <div class="panel-heading">Dados do Curso</div>
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Instituição</th>
+                    <th class="text-center">Data de Conclusão</th>
+                    <th class="text-center">Carga Horária</th>
+                    <th class="text-center">Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{promocao.nomeCurso}}</td>
+                    <td class="text-center">{{promocao.instituicaoCurso}}</td>
+                    <td class="text-center">{{promocao.dataConclusaoCurso|date('d/m/Y')}}</td>
+                    <td class="text-center">{{promocao.cargaHorariaCurso}}</td>
+                    <td class="text-center">{{promocao.grauCurso.nome}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

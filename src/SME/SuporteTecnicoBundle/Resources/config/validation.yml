@@ -1,0 +1,4 @@
+SME\SuporteTecnicoBundle\Entity\Chamado:
+    properties:
+        descricao:
+            - NotBlank: ~    

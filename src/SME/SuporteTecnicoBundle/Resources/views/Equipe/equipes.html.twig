@@ -1,0 +1,48 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Equipes {% endblock %}
+
+{% block page %}
+	<h4>Criar nova equipe</h4>
+	{{ form_start(form, { 'action': path('suporte_equipe_cadastrar') ,'attr': { 'id': 'cadastrarIntegrante' }}) }}
+		{{ form_widget(form.nome, { 'attr': { 'style': 'display: inline; width: 30%;', 'class': 'form-control', 'placeholder': 'Digite o nome da equipe.' }}) }}
+		{{ form_widget(form.departamento, { 'attr': { 'style': 'display: inline;  width: 30%;', 'class': 'form-control', 'placeholder': 'Digite o departamento da equipe.' }}) }}
+		{{ form_widget(form.btnSalvar, { 'attr': { 'style': 'display: inline;', 'class': 'btn btn-primary' }}) }}
+	{{ form_end(form) }}
+	<hr />
+	<div class="panel-group">
+		{% for equipe in equipes %}
+			<div class="input-group">
+			  <span id="{{ path('suporte_equipe_atualizarAjax', { 'equipe': equipe.id }) }}" class="member-item border">{{ equipe.nome }}</span>
+		      <span class="input-group-btn">
+		        <button label="{{ path('suporte_equipe_adicionarIntegrante', { 'equipe': equipe.id }) }}" class="btn btn-primary add" type="button">Ver Detalhes</button>
+		        <button label="{{ path('suporte_equipe_excluir', { 'equipe': equipe.id }) }}" class="btn btn-danger remove" type="button">Remover</button>
+		      </span>
+		    </div>
+        {% endfor %}
+	</div>
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/suportetecnico/css/teams.css')}}" />
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('bundles/suportetecnico/js/equipes.js')}}"></script>
+    <script type="text/javascript">
+    	$('document').ready(function (){
+
+        	$('.add').click(function (){
+            	var url = $(this).attr('label');
+            	window.location = url;
+            });
+
+        	$('.remove').click(function (){
+            	var url = $(this).attr('label');
+            	window.location = url;
+            });
+        });
+    </script>
+{% endblock %}

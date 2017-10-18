@@ -1,0 +1,148 @@
+intranet_index:
+    path:  /
+    defaults: { _controller: IntranetBundle:Acesso:index }
+
+intranet_formCadastro:
+    path: /cadastro
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Cadastro:formCadastro }
+    
+intranet_criarCadastro:
+    path: /cadastro
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Cadastro:criarCadastro }
+
+# Ações do usuário padrão   
+ 
+intranet_consultarCadastro:
+    path: /perfil
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Cadastro:consultarCadastro }
+    
+intranet_atualizarCadastro:
+    path: /perfil
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Cadastro:atualizarCadastro }
+
+intranet_buscar_notificacoes:
+    path: /notificacoes/{id}
+    defaults: { _controller: IntranetBundle:Usuario:buscarNotificacoes }
+
+intranet_excluir_notificacao:
+    path: /excluir-notificacao
+    defaults: { _controller: IntranetBundle:Usuario:deletarNotificacao }  
+
+intranet_total_notificacoes:
+    path: /total-notificacoes
+    defaults: { _controller: IntranetBundle:Usuario:totalNotificacoes }  
+
+intranet_excluir_notificacoes:
+    path: /excluir-notificacoes
+    defaults: { _controller: IntranetBundle:Usuario:deletarNotificacoes }  
+
+intranet_recover_email:
+    path: /user/public/password-recovery
+    defaults: { _controller: IntranetBundle:Acesso:sendRecoveryEmail }
+
+intranet_set_new_password:
+    path: /user/public/set-new-password
+    defaults: { _controller: IntranetBundle:Acesso:setNewPassword }
+
+intranet_save_new_password:
+    path: /user/public/save-new-password/{token}
+    defaults: { _controller: IntranetBundle:Acesso:saveNewPassword }
+
+intranet_first_access:
+    path: /user/public/first-access
+    defaults: { _controller: IntranetBundle:Acesso:firstAccess }
+
+intranet_create_user:
+    path: /user/public/create-user
+    defaults: { _controller: IntranetBundle:Acesso:createUser }
+
+intranet_get_email:
+    path: /user/public/intranet-get-email
+    defaults: { _controller: IntranetBundle:Acesso:getEmail }
+    
+# Ações do gestor de unidade escolar
+
+intranet_listarUnidadesEscolares:
+    path: /unidade/selecionar
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:UnidadeEscolar:listarUnidadesEscolares }
+    
+intranet_selecionarUnidadeEscolar:
+    path: /unidade/selecionar/{unidade}
+    methods: [GET, POST]
+    defaults: { _controller: IntranetBundle:UnidadeEscolar:selecionarUnidadeEscolar }
+    
+intranet_unidade_usuario_gerenciar:
+    path: /unidade/users/{usuario}
+    defaults: { _controller: IntranetBundle:UnidadeEscolar:gerenciarUsuario }
+    
+intranet_unidade_usuario_atribuirRole:
+    path: /unidade/users/{usuario}/roles
+    defaults: { _controller: IntranetBundle:UnidadeEscolar:atribuirRole }
+    
+intranet_unidade_usuario_retirarRole:
+    path: /unidade/users/{usuario}/roles/{role}/remove
+    defaults: { _controller: IntranetBundle:UnidadeEscolar:retirarRole }
+ 
+# Ações do super administrador    
+    
+intranet_admin_index:
+    path: /admin
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Acesso:index }
+    
+intranet_admin_formPesquisaUsuario:
+    path: /admin/users
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Usuario:formPesquisaUsuario }
+
+intranet_admin_pesquisarUsuario:
+    path: /admin/users
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Usuario:pesquisarUsuario }
+    
+intranet_admin_listarRoles:
+    path: /admin/users/{usuario}/roles
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Usuario:listarRoles }
+    
+intranet_admin_atribuirRole:
+    path: /admin/users/{usuario}/roles/add
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Usuario:atribuirRole }
+    
+intranet_admin_retirarRole:
+    path: /admin/users/{usuario}/roles/remove/{role}
+    defaults: { _controller: IntranetBundle:Usuario:retirarRole }
+    
+intranet_admin_formPesquisaRole:
+    path: /admin/roles
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Role:formPesquisa }
+        
+intranet_admin_pesquisarRole:
+    path: /admin/roles
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Role:pesquisar }
+    
+intranet_admin_listarRolesHerdadas:
+    path: /admin/roles/{role}/hierarchy
+    methods: [GET]
+    defaults: { _controller: IntranetBundle:Role:listarRolesHerdadas }
+    
+intranet_admin_adicionarRoleHerdada:
+    path: /admin/roles/{role}/hierarchy/add
+    methods: [POST]
+    defaults: { _controller: IntranetBundle:Role:adicionarRoleHerdada }
+    
+intranet_admin_removerRoleHerdada:
+    path: /admin/roles/{role}/hierarchy/remove/{roleHerdada}
+    defaults: { _controller: IntranetBundle:Role:removerRoleHerdada }
+
+intranet_admin_buscaFoto:
+    path: /admin/users/{id}/foto
+    defaults: { _controller: IntranetBundle:Usuario:buscarFoto }

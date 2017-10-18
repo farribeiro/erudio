@@ -1,0 +1,92 @@
+.member-name{
+	cursor: pointer;
+	width: 100%;
+	padding: 1%;
+	border: 1px solid #ccc;
+}
+
+.red {
+	color: red;
+}
+
+.blue {
+	color: blue;
+}
+
+.loadingMember {
+	position: absolute;
+	right: 8%;
+	top: 30%;
+	display: none;
+}
+
+.tt-suggestions {
+	background: white;
+	width: 100%;
+	border-radius: 8px;
+	/*padding: 1%;*/
+}
+
+.tt-suggestion {
+	padding: 0;
+	margin: 0;
+}
+
+.tt-suggestion p{
+	padding: 1%;
+	margin-top: 0;
+	margin-bottom: 0;
+	cursor: pointer;
+	border-bottom: 1px solid #ccc;
+}
+
+.tt-suggestion :hover {
+	background: #558FCD;
+	color: white;
+	text-shadow: 0px 1px 0px #000;
+}
+
+.tt-input {
+	width: 50%;
+}
+
+.twitter-typeahead {
+	width: 100%;
+}
+
+.member-item {
+    display: block;
+    height: 100%;
+    padding: 0.7%;
+    width: 100%;
+}
+
+.border {
+	border: 1px solid #ccc;
+}
+
+.tt-dropdown-menu {
+	border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    max-height: 1000%;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.float {
+	float: left;
+	width: 40%;
+}
+
+.floatBtn {
+	float: left;
+}
+
+.spacing_input {
+	margin-right: 2%;
+}
+
+.clear {
+	margin-top: 8%;
+	clear: both
+}

@@ -1,0 +1,22 @@
+SME\DGPFormacaoBundle\Entity\Formacao:
+  properties:
+    nome:
+      - NotBlank: { message: "O Campo <strong>NOME</strong> é obrigatório." }
+    dataInicioInscricao:
+      - NotBlank: { message: "O Campo <strong>INÍCIO DAS INSCRIÇÕES</strong> é obrigatório." }
+    dataTerminoInscricao:
+      - NotBlank: { message: "O Campo <strong>TÉRMINO DAS INSCIRÇÕES</strong> é obrigatório." }
+    dataInicioFormacao:
+      - NotBlank: { message: "O Campo <strong>INÍCIO DA FORMAÇÃO</strong> é obrigatório." }
+    dataTerminoFormacao:
+      - NotBlank: { message: "O Campo <strong>TÉRMINO DA FORMAÇÃO</strong> é obrigatório." }
+
+  getters:
+     dataInscricaoValida:
+         - "True": { message: "A <strong>DATA DE TÉRMINO</strong> das Inscrições deve ser após a <strong>DATA DE INÍCIO.</strong>" }
+     dataFormacaoValida:
+         - "True": { message: "A <strong>DATA DE TÉRMINO</strong> da Formação deve ser após a <strong>DATA DE INÍCIO.</strong>" }
+     #dataInscricaoFormacaoValida:
+     #    - "True": { message: "A <strong>DATA DA FORMAÇÃO</strong> deve ser após a <strong>DATA DE INSCRIÇÃO.</strong>" }
+     cargaHorariaValida:
+         - "True": { message: "A <strong>CARGA HORÁRIA</strong> deve ser maior que zero horas." }

@@ -1,0 +1,129 @@
+# Processo
+    
+dgp_processoAdmissao_cadastrar:
+    path: /processo/cadastrar
+    defaults: { _controller: DGPContratacaoBundle:Processo:cadastrar }
+
+dgp_processoAdmissao_pesquisar:
+    path: /processo/pesquisar
+    defaults: { _controller: DGPContratacaoBundle:Processo:pesquisar }
+
+# Inscrição
+
+dgp_processoAdmissao_pesquisarInscricoes:
+    path: /processo/{processo}/inscricoes
+    defaults: { _controller: DGPContratacaoBundle:Inscricao:pesquisar }
+    
+dgp_processoAdmissao_cadastrarInscricao:
+    path: /processo/{processo}/inscricoes/add/{cargo}
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:Inscricao:cadastrar }
+    
+dgp_processoAdmissao_formDesistencia:
+    path: /processo/{processo}/inscricoes/{inscricao}/desistencia
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Inscricao:formDesistencia }
+    
+dgp_processoAdmissao_imprimirTermoDesistencia:
+    path: /processo/{processo}/inscricoes/{inscricao}/desistencia
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:Inscricao:imprimirTermoDesistencia }
+
+# Convocação
+
+dgp_convocacao_pesquisar:
+    path: /processo/{processo}/convocacoes
+    defaults: { _controller: DGPContratacaoBundle:Convocacao:pesquisar }
+    
+dgp_convocacao_getJson:
+    path: /convocacoes/json
+    defaults: { _controller: DGPContratacaoBundle:Convocacao:getJson }
+
+# CI Geral ------------------------------------------------------------
+
+dgp_ciGeral_formCadastro:
+    path: /ci-geral/cadastrar
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:formCadastro }
+    
+dgp_ciGeral_cadastrar:
+    path: /ci-geral/cadastrar
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:cadastrar }
+
+dgp_ciGeral_formPesquisa:
+    path:  /ci-geral/pesquisar
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:formPesquisa }
+
+dgp_ciGeral_pesquisar:
+    path: /ci-geral/pesquisar
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:pesquisar }  
+
+dgp_ciGeral_formAlteracao:
+    path: /ci-geral/{ci}/alterar
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:formAlteracao }
+    
+dgp_ciGeral_atualizar:
+    path: /ci-geral/{ci}/atualizar
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:atualizar }
+    
+dgp_ciGeral_excluir:
+    path: /ci-geral/{ci}/excluir
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:excluir } 
+
+dgp_ciGeral_formPesquisaVinculo:
+    path: /ci-geral/{ci}/vinculos/pesquisar
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:formPesquisaVinculo }
+    
+dgp_ciGeral_pesquisarVinculos:
+    path: /ci-geral/{ci}/vinculos/pesquisar
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:pesquisarVinculos }
+    
+dgp_ciGeral_incluirVinculos:
+    path: /ci-geral/{ci}/vinculos/add
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:incluirVinculos }
+    
+dgp_ciGeral_excluirVinculos:
+    path: /ci-geral/{ci}/vinculos/excluir
+    methods: [POST]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:excluirVinculos }
+
+dgp_ciGeral_imprimir:
+    path: /ci-geral/{ci}/imprimir
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:CIGeral:imprimir }
+
+# Ações Impressões de Admissão -----------------------------------------------------
+
+dgp_vinculo_imprimirFichaCadastral:
+    path: /impressoes/{vinculo}/ficha-cadastral
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Documentacao:imprimirFichaCadastral }
+    
+dgp_vinculo_imprimirEncaminhamento:
+    path: /impressoes/{vinculo}/encaminhamento
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Documentacao:imprimirEncaminhamento }
+
+dgp_vinculo_imprimirChecklist:
+    path: /impressoes/{vinculo}/checklist
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Documentacao:imprimirChecklist }
+    
+dgp_vinculo_imprimirParecerRegularidade:
+    path: /impressoes/{vinculo}/parecer-regularidade
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Documentacao:imprimirParecerRegularidade }
+    
+dgp_vinculo_imprimirTermoPosse:
+    path: /impressoes/{vinculo}/termo-posse
+    methods: [GET]
+    defaults: { _controller: DGPContratacaoBundle:Documentacao:imprimirTermoPosse }

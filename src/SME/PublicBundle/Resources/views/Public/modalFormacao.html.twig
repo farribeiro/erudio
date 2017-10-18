@@ -1,0 +1,20 @@
+{% extends '::templateModal.html.twig' %}
+
+{% block modalTitle %} <h2>{{ formacao.nome }}</h2> {% endblock %}
+
+{% block modalBody %}
+    <div class="container">
+        <div class="row">
+            <strong>Público Alvo:</strong> {{ formacao.publicoAlvo }} <br />
+            <strong>Carga Horária:</strong> {{ formacao.cargaHoraria }} Horas <br />
+            <strong>Data de Início:</strong> {{ formacao.dataInicioFormacao|date('d/m/Y') }} <br />
+            <strong>Data de Término:</strong> {{ formacao.dataTerminoFormacao|date('d/m/Y') }} <br />
+            <strong>Vagas Disponíveis:</strong> {% if formacao.limiteVagas > 0 %} {{formacao.vagasDisponiveis}} {% else %} Sem limite {% endif %} 
+            {% if formacao.descricao %}
+                <hr />
+                <strong>Descrição:</strong> <br /> {{ formacao.descricao | raw }}
+            {% endif %}
+        </div>
+    </div>
+            
+{% endblock %}

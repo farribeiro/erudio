@@ -1,0 +1,93 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block body %}
+    {% if showCad >= 0 and showCad <= 40 %}
+        <button id="btnIncluirAlocacao" class="btn btn-primary" >
+            <span class="glyphicon glyphicon-plus"></span>
+            Incluir Alocação
+        </button>
+        <br /><br />
+    {% endif %}
+    
+    {% if error != '' %}
+        {{ error }}
+    {% else %}
+        <strong>Alocações</strong>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Local de trabalho</th>
+                    <th>Carga Horária</th>
+                    <th>Função</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alocacao in alocacoes %}
+                    <tr>
+                        <td>{{alocacao.localTrabalho.pessoaJuridica.nome}}</td>
+                        <td>{{alocacao.cargaHoraria}}</td>
+                        <td>{{alocacao.funcaoAtual}}</td>
+                        <td class="text-center">
+                            <a class="lnkAlterar" href="{{ path('dgp_vinculo_alocacao_alterar', { 'vinculo': vinculo.id, 'alocacao': alocacao.id }) }}"><span class="glyphicon glyphicon-edit"></span></a> |
+                            <a class="lnkExcluir" href="{{ path('dgp_vinculo_alocacao_excluir', { 'vinculo': vinculo.id, 'alocacao': alocacao.id }) }}"><span class="glyphicon glyphicon-remove"></span></a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td class="text-center" colspan="4">Nenhuma alocação encontrada</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">			
+        $("#btnIncluirAlocacao").click(function (e){
+            e.preventDefault();
+            $.ajax({
+                url: "{{ path('dgp_vinculo_alocacao_cadastrar', { 'vinculo': vinculo.id }) }}",
+                type: "GET",
+                success: function (data) {
+                    if (data !== "error") {
+                        $(".ajaxAllocation{{vinculo.id}}").html(data);
+                    } else {
+                        $.bootstrapGrowl("Houve um problema com o formulário de alocação, tente mais tarde.", { type: 'danger', delay: 3000 });
+                    }
+                }
+            });
+        });
+
+        $(".lnkAlterar").click(function(ev){
+            var url = $(this).attr("href");
+            ev.preventDefault();
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (data) {
+                    $(".ajaxAllocation{{vinculo.id}}").html(data);
+                }
+            });
+        });
+
+        $(".lnkExcluir").click(function(ev){
+            var url = $(this).attr("href");
+            ev.preventDefault();
+            $.ajax({
+                url: url,
+                type: "POST",
+                success: function (data) {
+                    if (data !== "error") {
+                        $.bootstrapGrowl("Alocação excluída com sucesso.", { type: 'success', delay: 3000 });
+                        $(".ajaxAllocation{{vinculo.id}}").html(data);
+                    } else {
+                        $.bootstrapGrowl("Houve um erro com a exclusão de sua alocação.", { type: 'danger', delay: 3000 });
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

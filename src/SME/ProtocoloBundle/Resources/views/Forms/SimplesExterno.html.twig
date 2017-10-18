@@ -1,0 +1,60 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}Requerimento Simples - Externo{% endblock %}
+
+{% block body %}
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="cpf">CPF:</label>
+                <input type="text" name="cpf" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="rg">RG:</label>
+                <input type="text" name="rg" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="email">E-mail:</label>
+                <input type="text" name="email" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="telefone">Telefone:</label>
+                <input type="text" name="telefone" class="form-control" required="true"/>
+            </div>
+            <div class="col-lg-6">
+                <label for="celular">Celular:</label>
+                <input type="text" name="celular" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="pedido">Pedido:</label>
+                <textarea name="pedido" class="form-control" cols="40" rows="5" required="true"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="motivo">Motivo:</label>
+                <textarea name="motivo" class="form-control" cols="40" rows="5" required="true"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="confira">Antes de clicar em Incluir, confira todos os seus dados.</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-info">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

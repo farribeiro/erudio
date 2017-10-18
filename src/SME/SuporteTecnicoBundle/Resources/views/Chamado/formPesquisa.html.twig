@@ -1,0 +1,109 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Chamados > Pesquisa{% endblock %}
+
+{% block page %}
+
+{{form_start(form, {'attr': {'id': 'formPesquisa'} })}}
+    <div class="row">
+        <div class="col-lg-6">
+            {{form_label(form.categoria)}}
+            {{form_widget(form.categoria, {'attr': {'class': 'form-control'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.numero)}}
+            {{form_widget(form.numero, {'attr': {'class': 'form-control'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.status)}}
+            {{form_widget(form.status, {'attr': {'class': 'form-control'} })}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <label for="">Cadastrado entre:</label>
+            {{form_widget(form.periodoCadastroInicio, {'attr': {'class': 'form-control datepickerSME'} })}}
+        </div>
+        <div class="col-lg-3">
+            <label>Até:</label>
+            {{form_widget(form.periodoCadastroFim, {'attr': {'class': 'form-control datepickerSME'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.ordenacao)}}
+            {{form_widget(form.ordenacao, {'attr': {'class': 'form-control'} })}}
+        </div>
+        <div class="col-lg-3">
+            {{form_label(form.aberto)}}
+            {{form_widget(form.aberto, {'attr': {'class': 'form-control'} })}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <button id="btnPesquisar" type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-list"></span> Listar
+            </button>
+            <button id="btnImprimir" formtarget="_blank" type="submit" formaction="{{form.vars.action}}?pdf" class="btn btn-primary">
+                <span class="glyphicon glyphicon-print"></span> Imprimir
+            </button>
+        </div>
+    </div>
+{{form_end(form)}}
+
+<div id="chamados"></div>
+
+<div id="divPaginas" style="display: none; padding-top: 0.5em;">
+    <em>Página <span id="numeroPagina">1</span></em>
+    <a class="btn-link" id="lnkAnterior">Anterior</a> | <a class="btn-link" id="lnkProximo">Próxima</a>
+</div>
+
+<div id="modalDialog" class="modal fade" role="dialog">
+    <div id="divModal" class="modal-dialog" style="width: 85%;"></div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        if(typeof(Storage)!=="undefined") {
+            $("#{{form.categoria.vars.id}}").val(sessionStorage.getItem("{{form.categoria.vars.id}}"));
+            $("#{{form.status.vars.id}}").val(sessionStorage.getItem("{{form.status.vars.id}}"));
+            $("#{{form.aberto.vars.id}}").val(sessionStorage.getItem("{{form.aberto.vars.id}}"));
+        }
+
+        function carregarChamados(event) {
+            $.ajax({
+                 type: "POST",
+                 url: "{{form.vars.action}}",
+                 data: $("#formPesquisa").serialize(),
+                 success: function(retorno) {
+                     $("#chamados").html(retorno);
+                     $("#divPaginas").show();
+                 }
+             });
+             sessionStorage.setItem("{{form.categoria.vars.id}}", $("#{{form.categoria.vars.id}}").val());
+             sessionStorage.setItem("{{form.status.vars.id}}", $("#{{form.status.vars.id}}").val());
+             sessionStorage.setItem("{{form.aberto.vars.id}}", $("#{{form.aberto.vars.id}}").val());
+        }
+        
+        $("#btnPesquisar").click(function(event) {
+            event.preventDefault();
+            carregarChamados(event);
+            $("#divPaginas").show();
+        });
+
+        $("#lnkProximo").click(function() {
+            $("#{{form.pagina.vars.id}}").val((parseInt($("#{{form.pagina.vars.id}}").val()) + 1).toString() );
+            $("#numeroPagina").html(parseInt($("#{{form.pagina.vars.id}}").val()) + 1);
+            carregarChamados();
+        });
+
+        $("#lnkAnterior").click(function() {
+            if($("#{{form.pagina.vars.id}}").val() > 0) {
+                $("#{{form.pagina.vars.id}}").val((parseInt($("#{{form.pagina.vars.id}}").val()) - 1).toString() );
+                $("#numeroPagina").html(parseInt($("#{{form.pagina.vars.id}}").val()) + 1);
+                carregarChamados();
+            }
+        });
+    </script>
+{% endblock %}

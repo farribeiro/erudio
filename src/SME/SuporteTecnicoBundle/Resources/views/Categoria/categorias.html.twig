@@ -1,0 +1,113 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Categorias {% endblock %}
+
+{% block page %}
+    {% if app.request.isXmlHttpRequest == false %}
+        <div class="row" id="ajaxCategories">
+    {% endif %}
+    
+    <div class="categoriasList" style="width: 100%;">
+        <a href="{{ path('suporte_categoria_cadastrar') }}" class="add_category">
+            <button style="margin-bottom: 5px;" class="btn btn-primary">Adicionar Categoria</button>
+        </a>
+        <span class="new_category"></span>
+        {% for categoria in categorias %}
+            <div class="categorycontainer">
+                <div class="arrowlist arrow-{{ categoria.id }}" data-id="{{ categoria.id }}" style="color: blue; cursor: pointer; border-bottom: 1px solid #E0E0E0; padding: 10px; color: black; width: 3%; float: left;">
+                    {% if categoria.subcategorias|length %}
+                        <span style="color: #3498db;" class="glyphicon glyphicon-chevron-down cat-sign-{{ categoria.id }}" aria-hidden="true"></span>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </div>
+                <div class="categoryitem tree_item" data-link="{{ path('suporte_categoria_atualizar', { categoria: categoria.id }) }}" data-id="{{ categoria.id }}" style="cursor: pointer; border-bottom: 1px solid #E0E0E0; padding: 10px; width: 82%; float: left;">
+                    {% if categoria.prioridade.id == 4 %}
+                        <span class="glyphicon glyphicon-exclamation-sign text-danger" title="{{categoria.prioridade.nome}}"></span>
+                    {% elseif categoria.prioridade.id == 3 %}
+                        <span class="glyphicon glyphicon-flag text-warning" title="{{categoria.prioridade.nome}}"></span>
+                    {% elseif categoria.prioridade.id == 2 %}
+                        <span class="glyphicon glyphicon-flag text-info" title="{{categoria.prioridade.nome}}"></span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-flag text-success" title="{{categoria.prioridade.nome}}"></span>
+                    {% endif %}
+                    {{categoria.nome}} 
+                </div>
+                <div class="categoryoptions" style="float: left; width: 15% ; cursor: pointer; border-bottom: 1px solid #E0E0E0; padding: 10px;">
+                    <a class="edit_category" href="{{ path('suporte_categoria_editar', {'categoria':categoria.id})}}" style="cursor: pointer;">
+                        <span title="Editar Categoria" style="margin-right: 3px;" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </a> |
+                    <a class="add_category" href="{{ path('suporte_categoria_cadastrar') }}?categoria=categoria{{ categoria.id }}">
+                        <span title="Adicionar Sub-Categoria" style="margin-right: 3px;" class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a> |
+                    <a class="lnkTags" href="{{ path('suporte_categoria_tag_cadastrar', { categoria: categoria.id }) }}">
+                        <span title="Tags" class="glyphicon glyphicon-tags"></span>
+                    </a> |
+                    <a class="remove_category" data-id="{{ categoria.id }}" href="{{ path('suporte_categoria_excluir', { categoria: categoria.id }) }}">
+                        <span title="Remover" class="glyphicon glyphicon-remove cat-remove-{{ categoria.id }} cat-remove" aria-hidden="true"></span>
+                    </a>
+                </div>
+                {% if categoria.subcategorias|length %}
+                    <div class="subcategorycontainer cat-{{ categoria.id }}" style="width: 100%; display: none">
+                        {% include "SuporteTecnicoBundle:Categoria:arvoreCategorias.html.twig" with {'categorias': categoria.subcategorias} %}  
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}            
+    </div>
+    
+    {% if app.request.isXmlHttpRequest == false %}
+ 	</div>
+    {% endif %}
+    
+    <div id="modalDialog" class="modal fade" role="dialog">
+        <div id="divModal" class="modal-dialog" style="width: 85%;">
+            {% embed '::templateModal.html.twig' %}
+                {% block modalTitle %}Tags da Categoria{%endblock %}
+                {% block modalBody %}<div id="divTags"></div>{%endblock %}
+            {% endembed %}
+        </div>
+    </div>
+    <div id="modalDialogEdit" class="modal fade" role="dialog">
+        <div id="divModalEditar" class="modal-dialog" style="width: 80%;"></div>
+    </div>        
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <link rel="stylesheet" type="text/css" href="{{asset('lib/jquery/css/goodtree.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('bundles/suportetecnico/css/category.css')}}" />
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('lib/jquery/goodtree.plugin.js')}}"></script>
+    <script type="text/javascript">$('.tree').goodtree({'setFocus': $('.focus')});</script>
+    <script type="text/javascript" src="{{asset('bundles/suportetecnico/js/category.js')}}"></script>
+    
+    <script type="text/javascript">
+        $(".lnkTags").click(function(ev) {
+            $.ajax({
+                type: "GET",
+                url: $(this).attr("href"),
+                success: function(retorno) {
+                    $("#divTags").html(retorno);
+                    $('#modalDialog').modal("show");
+                }
+            });
+            ev.preventDefault();
+        });
+        
+        $('.edit_category').click(function(ev){
+            ev.preventDefault();
+            $.ajax({
+                url : $(this).attr('href'),
+                type: 'GET',
+                success: function (data) {
+                    $("#divModalEditar").html(data);
+                    $("#modalDialogEdit").modal('show');
+                }
+            });
+        });
+    </script>
+{% endblock %}

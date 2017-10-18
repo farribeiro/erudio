@@ -1,0 +1,98 @@
+# Ações da administração --------------------------------------------------------
+
+dgp_formacao_listar:
+    path: /admin/formacao
+    defaults: { _controller: DGPFormacaoBundle:Formacao:listar }
+
+dgp_formacao_cadastrar:
+    path: /admin/formacao/cadastrar
+    defaults: { _controller: DGPFormacaoBundle:Formacao:cadastrar }
+
+dgp_formacao_atualizar:
+    path: /admin/formacao/{formacao}/alterar
+    defaults: { _controller: DGPFormacaoBundle:Formacao:atualizar }
+
+dgp_formacao_excluir:
+    path: /admin/formacao/{formacao}/excluir
+    defaults: { _controller: DGPFormacaoBundle:Formacao:excluir }
+   
+dgp_formacao_cadastrarMatriculaPorCpf:
+    path: /admin/formacao/{formacao}/matriculas/adicionar
+    defaults: { _controller: DGPFormacaoBundle:Matricula:cadastrarPorCpf }
+    
+dgp_formacao_atualizarMatriculas:
+    path: /admin/formacao/{formacao}/matriculas/atualizar/{page}
+    defaults: { _controller: DGPFormacaoBundle:Matricula:atualizarTodas }
+    
+dgp_formacao_excluirMatriculas:
+    path: /admin/formacao/{formacao}/matriculas/excluir/{page}
+    defaults: { _controller: DGPFormacaoBundle:Matricula:excluirTodas }
+    
+dgp_formacao_listarMatriculas:
+    path: /admin/formacao/{formacao}/matriculas/{page}
+    defaults: { _controller: DGPFormacaoBundle:Matricula:listarPorFormacao, page: 1 }
+    
+dgp_formacao_listarEncontros:
+    path: /admin/formacao/{formacao}/encontros
+    defaults: { _controller: DGPFormacaoBundle:Encontro:listar }
+    
+dgp_formacao_excluirEncontro:
+    path: /admin/formacao/{formacao}/encontros/{encontro}/excluir
+    defaults: { _controller: DGPFormacaoBundle:Encontro:excluir }
+    
+dgp_formacao_imprimirChamada:
+    path: /admin/formacao/{formacao}/imprimir-chamada
+    defaults: { _controller: DGPFormacaoBundle:Formacao:imprimirChamada }
+
+# Ações do servidor -------------------------------------------------------------
+
+dgp_servidor_listarFormacoes:
+    path: /servidor/formacoes
+    defaults: { _controller: DGPFormacaoBundle:Matricula:listarPorServidor}
+    
+dgp_servidor_imprimirCertificado:
+    path: /servidor/formacoes/{matricula}/certificado
+    defaults: { _controller: DGPFormacaoBundle:Matricula:imprimirCertificado }
+
+dgp_formacao_adicionarMatricula:
+    path: /formacao/{formacao}/matriculas/add/{pessoa}
+    defaults: { _controller: DGPFormacaoBundle:Matricula:cadastrar }
+    
+dgp_formacao_cancelarMatricula:
+    path: /formacao/{formacao}/matriculas/remove/{matricula}
+    defaults: { _controller: DGPFormacaoBundle:Matricula:cancelar }
+    
+# Ações abertas ao público externo ----------------------------------------------
+
+dgp_publico_getFormacoes:
+    path: /public/formacoes
+    methods: [GET]
+    defaults: { _controller: DGPFormacaoBundle:Public:getFormacoes }
+
+dgp_publico_getFormacao:
+    path: /public/formacao/{id}
+    methods: [GET]
+    defaults: { _controller: DGPFormacaoBundle:Public:getFormacao }
+    
+dgp_publico_postMatricula:
+    path: /public/formacoes/{formacao}/matriculas
+    methods: [POST]
+    defaults: { _controller: DGPFormacaoBundle:Public:postMatricula }
+    
+# Inscrição no local
+
+dgp_formacao_listar_no_local:
+    path: /admin/formacao/local
+    defaults: { _controller: DGPFormacaoBundle:Formacao:listarNoLocal }
+
+dgp_formacao_inscritos:
+    path: /admin/formacao/{id}/inscritos
+    defaults: { _controller: DGPFormacaoBundle:Formacao:listarInscritos }
+
+dgp_formacao_buscar_nome:
+    path: /admin/formacao/buscar-nome
+    defaults: { _controller: DGPFormacaoBundle:Formacao:buscarNome }
+
+dgp_formacao_inscrever:
+    path: /admin/formacao/{id}/inscrever
+    defaults: { _controller: DGPFormacaoBundle:Formacao:inscreverNoLocal }

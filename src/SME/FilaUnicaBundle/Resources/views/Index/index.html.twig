@@ -1,0 +1,41 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block headerTitle %}Fila Única{% endblock %}
+
+{% block body %}
+    {% if not app.request.isXmlHttpRequest %}
+        <div class="row">
+            {% if is_granted('ROLE_INFANTIL_MEMBRO') or app.session.has('unidade') %}
+                <menu class="col-lg-2">
+                    <div class="list-group">
+                        <a class="list-group-item" href="{{path('fu_inscricao_formFila')}}">Consulta Fila</a>
+                            <a class="list-group-item" href="{{path('fu_inscricao_formPesquisa')}}">Pesquisa Inscrição</a>
+                            <a class="list-group-item" href="{{path('fu_inscricao_formInscricao', {'tipoInscricao': 1})}}">Cadastro</a>
+                            <a class="list-group-item" href="{{path('fu_inscricao_formInscricao', {'tipoInscricao': 2})}}">Transferência</a>
+                            {% if is_granted('ROLE_INFANTIL_MEMBRO') %}
+                                <a class="list-group-item" href="{{path('fu_movimentacaoInterna_formPesquisa')}}">Movimentação Int.</a>
+                                <a class="list-group-item" href="{{path('fu_inscricao_formOrdemJudicial')}}">Processo Judicial</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_INFANTIL_MEMBRO') or app.session.has('unidade') %}
+                                <a class="list-group-item" href="{{path('fu_vaga_formCadastro')}}">Abertura de Vagas</a>
+                                <a class="list-group-item" href="{{path('fu_vaga_formPesquisa')}}">Gerência de Vagas</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_INFANTIL_MEMBRO') %}
+                                <a class="list-group-item" href="{{path('fu_unidade_escolar_listar')}}">Unidades de Ensino</a> 
+                                <a class="list-group-item" href="{{path('fu_relatorio_formRelatorioInscricoes')}}">Relatórios</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                <a class="list-group-item" href="{{path('fu_inscricao_reordenarGeral')}}">Reord. Trimestral</a>
+                                <a class="list-group-item" href="{{path('fu_inscricao_redefinirAnosEscolares')}}">Virada Anual</a>
+                            {% endif %}
+                    </div>
+                </menu>
+            {% endif %}
+            <div id="page" class="col-lg-10">
+                {% block page %} {% endblock %}
+            </div>
+        </div>
+    {% else %}
+        {{block('page')}}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Requerimento Simples{% endblock %}
+
+{% block page %}
+    <form method="post" action="{{url('protocolo_servidor_incluirSolicitacao', {'solicitacao': solicitacao.id})}}">
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="matricula">Matrícula:</label>
+                <input type="text" name="matricula" class="form-control" required="true"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="pedido">Pedido:</label>
+                <textarea name="pedido" class="form-control" cols="40" rows="5" required="true">O servidor abaixo assinado requer a Vsª se digne conceder </textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <label for="motivo">Motivo:</label>
+                <textarea name="motivo" class="form-control" cols="40" rows="5" required="true"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnIncluir" type="submit" class="btn btn-primary">Incluir</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

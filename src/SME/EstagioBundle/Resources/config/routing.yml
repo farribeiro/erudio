@@ -1,0 +1,83 @@
+public_consulta_estagio:
+    path: /public/consulta-estagio
+    defaults: { _controller: EstagioBundle:Estagio:consultaEstagio }
+
+public_vaga_estagio:
+    path: /public/vaga-estagio
+    defaults: { _controller: EstagioBundle:Estagio:solicitarEstagio }
+
+public_solicitar_usuario:
+    path: /public/solicitar-usuario
+    defaults: { _controller: EstagioBundle:Estagio:solicitarUsuario }
+
+vagas_estagio:
+    path: /vagas-estagio
+    defaults: { _controller: EstagioBundle:Estagio:listarVagas }
+
+adicionar_vaga:
+    path: /vagas/add
+    defaults: { _controller: EstagioBundle:Estagio:addVagas }
+
+editar_vaga:
+    path: /vagas/edit/{id}
+    defaults: { _controller: EstagioBundle:Estagio:editarVagas }
+
+remover_vaga:
+    path: /vagas/remover/{id}
+    defaults: { _controller: EstagioBundle:Estagio:removerVagas }
+
+listar_orientadores:
+    path: /orientadores
+    defaults: { _controller: EstagioBundle:Estagio:orientadores }
+
+indeferir_orientadores:
+    path: /orientadores/{id}/indeferir
+    defaults: { _controller: EstagioBundle:Estagio:indeferirUsuario } 
+
+desativar_orientadores:
+    path: /orientadores/{id}/desativar
+    defaults: { _controller: EstagioBundle:Estagio:desativarUsuario }
+
+deferir_orientadores:
+    path: /orientadores/{id}/deferir
+    defaults: { _controller: EstagioBundle:Estagio:deferirUsuario }
+
+cadastrar_estagiario:
+    path: /inscrever-estagiario
+    defaults: { _controller: EstagioBundle:Estagio:inscreverEstagiario }
+
+listar_inscritos:
+    path: /vagas/{id}/inscritos
+    defaults: { _controller: EstagioBundle:Estagio:listarInscritos }
+
+indeferir_estagio:
+    path: /inscricao/{id}/indeferir
+    defaults: { _controller: EstagioBundle:Estagio:indeferirEstagio } 
+
+deferir_estagio:
+    path: /inscricao/{id}/deferir
+    defaults: { _controller: EstagioBundle:Estagio:deferirEstagio }
+
+buscar_vagas:
+    path: /buscar-vagas
+    defaults: { _controller: EstagioBundle:Estagio:buscarVagas }
+
+buscar_vagas_geral:
+    path: /vagas-gerais
+    defaults: { _controller: EstagioBundle:Estagio:buscarVagasGerais }
+
+inscricoes_pendentes:
+    path: /inscricoes/pendentes
+    defaults: { _controller: EstagioBundle:Estagio:listarPendentes }
+
+inscritos_escola:
+    path: /inscricoes/escola
+    defaults: { _controller: EstagioBundle:Estagio:deferidosPorEscola }
+    
+inscritos_orientador:
+    path: /inscricoes/orientador
+    defaults: { _controller: EstagioBundle:Estagio:inscritosPorOrientador }
+
+remover_estagio:
+    path: /estagio/{id}/remover
+    defaults: { _controller: EstagioBundle:Estagio:removerEstagio }

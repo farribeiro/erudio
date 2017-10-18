@@ -1,0 +1,18 @@
+SME\PublicacaoBundle\Entity\Grupo:
+  properties:
+    nomeExibicao:
+      - NotBlank: { message: "O Campo <strong>NOME DE EXIBIÇÃO</strong> é obrigatório." }
+
+SME\PublicacaoBundle\Entity\Documento:
+  properties:
+    arquivo:
+      - NotBlank: { message: "O Campo <strong>ARQUIVO</strong> é obrigatório." }
+      - File:
+          maxSize: 50M
+          maxSizeMessage: "<div class='panel panel-danger' style='padding: 7px; width: 95%; margin-left: 2.5%; margin-bottom: 1%; margin-top: 2%;'><div class='panel-heading'>Por favor, verifique os itens abaixo:</div><div class='panel-body'><li>O arquivo enviado é muito grande. O limite de tamanho é de <strong>50MB</strong></li></ul></div></div>"
+    nomeExibicao:
+      - NotBlank: { message: "O Campo <strong>NOME DE EXIBIÇÃO</strong> é obrigatório." }
+    publicacao:
+      - NotBlank: { message: "O Campo <strong>DATA DE PUBLICAÇÃO</strong> é obrigatório." }
+    visibilidade:
+      - NotBlank: { message: "O Campo <strong>VISIBILIDADE</strong> é obrigatório." }

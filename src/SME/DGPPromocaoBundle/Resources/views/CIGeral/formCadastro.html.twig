@@ -1,0 +1,38 @@
+{% extends 'IntranetBundle:Index:servidor.html.twig' %}
+
+{% block headerTitle %}DGP > CI Geral > Nova{% endblock %}
+
+{% block body %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{path('dgp_promocao_ciGeral_formPesquisa')}}">Pesquisa</a></li>
+        <li class="active"><a href="{{path('dgp_promocao_ciGeral_cadastrar')}}">Cadastro</a></li>
+    </ul>
+    <div id="tabContent" class="container">
+        <div class="row" id="formErrors">
+            {{ erros | raw }}
+        </div>
+        {{form_start(form)}}
+            <div class='row'>
+                <div class="col-lg-12">
+                    {{ form_label(form.tipoPromocao) }}
+                    {{ form_widget(form.tipoPromocao, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-lg-6">
+                    {{ form_label(form.ano) }}
+                    {{ form_widget(form.ano, { 'attr': {'class': 'form-control', 'value': date()|date('Y')} }) }}
+                </div>
+                <div class="col-lg-6">
+                    {{ form_label(form.numero) }}
+                    {{ form_widget(form.numero, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    {{form_widget(form.btnSalvar, { 'attr': {'class': 'btn btn-primary'} })}}
+                </div>
+            </div>
+        {{form_end(form)}}
+    </div>
+{% endblock %}
