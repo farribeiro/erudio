@@ -1,6 +1,0 @@
-parameters:
-    pdf.class: SME\PDFBundle\Service\PDF
-
-services:
-    pdf:
-      class: "%pdf.class%"
