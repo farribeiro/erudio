@@ -753,7 +753,7 @@
             $scope.mostraProgresso();
             var promise = Servidor.buscar('matriculas', {'aluno': $scope.matricula.aluno.id, 'curso': $scope.matricula.curso.id});
             promise.then(function (response) {
-                if (response.data.length) {
+                if (response.data.length > 0 && response.data[0].status !== "CANCELADO") {
                     Materialize.toast($scope.matricula.aluno.nome.toUpperCase() + ' já está matriculado(a) nesse curso na unidade ' + response.data[0].unidadeEnsino.nomeCompleto + '.', 7000);
                     $scope.fechaProgresso();
                 } else if ($scope.validar()) {

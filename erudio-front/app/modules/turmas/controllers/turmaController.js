@@ -337,7 +337,7 @@
                             $scope.mostraProfessores = true; $scope.alunoPresenca = false; $scope.mostraQuadroHorario = false; $scope.adicionarAlunos = false;
                             $scope.fazerChamada = false; $scope.fechaTurma = false;
                             $('#paginaProfessores').removeClass('card-panel'); $scope.professoresDisciplinas($scope.turma);
-                            var promise = Servidor.buscarUm('quadro-horarios', $scope.turma.quadroHorario.id);
+                            var promise = Servidor.buscarUm('quadros-horarios', $scope.turma.quadroHorario.id);
                             promise.then(function(response) {
                                 $scope.quadroHorario = response.data;
                             });
@@ -771,7 +771,7 @@
                     var uni = JSON.parse(sessionStorage.getItem('unidade'));
                     unidade = ($scope.isAdmin) ? $scope.turma.unidadeEnsino.id : uni.id;
                 }
-                var promise = Servidor.buscar('quadro-horarios', {unidadeEnsino: unidade});
+                var promise = Servidor.buscar('quadros-horarios', {unidadeEnsino: unidade});
                 promise.then(function (response) {
                     $scope.quadroHorarios = response.data;                    
                     if ($scope.quadroHorarios.length === 1) {
@@ -1976,7 +1976,7 @@
             $scope.gerarAulas = function () {
                 $scope.mostraLoader(true);
                 //$scope.dataFinalPresencas();
-                var promise = Servidor.finalizar(null, 'turmas/' + $scope.turma.id + '/aulas', 'AULAS');
+                var promise = Servidor.finalizar(null, 'aulas?turma=' + $scope.turma.id, 'AULAS');
                 promise.then(function (response) {
                     //$scope.fechaLoader();
                     $scope.quadroHorarioTurma($scope.turma);
@@ -1996,7 +1996,7 @@
             };
             
             $scope.isAulaGerada = function (){
-                var promiseAulas = Servidor.buscar('turmas/' + $scope.turma.id + '/aulas', null);
+                var promiseAulas = Servidor.buscar('aulas?turma=' + $scope.turma.id, null);
                 promiseAulas.then(function(response){
                     if (response.data.length === 0) {
                         $scope.aulaGerada = false;
@@ -2007,7 +2007,7 @@
             };
 
             $scope.verificarDataInicial = function () {
-                var promiseAulas = Servidor.buscar('turmas/' + $scope.turma.id + '/aulas', null);
+                var promiseAulas = Servidor.buscar('aulas/turma=' + $scope.turma.id, null);
                 promiseAulas.then(function(response){
                     if (response.data.length > 0) {
                         var index = response.data.length - 1;
@@ -2053,7 +2053,7 @@
             $scope.removerGradeHorario = function() {
                 $scope.aulas = [];
                 var inicio = dateTime.converterDataServidor($scope.dataInicioQuadroHorario);
-                var promise = Servidor.buscar('turmas/'+$scope.turma.id+'/aulas');
+                var promise = Servidor.buscar('aulas?turmas'+$scope.turma.id);
                 promise.then(function(response) {
                     var aulas = response.data;
                     if (aulas.length > 0) {
@@ -2208,7 +2208,7 @@
             };
 
             $scope.buscarUmQuadroHorario = function (id) {
-                var promise = Servidor.buscarUm('quadro-horarios', id);
+                var promise = Servidor.buscarUm('quadros-horarios', id);
                 promise.then(function (response) {
                     $scope.quadroHorario = response.data;
                     $scope.quadroHorario.inicio = Servidor.formatarHora($scope.quadroHorario.inicio);
@@ -2261,13 +2261,13 @@
                         $scope.buscarHorarios();
                     }
                     if (op === 'quadro') {
-                        $scope.ativarDragAndDrop();
                         $timeout(function () {
+                            $scope.ativarDragAndDrop();
                             $('#dForm').material_select('destroy');
                             $('#dForm').material_select();
                             $scope.buscarHorariosDisciplinas();
                             $scope.editando = true;
-                        }, 500);
+                        }, 2000);
                     }
                 });
             };
@@ -2534,7 +2534,7 @@
                 $scope.frequencia.aula.id = null;
                 $scope.horarioAula = false;
                 $scope.arrayHorarios = [];
-                var promise = Servidor.buscar('turmas/' + $scope.turma.id + '/aulas', {'dia': $scope.idDia});
+                var promise = Servidor.buscar('aulas?turma=' + $scope.turma.id, {'dia': $scope.idDia});
                 promise.then(function (response) {
                     if(!response.data.length) {
                         return Servidor.customToast('Não há aulas neste dia.');
@@ -3020,7 +3020,7 @@
 
             $scope.buscarAulas = function(disciplina, mes) {
                 var params = {disciplina:disciplina, mes:mes};
-                var promise = Servidor.buscar('turmas/'+$scope.turma.id+'/aulas', params);
+                var promise = Servidor.buscar('aulas?turmas'+$scope.turma.id, params);
                 promise.then(function(response) {
                    $scope.aulas = response.data;
                 });
@@ -3097,7 +3097,7 @@
             $scope.buscarDisciplinasFrequencia = function () {
                 $scope.disciplinasFrequencia = [];
                 $scope.arrayHorarios = [];
-                var promisse = Servidor.buscar('turmas/' + $scope.turma.id + '/aulas', {'dia': $scope.buscaFrequenciaAluno.diaAula});
+                var promisse = Servidor.buscar('aulas?turma=' + $scope.turma.id, {'dia': $scope.buscaFrequenciaAluno.diaAula});
                 promisse.then(function (response) {
                     var cont = 0;
                     response.data.forEach(function (a, $index) {
