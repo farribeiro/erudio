@@ -20,9 +20,17 @@ class PublicController extends Controller
             foreach($fila as $insc) {
                 $arrayFila[] = (object) array('protocolo' => $insc->getProtocolo(), 'dataInscricao' => $insc->getDataCadastro());
             }
-            return new JsonResponse(array('status' => true, 'inscricao' => $inscricao, 'fila' => $arrayFila));
+            return new JsonResponse(
+                    ['status' => true, 'inscricao' => $inscricao, 'fila' => $arrayFila], 
+                    200, 
+                    ['Access-Control-Allow-Origin' => '*', 'Content-Type' => 'application/json']
+                );
         } else {
-            return new JsonResponse(array('status' => false, 'mensagem' => 'Protocolo não encontrado'));
+            return new JsonResponse(
+                    ['status' => false, 'mensagem' => 'Protocolo não encontrado'], 
+                    404,
+                    ['Access-Control-Allow-Origin' => '*', 'Content-Type' => 'application/json']
+                );
         }
     }
     
