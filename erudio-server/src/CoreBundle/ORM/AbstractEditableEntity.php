@@ -79,10 +79,10 @@ abstract class AbstractEditableEntity extends AbstractEntity {
             if(strpos($methods[$i]->name, 'set') === 0) {
                 $getter = $class->getMethod(str_replace('set', 'get', $methods[$i]->name));
                 $value = $getter ? $getter->invoke($entity) : null;
-                if(is_array($value)) {
+                if (is_array($value)) {
                     $value = new ArrayCollection($value);
                 }
-                if($value !== null) {
+                if (!is_null($value)) {
                     $methods[$i]->invoke($this, $value);
                 }
             }

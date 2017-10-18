@@ -43,16 +43,30 @@ class HorarioFacade extends AbstractFacade {
     
     function parameterMap() {
         return [
+            'quadroHorario' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('h.quadroHorario = :quadroHorario')->setParameter('quadroHorario', $value);
+            },
             'diaSemana' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('d.diaSemana = :diaSemana')->setParameter('diaSemana', $value);
+                $qb->andWhere('diaSemana = :diaSemana')->setParameter('diaSemana', $value);
+            },
+            'turma' => function(QueryBuilder $qb, $value) {
+                $qb->join('h.disciplinasAlocadas', 'disciplinaAlocada')
+                    ->addSelect('disciplinaAlocada')
+                    ->andWhere('disciplinaAlocada.ativo = true')
+                    ->join('disciplinaAlocada.disciplina', 'disciplina')
+                    ->addSelect('disciplina')
+                    ->andWhere('disciplina.turma = :turma')
+                    ->setParameter('turma', $value);
             }
         ];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('h.quadroHorario', 'q')->join('h.diaSemana', 'd')
-           ->andWhere('q.id = :quadroHorario')
-           ->setParameter('quadroHorario', $params['quadroHorario']);
+        $qb->join('h.diaSemana', 'diaSemana');
+    }
+    
+    protected function selectMap() {
+        return ['h', 'diaSemana'];
     }
     
 }

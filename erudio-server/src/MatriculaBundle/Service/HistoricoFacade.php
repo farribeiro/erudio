@@ -3,6 +3,7 @@
 namespace MatriculaBundle\Service;
 
 use MatriculaBundle\Entity\Matricula;
+use MatriculaBundle\Entity\ObservacaoHistorico;
 
 class HistoricoFacade {
       
@@ -29,8 +30,27 @@ class HistoricoFacade {
             'matricula' => $matricula,
             'etapasCursadas' => $matricula->getEtapasCursadas()->toArray(),
             'notas' => $notas,
-            'frequencias' => $frequencias
+            'frequencias' => $frequencias,
+            'observacoes' => $this->criarObservacoes($matricula)
         ];
+    }
+    
+    function criarObservacoes(Matricula $matricula) {
+        $observacoes = $this->gerarObservacoesAutomaticas($matricula);
+        foreach ($matricula->getObservacoesHistorico() as $observacao) {
+            $observacoes[] = $observacao;
+        }
+        usort($observacoes, function($a, $b) {
+            return strcmp($a->getTexto(), $b->getTexto());
+        });
+        return $observacoes;
+    }
+    
+    function gerarObservacoesAutomaticas(Matricula $matricula) {
+        return $matricula->getEtapasCursadas()->map(function($e) use ($matricula) {
+            $texto = $e->getAno() . ' - ' . $e->getEtapa()->getObservacaoAprovacao();
+            return ObservacaoHistorico::criar($matricula, $texto);
+        })->toArray();
     }
     
 }

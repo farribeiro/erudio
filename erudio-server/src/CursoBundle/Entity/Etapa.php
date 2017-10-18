@@ -111,6 +111,12 @@ class Etapa extends AbstractEditableEntity {
     private $frequenciaUnificada = false;
     
     /** 
+    * @JMS\Groups({"LIST"}) 
+    * @ORM\Column(nullable = true, name = "observacao_aprovacao") 
+    */
+    private $observacaoAprovacao;
+    
+    /** 
     * @JMS\Exclude
     * @ORM\OneToMany(targetEntity = "Disciplina", mappedBy = "etapa") 
     */
@@ -212,6 +218,14 @@ class Etapa extends AbstractEditableEntity {
 
     function setIdadeRecomendada($idadeRecomendada) {
         $this->idadeRecomendada = $idadeRecomendada;
+    }
+    
+    function getObservacaoAprovacao() {
+        return $this->observacaoAprovacao;
+    }
+
+    function setObservacaoAprovacao($observacaoAprovacao) {
+        $this->observacaoAprovacao = $observacaoAprovacao;
     }
     
 }
