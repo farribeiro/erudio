@@ -1,0 +1,12 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block headerTitle %} Fila Única > Inscrição > Impressão do Comprovante{% endblock %}
+
+{% block page %}
+    <div class="text-center">
+        <div class="alert alert-success">
+            <p> Inscrição realizada com sucesso. Protocolo: {{inscricao.protocolo}}</p>
+            <a target="_blank" class="alert-link" href="{{url('fu_inscricao_imprimirComprovante', {'inscricao': inscricao.id})}}">[ Imprimir comprovante ]</a>
+        </div>
+    </div>
+{% endblock %}

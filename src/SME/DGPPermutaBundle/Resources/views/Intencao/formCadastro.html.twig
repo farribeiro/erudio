@@ -1,0 +1,45 @@
+{% extends 'DGPBundle:Servidor:index.html.twig' %}
+
+{% block headerTitle %}Servidor > Permuta > Cadastrar Intenção{% endblock %}
+
+{% block page %}
+    <div class="alert alert-info">
+        <strong>ATENÇÃO:</strong> Somente para professores e especialistas lotados que não estejam em estágio probatório.
+    </div>
+    
+    <div class="row" id="formErrors">
+        {{ erros | raw }}
+    </div>
+    
+    {{form_start(form)}}
+        <div class="row">
+            <div class="col-md-12">
+                <label>Cargo da Lotação *</label>
+                {{ form_widget(form.vinculo, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <label>Unidade da Lotação *</label>
+                {{ form_widget(form.lotacao, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+            <div class="col-md-4">
+                <label>Carga Horária *</label>
+                {{ form_widget(form.cargaHoraria, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Bairros de Interesse *</label>
+                {{form_widget(form.bairrosDeInteresse, {'attr': {'class': 'form-control'} })}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{form_widget(form.btnSalvar, {'attr': {'class': 'btn btn-primary'} })}}
+                <a href="{{path('dgp_servidor_permuta_listarIntencoes')}}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </div>
+    {{form_end(form)}}
+
+{% endblock %}

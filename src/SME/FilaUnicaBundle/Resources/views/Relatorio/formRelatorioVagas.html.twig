@@ -1,0 +1,80 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block headerTitle %} Fila Única > Relatórios > Vagas {% endblock %}
+
+{% block page %}
+    <ul class="nav nav-tabs">
+        <li><a href="{{path('fu_relatorio_formRelatorioInscricoes')}}">Inscrições</a></li>
+        <li class="active"><a href="#">Vagas</a></li>
+        <li><a href="{{path('fu_relatorio_gerarPrevisaoFila')}}">Previsão da Fila</a></li>
+    </ul>
+    <form id="formRelatorioChamadas" method="post" action="{{path('fu_relatorio_gerarRelatorioVagas')}}">
+        <div class="row">
+            <div class="col-lg-4">
+                <label for="filtroPeriodo">Filtrar por data:</label>
+                <select id="filtroPeriodo" name="filtroPeriodo" required class="form-control" >
+                    <option value="">Não</option>
+                    <option value="dataMatricula">Data de Matrícula</option>
+                    <option value="dataCadastro">Data de Cadastro</option>
+                </select>
+            </div>
+            <div class="col-lg-4">
+                <label for="dataInicio">Inicío do Período:</label>
+                <input id="dataInicio" name="dataInicio" required type="text" class="form-control datepickerSME" />
+            </div>
+            <div class="col-lg-4">
+                <label for="dataTermino">Término do Período:</label>
+                <input id="dataTermino" name="dataTermino" required type="text" class="form-control datepickerSME" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="ativo">Ativa:</label>
+                <select id="ativo" name="ativo" class="form-control" required >
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="vazia">Vazia:</label>
+                <select id="vazia" name="vazia" class="form-control" required >
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="btnGerar" type="button" class="btn btn-primary">Gerar</button>
+                <button id="btnImprimir" type="button" class="btn btn-primary">Imprimir</button>
+            </div>
+        </div>
+    </form>
+    <div id="divRelatorio" style="padding-top: 1.1em;"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript" src="{{asset('lib/jquery/printThis.js')}}"></script>
+    <script type="text/javascript">
+        $("#btnGerar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: $("#formRelatorioChamadas").attr("action"),
+                data: $("#formRelatorioChamadas").serialize(),
+                success: function(retorno){
+                    $("#divRelatorio").html(retorno);  
+                }
+            });
+        });
+        $("#btnImprimir").click( function() {
+            $("#divRelatorio").printThis({
+                importCSS: true,
+                printContainer: false,
+                pageTitle: "Relatório - Fila Única",
+                removeInline: false,
+                formValues: true
+            });
+        });
+    </script>
+{% endblock %}

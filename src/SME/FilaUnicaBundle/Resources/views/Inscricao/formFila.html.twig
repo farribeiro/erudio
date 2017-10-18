@@ -1,0 +1,61 @@
+{% extends 'FilaUnicaBundle:Index:index.html.twig' %}
+
+{% block headerTitle %} Fila Única > Consulta Interna {% endblock %}
+
+{% block page %}
+    <form id="formFila">
+        <div class="row">
+            <div class="col-lg-6">
+               <label for="zoneamento">Zoneamento:</label>
+               <select id="zoneamento" name="zoneamento" class="form-control">
+                    {% for zoneamento in zoneamentos %}
+                        <option value="{{zoneamento.id}}"> {{zoneamento.nome}} - {{zoneamento.descricao}} </option>
+                    {% endfor %}
+               </select>
+            </div>
+            <div class="col-lg-6">
+                <label for="ano">Turma:</label>
+                <select id="ano" name="ano" class="form-control">
+                    {% for ano in anosEscolares %}
+                        <option value="{{ano.id}}"> {{ano.nome}} </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+           <div class="col-lg-6">
+                <label for="protocolo">OU buscar por protocolo:</label>
+                <input type="text" id="protocolo" name="protocolo" class="form-control">
+            </div>
+            {# if is_granted('ROLE_INFANTIL_MEMBRO') #}
+                <div class="col-lg-4">
+                    <label for="filaPublica">Incluir processos internos:</label> <br /> 
+                    <input id="filaPublica" name="filaPublica" value="1" type="radio" /> Sim 
+                    <input id="filaPublica" name="filaPublica" value="0" type="radio" checked /> Não
+                </div>
+            {# endif #}
+            <div class="col-lg-2">
+                <br /> 
+                <button id="btnBuscar" type="button" class="btn btn-primary btn-block">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="divFila"></div>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $("#btnBuscar").click( function() {
+            $.ajax({
+                type: "POST",
+                url: "{{path('fu_inscricao_exibirFila')}}",
+                data: $("#formFila").serialize(),
+                success: function(retorno){
+                    $("#divFila").html(retorno);  
+                }
+            });
+        });
+    </script>
+{% endblock %}

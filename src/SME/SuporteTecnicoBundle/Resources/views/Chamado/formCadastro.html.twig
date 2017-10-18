@@ -1,0 +1,88 @@
+{% extends 'SuporteTecnicoBundle:Index:index.html.twig' %}
+
+{% block headerTitle %}Suporte Técnico > Chamados > Cadastro{% endblock %}
+
+{% block page %}
+
+{{form_start(form)}}
+    <div class="row" id="formErrors">
+        {{ erros | raw }}
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            {{form_label(form.local)}}
+            {{form_widget(form.local, {'attr': {'class': 'form-control'} })}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 ">
+            {{form_label(form.categoria)}}
+            {{form_widget(form.categoria, {'attr': {'class': 'hidden'} })}}
+            <div id="comboCategoria">
+                {% include "SuporteTecnicoBundle:Categoria:comboCategoria.html.twig" with {'categoria': null, 'subcategoria': null} %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            {{form_label(form.descricao)}}
+            {{form_widget(form.descricao, {'attr': {'class': 'form-control', 'rows': 5} })}}
+        </div>
+    </div>
+    <div class="row">
+        <div id="divTags" class="col-lg-12">
+            {{form_label(form.tags)}}
+            {{form_widget(form.tags)}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            {{form_widget(form.btnSalvar, {'attr': {'class': 'btn btn-primary'} })}}
+        </div>
+    </div>
+{{form_end(form)}}
+
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        function loadComboCategoria(categoria) {
+            $("#{{form.categoria.vars.id}}").val(categoria);
+            $.ajax({
+                type: "POST",
+                url: "{{path('suporte_categoria_gerarCombo')}}",
+                data: {"categoria": categoria},
+                success: function(retorno) {
+                    $("#comboCategoria").html(retorno);  
+                }
+            });
+        }
+        
+        function loadTags(categoria) {
+            var data = {};
+            data[$("#{{form.categoria.vars.id}}").attr("name")] = categoria;
+            $.ajax({
+                type: "POST",
+                url: "{{path('suporte_chamado_cadastrar')}}",
+                data: data,
+                success: function(retorno) {
+                    html = $.parseHTML(retorno);
+                    $("#divTags").replaceWith(
+                        $(html).find("#divTags")
+                    );  
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block css %}
+    {{parent()}}
+    <style type="text/css">
+        #divTags input {
+            margin-left: 1em;
+            margin-right: 0.2em;
+        }
+    </style>
+{% endblock %}

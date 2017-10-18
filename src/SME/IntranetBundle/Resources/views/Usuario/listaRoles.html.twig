@@ -1,0 +1,53 @@
+{% extends 'IntranetBundle:Index:administrador.html.twig' %}
+
+{% block headerTitle %}Gerenciamento de permissões{% endblock %}
+
+{% block body %}
+    <p>
+        <strong>Usuário:</strong> {{usuario.username}}
+    </p>
+    <p>
+        <strong>Nome de exibição:</strong> {{usuario.nomeExibicao}}
+    </p>
+    <p>
+        <strong>Permissões:</strong>
+    </p>
+    <div id="divRoles">
+        <table class="table table-striped table-hover tableRoles">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Role</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for role in usuario.rolesAtribuidas %}
+                    <tr>
+                        <td>{{role.nomeExibicao}}</td>
+                        <td>{{role.role}}</td>
+                        <td>
+                            <a class="btn-link" href="{{url('intranet_admin_retirarRole', {'usuario': usuario.id, 'role': role.id})}}">Remover</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <form method="post" action="{{url('intranet_admin_atribuirRole', {'usuario': usuario.id})}}">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <select id="role" name="role" class="form-control">
+                        {% for role in roles %}
+                            <option value="{{role.id}}">{{role.nomeExibicao}} ({{role.role}})</option>
+                        {% endfor %}
+                    </select>
+                    <span class="input-group-btn">
+                        <button id="btnAddRole" type="submit" class="btn btn-primary">+</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

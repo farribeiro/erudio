@@ -1,0 +1,122 @@
+{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
+
+{% block css %}
+    {{parent()}}
+{% endblock %}
+
+{% block headerTitle %}Controle de Presença{% endblock %}
+
+{% block body %}
+    <div class="row" id="formErrors">
+        {{ erros | raw }}
+    </div>
+    <div class="row">
+        {{ form_start(form) }}
+        <div class="col md-12">
+            <div class="col-md-6">
+                <label for="PresencaForm_dataCadastro">Data:*</label>
+                {{ form_widget(form.dataCadastro) }}
+            </div>
+            <div class="col-md-6">
+                <label for="PresencaForm_turma">Turma:*</label>
+                {{ form_widget(form.turma) }}
+            </div>
+            <div class="col-md-6">
+                <label for="PresencaForm_periodo">Período:*</label>
+                {{ form_widget(form.turno) }}
+            </div>
+            <div class="col-md-6">
+                <label for="PresencaForm_qtdeAlunos">Quantidade de Alunos:*</label>
+                {{ form_widget(form.qtdeAlunos) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_widget(form.Salvar) }}
+            </div>            
+        </div>
+        {{ form_end(form) }}
+    </div>
+    <hr />
+    
+    <h3>Presenças cadastradas no mês.</h3>
+    
+    <div class="row">
+        {{ form_start(formRelatorio) }}
+        <div class="col md-12">
+            <div class="col-md-3">
+                <label for="PresencaRelatorioForm_turma">Turma:</label>
+                {{ form_widget(formRelatorio.turma) }}
+            </div>
+            <div class="col-md-3">
+                <label for="PresencaRelatorioForm_periodo">Período:</label>
+                {{ form_widget(formRelatorio.turno) }}
+            </div>
+            <div class="col-md-2">
+                <label for="PresencaRelatorioForm_dataInicial">Data Inicial:</label>
+                {{ form_widget(formRelatorio.dataInicial) }}
+            </div>
+            <div class="col-md-2">
+                <label for="PresencaRelatorioForm_dataFinal">Data Final:</label>
+                {{ form_widget(formRelatorio.dataFinal) }}
+            </div>
+            <div class="col-md-2">
+                {{ form_widget(formRelatorio.Buscar) }}
+            </div>            
+        </div>
+        {{ form_end(formRelatorio) }}
+    </div>
+    
+    <hr />
+    
+    <table class="table table-striped table-hover tableDGP">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Turma</th>
+                <th>Turno</th>
+                <th>Quantidade de Alunos</th>
+                <td>Remover</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for presenca in presencas %}
+                <tr>
+                    <td>{{ presenca.dataCadastro | date('d/m/Y') }}</td>
+                    <td>{{ presenca.turma }}</td>
+                    <td>{{ presenca.turno }}</td>
+                    <td>{{ presenca.qtdeAlunos }}</td>
+                    <td><a href="{{ path('presenca_remover', {'id': presenca.id}) }}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a></span></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Nenhuma presença cadastrada até o momento.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    {{parent()}}
+    <script type="text/javascript">
+        $('document').ready(function (){
+            /*$('#PresencaForm_turma').change(function(){
+                var val = $('#PresencaForm_turma option:selected').val();
+                if (((val.match(/Berçario/g) || []).length > 0) || ((val.match(/Maternal/g) || []).length > 0)) {
+                    $('#PresencaForm_turno option').each(function (index){
+                        $(this).show(); if (index === 0 || index === 1 || index === 2) { $(this).hide(); }
+                    });
+                }
+                
+                if ((val.match(/Jardim/g) || []).length > 0) {
+                    $('#PresencaForm_turno option').each(function (){ $(this).show(); });
+                }
+                
+                if ((val.match(/Pré/g) || []).length > 0) {
+                    $('#PresencaForm_turno option').each(function (index){ 
+                        $(this).show(); if (index === 3) { $(this).hide(); }
+                    });
+                }
+            });*/
+        });
+    </script>
+{% endblock %}
