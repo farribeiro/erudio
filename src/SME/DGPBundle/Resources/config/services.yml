@@ -1,7 +1,0 @@
-parameters:
-    alocacao.class: SME\DGPBundle\Service\AlocacaoResource
-
-services:
-    dgp_alocacao:
-      class: "%alocacao.class%"
-      arguments: ["@doctrine", "@validator"]

@@ -1,9 +1,0 @@
-{% extends app.request.isXmlHttpRequest ? '::templateAjax.html.twig' : '::template.html.twig' %}
-
-{% block headerTitle %}Acesso não autorizado{% endblock %}
-
-{% block body %}
-    <div class="alert alert-danger">
-        Você deve ser um administrador ou acessar com uma unidade para utilizar este recurso.
-    </div>
-{% endblock %}

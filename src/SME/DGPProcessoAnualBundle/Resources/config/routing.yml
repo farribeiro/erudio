@@ -1,9 +1,0 @@
-dgp_servidor_processoAnual_listarDisponiveis:
-    path: /servidor/processos-anuais
-    methods: [GET]
-    defaults: { _controller: DGPProcessoAnualBundle:ProcessoAnual:listarDisponiveis }
-    
-dgp_servidor_processoAnual_cadastrarInscricao:
-    path: /servidor/processos-anuais/cadastrar/{processo}
-    methods: [POST]
-    defaults: { _controller: DGPProcessoAnualBundle:ProcessoAnual:cadastrarInscricao }
