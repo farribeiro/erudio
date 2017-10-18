@@ -133,6 +133,9 @@ class Horario extends AbstractEditableEntity {
     * @JMS\VirtualProperty
     */
     function getDisciplinaAlocada() {
+        if ($this->getDisciplinasAlocadas()->count() !== 1) {
+            return null;
+        }
         return $this->getDisciplinasAlocadas()->map(function($h) {
             $d = $h->getDisciplina();
             return [
