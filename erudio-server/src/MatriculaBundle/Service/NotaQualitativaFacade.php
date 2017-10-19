@@ -30,6 +30,7 @@ namespace MatriculaBundle\Service;
 
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use AvaliacaoBundle\Entity\AvaliacaoQualitativa;
 
 class NotaQualitativaFacade extends AbstractFacade {
     
@@ -53,6 +54,12 @@ class NotaQualitativaFacade extends AbstractFacade {
             'avaliacao_tipo' => function(QueryBuilder $qb, $value) {
                 $qb->join('n.avaliacao', 'avaliacao')->andWhere('avaliacao.tipo = :tipoAvaliacao')
                    ->setParameter('tipoAvaliacao', $value);
+            },
+            'avaliacao_final' => function(QueryBuilder $qb, $value) {
+                $operator = $value ? '=' : '<>';
+                $qb->join('n.avaliacao', 'avaliacao')
+                   ->andWhere("avaliacao.tipo {$operator} :tipoAvaliacao")
+                   ->setParameter('tipoAvaliacao', AvaliacaoQualitativa::TIPO_FINAL);
             }
         );
     }
