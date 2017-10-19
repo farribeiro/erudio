@@ -244,7 +244,7 @@
             $timeout.cancel($scope.timeBuscaAlunos); $scope.alunos = []; $timeout(function(){ $("#alunos").material_select('destroy'); $("#alunos").material_select(); },100);
             $scope.timeBuscaAlunos = $timeout(function(){
                 if (nome !== null && nome !== undefined && nome !== "" && nome.length > 2) {
-                    var promise = Servidor.buscar("matriculas",{aluno_nome: nome, encerrado: ''});
+                    var promise = Servidor.buscar("matriculas",{aluno_nome: nome});
                     promise.then(function(response){
                         for (var i=0; i<response.data.length; i++) { 
                             $scope.alunos.push(response.data[i]);
