@@ -118,6 +118,12 @@ class PessoaFisica extends Pessoa {
     */
     private $nomePai;
     
+    /**
+     * @JMS\Groups({"LIST"})  
+     * @ORM\Column(name = "responsavel_nome")
+     */
+    private $responsavelNome;
+    
     /** 
     * @JMS\Groups({"DETAILS"})
     * @ORM\ManyToOne(targetEntity = "Cidade") 
@@ -191,10 +197,14 @@ class PessoaFisica extends Pessoa {
     private $necessidadesEspeciais;
     
     /**
-     * @JMS\Groups({"LIST"})  
-     * @ORM\Column(name = "responsavel_nome")
-     */
-    private $responsavelNome;
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToMany(targetEntity="BeneficioSocial")
+    * @ORM\JoinTable(name="edu_pessoa_fisica_beneficio_social",
+    *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="beneficio_social_id", referencedColumnName="id")}
+    *   )
+    */
+    private $beneficiosSociais;
     
     function __construct() {
         parent::__construct();
@@ -395,6 +405,14 @@ class PessoaFisica extends Pessoa {
 
     function setAlfabetizado($alfabetizado) {
         $this->alfabetizado = $alfabetizado;
+    }
+    
+    function getBeneficiosSociais() {
+        return $this->beneficiosSociais;
+    }
+
+    function setBeneficiosSociais($beneficiosSociais) {
+        $this->beneficiosSociais = $beneficiosSociais;
     }
 
 }
