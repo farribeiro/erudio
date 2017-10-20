@@ -79,7 +79,7 @@ class AulaController extends AbstractEntityController {
     *  @ParamConverter("aulas", converter="fos_rest.request_body")
     */
     function postAction(Request $request, AulaCollection $aulas, ConstraintViolationListInterface $errors) {
-        foreach ($aulas as $aula) {
+        foreach ($aulas->aulas as $aula) {
             $aula->setProfessor($this->getUser()->getPessoa());
         }
         return $this->postBatch($request, $aulas->aulas, $errors);
