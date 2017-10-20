@@ -75,7 +75,7 @@ class AulaController extends AbstractEntityController {
     *  @ApiDoc()
     * 
     *  @FOS\Post("aulas")
-    *  @ParamConverter("aula", converter="fos_rest.request_body")
+    *  @ParamConverter("aulas", converter="fos_rest.request_body")
     */
     function postAction(Request $request, AulaCollection $aulas, ConstraintViolationListInterface $errors) {
         foreach ($aulas as $aula) {

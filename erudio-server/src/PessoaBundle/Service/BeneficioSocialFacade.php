@@ -26,48 +26,14 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace PessoaBundle\Entity;
+namespace PessoaBundle\Service;
 
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use CoreBundle\ORM\AbstractEntity;
+use CoreBundle\ORM\AbstractFacade;
 
-/**
- * @ORM\Entity(readOnly = true)
- * @ORM\Table(name = "sme_particularidade")
- */
-class Particularidade extends AbstractEntity {
+class BeneficioSocialFacade extends AbstractFacade {
     
-    const DEFICIENCIA = 'DEFICIENCIA', 
-          TRANSTORNO = 'TRANSTORNO', 
-          SUPERDOTACAO = 'SUPERDOTACAO';
-    
-    /** 
-    * @JMS\Groups({"LIST"})   
-    * @ORM\Column(nullable = false) 
-    */
-    private $nome;
-    
-    /** 
-    * @JMS\Groups({"LIST"})   
-    * @ORM\Column(nullable = false) 
-    */
-    private $tipo;
-    
-    public function getNome() {
-        return $this->nome;
-    }
-         
-    function getTipo() {
-        return $this->tipo;
+    function getEntityClass() {
+        return 'PessoaBundle:BeneficioSocial';
     }
 
-    public function setNome($nome) {
-        $this->nome = $nome;
-    }
-
-    function setTipo($tipo) {
-        $this->tipo = $tipo;
-    }
-    
 }

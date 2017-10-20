@@ -93,7 +93,7 @@ abstract class AbstractEntityController extends Controller {
                 : [self::SERIALIZER_GROUP_LIST];
         $resultados = $this->getFacade()->findAll($params, $page);
         $view = View::create($resultados, Response::HTTP_OK);
-        if (!is_null($page)) {
+        if (is_numeric($page)) {
             $this->addPageLinks($request, $view, $params, $page);
         }
         $this->configureContext($view->getContext(), $viewGroups);
@@ -152,7 +152,8 @@ abstract class AbstractEntityController extends Controller {
     
     protected function addPageLinks(Request $request, View $view, array $params, $page) {
         $links = [];
-        if ($this->getFacade()->count($params) / (($page + 1) * AbstractFacade::PAGE_SIZE) > 1) {
+        $paginasRestantes = $this->getFacade()->count($params) / (($page + 1) * AbstractFacade::PAGE_SIZE);
+        if ($paginasRestantes > 1) {
             $next = $page + 1;
             $links[] = "<{$request->getPathInfo()}?page={$next}>; rel=\"next\"";
         }

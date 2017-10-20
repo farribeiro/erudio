@@ -108,19 +108,6 @@ class Aula extends AbstractEditableEntity {
             $this->disciplinasOfertadas->add($this->disciplina);
         }
     }
-     
-//    function getProfessores() {
-//        $aux = $this->disciplinasOfertadas->map(
-//            function($d) { return $d->getProfessores()->toArray(); }
-//        )->toArray();
-//        $professores = [];
-//        array_walk_recursive($aux, function($p) use (&$professores) {
-//            if (!in_array($p, $professores)) {
-//                $professores[] = $p;
-//            } 
-//        });
-//        return $professores;
-//    }
     
     function getProfessor() {
         return $this->professor;
