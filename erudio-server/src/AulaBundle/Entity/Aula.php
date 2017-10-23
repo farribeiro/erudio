@@ -89,15 +89,15 @@ class Aula extends AbstractEditableEntity {
     private $professor;
     
     /**
-    *
     * @JMS\Type("CursoBundle\Entity\DisciplinaOfertada") 
     */
     private $disciplina;
     
-    function __construct($turma, $dia, $horario = null) {
+    function __construct($turma, $dia, $horario = null, $disciplina = null) {
         $this->turma = $turma;
         $this->dia = $dia;
         $this->horario = $horario;
+        $this->disciplina = $disciplina;
     }
     
     function init() {
@@ -108,19 +108,6 @@ class Aula extends AbstractEditableEntity {
             $this->disciplinasOfertadas->add($this->disciplina);
         }
     }
-     
-//    function getProfessores() {
-//        $aux = $this->disciplinasOfertadas->map(
-//            function($d) { return $d->getProfessores()->toArray(); }
-//        )->toArray();
-//        $professores = [];
-//        array_walk_recursive($aux, function($p) use (&$professores) {
-//            if (!in_array($p, $professores)) {
-//                $professores[] = $p;
-//            } 
-//        });
-//        return $professores;
-//    }
     
     function getProfessor() {
         return $this->professor;

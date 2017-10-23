@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\Annotations as FOS;
+use JMS\Serializer\Annotation as JMS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use CoreBundle\REST\AbstractEntityController;
@@ -65,6 +66,8 @@ class AulaController extends AbstractEntityController {
     *  @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
     *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
+    *  @FOS\QueryParam(name = "dataInicio", nullable = true)
+    *  @FOS\QueryParam(name = "dataFim", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
@@ -74,11 +77,13 @@ class AulaController extends AbstractEntityController {
     *  @ApiDoc()
     * 
     *  @FOS\Post("aulas")
-    *  @ParamConverter("aula", converter="fos_rest.request_body")
+    *  @ParamConverter("aulas", converter="fos_rest.request_body")
     */
-    function postAction(Request $request, Aula $aula, ConstraintViolationListInterface $errors) {
-        $aula->setProfessor($this->getUser()->getPessoa());
-        return $this->post($request, $aula, $errors);
+    function postAction(Request $request, AulaCollection $aulas, ConstraintViolationListInterface $errors) {
+        foreach ($aulas->aulas as $aula) {
+            $aula->setProfessor($this->getUser()->getPessoa());
+        }
+        return $this->postBatch($request, $aulas->aulas, $errors);
     }
     
     /**
@@ -99,5 +104,13 @@ class AulaController extends AbstractEntityController {
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
     }
+    
+}
+
+/**  Wrapper class for batch operations*/
+class AulaCollection {
+    
+    /** @JMS\Type("ArrayCollection<AulaBundle\Entity\Aula>") */
+    public $aulas;
     
 }

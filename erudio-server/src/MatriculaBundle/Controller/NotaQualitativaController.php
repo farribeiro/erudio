@@ -63,6 +63,7 @@ class NotaQualitativaController extends AbstractEntityController {
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     * @FOS\QueryParam(name = "media", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "avaliacao", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "avaliacao_final", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

@@ -73,7 +73,7 @@
                                         <span data-ng-hide="media.valor">ND</span>
                                         <span data-ng-show="media.valor">{{media.valor}}</span>
                                     </td>
-                                    <td>{{disciplina.porcentagem}}</td>
+                                    <td data-ng-repeat="media in disciplina.medias track by $index">{{media.faltas}}</td>
                                     <td>{{disciplina.status}}</td>
                                 </tr>
                             </tbody>

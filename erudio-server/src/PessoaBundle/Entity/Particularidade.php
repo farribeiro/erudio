@@ -33,7 +33,7 @@ use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEntity;
 
 /**
- * @ORM\Entity(readOnly=true)
+ * @ORM\Entity(readOnly = true)
  * @ORM\Table(name = "sme_particularidade")
  */
 class Particularidade extends AbstractEntity {

@@ -49,7 +49,7 @@ class HorarioDisciplina extends AbstractEditableEntity {
     /**  
     * @JMS\Groups({"LIST"})
     * @JMS\MaxDepth(depth = 2)
-    * @ORM\ManyToOne(targetEntity = "Horario") 
+    * @ORM\ManyToOne(targetEntity = "Horario", inversedBy = "disciplinasAlocadas") 
     * @ORM\JoinColumn(name = "quadro_horario_aula_id") 
     */
     private $horario;

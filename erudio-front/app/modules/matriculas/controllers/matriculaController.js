@@ -753,7 +753,7 @@
             $scope.mostraProgresso();
             var promise = Servidor.buscar('matriculas', {'aluno': $scope.matricula.aluno.id, 'curso': $scope.matricula.curso.id});
             promise.then(function (response) {
-                if (response.data.length) {
+                if (response.data.length > 0 && response.data[0].status !== "CANCELADO") {
                     Materialize.toast($scope.matricula.aluno.nome.toUpperCase() + ' já está matriculado(a) nesse curso na unidade ' + response.data[0].unidadeEnsino.nomeCompleto + '.', 7000);
                     $scope.fechaProgresso();
                 } else if ($scope.validar()) {
@@ -2352,7 +2352,8 @@
                             $scope.fechaProgresso();
                         });
                         $scope.requisicoes++;
-                        var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
+                        $scope.fechaProgresso();
+                        /*var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
                         promise.then(function(response) {                        
                             cursada.faltas = 0;
                             var frequencias = response.data;
@@ -2363,7 +2364,7 @@
                             });
                             $scope.requisicoes--;
                             $scope.fechaProgresso();
-                        });
+                        });*/
                     });
                     $scope.fechaProgresso();
                 });
@@ -2379,13 +2380,13 @@
             }
             if ($scope.etapas[indice].disciplinasCursadas !== undefined) {
                 $scope.etapas[indice].disciplinasCursadas.forEach(function(cursada) {
-                    if (cursada.porcentagem === undefined) {
+                    //if (cursada.porcentagem === undefined) {
                         var promise = Servidor.buscarUm('disciplinas-cursadas', cursada.id);
                         promise.then(function(response) {
                             Servidor.buscar('medias', {disciplinaCursada: cursada.id}).then(function(response) {
                                 cursada.medias = response.data;
                             });
-                            if(response.data.enturmacao !== undefined) {
+                            /*if(response.data.enturmacao !== undefined) {
                                 cursada.enturmacao = response.data.enturmacao;
                                 Servidor.buscar('frequencias', {disciplina: cursada.id}).then(function(response) {
                                     cursada.faltas = 0;
@@ -2414,9 +2415,9 @@
                                 });
                             } else {
                                 cursada.porcentagem = "ND";
-                            }
+                            }*/
                         });
-                    }
+                    //}
                 });
             }
         };

@@ -1,0 +1,16 @@
+<pdf>
+    {% for enturmacao in enturmacoes %}
+        {% embed 'reports/templates/page.twig' %}
+            {% block title %}
+                <h1>SOLICITAÇÃO DE REMATRíCULA PARA O ANO LETIVO DE {{"now"|date('Y') + 1}}</h1>
+            {% endblock %}
+
+            {% block info %}{% endblock %}
+
+            {% block content %}
+                <div>{{enturmacao.matricula.aluno.nome}}</div>
+            {% endblock %}
+        {% endembed %}
+    {% endfor %}
+</pdf>
+

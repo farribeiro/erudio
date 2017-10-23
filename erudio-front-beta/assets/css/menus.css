@@ -1,0 +1,8 @@
+.submenu, .menu { padding: 0; margin: 0; cursor: pointer; }
+.submenu { display: none; }
+.menu-titulo { padding-left: 18px; margin-top: 15px; margin-bottom: 15px; font-weight: bold; font-size: 13px;  }
+.submenu-item { padding-left: 18px; padding-top: 10px; padding-bottom: 10px; }
+.submenu-item:hover { background: #eee; }
+.submenu-item a { text-decoration: none; color: #000; font-size: 13px; }
+.main-menu md-menu-item button { font-size: 12px !important; }
+#menu-lateral { display: none; }

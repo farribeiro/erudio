@@ -173,7 +173,7 @@
         //BUSCA ALUNOSw
         $scope.enturmacoes = []; $scope.enturmacoesNotas = [];
         $scope.buscarAlunos = function (tipo) {
-            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso();
+            $scope.enturmacoes = []; $scope.enturmacoesNotas = []; $scope.mostraProgresso(); $scope.avaliacaoAtiva = null;
             if ($scope.ativo === 'faltas') {
                 if ($scope.frequenciaUnificada) {
                     if ($scope.unidade !== null && $scope.turmaBusca.curso.id !== null && $scope.turmaBusca.etapa.id !== null && $scope.turmaBusca.turma.id !== null) {
@@ -223,35 +223,38 @@
         };
         
         //ABRINDO TELA DE CONCEITO
-        $scope.editando = false; $scope.avaliacaoQualitativaAtual = []; $scope.notaQualitativaAtual = [];
+        $scope.editando = false; $scope.avaliacaoQualitativaAtual = []; $scope.notaQualitativaAtual = []; $scope.avaliacaoAtiva = null;
         $scope.conceituar = function (enturmacao) {
             $scope.enturmacao = enturmacao; $scope.qualitativas = []; $scope.editando = false; $scope.mostraProgresso();
             $scope.notaQualitativaAtual = [];
             $('.chip').each(function(){ if ($(this).hasClass('chip-active')) { $(this).removeClass('chip-active'); } });
             $('.cortina-auxiliar').show(); $('.fakeModal').show();
             $('.cortina-auxiliar').click(function(){ $('.cortina-auxiliar').hide(); $('.fakeModal').hide(); });
-            var promise = Servidor.buscar('avaliacoes-qualitativas',{fechamentoMedia:true, disciplina: $scope.turmaBusca.disciplina.id, media: $scope.turmaBusca.media.id});
-            promise.then(function(response){
-                if (response.data.length > 0) { 
+            
+            if ($scope.avaliacaoAtiva === null) {
+                var promiseAva = Servidor.buscar('avaliacoes-qualitativas',{disciplina: $scope.turmaBusca.disciplina.id, 'fechamentoMedia': 1});
+                promiseAva.then(function(response){
+                    if (response.data.length > 0) {
+                        $scope.avaliacaoAtiva = response.data[0];
+                    }
+                });
+            }
+            
+            var promiseNota = Servidor.buscar('notas-qualitativas',{media: $scope.enturmacao.id, 'avaliacao_final': 1});
+            promiseNota.then(function(response){
+                if (response.data.length > 0) {
                     $scope.editando = true;
-                    var avaliacao = response.data[0]; $scope.avaliacaoQualitativaAtual = response.data[0];
-                    var promiseNota = Servidor.buscar('notas-qualitativas',{media: $scope.enturmacao.id, avaliacao: avaliacao.id});
-                    promiseNota.then(function(response){
-                        if (response.data.length > 0) {
-                            $scope.notaQualitativaAtual = response.data[0];
-                            for (var i=0; i<response.data.length; i++) {
-                                var habilidadesAvaliadas = response.data[i].habilidadesAvaliadas;
-                                for (var j=0; j<habilidadesAvaliadas.length; j++) {
-                                    $scope.qualitativas["c"+habilidadesAvaliadas[j].conceito.id+"h"+habilidadesAvaliadas[j].habilidade.id] = habilidadesAvaliadas[j];
-                                    $(".c"+habilidadesAvaliadas[j].conceito.id+"h"+habilidadesAvaliadas[j].habilidade.id).addClass('chip-active');
-                                }
-                                $scope.fechaProgresso();
-                            }
-                        } else { $scope.fechaProgresso(); }
-                    });
+                    $scope.notaQualitativaAtual = response.data[0];
+                    for (var i=0; i<response.data.length; i++) {
+                        var habilidadesAvaliadas = response.data[i].habilidadesAvaliadas;
+                        for (var j=0; j<habilidadesAvaliadas.length; j++) {
+                            $scope.qualitativas["c"+habilidadesAvaliadas[j].conceito.id+"h"+habilidadesAvaliadas[j].habilidade.id] = habilidadesAvaliadas[j];
+                            $(".c"+habilidadesAvaliadas[j].conceito.id+"h"+habilidadesAvaliadas[j].habilidade.id).addClass('chip-active');
+                        }
+                        $scope.fechaProgresso();
+                    }
                 } else { $scope.fechaProgresso(); }
             });
-            
         };
         
         //SALVANDO CONCEITO
@@ -312,6 +315,7 @@
                             }
                             notaQualitativa.habilidadesAvaliadas = notas;
                             $timeout(function(){
+                                if (notaQualitativa.avaliacao.id !== undefined) { delete notaQualitativa.avaliacao.disciplina.professores; }
                                 var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
                                 promiseNota.then(function(response){ 
                                     var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
@@ -335,15 +339,15 @@
                 var avaliacaoQualitativa = angular.copy($scope.avaliacaoQualitativa); var notas = [];
                 avaliacaoQualitativa.nome = 'Avaliação Final'; var tamanhoHabilidades = $scope.habilidades.length;
                 avaliacaoQualitativa.media = $scope.turmaBusca.media.id; avaliacaoQualitativa.disciplina.id = $scope.turmaBusca.disciplina.id;
-                var promise = Servidor.finalizar(avaliacaoQualitativa, 'avaliacoes-qualitativas', null);
-                promise.then(function(response){
+                console.log($scope.avaliacaoAtiva);
+                if ($scope.avaliacaoAtiva !== null) {
                     var tamanho = Object.keys($scope.qualitativas).length; var cont = 0;
                     if (tamanho === tamanhoHabilidades) {
                         for (var qualitativa in $scope.qualitativas) {
-                            $scope.qualitativas[qualitativa].avaliacao = {id: response.data.id}; notas.push($scope.qualitativas[qualitativa]);
+                            $scope.qualitativas[qualitativa].avaliacao = {id: $scope.avaliacaoAtiva.id}; notas.push($scope.qualitativas[qualitativa]);
                             if (cont === tamanho-1){
                                 var notaQualitativa = angular.copy($scope.notaQualitativa);
-                                notaQualitativa.avaliacao = {id: response.data.id};
+                                notaQualitativa.avaliacao = {id: $scope.avaliacaoAtiva.id};
                                 notaQualitativa.media = {id: $scope.enturmacao.id};
                                 notaQualitativa.habilidadesAvaliadas = notas;
                                 $timeout(function(){
@@ -366,7 +370,40 @@
                     } else {
                         Servidor.customToast("Existem habilidades ainda não preenchidas."); $scope.fechaProgresso();
                     }
-                });
+                } else {
+                    var promise = Servidor.finalizar(avaliacaoQualitativa, 'avaliacoes-qualitativas', null);
+                    promise.then(function(response){
+                        var tamanho = Object.keys($scope.qualitativas).length; var cont = 0;
+                        if (tamanho === tamanhoHabilidades) {
+                            for (var qualitativa in $scope.qualitativas) {
+                                $scope.qualitativas[qualitativa].avaliacao = {id: response.data.id}; notas.push($scope.qualitativas[qualitativa]);
+                                if (cont === tamanho-1){
+                                    var notaQualitativa = angular.copy($scope.notaQualitativa);
+                                    notaQualitativa.avaliacao = {id: response.data.id};
+                                    notaQualitativa.media = {id: $scope.enturmacao.id};
+                                    notaQualitativa.habilidadesAvaliadas = notas;
+                                    $timeout(function(){
+                                        var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
+                                        promiseNota.then(function(response){ 
+                                            var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
+                                            promiseMedia.then(function(response){
+                                                if (response.data !== null && response.data !== undefined) { 
+                                                    var media = response.data; var result = Servidor.customPut(media,'medias/'+media.id+'?calcular=1',null);
+                                                    result.then(function(){
+                                                        $scope.buscarAlunos(); $scope.fechaProgresso();
+                                                    });
+                                                } else { Servidor.customToast("Houve um problema ao salvar as notas."); }
+                                            });
+                                            $('.cortina-auxiliar').hide(); $('.fakeModal').hide();
+                                        });
+                                    },500);
+                                } else { cont++; }
+                            }
+                        } else {
+                            Servidor.customToast("Existem habilidades ainda não preenchidas."); $scope.fechaProgresso();
+                        }
+                    });
+                }
             }
                 
         };

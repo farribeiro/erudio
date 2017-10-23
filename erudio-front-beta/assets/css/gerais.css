@@ -1,0 +1,22 @@
+.white-content { background: #fff !important; }
+.no-padding { padding: 0 !important; }
+.no-padding-up-down { padding-top: 0 !important; padding-bottom: 0 !important; }
+.no-margin-up-down { margin-top: 0 !important; margin-bottom: 0 !important; }
+.search-margin { margin-top: 18px; margin-bottom: 0; }
+.modal-padding { padding: 20px; }
+.w100 { width: 100% !important; }
+.h100 { height: 100% !important; }
+.minH100 { min-height: 100% !important; }
+.h100-fix { height: calc(100% - 128px) !important; }
+md-tabs-content-wrapper { height: calc(100% - 49px) !important; }
+md-tab-content { height: 100% }
+.bottom-fix { padding-bottom: 20px !important; }
+.content-top-fix { margin-top: 35px !important; }
+.static { position: static !important; }
+.margin-top-subheader { margin-top: 5px !important; }
+.relative { position: relative !important; }
+.absolute { position: absolute !important; }
+.float-right { float: right !important; }
+.no-margin { margin: 0 !important; }
+.margin-top-bottom { margin-top: 20px; margin-bottom: 20px; }
+.bottom-zero { bottom: 0 !important; }

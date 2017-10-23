@@ -30,6 +30,7 @@ namespace CursoBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -63,6 +64,7 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     /**
     * @JMS\Groups({"DETAILS"})
     * @JMS\MaxDepth(depth = 2)
+    * @JMS\Accessor(getter = "getProfessores")
     * @ORM\ManyToMany(targetEntity="VinculoBundle\Entity\Alocacao", inversedBy = "disciplinasMinistradas")
     * @ORM\JoinTable(name="edu_turma_disciplina_alocacao",
     *      joinColumns={@ORM\JoinColumn(name="turma_disciplina_id", referencedColumnName="id")},
@@ -74,12 +76,6 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     function __construct(Turma $turma, Disciplina $disciplina) {
         $this->turma = $turma;
         $this->disciplina = $disciplina;
-    }
-    
-    function setTurma(Turma $turma) {
-        if (is_null($this->turma)) {
-            $this->turma = $turma;
-        }
     }
     
     /**
@@ -134,7 +130,9 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     }
     
     function getProfessores() {
-        return $this->professores;
+        return $this->professores->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
     }
     
     function getProfessoresAsString() {
@@ -151,7 +149,15 @@ class DisciplinaOfertada extends AbstractEditableEntity {
     }
     
     function setProfessores(ArrayCollection $professores) {
-        $this->professores = $professores;
+        if (!$professores->isEmpty()) {
+            $this->professores = $professores;
+        }
+    }
+    
+    function setTurma($turma) {
+        if(is_null($this->turma)) {
+            $this->turma = $turma;
+        }
     }
     
 }

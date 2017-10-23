@@ -120,7 +120,7 @@ class Media extends AbstractEditableEntity {
      * @return Traversable habilidades avaliadas
      */
     function getHabilidadesAvaliadas() {
-        $notasFechamento = $this->notas->filter(function($n) {
+        $notasFechamento = $this->getNotas()->filter(function($n) {
            return $n instanceof NotaQualitativa && $n->getAvaliacao()->getFechamentoMedia();
         });
         return $notasFechamento->count()

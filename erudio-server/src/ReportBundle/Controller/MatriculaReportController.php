@@ -36,14 +36,17 @@ use Ps\PdfBundle\Annotation\Pdf;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Psr\Log\LoggerInterface;
 use MatriculaBundle\Service\MatriculaFacade;
+use CursoBundle\Service\TurmaFacade;
 
 class MatriculaReportController extends Controller {
     
     private $matriculaFacade;
+    private $turmaFacade;
     private $logger;
     
-    function __construct(MatriculaFacade $matriculaFacade, LoggerInterface $logger) {
+    function __construct(MatriculaFacade $matriculaFacade, TurmaFacade $turmaFacade, LoggerInterface $logger) {
         $this->matriculaFacade = $matriculaFacade;
+        $this->turmaFacade = $turmaFacade;
         $this->logger= $logger;
     }
     
@@ -71,6 +74,32 @@ class MatriculaReportController extends Controller {
                 'instituicao' => $matricula->getUnidadeEnsino(),
                 'matricula' => $matricula,
                 'etapa' => $etapa
+            ]);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Relatórios",
+    *   description = "Ficha de rematrícula",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("ficha-rematricula", defaults={ "_format" = "pdf" })
+    * @Pdf(stylesheet = "reports/templates/stylesheet.xml")
+    */
+    function fichaRematriculaPorTurmaAction(Request $request) {
+        try {
+           $turma = $this->turmaFacade->find($request->query->getInt('turma'));
+            return $this->render('reports/matricula/fichaRematricula.pdf.twig', [
+                'instituicao' => $turma->getUnidadeEnsino(),
+                'enturmacoes' => $turma->getEnturmacoes()
             ]);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());

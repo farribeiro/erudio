@@ -45,7 +45,8 @@ class HorarioController extends AbstractEntityController {
     *  @ApiDoc()
     * 
     *  @FOS\Get("quadros-horarios/{quadroHorario}/horarios")
-     * @FOS\QueryParam(name = "diaSemana", requirements="\d+", nullable = true)
+    *  @FOS\QueryParam(name = "diaSemana", requirements="\d+", nullable = true)
+    *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     */
     function getHorariosAction(Request $request, $quadroHorario, ParamFetcherInterface $paramFetcher) {
         $params = $paramFetcher->all();

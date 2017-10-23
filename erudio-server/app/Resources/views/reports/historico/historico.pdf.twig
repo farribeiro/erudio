@@ -15,7 +15,7 @@
                     </div>
                     <div float="left" width="30%">
                         <div width="90%" float="right">
-                            <img margin="auto" width="100%" src="bundles/report/brasao-municipal.jpg" />
+                            <img margin="auto" width="100%" src="bundles/report/brasao-municipal.png" />
                         </div>
                     </div>
                 </div>
@@ -96,8 +96,8 @@
             </div>
             <div margin-top="20px" padding="5px" border-size="1px" font-size="10px" breakable="false">
                 <strong>OBSERVAÇÕES:</strong>
-                {% for obs in matricula.observacoesHistorico %}
-                    <p>{{obs.texto}}</p>
+                {% for observacao in dados.observacoes %}
+                    <p>{{observacao.texto}}</p>
                 {%  endfor %}
             </div>
             <p text-align="right" margin-top="30px" font-size="12px">

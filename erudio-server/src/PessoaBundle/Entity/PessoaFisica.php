@@ -86,6 +86,13 @@ class PessoaFisica extends Pessoa {
     */
     private $nacionalidade;
     
+    /** 
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToOne(targetEntity = "Pais") 
+    * @ORM\JoinColumn(name = "pais_nacionalidade_id", referencedColumnName = "id") 
+    */
+    private $paisOrigem;
+    
     /**
     * @JMS\Groups({"DETAILS"})
     * @ORM\Column(name = "certidao_nascimento_completa", length = 32) 
@@ -110,6 +117,12 @@ class PessoaFisica extends Pessoa {
     * @ORM\Column(name = "pai_nome") 
     */
     private $nomePai;
+    
+    /**
+     * @JMS\Groups({"LIST"})  
+     * @ORM\Column(name = "responsavel_nome")
+     */
+    private $responsavelNome;
     
     /** 
     * @JMS\Groups({"DETAILS"})
@@ -184,10 +197,14 @@ class PessoaFisica extends Pessoa {
     private $necessidadesEspeciais;
     
     /**
-     * @JMS\Groups({"LIST"})  
-     * @ORM\Column(name = "responsavel_nome")
-     */
-    private $responsavelNome;
+    * @JMS\Groups({"DETAILS"})
+    * @ORM\ManyToMany(targetEntity="BeneficioSocial")
+    * @ORM\JoinTable(name="edu_pessoa_fisica_beneficio_social",
+    *      joinColumns={@ORM\JoinColumn(name="pessoa_fisica_id", referencedColumnName="id")},
+    *      inverseJoinColumns={@ORM\JoinColumn(name="beneficio_social_id", referencedColumnName="id")}
+    *   )
+    */
+    private $beneficiosSociais;
     
     function __construct() {
         parent::__construct();
@@ -198,7 +215,8 @@ class PessoaFisica extends Pessoa {
     * @JMS\VirtualProperty
     */
     function getCodigo() {
-        return "{$this->getId()}-{$this->getDataCadastro()->format('y')}";
+        $anoCadastro = $this->getDataCadastro() ? $this->getDataCadastro()->format('y') : date('y');
+        return "{$this->getId()}-{$anoCadastro}";
     }
     
     function getResponsavelNome() {
@@ -244,11 +262,14 @@ class PessoaFisica extends Pessoa {
     function getNacionalidade() {
         return $this->nacionalidade;
     }
+    
+    function getPaisOrigem() {
+        return $this->paisOrigem;
+    }
 
     function getCertidaoNascimento() {
         return $this->certidaoNascimento;
     }
-    
         
     function getDataExpedicaoCertidaoNascimento() {
         return $this->dataExpedicaoCertidaoNascimento;
@@ -325,6 +346,10 @@ class PessoaFisica extends Pessoa {
     function setNacionalidade($nacionalidade) {
         $this->nacionalidade = $nacionalidade;
     }
+    
+    function setPaisOrigem($paisOrigem) {
+        $this->paisOrigem = $paisOrigem;
+    }
 
     function setCertidaoNascimento($certidaoNascimento) {
         $this->certidaoNascimento = $certidaoNascimento;
@@ -380,6 +405,14 @@ class PessoaFisica extends Pessoa {
 
     function setAlfabetizado($alfabetizado) {
         $this->alfabetizado = $alfabetizado;
+    }
+    
+    function getBeneficiosSociais() {
+        return $this->beneficiosSociais;
+    }
+
+    function setBeneficiosSociais($beneficiosSociais) {
+        $this->beneficiosSociais = $beneficiosSociais;
     }
 
 }

@@ -47,7 +47,8 @@ class Matricula extends AbstractEditableEntity {
           STATUS_CANCELADO = "CANCELADO",
           STATUS_TRANCADO = "TRANCADO",
           STATUS_ABANDONO = "ABANDONO",
-          STATUS_FALECIDO = "FALECIDO";
+          STATUS_FALECIDO = "FALECIDO",
+          STATUS_MUDANCA_DE_CURSO = "MUDANCA_DE_CURSO";
   
     /**
     * @JMS\Groups({"LIST"})   
@@ -151,6 +152,14 @@ class Matricula extends AbstractEditableEntity {
 
     function getCurso() {
         return $this->curso;
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getIdAluno() {
+        return $this->aluno->getId();
     }
     
     /**

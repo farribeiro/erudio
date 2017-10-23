@@ -29,6 +29,7 @@
 namespace QuadroHorarioBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
 use JMS\Serializer\Annotation as JMS;
 use CoreBundle\ORM\AbstractEditableEntity;
 
@@ -74,6 +75,12 @@ class Horario extends AbstractEditableEntity {
     */
     private $quadroHorario;
     
+    /**
+    * @JMS\Exclude
+    * @ORM\OneToMany(targetEntity = "HorarioDisciplina", mappedBy = "horario") 
+    */
+    private $disciplinasAlocadas;
+    
     function __construct(QuadroHorario $qHorario, \DateTime $inicio, \DateTime $termino, $diaSemana) {
         $this->quadroHorario = $qHorario;
         $this->inicio = $inicio;
@@ -110,9 +117,34 @@ class Horario extends AbstractEditableEntity {
     }
     
     function setQuadroHorario($quadroHorario) {
-        if($this->quadroHorario == null) {
+        if(is_null($this->quadroHorario)) {
             $this->quadroHorario = $quadroHorario;
         }
+    }
+    
+    function getDisciplinasAlocadas() {
+        return $this->disciplinasAlocadas->matching(
+            Criteria::create()->where(Criteria::expr()->eq('ativo', true))
+        );
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getDisciplinaAlocada() {
+        if ($this->getDisciplinasAlocadas()->count() !== 1) {
+            return null;
+        }
+        return $this->getDisciplinasAlocadas()->map(function($h) {
+            $d = $h->getDisciplina();
+            return [
+                'id' => $d->getId(),
+                'nome' => $d->getNome(),
+                'nomeExibicao' => $d->getNomeExibicao(),
+                'sigla' => $d->getSigla()
+            ];
+        })->first();
     }
     
 }
