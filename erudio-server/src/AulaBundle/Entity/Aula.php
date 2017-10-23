@@ -89,15 +89,15 @@ class Aula extends AbstractEditableEntity {
     private $professor;
     
     /**
-    *
     * @JMS\Type("CursoBundle\Entity\DisciplinaOfertada") 
     */
     private $disciplina;
     
-    function __construct($turma, $dia, $horario = null) {
+    function __construct($turma, $dia, $horario = null, $disciplina = null) {
         $this->turma = $turma;
         $this->dia = $dia;
         $this->horario = $horario;
+        $this->disciplina = $disciplina;
     }
     
     function init() {

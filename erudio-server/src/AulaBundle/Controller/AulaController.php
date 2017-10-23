@@ -65,8 +65,9 @@ class AulaController extends AbstractEntityController {
     *  @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
-    *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true),
+    *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "dataInicio", nullable = true)
+    *  @FOS\QueryParam(name = "dataFim", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
