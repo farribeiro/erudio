@@ -1,7 +1,7 @@
 <div class="row h100" ng-cloak ng-controller="ProfessorController as ctrl">
     <md-content class="h100">
 
-        <div class="row" ng-if="ctrl.disciplinasLecionadas.length > 1">
+        <div class="row" ng-if="ctrl.disciplinasLecionadas.length > 1" style="margin-top: 10px;">
             <md-input-container class="md-icon-float" md-block flex-gt-sm>
                 <label for="turma">Turma</label>
                 <md-icon class="material-icons">class</md-icon>
@@ -12,34 +12,16 @@
             </md-input-container>
         </div>
 
-        <md-tabs md-dynamic-height md-border-bottom class="h100">
+        <md-tabs md-dynamic-height md-border-bottom>
             <md-tab label="avaliações">
                 <md-content class="md-padding">
                     <div class="row" ng-include="ctrl.avaliacoesTemplate"></div>
                 </md-content>
             </md-tab>
 
-            <md-tab label="aulas">
+            <md-tab label="calendário escolar" ng-click="ctrl.inserirConteudo('aulas')">
                 <md-content>
                     <div class="row" ng-include="ctrl.aulasTemplate"></div>
-                </md-content>
-            </md-tab>
-
-            <md-tab label="diário de classe">
-                <md-content class="md-padding">
-                    <h1 class="md-display-2">Diário</h1>
-                    <div class="row">
-                        diario tab
-                    </div>
-                </md-content>
-            </md-tab>
-
-            <md-tab label="chamadas">
-                <md-content class="md-padding">
-                    <h1 class="md-display-2">Chamada</h1>
-                    <div class="row">
-                        chamada tab
-                    </div>
                 </md-content>
             </md-tab>
 
@@ -49,13 +31,6 @@
                     <div class="row">
                         medias tab
                     </div>
-                </md-content>
-            </md-tab>
-
-            <md-tab label="calendário escolar">
-                <md-content class="md-padding">
-                    <h1 class="md-display-2">Calendário Escolar</h1>
-                    <div class="row"></div>
                 </md-content>
             </md-tab>
 

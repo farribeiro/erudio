@@ -5,14 +5,14 @@
      * @Controller InstituicaoFormController
      */
     class AulaController {
-        constructor(service, util, erudioConfig, $timeout, turmaService, aulaService, diaService, quadroHorarioService, $mdDialog){
+        constructor(service, util, erudioConfig, $timeout, turmaService, aulaService, diaService, quadroHorarioService, frequenciaService){
             this.service = service;
             this.util = util;
             this.erudioConfig = erudioConfig;
             this.turmaService = turmaService;
             this.aulaService = aulaService;
             this.quadroHorarioService = quadroHorarioService;
-            this.mdDialog = $mdDialog;
+            this.frequenciaService = frequenciaService;
             this.diaService = diaService;
             this.timeout = $timeout;
             this.turma = null;
@@ -22,11 +22,15 @@
             this.aulasSemana = {segunda: [], terca: [], quarta: [], quinta: [], sexta: []};
             this.calendario = null;
             this.mesCalendario = [];
+            this.diaSelecionado = null;
             this.semanaCalendario = [];
             this.permissaoLabel = "HOME_PROFESSOR";
             this.nomeForm = "calendarioForm";
+            this.aula = null;
             this.mes = null;
             this.ano = null;
+            this.chamada = false;
+            this.alunos = null;
             this.iniciar();
         }
         
@@ -58,21 +62,22 @@
                     for (var i=0; i<horarios.length; i++) {
                         horarios[i].inicio = this.util.converteHora(horarios[i].inicio);
                         if (!this.util.isVazio(horarios[i].disciplinaAlocada)) {
+                            horarios[i].inicio = this.util.converteHora(horarios[i].inicio);
                             switch (horarios[i].diaSemana.diaSemana) {
                                 case "2":
-                                    this.aulasSemana.segunda.push(horarios[i]);
+                                    if (horarios[i].disciplinaAlocada.id === this.disciplina.id) { this.aulasSemana.segunda.push(horarios[i]); }
                                 break;
                                 case "3":
-                                    this.aulasSemana.terca.push(horarios[i]);
+                                    if (horarios[i].disciplinaAlocada.id === this.disciplina.id) { this.aulasSemana.terca.push(horarios[i]); }
                                 break;
                                 case "4":
-                                    this.aulasSemana.quarta.push(horarios[i]);
+                                    if (horarios[i].disciplinaAlocada.id === this.disciplina.id) { this.aulasSemana.quarta.push(horarios[i]); }
                                 break;
                                 case "5":
-                                    this.aulasSemana.quinta.push(horarios[i]);
+                                    if (horarios[i].disciplinaAlocada.id === this.disciplina.id) { this.aulasSemana.quinta.push(horarios[i]); }
                                 break;
                                 case "6":
-                                    this.aulasSemana.sexta.push(horarios[i]);
+                                    if (horarios[i].disciplinaAlocada.id === this.disciplina.id) { this.aulasSemana.sexta.push(horarios[i]); }
                                 break;
                                 default: return false; break;
                             }
@@ -83,14 +88,33 @@
             });
         }
 
-        /*escolherDia(dia) {
+        escolherDia(dia,horarios) {
+            this.diaSelecionado = dia;
             var obj = JSON.parse(sessionStorage.getItem('turmaSelecionada'));
-            var aula = this.aulaService.getEstruturaAula();
-            aula.turma.id = obj.turma.id;
-            aula.dia.id = dia.id;
-            aula.disciplinasOfertadas.push({id: obj.disciplinaId});
-            
-        }*/
+            this.aulaService.getAll({dia: dia.id, disciplina: obj.id},true).then((aulas) => {
+                if (aulas.length === 0) {
+                    var aula = this.aulaService.getEstruturaAula();
+                    aula.turma.id = obj.turma.id;
+                    aula.dia.id = dia.id;
+                    if (!obj.turma.etapa.frequanciaUnificada) {
+                        aula.disciplina.id = obj.id;
+                        if (horarios.length === 1) { aula.horario.id = horarios[0].id; }
+                    }
+                    var resultado = this.aulaService.salvar({aulas:[aula]});
+                    resultado.then(() => { this.escolherDia(dia, horarios); });
+                } else {
+                    this.aula = aulas[0];
+                    this.frequenciaService.getAll({aula: this.aula.id}, true).then((alunos) => {
+                        this.alunos = alunos;
+                    });
+                }
+            });
+            this.chamada = true;
+        }
+
+        fecharForm(){
+            this.chamada = false;
+        }
         
         buscarEventos() {
             this.service.getDiasPorMes(this.calendario,this.mes+1,true).then((dias) => {
@@ -130,6 +154,6 @@
         }
     }
     
-    AulaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","TurmaService","AulaService","DiaService","QuadroHorarioService","$mdDialog"];
+    AulaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","TurmaService","AulaService","DiaService","QuadroHorarioService","FrequenciaService"];
     angular.module('AulaController',['ngMaterial', 'util', 'erudioConfig']).controller('AulaController',AulaController);
 })();

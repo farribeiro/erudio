@@ -14,7 +14,10 @@
             this.permissaoLabel = "HOME_PROFESSOR";
             this.linkModulo = "/#!/";
             this.avaliacoesTemplate = erudioConfig.dominio+"/apps/professor/avaliacoes/partials/index.html";
-            this.aulasTemplate = erudioConfig.dominio+"/apps/professor/aulas/partials/index.html";
+            this.aulasUrl = erudioConfig.dominio+"/apps/professor/aulas/partials/index.html";
+            this.chamadasUrl = erudioConfig.dominio+"/apps/professor/chamadas/partials/index.html";
+            this.aulasTemplate = null;
+            this.chamadasTemplate = null;
             this.buscaIcone = 'search';
             this.turmaSelecionada = null;
             this.buscarDisciplinas();
@@ -28,12 +31,23 @@
                 this.disciplinasLecionadas = disciplinas;
                 disciplinas.forEach((disciplina) => {
                     var obj = JSON.parse(sessionStorage.getItem('turmaSelecionada'));
-                    if (disciplina.id === parseInt(obj.idturm)){
+                    if (disciplina.id === parseInt(obj.id)){
                         this.turmaSelecionada = disciplina;
                     }
                 });
                 if (disciplinas.length === 1) { this.turmaSelecionada = disciplinas[0]; }
             });
+        }
+
+        inserirConteudo(tab) {
+            switch (tab) {
+                case 'aulas':
+                    if (this.util.isVazio(this.aulasTemplate)) { this.aulasTemplate = this.aulasUrl; }
+                break;
+                case 'chamadas':
+                    if (this.util.isVazio(this.chamadasTemplate)) { this.chamadasTemplate = this.chamadasUrl; }
+                break;
+            }
         }
     }
     
