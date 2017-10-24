@@ -34,13 +34,9 @@ use CoreBundle\ORM\AbstractEntity;
 
 /**
  * @ORM\Entity(readOnly = true)
- * @ORM\Table(name = "sme_particularidade")
+ * @ORM\Table(name = "edu_beneficio_social")
  */
-class Particularidade extends AbstractEntity {
-    
-    const DEFICIENCIA = 'DEFICIENCIA', 
-          TRANSTORNO = 'TRANSTORNO', 
-          SUPERDOTACAO = 'SUPERDOTACAO';
+class BeneficioSocial extends AbstractEntity {
     
     /** 
     * @JMS\Groups({"LIST"})   
@@ -48,26 +44,12 @@ class Particularidade extends AbstractEntity {
     */
     private $nome;
     
-    /** 
-    * @JMS\Groups({"LIST"})   
-    * @ORM\Column(nullable = false) 
-    */
-    private $tipo;
-    
     public function getNome() {
         return $this->nome;
-    }
-         
-    function getTipo() {
-        return $this->tipo;
     }
 
     public function setNome($nome) {
         $this->nome = $nome;
-    }
-
-    function setTipo($tipo) {
-        $this->tipo = $tipo;
     }
     
 }

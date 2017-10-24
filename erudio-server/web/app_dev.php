@@ -9,7 +9,7 @@ use Symfony\Component\Debug\Debug;
 
 /** @var \Composer\Autoload\ClassLoader $loader */
 $loader = require __DIR__.'/../vendor/autoload.php';
-Debug::enable();
+Debug::enable(E_RECOVERABLE_ERROR & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED, true);
 
 $kernel = new AppKernel('dev', true);
 if (PHP_VERSION_ID < 70000) {
