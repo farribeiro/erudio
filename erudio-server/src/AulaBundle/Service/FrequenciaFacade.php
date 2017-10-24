@@ -52,7 +52,8 @@ class FrequenciaFacade extends AbstractFacade {
             },
             'turma' => function(QueryBuilder $qb, $value) {
                 $qb->join('aula.disciplinaOfertada', 'ofertada')->join('ofertada.turma', 'turma')
-                   ->andWhere('turma.id = :turma')->setParameter('turma', $value)->setMaxResults(1)->orderBy('f.id','DESC');
+                   ->andWhere('turma.id = :turma')->setParameter('turma', $value)
+                   ->setMaxResults(1)->orderBy('f.id','DESC');
             }
         ];
     }
