@@ -65,7 +65,7 @@ class FrequenciaFacade extends AbstractFacade {
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('f.aula', 'aula')->join('f.disciplinaCursada', 'disciplina');
+        $qb->join('f.aula', 'aula');
     }
     
 }
