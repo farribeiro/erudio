@@ -117,7 +117,7 @@
         $scope.buscarCalendarios = function() {
             $scope.abrirCortina();
             $scope.calendariosBases = [];
-            var unidade = ($scope.isAdmin) ? null : sessionStorage.getItem('unidade');
+            var unidade = ($scope.isAdmin) ? null : JSON.parse(sessionStorage.getItem('unidade')).id;
             var promise = Servidor.buscar('calendarios', {instituicao: unidade});
             promise.then(function(response) {
                 $scope.calendarios = response.data;                    
