@@ -33,8 +33,8 @@
         
         $scope.escrita = Servidor.verificaEscrita('CALENDARIO');
         $scope.isAdmin = Servidor.verificaAdmin();
-        $scope.instituicaoId = parseInt(sessionStorage.getItem('instituicao'));
-        $scope.unidadeId = parseInt(sessionStorage.getItem('unidade'));
+        if (sessionStorage.getItem('instituicao') !== null) { $scope.instituicaoId = parseInt(sessionStorage.getItem('instituicao')); } else { $scope.instituicaoId = null; }
+        $scope.unidadeId = parseInt(JSON.parse(sessionStorage.getItem('unidade')).id);
         $scope.calendarios = [];
         $scope.instituicoes = [];
         $scope.semanas = [];
@@ -125,7 +125,7 @@
                 $timeout(function() { $('.tooltipped').tooltip({delay: 50}); }, 250);
                 $scope.buscarInstituicoesUnidades();
             });
-            var u = ($scope.isAdmin) ? 16138 : sessionStorage.getItem('unidade');
+            var u = ($scope.isAdmin) ? 16138 : JSON.parse(sessionStorage.getItem('unidade')).id;
             var promise = Servidor.buscar('calendarios', {instituicao: u});
             promise.then(function(response) {
                 $scope.calendariosBases = response.data;
