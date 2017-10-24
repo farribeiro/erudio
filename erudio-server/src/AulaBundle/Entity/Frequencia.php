@@ -83,7 +83,7 @@ class Frequencia extends AbstractEditableEntity {
     * @JMS\Groups({"LIST"})
     * @JMS\VirtualProperty
     * @JMS\MaxDepth(depth = 1)
-    * @JMS\Type("ArrayCollection<PessoaBundle\Entity\PessoaFisica>")
+    * @JMS\Type("PessoaBundle\Entity\PessoaFisica")
     */
     function getAluno() {
         return $this->disciplinasCursadas->first()->getMatricula()->getAluno();
