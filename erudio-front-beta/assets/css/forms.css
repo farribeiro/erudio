@@ -7,7 +7,7 @@
 .md-open-menu-container { z-index: 1005 !important; }
 .md-virtual-repeat-container.md-autocomplete-suggestions-container { z-index: 1005 !important; }
 .autocomplete-form { width: calc(100% - 24px) !important; margin-left: 24px; margin-top: -19px !important; height: 50px !important; }
-form-input, form-select, form-datepicker, md-select {
+form-input, form-select, md-select {
     width: 100%;
     box-sizing: border-box;
     display: -webkit-box;

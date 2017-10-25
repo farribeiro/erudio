@@ -44,6 +44,7 @@
         'ProfessorController',
         'ProfAvaliacoesController',
         'AulaController',
+        'ChamadaController',
         'teste'
     ];
     
@@ -110,7 +111,8 @@
         'ConceitoService',
         'AulaService',
         'DiaService',
-        'DisciplinaOfertadaService'
+        'DisciplinaOfertadaService',
+        'FrequenciaService'
     ];
     
     var todosModulos = configs.concat(services,controllers,directives);

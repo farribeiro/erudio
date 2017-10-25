@@ -42,14 +42,7 @@ class FrequenciaFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
-            'disciplina' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('disciplina.id = :disciplina')->setParameter('disciplina', $value);
-            },
-            'matricula' => function(QueryBuilder $qb, $value) {
-                $qb->join('disciplina.matricula', 'matricula')
-                   ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
-            },
+        return [
             'aula' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('aula.id = :aula')->setParameter('aula', $value);
             },
@@ -61,11 +54,11 @@ class FrequenciaFacade extends AbstractFacade {
                 $qb->join('aula.disciplinaOfertada', 'ofertada')->join('ofertada.turma', 'turma')
                    ->andWhere('turma.id = :turma')->setParameter('turma', $value)->setMaxResults(1)->orderBy('f.id','DESC');
             }
-        );
+        ];
     }
     
     protected function prepareQuery(QueryBuilder $qb, array $params) {
-        $qb->join('f.aula', 'aula')->join('f.disciplinaCursada', 'disciplina');
+        $qb->join('f.aula', 'aula');
     }
     
 }

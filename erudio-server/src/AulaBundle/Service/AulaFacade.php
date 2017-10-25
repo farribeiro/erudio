@@ -74,14 +74,17 @@ class AulaFacade extends AbstractFacade {
                 $qb->andWhere('turma.id = :turma')->setParameter('turma', $value);
             },
             'dataInicio' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere('dia.data > :dataInicio')->setParameter('dataInicio', $value->format('Y-m-d'));
+                $qb->andWhere('dia.data >= :dataInicio')->setParameter('dataInicio', $value->format('Y-m-d'));
+            },
+            'dataFim' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('dia.data <= :dataFim')->setParameter('dataFim', $value->format('Y-m-d'));
             }
        ];
     }
     
     function uniqueMap($aula) {
         return [[
-            'matricula' => $aula->getDia(), 
+            'dia' => $aula->getDia(), 
             'turma' => $aula->getTurma(), 
             'horario' => $aula->getHorario()
         ]];
