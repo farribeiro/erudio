@@ -33,31 +33,101 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use FOS\RestBundle\Controller\Annotations as FOS;
-use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\View\ViewHandlerInterface;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 
-class IndexController {
+class IndexController extends Controller {
     
     const URL_SERVICO = 'https://intranet.itajai.sc.gov.br/educar_relatorio_historico_escolar_service.php';
     
-    function __construct() {
-        
+    private $logger;
+    
+    function __construct(LoggerInterface $logger) {
+        $this->logger = $logger;
     }
     
     /**
     * @ApiDoc(
     *   resource = true,
     *   section = "Módulo Integração I-Educar",
-    *   description = "Histórico consolidado do I-Educar",
+    *   description = "Unidades de Ensino do I-Educar",
+    *   statusCodes = {
+    *       200 = "Lista de unidades de ensino"
+    *   }
+    * )
+    * 
+    * @Route("unidades-ensino", defaults={ "_format" = "json" })
+    */
+    function getUnidadesEnsinoAction(Request $request) {
+        try {
+            $param = $request->query->has('nome') ? urlencode($request->query->get('nome')) : 'e';
+            $unidadesEnsino = file_get_contents(self::URL_SERVICO . "?ws=esc&esc=" . $param);
+            return new Response($unidadesEnsino);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Integração I-Educar",
+    *   description = "Alunos do I-Educar",
+    *   statusCodes = {
+    *       200 = "Lista de alunos com nome e data de nascimento informados"
+    *   }
+    * )
+    * 
+    * @Route("alunos", defaults={ "_format" = "json" })
+    */
+    function getAlunosAction(Request $request) {
+        try {
+            $nome = urlencode($request->query->get('nome'));
+            $dataNascimento = $request->query->get('dataNascimento', '');
+            $alunos = file_get_contents(self::URL_SERVICO . "?ws=alu&nasc={$dataNascimento}&nome={$nome}");
+            return new Response($alunos);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Integração I-Educar",
+    *   description = "Histórico do I-Educar em formato JSON",
     *   statusCodes = {
     *       200 = "Documento PDF"
     *   }
     * )
     * 
-    * @Route("historicos-legados", defaults={ "_format" = "pdf" })
+    * @Route("historicos", defaults={ "_format" = "json" })
+    */
+    function getHistoricoAction(Request $request) {
+        try {
+            $unidadesEnsino = $request->query->getInt('unidadeEnsino');
+            $aluno = $request->query->getInt('aluno');
+            $historico = file_get_contents(self::URL_SERVICO . "?ws=his&alu={$aluno}&esc={$unidadesEnsino}");
+            return new Response($historico);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
+    }
+    
+    /**
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Integração I-Educar",
+    *   description = "Histórico do I-Educar em formato PDF",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("historicos-impressos", defaults={ "_format" = "pdf" })
     */
     function getHistoricoConsolidadoAction(Request $request) {
         try {
