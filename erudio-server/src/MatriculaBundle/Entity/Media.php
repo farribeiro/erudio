@@ -133,7 +133,7 @@ class Media extends AbstractEditableEntity {
     }
     
     function resetar() {
-        $this->valor = 0;
+        $this->valor = null;
     }
     
     function getNome() {

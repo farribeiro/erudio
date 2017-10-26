@@ -37,16 +37,20 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Psr\Log\LoggerInterface;
 use MatriculaBundle\Service\MatriculaFacade;
 use CursoBundle\Service\TurmaFacade;
+use CursoBundle\Service\EtapaFacade;
 
 class MatriculaReportController extends Controller {
     
     private $matriculaFacade;
     private $turmaFacade;
+    private $etapaFacade;
     private $logger;
     
-    function __construct(MatriculaFacade $matriculaFacade, TurmaFacade $turmaFacade, LoggerInterface $logger) {
+    function __construct(MatriculaFacade $matriculaFacade, TurmaFacade $turmaFacade, 
+            EtapaFacade $etapaFacade, LoggerInterface $logger) {
         $this->matriculaFacade = $matriculaFacade;
         $this->turmaFacade = $turmaFacade;
+        $this->etapaFacade = $etapaFacade;
         $this->logger= $logger;
     }
     
@@ -96,10 +100,16 @@ class MatriculaReportController extends Controller {
     */
     function fichaRematriculaPorTurmaAction(Request $request) {
         try {
-           $turma = $this->turmaFacade->find($request->query->getInt('turma'));
+            $turma = $this->turmaFacade->find($request->query->getInt('turma'));
+            $etapa = $turma->getEtapa();
+            $etapaSeguinte = $this->etapaFacade->findOne([
+                'ordem' => $etapa->getOrdem() + 1,
+                'curso' => $etapa->getCurso()
+            ]);
             return $this->render('reports/matricula/fichaRematricula.pdf.twig', [
                 'instituicao' => $turma->getUnidadeEnsino(),
-                'enturmacoes' => $turma->getEnturmacoes()
+                'enturmacoes' => $turma->getEnturmacoes(),
+                'etapaSeguinte' => $etapaSeguinte
             ]);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());

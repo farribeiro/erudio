@@ -65,10 +65,15 @@ api_aluno:
     prefix: /api/alunos
 
 # Integrações
+integracao_ieducar:
+    resource: "@IntegracaoIEducarBundle/Controller/"
+    type: annotation
+    prefix: /integracoes/ieducar
+
 integracao_sig:
     resource: "@IntegracaoSigAlimentarBundle/Controller/"
     type: rest
-    prefix: /integracoes
+    prefix: /integracoes/sig-alimentar
    
 # Docs    
 NelmioApiDocBundle:

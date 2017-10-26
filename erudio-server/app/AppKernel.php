@@ -37,6 +37,7 @@ class AppKernel extends Kernel
             new AlunoBundle\AlunoBundle(),
             
             //Integrações SME
+            new IntegracaoIEducarBundle\IntegracaoIEducarBundle(),
             new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()
         ];
 

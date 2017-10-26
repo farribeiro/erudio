@@ -26,54 +26,58 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace IntegracaoSigAlimentarBundle\Controller;
+namespace IntegracaoIEducarBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as FOS;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use MatriculaBundle\Service\EnturmacaoFacade;
-use PessoaBundle\Service\UnidadeEnsinoFacade;
-use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
-use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
 
 class IndexController {
     
-    private $viewHandler;
-    private $enturmacaoFacade;
-    private $unidadeEnsinoFacade;
+    const URL_SERVICO = 'https://intranet.itajai.sc.gov.br/educar_relatorio_historico_escolar_service.php';
     
-    function __construct(ViewHandlerInterface $viewHandler, UnidadeEnsinoFacade $unidadeEnsinoFacade,
-            EnturmacaoFacade $enturmacaoFacade) {
-        $this->viewHandler = $viewHandler;
-        $this->enturmacaoFacade = $enturmacaoFacade;
-        $this->unidadeEnsinoFacade = $unidadeEnsinoFacade;
+    function __construct() {
+        
     }
     
     /**
-    * @FOS\Get("enturmacoes")
-    * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
+    * @ApiDoc(
+    *   resource = true,
+    *   section = "Módulo Integração I-Educar",
+    *   description = "Histórico consolidado do I-Educar",
+    *   statusCodes = {
+    *       200 = "Documento PDF"
+    *   }
+    * )
+    * 
+    * @Route("historicos-legados", defaults={ "_format" = "pdf" })
     */
-    function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
-        $unidade = $paramFetcher->get('unidadeEnsino');
-        $params = $unidade ? ['turma_unidadeEnsino' => $unidade] : [];
-        $enturmacoes = $this->enturmacaoFacade->findAll($params, null, 5000);
-        $enturmacoesSig = array_map(function($e) {
-            return MatriculaSig::fromEnturmacao($e);
-        }, $enturmacoes);
-        return $this->viewHandler->handle(View::create(['dados' => $enturmacoesSig]));
-    }
-    
-    /**
-    * @FOS\Get("unidades-ensino")
-    */
-    function getUnidadesAction() {
-        $unidades = $this->unidadeEnsinoFacade->findAll();
-        $unidadesSig = array_map(function($u) {
-            return UnidadeEnsinoSig::fromUnidadeEnsino($u);
-        }, $unidades);
-        return $this->viewHandler->handle(View::create($unidadesSig));
+    function getHistoricoConsolidadoAction(Request $request) {
+        try {
+            $unidadesEnsino = $request->query->getInt('unidadeEnsino');
+            $aluno = $request->query->getInt('aluno');
+            $options = ['http' => [
+                'method' => 'GET',
+                'header' => 'Accept: application/pdf'
+            ]];
+            $context = stream_context_create($options);
+            $historico = file_get_contents(
+                self::URL_SERVICO . "?ws=his&alu={$aluno}&esc={$unidadesEnsino}",
+                false,
+                $context
+            );
+            return new Response($historico);
+        } catch (\Exception $ex) {
+            $this->logger->error($ex->getMessage());
+            return new Response($ex->getMessage(), 500);
+        }
     }
     
 }

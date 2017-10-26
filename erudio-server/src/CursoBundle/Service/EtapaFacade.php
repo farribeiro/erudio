@@ -48,6 +48,9 @@ class EtapaFacade extends AbstractFacade {
             },
             'curso' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.curso = :curso')->setParameter('curso', $value);
+            },
+            'ordem' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('e.ordem = :ordem')->setParameter('ordem', $value);
             }
         ];
     }

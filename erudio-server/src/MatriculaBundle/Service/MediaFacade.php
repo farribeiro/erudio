@@ -83,10 +83,6 @@ class MediaFacade extends AbstractFacade {
            ->orderBy('aluno.nome');
     }
     
-    function resetar(Media $media) {
-        $media->resetar();
-    }
-    
     function getFaltasUnificadas(Enturmacao $enturmacao, $numeroMedia) {
         $primeiraDisciplina = $enturmacao->getDisciplinasCursadas()->first();
         if (!$primeiraDisciplina) {
@@ -108,9 +104,9 @@ class MediaFacade extends AbstractFacade {
         }
     }
 
-    protected function beforeUpdate($media) {
-        if (!$media->getValor()) {
-            $media->setValor($this->calcularMedia($media));
+    protected function beforeApplyChanges($media, $patch) {
+        if (is_null($patch->getValor())) {
+            $patch->setValor($this->calcularMedia($media));
         }
     }
 
