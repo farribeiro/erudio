@@ -38,9 +38,6 @@ use PessoaBundle\Service\UnidadeEnsinoFacade;
 use IntegracaoSigAlimentarBundle\Model\MatriculaSig;
 use IntegracaoSigAlimentarBundle\Model\UnidadeEnsinoSig;
 
-/**
-* @FOS\Prefix("sig-alimentar")
-*/
 class IndexController {
     
     private $viewHandler;
@@ -55,8 +52,8 @@ class IndexController {
     }
     
     /**
+    * @FOS\Get("enturmacoes")
     * @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam()
     */
     function getEnturmacoesAction(ParamFetcherInterface $paramFetcher) {
         $unidade = $paramFetcher->get('unidadeEnsino');
@@ -69,7 +66,7 @@ class IndexController {
     }
     
     /**
-    * @FOS\Get("/unidades-ensino")
+    * @FOS\Get("unidades-ensino")
     */
     function getUnidadesAction() {
         $unidades = $this->unidadeEnsinoFacade->findAll();

@@ -1,17 +1,18 @@
-.calendar-table { border-collapse: collapse; }
-.calendar-table thead th { padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; text-align: center; }
-.calendar-table tbody tr td { position: relative; height: 80px; vertical-align: top; border-bottom: 1px solid #eee; border-right: 1px solid #eee; margin: 10px; padding: 10px 10px 0 10px; width: 14.28%; }
+.aulas-table, .calendar-table { border-collapse: collapse; }
+.aulas-table thead th, .calendar-table thead th { padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; text-align: center; }
+.aulas-table tbody tr td, .calendar-table tbody tr td { position: relative; height: 80px; vertical-align: top; border-bottom: 1px solid #eee; border-right: 1px solid #eee; margin: 10px; padding: 10px 10px 0 10px; width: 14.28%; }
 .aulas-table tbody tr td { position: relative; height: 100px; vertical-align: top; border-bottom: 1px solid #eee; border-right: 1px solid #eee; margin: 10px; padding: 10px 10px 0 10px; width: 14.28%; }
 .calendar-table tbody tr td:hover { background: #F8BBD0; }
 .no-calendar-right-border { border-right: none !important; }
 .calendario-dia-efetivo { background: #BBDEFB; }
+.calendario-dia-efetivo:hover { background: #F8BBD0; }
 .calendario-dia-letivo { background: #F8BBD0; }
 .calendario-dia-nao-letivo { background: #eee; }
 .evento-calendario { position: absolute; bottom: 0; width: 100%; background: #E91E63; color: #fff; font-size: 12px; padding: 5px 0 5px 5px; }
 .botao-calendario { position: absolute; top: -6px; right: -10px;  }
 .botao-calendario-mobile { position: absolute; bottom: 5px; right: 5px; color: #E91E63; }
-table { width: 100%; }
-tr th { padding: 15px 0px 15px 10px !important; }
+table:not(.md-calendar-day-header) { width: 100%; }
+tr th:not(.md-calendar-day-header thead tr th) { padding: 15px 0px 15px 10px !important; }
 tr td, tr th { border-bottom: 1px solid #eee !important; padding: 10px 0 10px 10px; font-size: 14px; text-align: right; }
 .first-column, .left-text-table { text-align: left !important; }
 tr th.table-modal { text-align: center !important; padding: 15px 10px 15px 10px !important; }

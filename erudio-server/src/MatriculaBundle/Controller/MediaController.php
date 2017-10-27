@@ -86,9 +86,6 @@ class MediaController extends AbstractEntityController {
     * @ParamConverter("media", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Media $media, ConstraintViolationListInterface $errors) {
-        if ($request->query->has('calcular')) {
-            $this->getFacade()->resetar($media);
-        }
         return $this->put($request, $id, $media, $errors);
     }
     

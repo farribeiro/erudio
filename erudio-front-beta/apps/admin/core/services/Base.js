@@ -149,16 +149,17 @@
         }
         
         //SALVAR EM BATCH
-        salvarLote(objeto, endereco, label, gen, loader) {
+        salvarLote(objeto, endereco, label, gen, loader, isPost) {
+            var tipoRequest = "PUT"; if (isPost) { tipoRequest = "POST"; }
             var self = this; self.ativarLoader(loader);
             var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
             var resultado = this.http({
-                method: "PUT",
+                method: tipoRequest,
                 url: this.restangular.configuration.baseUrl + "/" + endereco,
                 data: objeto,
                 headers: {'JWT-Authorization': this.criarHeader()}
             });
-            resultado.then(function(data){
+            return resultado.then(function(data){
                 return new Promise((resolve) => {
                     if (data.status >= 200 || data.status <= 204) {
                         var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
@@ -184,7 +185,7 @@
                 data: objeto,
                 headers: {'Content-Type': 'application/json','JWT-Authorization': this.criarHeader()}
             });
-            resultado.then(function(response){
+            return resultado.then(function(response){
                 if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
                 if(callback !== null && callback !== undefined){ callback(response); }
             },function(){

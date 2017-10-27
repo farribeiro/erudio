@@ -108,7 +108,7 @@
                                     <a class="link-list"><div class="md-list-item-text" ng-click="ctrl.carregarAvaliacao(objeto)" layout="column">
                                         <div>
                                             <h3>{{ objeto.nome }}</h3>
-                                            <p>{{ objeto.disciplina.nomeExibicao }} <span ng-show="{{ ctrl.tipoSistemaAvaliacao.length }}"> - {{ objeto.media }}º {{ ctrl.tipoSistemaAvaliacao }}</span> <span ng-if="objeto.dataEntrega.length"> - {{ objeto.dataEntrega | date:'dd/MM/yyyy' }}</span></p>
+                                            <p><span ng-show="{{ ctrl.tipoSistemaAvaliacao.length }}">{{ objeto.media }}º {{ ctrl.tipoSistemaAvaliacao }}</span> <span ng-if="objeto.dataEntrega.length"> - {{ objeto.dataEntrega | date:'dd/MM/yyyy' }}</span></p>
                                         </div>
                                     </div></a>
                                     <opcao-lista class="md-secondary"></opcao-lista>
@@ -141,14 +141,14 @@
         </md-card>
 
         <div flex-gt-sm="100" ng-show="ctrl.listaQualitativa">
-            <md-button ng-class="ctrl.tipoBotaoVoltar()" ng-click="ctrl.fecharForm()" class="md-icon-button" style="top: 92px;" aria-label="Voltar">
+            <md-button ng-class="ctrl.tipoBotaoVoltar()" ng-click="ctrl.fecharForm()" class="md-icon-button" style="top: 22px;" aria-label="Voltar">
                 <md-tooltip md-direction="left">Voltar</md-tooltip>
                 <md-icon style="color: #000;" class="material-icons">arrow_back</md-icon>
             </md-button>
 
-            <h1 class="modal-title">Alunos da Turma</h1>
+            <h1 class="modal-title">Avaliações > Notas</h1>
 
-            <md-grid-list md-cols-gt-sm="5" md-cols-xs="2" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="5" 
+            <md-grid-list hide show-gt-md md-cols-gt-sm="5" md-cols-xs="2" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="5" 
             md-gutter="12px" md-gutter-xs="2px" md-row-height="1:1">
                 <md-grid-tile ng-repeat="aluno in ctrl.mediasModal">
                     <md-card flex-gt-sm="100" style="position:relative; cursor: pointer; overflow: hidden;" ng-click="ctrl.darNotas(aluno,true,true)">
@@ -160,6 +160,14 @@
                     </md-card>
                 </md-grid-tile>
             </md-grid-list>
+
+            <md-list hide-gt-md class="md-dense" flex>
+                <md-list-item ng-repeat="aluno in ctrl.mediasModal" ng-click="ctrl.darNotas(aluno,true,true)">
+                    <img ng-show="aluno.urlFoto !== undefined" src="{{ aluno.urlFoto }}" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="md-avatar">
+                    <img ng-show="aluno.urlFoto === undefined" src="{{ ctrl.erudioConfig.dominio }}/apps/professor/avaliacoes/assets/images/avatar.png" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="md-avatar">
+                    <div class="md-list-item-text"><h3>{{ aluno.disciplinaCursada.matricula.nomeAluno }}</h3></div>
+                </md-list-item>
+            </md-list>
         </div>
         
     </div>

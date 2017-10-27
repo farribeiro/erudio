@@ -126,7 +126,9 @@
                     var resultado = null; delete this.avaliacao.habilidades;
                     if (this.util.isNovoObjeto(this.avaliacao)) { resultado = this.service.salvarAvaliacaoQuali(this.avaliacao,false,true);
                     } else { resultado = this.service.atualizar(this.avaliacao); }
-                    resultado.then(() => { this.editando = false; this.buscarAvaliacoes(true); this.fecharForm(); });
+                    resultado.then(() => { this.editando = false; this.buscarAvaliacoes(true); this.fecharForm(); }, (error) => {
+                        this.util.toast(error.data.error.message);
+                    });
                 } else { this.util.toast("Certifique que todos os campos foram preenchidos"); }
             } else {
                 if (!this.util.isVazio(this.avaliacao.nome) && !this.util.isVazio(this.avaliacao.media) && !this.util.isVazio(this.avaliacao.tipo.id) && !this.util.isVazio(this.dataEntrega)) {
