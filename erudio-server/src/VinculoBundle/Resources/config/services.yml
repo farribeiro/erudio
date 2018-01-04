@@ -1,0 +1,16 @@
+services:
+    
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    VinculoBundle\:
+        resource: '../../{Service,Listener}'
+       
+    VinculoBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]

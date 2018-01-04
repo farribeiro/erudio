@@ -1,0 +1,4 @@
+CalendarioBundle\Entity\Evento:
+    properties:
+        tipo:
+            - Choice: ["ATIVIDADE_ESCOLAR", "ATIVIDADE_ADMINISTRATIVA", "INTERESSE_PUBLICO", "FERIADO", "RECESSO"]

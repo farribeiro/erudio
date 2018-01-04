@@ -1,0 +1,31 @@
+<dynamic-page encoding="UTF-8" page-size="{% block pageType %}a4-landscape{% endblock %}">
+    <placeholders>
+        <watermark margin="0" padding="0" >
+            <!-- rotate can have absolute values (45deg - in degrees, 0.123 - in radians) or relative values ("diagonally" and "-diagonally" - angle between diagonal and base side of the page) -->
+            <div>
+                <div rotate="0.06" position="relative" top="-50" left="20" float="left" width="50px" height="900px" background.color="#155A9E" alpha="0.8">
+                </div><!-- azul -->
+                <div rotate="0.06" position="relative" top="-50" left="-20" float="left" width="60px" height="900px" background.color="#FFCB28" alpha="0.8">
+                </div><!-- amarelo -->
+                <img position="relative" float="left" left="20" src="bundles/report/brasao-municipal-certificado.png" />
+            </div>
+        </watermark>
+        <header>
+            <div height="{% block headerHeight %}60px{% endblock %}">
+                    <div text-align="center" font-size="22px" font-style="bold">
+                            <p>ESTADO DE SANTA CATARINA</p>
+                            <p>MUNICÍPIO DE ITAJAÍ</p>
+                            <p>SECRETARIA DE EDUCAÇÃO</p>
+                    </div>
+                <div text-align="center" padding-top="150px">                   
+                    {% block title %}
+                        <p font-size="25px" margin="0" padding="0" font-style="bold">
+                            CERTIFICADO
+                        </p>
+                    {% endblock %}
+                </div>
+            </div>
+        </header>
+    </placeholders>
+    {% block content %}{% endblock %}
+</dynamic-page>

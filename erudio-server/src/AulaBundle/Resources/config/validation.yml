@@ -1,0 +1,5 @@
+AulaBundle\Entity\Anotacao:
+    properties:
+        conteudo:
+            - NotBlank: ~
+        

@@ -1,0 +1,17 @@
+services:
+    
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    AvaliacaoBundle\:
+        resource: '../../{Service,Listener}'
+       
+    AvaliacaoBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]
+    

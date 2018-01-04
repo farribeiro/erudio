@@ -1,0 +1,137 @@
+<pdf>
+    {% for historico in historicos %}
+        {% set matricula = historico.matricula %}
+        {% set aluno = historico.aluno %}
+        {% set dados = historico.dados %}
+        {% embed 'reports/templates/page.twig' %}
+             {% block header %}
+                <div height="80px" width="100%"> 
+                    <div height="{% block headerHeight %}120px{% endblock %}" width="100%">
+                        <div width="30%" float="left">
+                            <img margin="auto" width="45%" src="bundles/report/selo-nacional.png" />
+                        </div>
+                        <div width="40%" float="left" text-align="center">
+                            <div margin-top="20px" margin-bottom="2px">
+                                <h1>Histórico Escolar</h1>
+                                <h3>{{instituicao.instituicaoPai.nomeCompleto}}</h3>
+                                <h3>{{instituicao.nomeCompleto}}</h3>
+                            </div>
+                        </div>
+                        <div float="left" width="30%">
+                            <div width="90%" float="right">
+                                <img margin="auto" width="100%" src="bundles/report/brasao-municipal.png" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}  
+
+            {% block content %}
+                {% set filiacao = aluno.nomePai ? aluno.nomeMae|upper ~ ' e ' ~ aluno.nomePai|upper : aluno.nomeMae|upper %}
+                {% set cidade = aluno.naturalidade %}
+                <div text-align="justify" margin-top="20px" padding="5px" font-size="12px" breakable="false">
+                    {{aluno.nome|upper}}, natural de {{cidade ? cidade.nome|upper : '[NÃO INFORMADO]'}}, 
+                    estado de {{cidade ? cidade.estado.nome|upper : '[NÃO INFORMADO]'}}, 
+                    de nacionalidade {{aluno.nacionalidade ? aluno.nacionalidade : '[NÃO INFORMADO]'}},
+                    do sexo {{aluno.genero == 'M' ? 'MASCULINO' : 'FEMININO'}}, matrícula {{matricula.codigo}},
+                    nascido(a) em {{aluno.dataNascimento|dataPorExtenso}}, filho(a) de {{filiacao}},
+                    concluiu os anos / séries do curso de {{matricula.curso.nome|upper}} nos termos da lei vigente:
+                </div>
+                <div margin-top="20px" font-size="10px" breakable="false">
+                    {%  if dados.notas|length == 0 %}
+                        <div padding="5px" border-size="1px" font-size="10px">
+                            <h4 text-align="center">
+                                <strong>Nenhuma disciplina concluída registrada no sistema</strong>
+                            </h4>
+                        </div>
+                    {%  else %}
+                        <table>
+                            <tr>
+                                <td><strong>Disciplina</strong></td>
+                                {% for etapa in matricula.curso.etapas %}
+                                    <td><strong>{{etapa.nome}}</strong></td>
+                                {% endfor %}
+                            </tr>
+                            {% for disciplina, notas in dados.notas %}
+                                <tr>
+                                    <td text-align="left" width="200px">{{disciplina}}</td>
+                                    {% for etapa in matricula.curso.etapas %}
+                                        <td>
+                                        {% if etapa.ordem in notas|keys  %}
+                                            {%  set nota = notas[etapa.ordem] %}
+                                            {% if nota matches '/^[-+]?[0-9]*\\.?[0-9]+$/' %}
+                                                {{nota|number_format(2)|last == 0 ? nota|number_format(1) : nota|number_format(2)}}
+                                            {% else %}
+                                                {{nota}}
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            <tr background.color="grey">
+                                <td text-align="left"><strong>Frequência</strong></td>
+                                {% for etapa in matricula.curso.etapas %}
+                                    <td><strong>{{dados.frequencias[etapa.ordem]|number_format(2)}}%</strong></td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    {%  endif %}
+                </div>
+                <div margin-top="20px" font-size="10px" breakable="false">
+                    <table>
+                        <tr>
+                            <td><strong>Ano Escolar</strong></td>
+                            <td><strong>Ano</strong></td>
+                            <td><strong>Situação</strong></td>
+                            <td width="250px"><strong>Unidade de Ensino</strong></td>
+                            <td  width="150px"><strong>Município</strong></td>
+                            <td><strong>UF</strong></td>
+                        </tr>
+                        {% for etapa in dados.etapasCursadas %}
+                            <tr>
+                                <td>{{etapa.etapa.nome}}</td>
+                                <td>{{etapa.ano}}</td>
+                                <td>{{etapa.status}}</td>
+                                <td>{{etapa.unidadeEnsino}}</td>
+                                <td>{{etapa.cidade.nome}}</td>
+                                <td>{{etapa.cidade.estado.sigla}}</td>
+                            </tr>
+                        {% endfor %}
+                        {% for enturmacao in matricula.enturmacoesEmAndamento %}
+                            <tr>
+                                <td>{{enturmacao.turma.etapa.nome}}</td>
+                                <td>{{"now"|date('Y')}}</td>
+                                <td>CURSANDO</td>
+                                <td>{{enturmacao.turma.unidadeEnsino.nomeCompleto}}</td>
+                                <td>{{enturmacao.turma.unidadeEnsino.endereco.cidade.nome}}</td>
+                                <td>{{enturmacao.turma.unidadeEnsino.endereco.cidade.estado.sigla}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div margin-top="20px" padding="5px" border-size="1px" font-size="10px" breakable="false">
+                    <strong>OBSERVAÇÕES:</strong>
+                    {% for observacao in dados.observacoes %}
+                        <p>{{observacao.texto}}</p>
+                    {% else %}
+                        <p>Nada consta</p>
+                    {%  endfor %}
+                </div>
+                <p text-align="right" margin-top="30px" font-size="12px">
+                    {{instituicao.endereco.cidade.nome}} ({{instituicao.endereco.cidade.estado.sigla}}), {{"now"|dataPorExtenso}}
+                </p>
+                <div text-align="center" margin-top="60px" width="50%" position="absolute" float="left" font-size="12px" >
+                    ___________________________________<br/>
+                    Secretário(a) Escolar
+                </div>
+                <div text-align="center" margin-top="60px" width="50%" position="absolute" float="right" font-size="12px" >
+                    ___________________________________<br/>
+                    Diretor(a)
+                </div>
+           {% endblock %}
+        {% endembed %}
+    {% endfor %}
+</pdf>

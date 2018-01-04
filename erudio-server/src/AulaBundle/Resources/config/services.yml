@@ -1,0 +1,20 @@
+services:
+    
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    
+    AulaBundle\:
+        resource: '../../{Service,Listener}'
+       
+    AulaBundle\Controller\:
+        resource: '../../Controller'
+        public: true
+        tags: ['controller.service_arguments']
+        calls:
+          - [setViewHandler, ["@fos_rest.view_handler"]]
+          
+    AulaBundle\Controller\ProfessorController:
+        public: true
+        tags: ['controller.service_arguments']

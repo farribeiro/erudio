@@ -1,0 +1,50 @@
+<pdf>
+    {% embed 'reports/templates/pageCertificados.twig' %}
+        {% block pageType %}a4-landscape{% endblock %}
+
+        {% block content %}
+            <div font-size="18px" line-height="20px" margin="0 30px">
+                <p text-align="justify"  margin-top="300px">
+                    Certificamos que <strong>{{matricula.aluno.nome|upper}}</strong>, 
+                    matriculado sob o número <strong>{{matricula.codigo}}</strong>,
+                    natural de {{matricula.aluno.naturalidade.nome}}, nascido(a) em 
+                    {{matricula.aluno.dataNascimento|date('d/m/Y')}}, concluiu o 
+                    {{matricula.curso.nome}} na {{matricula.unidadeEnsino.nomeCompleto}},
+                    em <strong>{{matricula.dataEncerramento|date('d/m/Y')}}</strong>,
+                    conforme dispõe a lei 9394/96, que estabelece as Diretrizes e 
+                    Bases da Educação Nacional.
+                </p>
+                <p text-align="right" margin-top="90px">
+                    {{instituicao.endereco.cidade.nome}} ({{instituicao.endereco.cidade.estado.sigla}}), {{"now"|dataPorExtenso}}
+                </p>
+            </div>
+            <column-layout number-of-columns="2" equals-columns="true" margin-top="90px" font-size="16px">
+                <div breakable="false">
+                    <p text-align="center" >
+                        ___________________________________<br/>
+                        <strong>{{ app.user ? app.user.pessoa.nome : '' }}</strong><br/>
+                        Secretário Escolar
+                    </p>
+                </div>
+                <column-break />
+                <div breakable="false">
+                    <p text-align="center">
+                        ___________________________________<br/>
+                        <strong>{{ diretor ? diretor.nome : '' }}</strong><br/>
+                        Diretor Escolar
+                    </p>
+                </div>
+                <column-break />
+            </column-layout> 
+
+        {% endblock %}
+    {% endembed %}
+    <dynamic-page encoding="UTF-8" page-size="{% block pageType %}a4-landscape{% endblock %}">
+        <div border.color="black" width="385px" position="relative" left="690px" top="510px" padding="5px" text-align="left">
+            <p padding="20px 0">Certificado REGISTRADO sob livro _____ ano 20_____, folha nº _____</p>
+            <p padding="20px 0">validade nacional de acordo com a LDB nº 9.394/96, Art. 24, inciso VII.</p>
+            <p padding="20px 0">Itajaí (SC), ________ de _________________________ de 20_______.</p>
+            <p padding="40px 0 20px 0">Carimbo/Ass. do(a) Secretário(a): ______________________________</p>
+        </div>
+    </dynamic-page>
+</pdf>

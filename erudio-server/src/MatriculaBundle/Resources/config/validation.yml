@@ -1,0 +1,24 @@
+MatriculaBundle\Entity\Matricula:
+    properties:
+        status:
+            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "CANCELADO", "TRANCADO", "ABANDONO", "FALECIDO", "MUDANCA_DE_CURSO"]
+            
+MatriculaBundle\Entity\Transferencia:
+    properties:
+        status:
+            - Choice: ["PENDENTE", "ACEITO", "RECUSADO"]
+            
+MatriculaBundle\Entity\Frequencia:
+    properties:
+        status:
+            - Choice: ["FALTA", "FALTA_JUSTIFICADA", "PRESENCA", "DISPENSA"]
+            
+MatriculaBundle\Entity\DisciplinaCursada:
+    properties:
+        status:
+            - Choice: ["CURSANDO", "APROVADO", "REPROVADO", "DISPENSADO", "INCOMPLETO", "EM_EXAME"]
+            
+MatriculaBundle\Entity\Desligamento:
+    properties:
+        motivo:
+            - Choice: ["TRANSFERENCIA_EXTERNA", "ABANDONO", "FALECIMENTO", "CANCELAMENTO", "MUDANCA_DE_CURSO"]

@@ -1,0 +1,36 @@
+<pdf>
+    {% embed 'reports/templates/pageAtestados.twig' %}
+        {% block pageType %}a4{% endblock %}
+
+        {% block title %}
+            <h1 margin="0" padding="0">ATESTADO DE MATRÍCULA E FREQUÊNCIA</h1>
+        {% endblock %}
+
+        {% block headerHeight %}70px{% endblock %}
+
+        {% block content %}
+            <div font-size="14px" line-height="20px">
+                <p text-align="justify"  margin-top="300px">
+                    Atesto para os devidos fins, a pedido da parte interessada, 
+                    que o aluno <strong>{{matricula.aluno.nome|upper}}</strong>, está regularmente
+                    matriculado, sob o número <strong>{{matricula.codigo}}</strong>,
+                    na <strong>{{matricula.unidadeEnsino.nomeCompleto}}</strong> e frequenta o curso 
+                    <strong>{{matricula.curso.nome}} - {{matricula.etapaAtual ? matricula.etapaAtual.nomeExibicao : '[NÃO ENTURMADO]'}}</strong>.
+                </p>
+                <p text-align="right" margin-top="100px">
+                    Situação: <strong>{{matricula.status|upper}}</strong>
+                </p>
+                <p text-align="right" margin-top="100px">
+                    {{instituicao.endereco.cidade.nome}} ({{instituicao.endereco.cidade.estado.sigla}}), {{"now"|dataPorExtenso}}
+                </p>
+                <p text-align="center" margin-top="100px">
+                     ___________________________________<br/>
+                    {{ app.user ? app.user.nomeExibicao : '' }}<br/>
+                    Secretário Escolar
+                </p>
+            </div>
+
+        {% endblock %}
+    {% endembed %}
+</pdf>
+

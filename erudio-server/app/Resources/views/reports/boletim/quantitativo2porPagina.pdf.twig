@@ -1,0 +1,140 @@
+<pdf>
+    {% for i, b in boletins %}
+        {%if i is divisible by(2) %}
+            <page encoding="UTF-8" >
+        {% endif %}
+        <!-- header -->
+        <table margin-bottom="10px">
+            <tr>
+            <td border.type="none">
+                <img width="65%" src="bundles/report/brasao-municipal.png" />
+            </td>
+            <td border.type="none" text-align="center">
+                <h1>Boletim Escolar {{"now"|date('Y')}}</h1>
+                <h3>{{instituicao.nomeCompleto}}</h3>
+            </td>
+            <td border.type="none" font-size="9px" text-align="right">
+                <p><strong>Aluno: {{b.matricula.aluno.nome}}</strong></p>
+                <p>Matrícula: {{b.matricula.codigo}}</p>
+                <p>Turma: {{turma.nomeExibicao}}</p>
+                <p>Curso: {{turma.etapa.curso.nome}}</p>
+            </td>
+        </tr>
+        </table>
+        <!--endheader-->
+        <!-- content -->
+            <table font-size="10px" border-type="none">
+                <tr>
+                    <td vertical-align="bottom" border.type="top+left+right">
+                        <strong>Disciplina</strong>
+                    </td>
+                    {% if quantidadeMedias > 1 %}
+                        {% for i in 1..quantidadeMedias %}
+                            <td width="70px" colspan="2" border.type="top+left+right">
+                                <strong>{{i}}º {{unidadeRegime}}</strong>
+                            </td>
+                        {% endfor %}
+                    {% else %}
+                        <td width="70px" border.type="top+left+right"></td>
+                        <td width="70px" border.type="top+left+right"></td>
+                    {% endif %}
+                        
+                    <td width="40px" border.type="top+left+right">
+                        <strong>Exame Final</strong>
+                    </td>
+                    <td width="70px" colspan="2" border.type="top+left+right">
+                        <strong>Resultado Final</strong>
+                    </td>
+                    <td vertical-align="bottom" width="90px" border.type="top+left+right">
+                        <strong>Situação</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td border.type="bottom+left+right"></td>
+                    {% for i in 1..quantidadeMedias %}
+                        <td border.type="bottom+left+right">Notas</td>
+                        <td border.type="bottom+left+right">Faltas</td>
+                    {% endfor %}
+                    <td border.type="bottom+left+right"></td>
+                    <td border.type="bottom+left+right">Notas</td>
+                    <td border.type="bottom+left+right">Freq.</td>
+                    <td border.type="bottom+left+right"></td>
+                </tr>
+                {% for disciplina in b.disciplinas %}
+                    <tr line-height="15px">
+                        <td text-align="left">
+                            {{disciplina.nomeExibicao}}
+                        </td>
+                        {% for i in 0..quantidadeMedias-1 %}
+                            <td>{{disciplina.medias[i].valor}}</td> 
+                            {% if turma.etapa.frequenciaUnificada %}
+                                <td>-</td>
+                            {% else %}
+                                <td>{{disciplina.medias[i].faltas}}</td>
+                            {% endif %}
+                            
+                        {% endfor %}
+                        {% if disciplina.medias|length > quantidadeMedias %}
+                            <td>{{disciplina.medias[quantidadeMedias].valor}}</td>
+                        {% else %}
+                            <td>-</td>
+                        {% endif %}
+                        <td>{{disciplina.mediaFinal ?: '-'}}</td>
+                        <td>{{disciplina.frequenciaTotal ? "#{disciplina.frequenciaTotal|round}%" : '-'}}</td>
+                        <td>{{disciplina.status}}</td>
+                    </tr>
+                {% endfor %}
+                 {% if turma.etapa.frequenciaUnificada %}
+                    <tr>
+                        <td><strong>Total de Faltas</strong></td>
+                        {% set totalFaltas = 0 %}
+                        {% for media in b.disciplinas[0].medias %}
+                            <td colspan="2">{{media.faltas}}</td>
+                            {% set totalFaltas = totalFaltas + media.faltas %}
+                        {% endfor %}
+                        <td>-</td>
+                        <td colspan="2">{{totalFaltas}}</td>
+                        <td>-</td>
+                    </tr>
+                {% else %}
+                    <tr><td alpha="0" colspan="13" padding="9px"></td></tr>
+                {% endif %}
+            </table>
+            <p margin-top="10px" font-size="10px">
+                Estou ciente do aproveitamento de {{b.matricula.aluno.nome}}, matrícula nº: {{b.matricula.codigo}}.
+            </p>
+            <p text-align="center" margin-top="60px">
+                ____________________________________________
+            </p>
+            <p text-align="center" font-size="10px">
+                Assinatura do responsável
+            </p>
+            <div margin-top="25px" height="05px" width="100%" font-size="8px" breakable="false" position="relative">
+                <hr margin="0" padding="0" />
+                <div padding-top="3px" width="80%" left="50%" position="absolute" float="left" text-align="center" >
+                    <p padding="0">
+                        <strong>{{instituicao.nomeCompleto}}</strong>
+                    </p>
+                    <p padding="0">
+                        {{instituicao.endereco.enderecoCompleto}}
+                    </p>
+                    <p padding="0">
+                        E-mail: {{instituicao.email}}
+                    </p>
+                </div>
+                <div padding="0" font-size="8px" position="relative" float="right" width="20%">
+                    <p margin-top="17px" text-align="right">Impresso em: {{"now"|date("d/m/Y H:i")}}</p>
+                </div>
+            </div>
+        {%if i is not divisible by(2) %}
+            </page>
+        {% else %}
+            <hr background-color="white" border.color="grey" border.style="dotted" margin-top="42px" margin-bottom="66px"/>
+            {% if boletins|length -1 == i %}
+                </page>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</pdf>
+
+

@@ -1,0 +1,123 @@
+<pdf>
+        {% embed 'reports/templates/page.twig' %}
+            {% block pageType %}A4-landscape{% endblock %}
+            
+           {% block title %}
+                <h1>Ata de Resultados Finais {{"now"|date('Y')}}</h1>
+            {% endblock %}
+            
+            {% block headerHeight %}70px{% endblock %}
+            
+             {% block info %}
+                <p padding="0">
+                    Turma: {{turma.nomeExibicao}}
+                </p>
+                <p padding="0">
+                    Curso: {{turma.etapa.curso.nome}}
+                </p>
+            {% endblock %}
+            {% block content %}
+                <p margin-bottom="10px">
+                    Aos {{"now"|dataPorExtenso}}, terminou-se o processo de 
+                    apuração das notas finais dos alunos do {{turma.etapa.nome}}, turma {{turma.nomeExibicao}}, 
+                    turno {{turma.turno.nome}}, do {{turma.etapa.curso.nome}} 
+                    desta unidade de ensino, com os seguintes resultados:
+                </p>
+                <div margin="0" padding="0" font-size="8px">
+                    <table>
+                        {% if not turma.etapa.frequenciaUnificada %}
+                        <tr>
+                            <td colspan="4" alpha="0"></td>
+                            {% for disciplina in disciplinas %}
+                                <td colspan="{{turma.etapa.frequenciaUnificada ? '1' : '2'}}">
+                                    <strong>{{ disciplina.sigla }}</strong>
+                                </td>
+                            {% endfor %}
+                            <td alpha="0"></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td width="17px"><strong>Nº</strong></td>
+                            <td width="57px"><strong>Código</strong></td>
+                            <td width="250px"><strong>Aluno</strong></td>
+                            <td width="50px"><strong>Nascimento</strong></td>
+                            {% if not turma.etapa.frequenciaUnificada %}
+                                {% for disciplina in disciplinas %}
+                                    <td width="25px" padding-left="5px"><strong>N</strong></td>
+                                    <td width="25px" padding-left="5px"><strong>F</strong></td>
+                                {% endfor %}
+                            {% else %}
+                                {% for disciplina in disciplinas %}
+                                    <td width="40px" padding-left="5px">
+                                        <strong>{{ disciplina.sigla }}</strong>
+                                    </td>
+                                {% endfor %}
+                                <td width="65px"><strong>Frequência</strong></td>
+                            {% endif %}
+                            <td width="65px">
+                                <strong>Resultado</strong>
+                            </td>
+                        </tr>
+                        {% set aprovados, reprovados = 0, 0 %}
+                        {% for i, r in resultados %}
+                            {% set disciplinasCursadas = r.disciplinas %}
+                            <tr>
+                                <td>{{i + 1}}</td>
+                                <td>{{r.matricula}}</td>
+                                <td text-align="left">{{r.aluno|upper}}</td>
+                                <td>{{r.dataNascimento|date("d/m/Y") }}</td>
+                                {% if not turma.etapa.frequenciaUnificada %}
+                                    {% for disciplinaCursada in disciplinasCursadas %}
+                                        <td>{{disciplinaCursada.nota ? (disciplinaCursada.nota|number_format(2)|last == 0 ? disciplinaCursada.nota|number_format(1) : disciplinaCursada.nota|number_format(2))}}</td>
+                                        <td>{{disciplinaCursada.frequencia ? "#{disciplinaCursada.frequencia|round(0, 'ceil')}%" }}</td>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for disciplinaCursada in disciplinasCursadas %}
+                                        <td>{{disciplinaCursada.nota ? (disciplinaCursada.nota|number_format(2)|last == 0 ? disciplinaCursada.nota|number_format(1) : disciplinaCursada.nota|number_format(2))}}</td>
+                                    {% endfor %}
+                                    <td>{{disciplinasCursadas|first.frequencia ? "#{disciplinasCursadas|first.frequencia|round(0, 'ceil')}%" }}</td>
+                                {% endif %}
+                                <td>{{r.status}}</td>
+                                {% if 'APROVADO' in r.status %}
+                                    {% set aprovados = aprovados + 1 %}
+                                {% elseif  'REPROVADO' in r.status %}
+                                    {% set reprovados = reprovados + 1 %} 
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4"><strong>Carga Horária</strong></td>
+                            {% for disciplina in disciplinas %}
+                                <td colspan="{{ turma.etapa.frequenciaUnificada ? '1' : '2' }}">
+                                    <strong>{{ disciplina.cargaHoraria }}</strong>
+                                </td>
+                            {% endfor %}
+                            <td alpha="0"></td>
+                        </tr>
+                    </table>
+                </div>
+                <p margin-top="10px">
+                    E para constar, eu {{ app.user ? app.user.nomeExibicao : '' }}, Secretário(a), lavrei a presente ata que será assinada por mim e pelo(a) Diretor(a) da Unidade de Ensino.
+                </p>
+                <p margin-top="10px" font-size="9px">
+                    Total de alunos aprovados <strong>{{ aprovados }}</strong><br/>
+                    Total de alunos reprovados <strong>{{ reprovados }}</strong>
+                </p>
+                <p font-size="9px"><strong>Legenda:</strong></p>
+                <table font-size="9px">
+                    <tr>
+                        {% for disciplina in disciplinas %}
+                            <td><strong>{{ disciplina.sigla }}</strong></td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for disciplina in disciplinas %}
+                            <td>{{ disciplina.nomeExibicao }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            {% endblock %}
+        {% endembed %}
+</pdf>
+
+

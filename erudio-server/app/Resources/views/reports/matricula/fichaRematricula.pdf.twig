@@ -1,0 +1,186 @@
+<pdf>
+    {% for enturmacao in enturmacoes %}
+        {% set aluno = enturmacao.matricula.aluno %}
+
+        {% embed 'reports/templates/page.twig' %}
+            {% block pageType %}A4{% endblock %}
+            
+            {% block title %}
+                <h1>Confirmação de Rematrícula  
+                {% if not etapaSeguinte %}
+                    {{ 'Infantil' in enturmacao.matricula.curso.nome ? '' : '' }}
+                {% else %}
+                    - {{etapaSeguinte.nome}}
+                {% endif %}
+                </h1>
+                <h1>Ano Letivo de {{"now"|date('Y') + 1}} </h1>
+            {% endblock %}
+            
+            {% block headerHeight %}70px{% endblock %}
+
+            {% block info %}{% endblock %}
+
+            {% block content %}
+                <div>
+                    <table>
+                        <tr>
+                            <td padding="10px 0" font-style="bold" border.type="none" width="220" text-align="left">Nome do aluno: {{aluno.nome}}</td>
+                            <td padding="0" border.type="none" text-align="left">Data de Nascimento: {{aluno.dataNascimento|date('d/m/Y')}}</td>
+                            <td padding="0" border.type="none" text-align="left">Matrícula: {{enturmacao.matricula.codigo}}</td>
+                        </tr>
+                        <tr>
+                            <td padding="0" width="220" border.type="none" text-align="left">Turma atual: {{enturmacao.matricula.etapaAtual.nome}} - {{enturmacao.turma.nome}}</td>
+                            <td colspan="2" padding="0" border.type="none" text-align="left">Situação (Preenchido pela unidade): _____________________________</td>
+                            
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td padding="10px 0" colspan="2" border.type="none" text-align="left">Filiação:</td>
+                        </tr>
+                        <tr>
+                            <td padding="0" border.type="none" width="220" text-align="left">{{aluno.nomeMae ?: "__________________________________"}}</td>
+                            <td padding="0" border.type="none" text-align="left">Local de Trabalho: ___________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td padding="10px 0" width="220" border.type="none" text-align="left">{{aluno.nomepai ?: "__________________________________"}}</td>
+                            <td padding="10px 0" border.type="none" text-align="left">Local de Trabalho: ___________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td padding="0" width="220" border.type="none" text-align="left">Responsável: {{aluno.responsavelNome ?: "_______________________________"}}</td>
+                            <td padding="0" border.type="none" text-align="left">Local de Trabalho: ___________________________________________</td>
+                        </tr>
+                     </table>
+                    <p padding="10px 0"> Telefones: 
+                        {% if  aluno.telefones|length > 0 %}
+                            {% for telefone in aluno.telefones %}
+                                {{ telefone.numero }}
+                            {%endfor%}
+                        {% else %}
+                            ___________________________________________
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <p padding="0" font-style="bold">Endereço do aluno:</p>
+                    <p padding="10px 0"> Logradouro: {{ aluno.endereco ? aluno.endereco.logradouro ? "#{aluno.endereco.logradouro} Nº #{aluno.endereco.numero}": '________________________ Nº __________' }}</p>
+                    <p padding="0">Complemento: {{ aluno.endereco ? aluno.endereco.complemento ?: "_______________________________________________"}}</p>
+                    <p padding="10px 0">Bairro: {{ aluno.endereco ? aluno.endereco.bairro ?: "___________________________________________________"}}</p>
+                    <table>
+                        <tr>
+                            <td padding="0" border.type="none" width="220" text-align="left">Cidade: {{ aluno.endereco ? aluno.endereco.cidade.nome ?: "__________________________________________________"}}</td>
+                            <td padding="0" border.type="none" text-align="left">CEP: {{ aluno.endereco ? aluno.endereco.cep ?: "_____________________________________________________"}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <p padding="10px 0" font-style="bold">Benefícios do aluno:</p>
+                    [<span color="white">___</span>] PBF - Bolsa Familia - NIS: {{ aluno.nis ?: "_________________________________"}}<br/>
+                    [<span color="white">___</span>] BPC - Benefício de Prestação Continuada da Assistência Social<br/>
+                    [<span color="white">___</span>] PNATE - Transporte
+                </div>
+                <div style="margin-top: 20px;">
+                    Data: _____ / _____ / __________ 
+                    <table style="margin-top: 20px;">
+                        <tr>
+                            <td border.type="none">________________________________</td>
+                            <td border.type="none">________________________________</td>
+                        </tr>
+                        <tr>
+                            <td border.type="none">Pais ou responsável</td>
+                            <td border.type="none">Secretário escolar</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p font-style="bold" style="margin-bottom: 15px;">Informações Complementares / Alterações:</p>
+                    <hr/><hr/><hr/><hr/>
+                </div>
+                <div border.style="solid" border.color="black" style="margin-top: 10px;">
+                    <p text-align="center" font-style="bold" style="margin-bottom: 05px;">AUTORIZAÇÃO DE USO DE IMAGEM</p>
+                    <p>
+                        Eu, __________________________________________________________ 
+                        portador(a) do RG _____________________, CPF _________________________, 
+                        autorizo, a título gratuito, o USO DE IMAGEM, VOZ E PRODUÇÃO INTELECTUAL do meu filho(a) 
+                        {{aluno.nome}} , para fins pedagógicos, divulgação de eventos, apresentações e atividades 
+                        afins, correlatas à unidade escolar, que possam ser filmadas, fotografadas e ou copiadas 
+                        total ou parcialmente pela escola, ou por terceiros por ela contratados ou autorizados.
+                    </p>
+                    <table style="margin-top: 10px;">
+                        <tr>
+                            <td border.type="none">________________________________</td>
+                            <td border.type="none">Data: _____ / _____ / __________ </td>
+                        </tr>
+                        <tr>
+                            <td border.type="none">Pais ou responsável</td>
+                            <td border.type="none"></td>
+                        </tr>
+                    </table>
+                </div>
+                {% if 'Infantil' in enturmacao.matricula.curso.nome %}
+                    <div border.style="solid" border.color="black" style="margin-top: 20px;">
+                        <p background.color="#CCCCCC">O preenchimento do termo abaixo deverá ser somente quando necessário:</p>
+                        <p text-align="center" font-style="bold"  style="margin-bottom: 05px;">TERMO DE DESISTÊNCIA DE MATRÍCULA PARA EDUCAÇÃO INFANTIL (Integral ou parcial)</p>
+                        <p>
+                            Eu, _________________________________________________________  
+                            portador(a) do CPF _________________________ responsável pela criança 
+                            {{aluno.nome}}, matriculada no período {{enturmacao.turma.turno.nome}} na Unidade 
+                            {{instituicao.nome}} , residente a Rua:_________________________________________________, 
+                            Nº: ____________, Bairro: __________________________, declaro 
+                            que estou desistindo da vaga em período [<span color="white">___</span>] 
+                            Integral [<span color="white">___</span>] Parcial.<br/>
+                            No caso da desistência de vaga em período integral, declaro estar ciente de que para uma nova 
+                            matrícula a criança deverá ser novamente cadastrada na Fila Única para aguardar uma vaga.
+                        </p>
+                        <table style="margin-top: 10px;">
+                            <tr>
+                                <td border.type="none">Itajaí, _____ / _____ / {{ "now"|date("Y") }} </td>
+                                <td border.type="none">Horário: ____________________ </td>
+                            </tr>
+                            <tr>
+                                <td border.type="none">________________________________</td>
+                                <td border.type="none">________________________________</td>
+                            </tr>
+                            <tr>
+                                <td border.type="none">Pais ou responsável</td>
+                                <td border.type="none">Secretário escolar</td>
+                            </tr>
+                        </table>
+                    </div>
+                {% elseif 'Fundamental' in enturmacao.matricula.curso.nome %}
+                    <div border.style="solid" border.color="black" style="margin-top: 20px;">
+                        <p background.color="#CCCCCC">O preenchimento do termo abaixo deverá ser somente quando necessário:</p>
+                        <p text-align="center" font-style="bold"  style="margin-bottom: 05px;">TERMO DE DESISTÊNCIA DE REMATRÍCULA</p>
+                        <p>
+                            Eu, _________________________________________________________  
+                            portador(a) do CPF _________________________ responsável pelo(a) aluno(a)
+                            {{aluno.nome}}, matriculado(a) na unidade escolar
+                            {{instituicao.nome}} , residente a Rua:_________________________________________________, 
+                            Nº: ____________, Bairro: __________________________, declaro 
+                            que estou desistindo da vaga/rematrícula para o ano letivo de 
+                            <span font-style="bold"> {{"now"|date('Y') + 1}}.</span><br/>
+                            No caso da desistência de rematrícula, declaro estar ciente de que serei 
+                            responsável em providenciar vaga em outra unidade escolar, seja da rede 
+                            pública ou privada e comunicar documentalmente a unidade escolar atual.
+                        </p>
+                        <table style="margin-top: 10px;">
+                            <tr>
+                                <td border.type="none">Itajaí, _____ / _____ / {{ "now"|date("Y") }} </td>
+                                <td border.type="none"></td>
+                            </tr>
+                            <tr>
+                                <td border.type="none">________________________________</td>
+                                <td border.type="none">________________________________</td>
+                            </tr>
+                            <tr>
+                                <td border.type="none">Pais ou responsável</td>
+                                <td border.type="none">Secretário escolar</td>
+                            </tr>
+                        </table>
+                    </div>
+                {%endif%}
+            {% endblock %}
+        {% endembed %}
+    {% endfor %}
+</pdf>
+
