@@ -55,10 +55,10 @@
             var self = this;
             let confirm = this.util.modalExclusao(event, "Remover Regime de Ensino", "Deseja remover este Regime de Ensino?", 'remover', this.mdDialog);
             this.mdDialog.show(confirm).then(function(){
-                let id = self.regimes.id;
+                let id = self.regime.id;
                 var index = self.util.buscaIndice(id, self.objetos);
                 if (index !== false) {
-                    self.service.remover(self.regimes, "Regime de Ensino","m");
+                    self.service.remover(self.regime, "Regime de Ensino","m");
                     self.objetos.splice(index,1);
                 }
             });

@@ -1,0 +1,19 @@
+<div layout-gt-sm="row">
+            
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome do Aluno</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="ctrl.busca.nome" type="text" name="nome"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nasc">Data de Nascimento</label>
+        <md-icon class="material-icons">event</md-icon>
+        <input id="nasc" ng-model="ctrl.busca.dataNascimento" class="maskData" type="text" name="nasc"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+
+</div>
+
+<md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="ctrl.turma.id !== null" style="margin-bottom: 20px;" ng-click="ctrl.buscarAlunos()" class="md-raised save-button-fix">BUSCAR</md-button>
+<md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBusca()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>

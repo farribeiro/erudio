@@ -8,7 +8,7 @@
         <meta name="theme-color" content="#000">
         <link rel="icon" href="assets/images/erudio.png">
         <link rel="stylesheet" href="lib/material/angular-material.min.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
         <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
         
         <!-- JQUERY -->
@@ -30,9 +30,11 @@
         <script type="text/javascript" src="lib/js/angular/angular-md5.js"></script>
         <script type="text/javascript" src="lib/js/angular/sha1.js"></script>
         
-        <!-- LEAFLET -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <!-- LEAFLET 
+        <link rel="stylesheet" href="assets/css/leaflet.css" />
+        <script src="lib/js/jquery/leaflet.js"></script> -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
         
         <!-- ANGULAR MATERIAL -->
         <script src="lib/material/angular-material.min.js"></script>
@@ -49,15 +51,19 @@
                 <md-sidenav ng-hide="isProfessor" class="md-sidenav-left md-whiteframe-3dp" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
                     <md-toolbar class="md-tall">
                         <div class="md-toolbar-tools">
+                            <div class="avatar-mascara foto-professor md-whiteframe-2dp" layout="row" layout-align="center center" style="overflow: hidden; left: 19px; top: 0px;">
+                                <img src="{{ foto }}" alt="{{ atribuicoes.pessoa.nome }}">
+                            </div>
+                            
                             <h2 flex md-truncate></h2>
                             <md-menu md-position-mode="target-right target">
                                 <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
                                 <md-menu-content class="main-menu" width="2">
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button ng-click="redirect('#!/perfil')"><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
+                                    <!-- <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item> -->
                                     <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>{{ mudou }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
+                                    <!-- <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item> -->
+                                    <md-menu-item><md-button ng-click="logout()"><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
                                 </md-menu-content>
                             </md-menu>
                         </div>
@@ -96,41 +102,71 @@
                     <div class="sem-permissao-cortina"></div>
                     <div class="sem-permissao-texto">Você não tem permissão para acessar esta área do sistema.</div>
                     <md-progress-circular class="md-accent loader" md-diameter="40" ></md-progress-circular>
-                    
+
+                    <!-- MENU DE PROFESSOR -->
+                    <md-menu class="menu-professor" ng-show="isProfessor" md-position-mode="target-left target">
+                        <md-button class="md-icon-button" style="padding-top: 0;" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon style="color: #fafafa;" class="material-icons">more_vert</md-icon></md-button>
+                        <md-menu-content class="main-menu" width="2">
+                            <md-menu-item><md-button ng-click="redirect('#!/perfil')"><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
+                            <!-- <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item> -->
+                            <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>{{ mudou }}</p></div></md-button></md-menu-item>
+                            <!-- <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item> -->
+                            <md-menu-item><md-button ng-click="logout()"><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+
+                    <!-- AVATAR -->
+                    <div ng-show="isProfessor" class="avatar-mascara foto-professor md-whiteframe-2dp" layout="row" layout-align="center center" style="overflow: hidden;">
+                        <img src="{{ foto }}" alt="{{ atribuicoes.pessoa.nome }}">
+                    </div>
+                    <span ng-show="isProfessor" class="nome-professor">{{ atribuicoes.pessoa.nome }}</span>
+
                     <!-- TOOLBAR COM IMAGEM -->
                     <md-toolbar class="md-tall content-bar">
                         <div class="md-toolbar-tools">
-                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <md-button ng-hide="isProfessor" hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
-                            <md-menu style="margin-right: 7px; margin-top: 10px;" ng-show="isProfessor" md-position-mode="target-right target">
-                                <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
-                                <md-menu-content class="main-menu" width="2">
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>{{ mudou }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
-                                </md-menu-content>
-                            </md-menu>
+
+                            <md-button style="display: none; right: 37px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
+                                <md-tooltip md-direction="left">Voltar</md-tooltip>
+                                <md-icon class="material-icons white-icon">arrow_back</md-icon>
+                            </md-button>
                         </div>
-                        <span flex></span>
+                        <span flex ng-show="isProfessor">
+                            <div class="user-area" flex layout-gt-sm="column">
+                                <form-select grid="flex-gt-sm" identidade="formAttr" label="''" nome="'atribuicao'" obrigatorio="required">
+                                    <md-select aria-label="Alocação" class="md-select-alocacao no-margin" ng-model="attrAtual.attr.id" ng-change="carregarAtribuicao(attrAtual.attr.id)">
+                                        <md-option style="font-size: 14px;" value="">Selecione uma alocação</md-option>
+                                        <md-option ng-repeat="atribuicao in atribuicoes.atribuicoes" class="select-alocacao" value="{{ atribuicao.id }}">
+                                            <span ng-show="atribuicao.apelido">{{ atribuicao.apelido }}</span><span ng-hide="atribuicao.apelido">{{ atribuicao.grupo.nome }}</span><br />
+                                            <small class="text-alocacao">{{ atribuicao.instituicao.nomeCompleto }}</small>
+                                        </md-option>
+                                    </md-select>
+                                </form-select>
+                            </div>
+                        </span>
                     </md-toolbar>
                     
-                    <!-- TOOLBAR ATIVADA NO SCROLL  -->
+                    <!-- TOOLBAR ATIVADA NO SCROLL -->
                     <md-toolbar class="scroll-toolbar">
                         <div class="md-toolbar-tools">
-                            <md-button hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
+                            <md-button ng-hide="isProfessor" hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
                             <md-menu md-position-mode="target-right target">
                                 <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
                                 <md-menu-content class="main-menu" width="2">
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item>
+                                    <md-menu-item><md-button ng-click="redirect('#!/perfil')"><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
+                                    <!--<md-menu-item><md-button><div layout="row" flex><p flex>{{ sobre }}</p></div></md-button></md-menu-item>-->
                                     <md-menu-item><md-button ng-click="oQueMudou($event)"><div layout="row" flex><p flex>{{ mudou }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item>
-                                    <md-menu-item><md-button><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
+                                    <!--<md-menu-item><md-button><div layout="row" flex><p flex>{{ config }}</p></div></md-button></md-menu-item>-->
+                                    <md-menu-item><md-button ng-click="logout()"><div layout="row" flex><p flex>{{ sair }}</p></div></md-button></md-menu-item>
                                 </md-menu-content>
                             </md-menu>
+
+                            <md-button style="display: none; top: 12px; right: 60px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
+                                <md-tooltip md-direction="left">Voltar</md-tooltip>
+                                <md-icon class="material-icons white-icon">arrow_back</md-icon>
+                            </md-button>
                         </div>
                         <span flex></span>
                     </md-toolbar>
@@ -155,6 +191,10 @@
         <script src="apps/admin/util/sharedProperties.js"></script>
         <!-- base -->
         <script src="apps/admin/core/services/Base.js"></script>
+        <!-- observacoes -->
+        <script src="apps/admin/historicos/services/Observacao.js"></script>
+        <!-- alocacoes -->
+        <script src="apps/admin/alocacoes/services/Alocacao.js"></script>
         <!-- estados -->
         <script src="apps/admin/estados/services/Estado.js"></script>
         <!-- cidades -->
@@ -171,6 +211,16 @@
         <script src="apps/admin/disciplinasOfertadas/services/DisciplinaOfertada.js"></script>
         <!-- frequencia -->
         <script src="apps/admin/frequencias/services/Frequencia.js"></script>
+        <!-- alunos defasados -->
+        <script src="apps/admin/alunosDefasados/services/AlunosDefasados.js"></script>
+        <!-- ieducar -->
+        <script src="apps/admin/ieducar/services/Ieducar.js"></script>
+        <!-- alunos enturmados -->
+        <script src="apps/admin/alunosEnturmados/services/AlunosEnturmados.js"></script>
+        <!-- etapas ofertadas -->
+        <script src="apps/admin/etapasOfertadas/services/EtapaOfertada.js"></script>
+        <!-- etapas ofertadas -->
+        <script src="apps/admin/alunosANEE/services/AlunoANEE.js"></script>
         <!-- aula -->
         <script src="apps/admin/aulas/services/Aula.js"></script>
         <!-- dia -->
@@ -189,6 +239,23 @@
         <script src="apps/admin/sistemaAvaliacoes/services/SistemaAvaliacao.js"></script>
         <!-- modelos de grade de horário -->
         <script src="apps/admin/modelosGradeHorario/services/ModeloGradeHorario.js"></script>
+        <!-- beneficios -->
+        <script src="apps/admin/beneficios/services/Beneficio.js"></script>
+        <!-- boletins -->
+        <script src="apps/admin/boletins/controllers/boletimController.js"></script>
+        <!-- pessoas -->
+        <script src="apps/admin/pessoas/controllers/pessoaController.js"></script>
+        <script src="apps/admin/pessoas/controllers/pessoaFormController.js"></script>
+        <!-- ata -->
+        <script src="apps/admin/ataFinal/controllers/ataController.js"></script>
+        <!-- certificados -->
+        <script src="apps/admin/certificados/controllers/certificadosController.js"></script>
+        <!-- diario de frequencia -->
+        <script src="apps/admin/diariosFrequencia/controllers/diariosFrequenciaController.js"></script>
+        <!-- diario de notas -->
+        <script src="apps/admin/diariosNotas/controllers/diariosNotasController.js"></script>
+        <!-- fichas rematricula -->
+        <script src="apps/admin/fichasRematricula/controllers/fichasRematriculaController.js"></script>
         <!-- instituições -->
         <script src="apps/admin/instituicoes/controllers/instituicaoController.js"></script>
         <script src="apps/admin/instituicoes/controllers/instituicaoFormController.js"></script>
@@ -242,11 +309,25 @@
         <script src="apps/admin/eventos/controllers/eventoController.js"></script>
         <script src="apps/admin/eventos/controllers/eventoFormController.js"></script>
         <script src="apps/admin/eventos/services/Evento.js"></script>
-        
 
         <!-- Histórico Escolar -->
         <script src="apps/admin/historicos/controllers/historicoController.js"></script>
         <script src="apps/admin/historicos/controllers/historicoViewController.js"></script>
+        <script src="apps/admin/historicos/controllers/historicoDisciplinaController.js"></script>
+        <script src="apps/admin/historicos/controllers/historicoConclusaoController.js"></script>
+        <script src="apps/admin/historicos/controllers/historicoObservacoesController.js"></script>
+
+        <!-- ieducar -->
+        <script src="apps/admin/ieducar/controllers/ieducarController.js"></script>
+
+        <!-- alunos defasados -->
+        <script src="apps/admin/alunosDefasados/controllers/alunosDefasadosController.js"></script>
+
+        <!-- alunos enturmados -->
+        <script src="apps/admin/alunosEnturmados/controllers/alunosEnturmadosController.js"></script>
+
+        <!-- alunos anee -->
+        <script src="apps/admin/alunosANEE/controllers/alunosANEEController.js"></script>
 
         <script src="apps/admin/periodos/services/Periodo.js"></script>
         
@@ -297,11 +378,14 @@
         <script src="apps/admin/usuarios/services/Usuario.js"></script> 
         <script src="apps/admin/usuarios/directives/usuarioDirectives.js"></script>
 
-        <!-- Professor -->
+        <!-- Professor 
+        <script src="apps/professor/index/controllers/moduloProfessor.js"></script> -->
         <script src="apps/professor/index/controllers/professorController.js"></script>
         <script src="apps/professor/avaliacoes/controllers/profAvaliacoesController.js"></script>
         <script src="apps/professor/aulas/controllers/aulasController.js"></script>
-        <script src="apps/professor/chamadas/controllers/chamadasController.js"></script>
+        <script src="apps/professor/medias/controllers/mediasController.js"></script>
+        <script src="apps/professor/eventos/controllers/eventoHomeController.js"></script>
+        <script src="apps/professor/perfil/controllers/perfilController.js"></script>
 
         <script src="apps/admin/teste/controllers/testeController.js"></script>
         

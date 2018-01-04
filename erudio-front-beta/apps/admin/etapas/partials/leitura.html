@@ -1,15 +1,15 @@
 <div layout-gt-sm="column" ng-if="!ctrl.escrita && !ctrl.novo">
     <h1>{{ etapa.nomeExibicao }}</h1>
     <div layout="column" class="margin-top-bottom">
-        <div flex flex-gt-sm><strong>Curso:</strong> {{ etapa.curso.nome }}</div>
-        <div flex flex-gt-sm><strong>Idade Recomendada:</strong> {{ etapa.idadeRecomendada }}</div>
-        <div flex flex-gt-sm><strong>Ordem:</strong> {{ etapa.ordem }}</div>
-        <div flex flex-gt-sm><strong>Limite de Alunos:</strong> {{ etapa.limiteAlunos }}</div>
-        <div flex flex-gt-sm><strong>Módulo:</strong> {{ etapa.modulo.nome }}</div>
-        <div flex flex-gt-sm><strong>Sistema de Avaliação:</strong> {{ etapa.sistemaAvaliacao.nome }}</div>
-        <div flex flex-gt-sm><strong>Modelo Grade de Horário:</strong> {{ etapa.modeloQuadroHorario.nome }}</div>
-        <div ng-show="etapa.integral" flex flex-gt-sm><strong>Integral:</strong> SIM</div>
-        <div ng-hide="etapa.integral" flex flex-gt-sm><strong>Integral:</strong> NÃO</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Curso:</strong> {{ etapa.curso.nome }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Idade Recomendada:</strong> {{ etapa.idadeRecomendada }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Ordem:</strong> {{ etapa.ordem }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Limite de Alunos:</strong> {{ etapa.limiteAlunos }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Módulo:</strong> {{ etapa.modulo.nome }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Sistema de Avaliação:</strong> {{ etapa.sistemaAvaliacao.nome }}</div>
+        <div style="margin-bottom: 10px;" flex flex-gt-sm><strong>Modelo Grade de Horário:</strong> {{ etapa.modeloQuadroHorario.nome }}</div>
+        <div style="margin-bottom: 10px;" ng-show="etapa.integral" flex flex-gt-sm><strong>Integral:</strong> SIM</div>
+        <div style="margin-bottom: 10px;" ng-hide="etapa.integral" flex flex-gt-sm><strong>Integral:</strong> NÃO</div>
     </div>
 </div>
 

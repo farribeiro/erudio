@@ -2,11 +2,12 @@
     'use strict';
     
     class BaseService {
-        constructor(Restangular, $mdToast, $http) {
+        constructor(Restangular, $mdToast, $http, erudioConfig) {
             this.restangular = Restangular;
             this.mdToast = $mdToast;
             this.http = $http;
-            this.loginPage = '/login.html!#/';
+            this.erudioConfig = erudioConfig;
+            this.loginPage = this.erudioConfig.dominio+'/login.html';
         }
         
         //CONTROLE DA TELA DE PROGRESSO
@@ -43,10 +44,10 @@
         redirect(link) { window.location = link; };
         
         //ATIVAR PROGRESSO
-        ativarLoader(loader) { if (loader === undefined) { this.abreProgresso(); } else { this.abreLoader(); } }
+        ativarLoader(loader) { if (loader === undefined || loader === false) { this.abreProgresso(); } else { this.abreLoader(); } }
 
         //DESATIVAR PROGRESSO
-        desativarLoader(loader) { if (loader === undefined) { this.fechaProgresso(); } else { this.fechaLoader(); } }
+        desativarLoader(loader) { if (loader === undefined || loader === false) { this.fechaProgresso(); } else { this.fechaLoader(); } }
         
         //BUSCA POR ID
         um(id, endereco, loader) {
@@ -78,6 +79,21 @@
             });
         }
         
+        //BUSCAR VIA $HTTP
+        buscarHTTP (endereco,loader) {
+            var self = this; self.ativarLoader(loader);
+            var token = "Bearer "+sessionStorage.getItem('token');
+            return this.http.get(endereco,{headers: {"JWT-Authorization":token}}).then(function(response){
+                return new Promise((resolve) => { self.desativarLoader(loader); resolve(response.data); });
+            }, function (error){
+                return new Promise((resolve,reject) => {
+                    if (error.data.code === 401) {
+                        self.reautenticar().then(() => self.buscarHTTP(endereco, loader)).then((data) => { self.desativarLoader(loader); resolve(data); });
+                    } else { reject(error); self.desativarLoader(loader); }
+                });
+            });
+        }
+
         //HELPER PARA ORIENTACAO DAS PALAVRAS
         orientarLabel(label, orientacao){ var retorno = ''; if (orientacao === "M") { retorno = label+"o"; } else if (orientacao === "F") { retorno = label+"a"; } else { retorno = label+"e"; } return retorno; }
         
@@ -163,7 +179,7 @@
                 return new Promise((resolve) => {
                     if (data.status >= 200 || data.status <= 204) {
                         var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
-                        if (label !== undefined  && label !== null) { self.mdToast.show(self.mdToast.simple().textContent(label+' atualizad'+artigo+' com sucesso.')); }
+                        if (label !== undefined  && label !== null && label !== '') { self.mdToast.show(self.mdToast.simple().textContent(label+' atualizad'+artigo+' com sucesso.')); }
                     }
                     self.desativarLoader(loader); resolve(data.data);
                 });
@@ -199,6 +215,6 @@
         }
     }
     
-    angular.module('BaseService',['ngMaterial']).service('BaseService',BaseService);
-    BaseService.$inject = ["Restangular",'$mdToast','$http'];
+    angular.module('BaseService',['ngMaterial','erudioConfig']).service('BaseService',BaseService);
+    BaseService.$inject = ["Restangular",'$mdToast','$http',"ErudioConfig"];
 }());

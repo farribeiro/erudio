@@ -11,19 +11,33 @@
     .sem-alocacao-texto, .sem-permissao-texto { overflow-x: hidden !important; position: absolute; left: 50%; margin-left: -25%; color: #fff; z-index: 22; margin-top: 50%; top: -25%; }
     md-input-container { width: calc(100% - 36px) !important; }
     .loader { position: fixed; right: 6px; top: 9px; z-index: 1005; display: block; }
+    .link-list { text-decoration: none;  width: 85% !important; }
     /*._md-datepicker-floating-label>md-datepicker .md-datepicker-button { float: left; margin-top: -12px; top: 9.5px; left: -14px; color: black; }*/
     .date-label {  left: 37px !important; }
     /*.md-datepicker-input-container { width: calc(100% - 36px); margin-left: -17px !important; }*/
     /*.md-datepicker-input-container input { max-width: none !important; }*/
     /*md-datepicker { width: 100% !important; display: block; }*/
     /*md-datepicker button md-icon { color: #000 !important; }*/
-    .btn-add-avaliacao-fix { position: fixed; right: 25px; top: 63px !important; }
-    .btn-voltar-avaliacao-fix { position: fixed; right: 25px; top: 124px; }
+    .btn-add-avaliacao-fix { position: fixed; right: 55px; top: 20px !important; }
+    .btn-voltar-avaliacao-fix { position: fixed; right: 25px; top: 32px; z-index: 1003; }
     .h100-fix { height: initial !important; }
+    .icone-chamada md-icon, .icone-justificativa md-icon { font-size: 55px !important; height: 55px; width: 55px; }
+    .fix-voltar { right: 45px; top: 12px; }
+    /*.video-mobile { width: 50% !important; position: initial; height: initial; }
+    .foto-fixed { position: relative; }
+    .btn-tirar-foto { position: absolute; opacity: 0.6; top: 84%; left: 40%; z-index: 1006 !important; }
+    .btn-cancelar-foto { position: absolute; opacity: 0.6; top: 84%; right: 40%; z-index: 1006 !important; }
+    .btn-deletar-foto { position: absolute; opacity: 0.6; top: 84%; left: 30%; z-index: 1006 !important; }
+    .btn-salvar-foto { position: absolute; opacity: 0.6; top: 84%; right: 30%; z-index: 1006 !important; }
+    #foto-perfil-preview { position: absolute; }*/
 }
 
 @media screen and (max-width: 960px) and (orientation: landscape) {
-  .back-btn { position: absolute; top: 4px; right: 0px; z-index: 22; }
+    .back-btn { position: absolute; top: 4px; right: 0px; z-index: 22; }
+}
+
+@media screen and (max-width: 620px) {
+    .indicador-aula { font-size: 9px; }
 }
 
 /*LOGIN*/

@@ -1,7 +1,0 @@
-services:
-    
-    CoreBundle\:
-        resource: '../../{Service,Listener}'
-        public: false
-        autowire: true
-        autoconfigure: true

@@ -1,7 +1,11 @@
+body, button, html, input, select, textarea {
+    font-family: Arial, sans-serif !important;
+}
 .white-content { background: #fff !important; }
 .no-padding { padding: 0 !important; }
 .no-padding-up-down { padding-top: 0 !important; padding-bottom: 0 !important; }
 .no-margin-up-down { margin-top: 0 !important; margin-bottom: 0 !important; }
+.no-margin-up { margin-top: 0 !important; }
 .search-margin { margin-top: 18px; margin-bottom: 0; }
 .modal-padding { padding: 20px; }
 .w100 { width: 100% !important; }
@@ -20,3 +24,7 @@ md-tab-content { height: 100% }
 .no-margin { margin: 0 !important; }
 .margin-top-bottom { margin-top: 20px; margin-bottom: 20px; }
 .bottom-zero { bottom: 0 !important; }
+.font-12 { font-size: 12px; }
+table { touch-action: pan-y !important; }
+.clicavel { cursor: pointer !important; }
+.nao-clicavel { cursor: auto !important; }

@@ -170,7 +170,7 @@
                     <div class="row">
                         <div class="input-field col s12 m12 l6" data-ng-hide="integral">
                             <i class="material-icons prefix">view_quilt</i>
-                            <select id="disciplinasTurmaFormulario" data-ng-model="agrupamentoSelecionado.id" data-ng-change="buscaDisciplinas(agrupamentoSelecionado.id)" data-ng-disabled="turma.id" required>
+                            <select id="disciplinasTurmaFormulario" data-ng-model="agrupamentoSelecionado.id" data-ng-disabled="turma.id" required>
                                 <option></option>
                                 <option value="{{ agrupamento.id }}" data-ng-selected="agrupamento.id === agrupamentoSelecionado.id" data-ng-repeat="agrupamento in agrupamentos">{{ agrupamento.nome | uppercase }}</option>
                             </select>

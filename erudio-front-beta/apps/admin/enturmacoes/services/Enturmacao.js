@@ -8,14 +8,14 @@
             this.url = 'enturmacoes';
         }
         
-        get(id){ return this.rest.um(this.url,id); }
-        getAll(opcoes){ return this.rest.buscar(this.url,opcoes); }
-        getMatriculas(opcoes){ return this.matriculaService.getAll(opcoes); }
-        getTurma(opcoes){ return this.turmaService.getAll(opcoes); }
+        get(id,loader){ return this.rest.um(this.url,id,loader); }
+        getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
+        getMatriculas(opcoes,loader){ return this.matriculaService.getAll(opcoes,loader); }
+        getTurma(opcoes,loader){ return this.turmaService.getAll(opcoes,loader); }
         getEstrutura() { return {turma: {id: null}, matricula: {id: null}}; }
-        salvar(objeto) { return this.rest.salvar(this.url, objeto, "Enturmação", "F"); }
-        atualizar(objeto) { return this.rest.atualizar(objeto, "Enturmação", "F"); }
-        remover(objeto) { this.rest.remover(objeto, "Enturmação", "F"); }
+        salvar(objeto,loader) { return this.rest.salvar(this.url, objeto, "Enturmação", "F",loader); }
+        atualizar(objeto,loader) { return this.rest.atualizar(objeto, "Enturmação", "F",loader); }
+        remover(objeto,loader) { this.rest.remover(objeto, "Enturmação", "F",loader); }
     };
     
     angular.module('EnturmacaoService',[]).service('EnturmacaoService',EnturmacaoService);

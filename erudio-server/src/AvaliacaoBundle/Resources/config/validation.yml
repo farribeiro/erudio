@@ -1,4 +1,0 @@
-AvaliacaoBundle\Entity\Regime:
-    getters:
-        nome:
-            - NotBlank:

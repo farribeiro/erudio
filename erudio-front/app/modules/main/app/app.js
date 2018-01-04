@@ -69,7 +69,6 @@
         }).when('/avaliacoes',{ templateUrl: 'app/modules/avaliacoes/partials/avaliacoes.html', controller: 'AvaliacaoController'
         }).when('/boletim-escolar',{ templateUrl: 'app/modules/boletimEscolar/partials/boletimEscolar.html', controller: 'boletimEscolarController'
         }).when('/diario-frequencia',{ templateUrl: 'app/modules/diarioFrequencia/partials/diarioFrequencia.html', controller: 'diarioFrequenciasController'
-        //}).when('/historico-escolar',{ templateUrl: 'app/modules/historicoEscolar/partials/historicoEscolar.html', controller: 'historicoEscolarController'
         }).when('/vagas',{ templateUrl: 'app/modules/vagas/partials/vagas.html', controller: 'VagaController'
         }).when('/registro-matriculas',{ templateUrl: 'app/modules/registroMatriculas/partials/registroMatriculas.html', controller: 'registroMatriculasController'
         }).when('/alunos-defasados',{ templateUrl: 'app/modules/alunosDefasados/partials/alunosDefasados.html', controller: 'alunosDefasadosController'
@@ -79,6 +78,10 @@
         }).when('/grupo-permissoes',{ templateUrl: 'app/modules/grupoPermissoes/partials/grupoPermissoes.html', controller: 'GrupoPermissaoController'
         }).when('/alunos-anee',{ templateUrl: 'app/modules/alunosANEE/partials/template.html', controller: 'AlunosANEEController'
         }).when('/historicos',{ templateUrl: 'app/modules/historicos/partials/template.html', controller: 'historicosController'
+        }).when('/rematriculas',{ templateUrl: 'app/modules/fichaRematricula/partials/template.html', controller: 'FichaController'
+        }).when('/ata-final',{ templateUrl: 'app/modules/ataFinal/partials/template.html', controller: 'AtaController'
+        }).when('/certificados',{ templateUrl: 'app/modules/certificados/partials/template.html', controller: 'CertificadosController'
+        }).when('/ieducar',{ templateUrl: 'app/modules/ieducar/partials/template.html', controller: 'IeducarController'
         }).when('/404',{ templateUrl: 'app/modules/util/partials/404.html'
         }).otherwise({ redirectTo: '/404'
         });

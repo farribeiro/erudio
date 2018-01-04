@@ -11,6 +11,9 @@
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA
         this.getTemplateLista = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'lista.html'; };
         
+        //BUSCA O ENDERECO DO TEMPLATE DE LISTA COM FOTO
+        this.getTemplateListaComFoto = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'listaComFoto.html'; };
+
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA ESPECIAL
         this.getTemplateListaEspecial = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'listaEspecial.html'; };
 
@@ -30,7 +33,13 @@
         this.getTemplateLeitura = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'leitura.html'; };
         
         //BUSCA BLOCO DE INPUT CUSTOM
-        this.getInputBlockCustom = function (modulo, arquivo) { return ErudioConfig.dominio+'/apps/admin/'+modulo+'/partials/'+arquivo+'.html'; };
+        this.getInputBlockCustom = function (modulo, arquivo, app) { 
+            if (app !== undefined) {
+                return ErudioConfig.dominio+'/apps/'+app+'/'+modulo+'/partials/'+arquivo+'.html';
+            } else {
+                return ErudioConfig.dominio+'/apps/admin/'+modulo+'/partials/'+arquivo+'.html';
+            }
+        };
         
         //RETORNA ENDERECO BUSCA CUSTOM
         this.setBuscaCustom = function (url) { return ErudioConfig.dominio + url + '/busca.html'; };
@@ -38,6 +47,7 @@
         //APLICAR MASCARAS
         this.aplicarMascaras = function () {
             $('.maskCNPJ').mask('99999999999999');
+            $('.maskCPF').mask('99999999999');
             $('.maskCEP').mask('99999999');
             $('.maskTelefone').mask('(99)999999999');
             $('.maskNumeroCasa').mask('99999');
@@ -47,7 +57,19 @@
             $('.maskCargaHoraria').mask('999999');
             $('.maskHora').mask('99:99');
             $('.maskDoisNumeros').mask('99');
+            $('.maskAno').mask('9999');
             $('.maskData').mask('99/99/9999');
+        };
+
+        //CRIA UM FILE DE UM SRC
+        this.dataURLtoFile = function (dataurl, filename) {
+            let arr = dataurl.split(',');
+            let mime = arr[0].match(/:(.*?);/)[1];
+            let bstr = atob(arr[1]);
+            let n = bstr.length;
+            let u8arr = new Uint8Array(n);
+            while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+            return new File([u8arr],filename,{type:mime});
         };
         
         //VALIDA CAMPO
@@ -87,7 +109,6 @@
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 } else {
                     var elem = $(this).find('md-option[aria-selected="true"]');
-                    console.log(elem);
                     if (!self.isVazio(elem.attr('value'))) {
                         $(this).removeClass('ng-invalid').removeClass('ng-invalid-required').addClass('ng-valid').addClass('ng-valid-required');
                         $(this).parent().removeClass('md-input-invalid');
@@ -109,6 +130,12 @@
             return confirm;
         };
         
+        //MOSTRA MODAL DE EXCLUSAO
+        this.customDialog = function(event, title, content, label, $mdDialog) {
+            var confirm = $mdDialog.confirm().title(title).textContent(content).ariaLabel(label).targetEvent(event).ok(label).cancel('Cancelar');
+            return confirm;
+        };
+
         //PEGA INDICE DO OBJETO NA LISTA
         this.buscaIndice = function (id, list) {
             var retorno = false;
@@ -202,11 +229,15 @@
         //INICIALIZAR PÀGINA
         this.inicializar = function () {
             $('md-content').scroll(function () {
-                var top = $(this).scrollTop();
-                if (top > 128) { 
-                    $('.scroll-toolbar').css('top',0);  $('.back-btn').css('position','fixed');
-                } else { 
-                    $('.scroll-toolbar').css('top','-64px'); $('.back-btn').css('position','');
+                if (!$(this).parent().is('md-select-menu')) {
+                    var top = $(this).scrollTop();
+                    if (top > 128) { 
+                        $('.scroll-toolbar').css('top',0);  $('.back-btn').css('position','fixed');
+                        $('.perfil-btn a').addClass('fix-voltar');
+                    } else { 
+                        $('.scroll-toolbar').css('top','-64px'); $('.back-btn').css('position','');
+                        $('.perfil-btn a').removeClass('fix-voltar');
+                    }
                 }
             });
         };
@@ -267,6 +298,9 @@
                 });
             }).promise().done(function(){ $('#menu-lateral').fadeIn(150); });
         };
+
+        //BUSCA FOTO PADRAO
+        this.avatarPadrao = function () { return ErudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"; };
         
         //HABILITA CORTINA SEM PERMISSAO
         this.semPermissao = function () { $('.sem-permissao-cortina, .sem-permissao-texto').show(); };
@@ -309,11 +343,12 @@
         };
 
         this.getPDF = function (url,mime,new_window) {
+            var token = "Bearer "+sessionStorage.getItem('token');
             return $http.get(url,{headers: {"JWT-Authorization":token},responseType: 'arraybuffer'}).then(function(data){
-                var file = new Blob([data],{type: mime});
+                var file = new Blob([data.data],{type: mime});
                 var fileURL = URL.createObjectURL(file);
-                if (new_window) { window.open(fileURL); }
-            });
+                window.open(fileURL);
+            },() => { this.toast("Infelizmente o PDF não pôde ser gerado, tente novamente mais tarde."); });
         };
     }]);
 })();

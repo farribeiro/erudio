@@ -974,7 +974,7 @@
             });
         };
 
-        $scope.carregar = function (matricula, opcao) {
+        $scope.carregar = function (matricula, opcao, indice) {
             $scope.detalhesMovimentacoes = true;
             $scope.mostraListaMovimentacoes =  true;
             if (matricula) {
@@ -1084,6 +1084,11 @@
                                 $scope.matricula = matricula;
                                 $scope.editando = true;
                             break
+                            case 'Retorno':
+                                $scope.opcaoEnvio = 'Retorno';
+                                $scope.editando = true;
+                                $scope.retornoMatricula(matricula,indice);
+                            break;
                         }
                     });
                 });

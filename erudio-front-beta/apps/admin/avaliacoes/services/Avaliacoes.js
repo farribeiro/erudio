@@ -40,7 +40,7 @@
         getQuantitativa(id,loader){ return this.rest.um(this.urlQuanti,id,loader); }
         getQuantitativas(opcoes,loader){ return this.rest.buscar(this.urlQuanti,opcoes,loader); }
         getEstruturaQuantitativa() { return { media: { id: null }, avaliacao: { id: null }, valor: null }; }
-        getEstrutura() { return { nome: null, disciplina: { id: null }, dataEntrega: null, tipo: { id: null }, media: null, habilidades: [] }; }
+        getEstrutura() { return { nome: null, disciplina: { id: null }, dataEntrega: null, tipo: { id: null }, media: null, habilidades: [], peso: 1 }; }
         
         salvarAvaliacaoQuanti(objeto,label,loader) { 
             if (label) { return this.rest.salvar(this.urlQuanti, objeto, "Avaliação", "F", loader); }

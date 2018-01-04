@@ -1,0 +1,55 @@
+<div layout-gt-sm="row">
+        <div layout-gt-sm="row" class="lista-items w100">
+            <md-card flex-gt-sm="50">
+                <md-card-content>
+                    <h3>Observações</h3>
+                    <md-list flex class="no-padding white-content">
+                        <md-list-item id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.observacoes">
+                            <a class="link-list" ng-click="ctrl.carregarObservacao(objeto)"><div class="md-list-item-text" layout="column">
+                                <h3>Observação {{ $index+1 }}</h3>
+                                <p>{{ objeto.texto }}</p>
+                            </div></a>
+                            <div class="md-secondary">
+                                <md-button hide show-gt-sm ng-click="ctrl.modalExclusao($event, objeto)" class="md-icon-button" aria-label="remover">
+                                    <md-tooltip md-direction="top">Remover</md-tooltip>
+                                    <md-icon class="material-icons">delete</md-icon>
+                                </md-button>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-card-content>
+            </md-card>
+    
+            <md-card flex-gt-sm="50">
+                <md-card-content>
+                    <h3 ng-show="ctrl.observacao.id === undefined">Adicionar Observação</h3>
+                    <h3 ng-show="ctrl.observacao.id !== undefined">Modificar Observação</h3>
+    
+                    <form style="margin-top: 10px;" id="novaObservacaoForm" name="novaEtapaForm" class="modal-form">
+                        <div class="row">
+                            <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.cursada.id === undefined">
+                                <label for="obs">Observação</label>
+                                <md-icon class="material-icons">school</md-icon>
+                                <textarea id="obs" ng-model="ctrl.observacao.texto" rows="5" required></textarea>
+                                <div ng-messages="novaObservacaoForm.observacao.texto.$error" class="errors-wrapper">
+                                    <div ng-message="required">Este campo é obrigatório.</div>
+                                </div>
+                            </md-input-container>
+                        </div>
+                
+                        <div class="row" ng-if="ctrl.observacao.id === undefined">
+                            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvarObservacao()" class="md-raised">SALVAR</md-button>
+                            <md-button ng-click="ctrl.limparCampos()" class="md-raised md-primary">LIMPAR CAMPOS</md-button>
+                        </div>
+                
+                        <div class="row" ng-if="ctrl.observacao.id !== undefined">
+                            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.atualizarObservacao()" class="md-raised">ATUALIZAR</md-button>
+                            <md-button ng-click="ctrl.limparCampos()" class="md-raised md-primary">LIMPAR CAMPOS</md-button>
+                        </div>
+                    </form>
+                </md-card-content>
+            </md-card>
+        </div>
+    </div>
+    
+    <botao-voltar></botao-voltar>

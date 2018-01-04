@@ -24,3 +24,4 @@ tr td.table-modal { text-align: center !important; padding: 10px 10px 10px 10px 
 .table-with-icons { padding: 0px !important; padding-right: 10px !important; }
 .calendarHome paginador .paginador-wrapper { width: 100% !important; }
 .lista-aulas-td { width: 100%; margin-left: -20px; padding-bottom: 5px; background: #AD1457; color: #fff; right: 0; padding-right: 6px; padding-top: 3px; }
+.celula-clicavel{ cursor: pointer; text-decoration: underline; }

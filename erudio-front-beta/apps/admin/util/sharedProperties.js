@@ -23,6 +23,37 @@
         this.etapaDisciplina = null;
         
         /*
+         * @attr avaliacaoAbrir
+         * @attrType int
+         * @attrDescription Id da avaliação a ser aberta no app de professor.
+         * @attrExample 
+         */
+        this.avaliacaoAbrir = {id:null};
+
+        /*
+         * @attr trocaAbaHome
+         * @attrType string
+         * @attrDescription Nome da aba ativa na tela de professor
+         * @attrExample 
+         */
+        this.abaHome = 'aulas';
+
+         /*
+         * @method setAbaHome
+         * @methodReturn void
+         * @methodParams aba|string
+         * @methodDescription Nome da aba ativa na tela de professor
+         */
+        this.setAbaHome = function (aba){ this.abaHome = aba; };
+        
+        /*
+         * @method getAbaHome
+         * @methodReturn string
+         * @methodDescription Retorna string da aba ativa na tela de professor
+         */
+        this.getAbaHome = function (){ return this.abaHome; };
+
+        /*
          * @method setCursoEtapa
          * @methodReturn void
          * @methodParams curso|int
@@ -51,5 +82,20 @@
          * @methodDescription Retorna id da etapa para buscar disciplinas da mesma.
          */
         this.getEtapaDisciplina = function (){ return this.etapaDisciplina; };
+
+        /*
+         * @method setAvaliacao
+         * @methodReturn void
+         * @methodParams avaliacao|int
+         * @methodDescription Guarda id da avaliação a ser mostrada.
+         */
+        this.setAvaliacao = function (avaliacao){ this.avaliacaoAbrir = avaliacao; };
+        
+        /*
+         * @method getAvaliacao
+         * @methodReturn int
+         * @methodDescription Retorna id da avaliação a ser mostrada.
+         */
+        this.getAvaliacao = function (){ return this.avaliacaoAbrir; };
     }]);
 })();

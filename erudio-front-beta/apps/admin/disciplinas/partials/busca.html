@@ -14,7 +14,7 @@
         <md-icon class="material-icons">school</md-icon>
         <md-select ng-model="ctrl.etapa.id" ng-change="ctrl.buscarDisciplinas()" id="etapa" name="etapa">
             <md-option value=""></md-option>
-            <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+            <md-option ng-repeat="item in ctrl.etapas track by $index" ng-value="item.id">{{ item.nome }}</md-option>
         </md-select>
     </md-input-container>
     

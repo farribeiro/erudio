@@ -35,3 +35,71 @@ md-toolbar.content-bar {
 .valign-login { position: absolute; top: 0; height: 100%; margin: 0; }
 .valign-helper { display: none; }
 .valign-helper-mobile { display: block; position: absolute; bottom: 0; left: 8px; }
+.avatar-mascara { -webkit-box-flex: 0; -webkit-flex: none; flex: none; width: 40px; height: 40px; margin-top: 8px; margin-bottom: 8px; margin-right: 16px; border-radius: 50%; box-sizing: content-box; }
+.chip-click { cursor: pointer !important; }
+.chip-click:hover { background: #757575; color: #fff; }
+.stepper-wrapper { cursor: pointer; }
+.stepper-item {
+    border-radius: 50%;
+    background: #0091EA;
+    color:  #fff;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    font-size: 12px;
+    float: left;
+}
+.stepper-text {
+    text-align: left;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    float: left;
+    margin-left: 10px;
+}
+.stepper-divider {
+    border: 0;
+    border-bottom: 1px solid #eee;
+    margin-right: 10px;
+    height: 1px;
+    margin-top: 12px;
+}
+.step-tab { display: none; }
+#foto-perfil-preview {
+    position: fixed;
+    z-index: 1005;
+    top: 30px;
+}
+.invisivel { display: none; }
+.visivel { display: block !important; }
+.foto-professor { position: absolute; top: 4px; left: 60px; z-index: 100; }
+.nome-professor { position: absolute; font-size: 12px; top: 24.5px; left: 115px; z-index: 100; color: #fafafa; }
+.cortina-foto{
+    z-index: 1004;
+    background: #000;
+    opacity: 0.6;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+}
+.start-video {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    z-index: 1005;
+    left: -34%; top: 0;
+    margin-left: 50%;
+}
+/*.video-mobile {
+    width: 100% !important;
+    position: fixed;
+    z-index: 1005;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.foto-fixed { position: fixed; z-index: 1005; }*/

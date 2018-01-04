@@ -1,0 +1,19 @@
+<div style="width: 100%;">
+    <div class="form-errors md-whiteframe-2dp"><strong>Por favor, verifique os seguintes itens:</strong><br />
+</div>
+</div>
+<div class="step-tab-{{$index}} step-tab" ng-repeat="form in ctrl.forms track by $index">
+    <form id="{{ form.nome }}" name="{{ form.nome }}" enctype="multipart/form-data">
+        <div class="lista-items" ng-repeat="formCard in form.formCards track by $index">
+            <md-subheader class="md-primary margin-top-subheader form-header">{{ formCard.label }}</md-subheader>
+            <md-card class="no-margin-up-down">
+                <md-card-content class="relative">
+                    <div ng-include="formCard.href"></div>
+                </md-card-content>
+            </md-card>
+        </div>
+        
+        <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvar()" class="md-raised save-button-fix">Salvar</md-button>
+    </form>
+</div>
+<botao-voltar class="perfil-btn"></botao-voltar>

@@ -56,33 +56,15 @@
         
         //CRIA SESSÃO NO SESSION STORAGE
         $scope.setaSessao = function (user, sessionId) {
-            //seta avatar
             var profile = 'profile';
             if (user.pessoa !== undefined && user.pessoa.genero !== 'M') { profile = 'profileGirl'; }
-            //busca pessoa para criar sessão
-            if (user.pessoa.avatar !== undefined) {
-                //busca avatar pessoal
-                var promise = rest.one('assets',user.pessoa.avatar).get();
-                promise.then(function(response){ 
-                    sessionStorage.setItem('avatar',response.data.file); sessionStorage.setItem("username", $scope.usuario);
-                    sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa)); sessionStorage.setItem("nome", user.nomeExibicao);
-                    sessionStorage.setItem("pessoaId", user.id); sessionStorage.setItem("profile", profile);
-                    sessionStorage.setItem("key", md5.createHash($scope.senha)); sessionStorage.setItem("sessionId", md5.createHash(sessionId));
-                    sessionStorage.setItem("menu",0); sessionStorage.setItem("module","main");
-                    sessionStorage.setItem("moduleOptions",""); sessionStorage.setItem("vinculo","");
-                    sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
-                    $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
-                });
-            } else {
-                //sem avatar pessoal
-                sessionStorage.setItem("username", $scope.usuario); sessionStorage.setItem("nome", user.nomeExibicao);
-                sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa)); sessionStorage.setItem("pessoaId", user.id);
-                sessionStorage.setItem("profile", profile); sessionStorage.setItem("key", md5.createHash($scope.senha));
-                sessionStorage.setItem("sessionId", md5.createHash(sessionId)); sessionStorage.setItem("menu",0);
-                sessionStorage.setItem("module","main"); sessionStorage.setItem("moduleOptions","");
-                sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
-                $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
-            }
+            sessionStorage.setItem("username", $scope.usuario); sessionStorage.setItem("nome", user.nomeExibicao);
+            sessionStorage.setItem("pessoa", JSON.stringify(user.pessoa)); sessionStorage.setItem("pessoaId", user.id);
+            sessionStorage.setItem("profile", profile); sessionStorage.setItem("key", md5.createHash($scope.senha));
+            sessionStorage.setItem("sessionId", md5.createHash(sessionId)); sessionStorage.setItem("menu",0);
+            sessionStorage.setItem("module","main"); sessionStorage.setItem("moduleOptions","");
+            sessionStorage.setItem("vinculo",""); sessionStorage.setItem("alocacao", ""); sessionStorage.setItem("disciplina", "");
+            $timeout(function (){ window.location.href = ErudioConfig.dominio+'/#/'; }, 1000);
         };
         
         //EFETUAR LOGIN

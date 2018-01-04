@@ -19,6 +19,7 @@
             this.linkModulo = "/#!/disciplinas/";
             this.disciplina = null;
             this.curso = {id: null};
+            this.etapas = [];
             this.etapa = {id: null};
             this.pagina = 0;
             this.finalLista = false;
@@ -49,6 +50,7 @@
         }
         
         buscarEtapas() {
+            this.etapas = [];
             this.etapaService.getAll({curso: this.curso.id}, true).then((etapas) => this.etapas = etapas);
         }
         

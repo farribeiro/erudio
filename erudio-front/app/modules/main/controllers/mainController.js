@@ -28,8 +28,9 @@
     var mainModule = angular.module('mainModule', ['servidorModule', 'mainDirectives', 'instituicaoModule', 'cursoModule', 'cursoFormModule', 'etapaModule', 'regimeModule', 'moduloModule', 'turnoModule',
         'unidadeModule', 'tipoModule', 'turmaModule', 'calendarioModule', 'eventoModule', 'quadroHorarioModule', 'modeloQuadroHorarioModule', 'dateTimeModule', 'matriculaModule',
         'pessoaModule', 'funcionarioModule', 'cargosModule', 'diarioFrequenciasModule', 'tiposAvaliacoesModule', 'habilidadeModule', 'avaliacaoModule', 'disciplinaModule', 'makePdfModule',
-        'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','historicoEscolarModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
-        'grupoPermissaoModule', 'turmaMistaModule','homeModule','relatorioModule','diarioNotasModule','relatoriosDefasadosModule','reclassificacaoModule', 'mediaModule','boletinsModule','espelhoModule','alunosANEEModule', 'historicosModule']);
+        'movimentacoesModule','usuarioModule','permissaoModule','vagaModule','boletimEscolarModule', 'espelhoNotasModule','registroMatriculasModule', 'alunosDefasadosModule',
+        'grupoPermissaoModule', 'turmaMistaModule','homeModule','relatorioModule','diarioNotasModule','relatoriosDefasadosModule','reclassificacaoModule', 'mediaModule','boletinsModule','espelhoModule',
+        'alunosANEEModule', 'historicosModule','fichaModule','ataModule','certificadosModule','ieducarModule']);
 
     mainModule.controller('MainController', ['$scope', '$timeout', 'Servidor', 'dateTime', 'AvaliacaoService', 'PessoaService', 'FuncionarioService', 'MatriculaService', 'TurmaService', '$templateCache', function ($scope, $timeout, Servidor, dateTime, AvaliacaoService, PessoaService, FuncionarioService, MatriculaService, TurmaService, $templateCache) {
         $templateCache.removeAll();

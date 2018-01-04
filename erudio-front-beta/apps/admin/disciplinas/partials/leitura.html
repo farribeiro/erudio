@@ -1,11 +1,11 @@
 <div layout-gt-sm="column" ng-if="!ctrl.escrita && !ctrl.novo">
     <h1>{{ disciplina.nomeExibicao }}</h1>
     <div layout="column" class="margin-top-bottom">
-        <div flex flex-gt-sm><strong>Curso:</strong> {{ disciplina.curso.nome }}</div>
-        <div flex flex-gt-sm><strong>Etapa:</strong> {{ disciplina.etapa.nome }}</div>
-        <div flex flex-gt-sm><strong>Carga Horária:</strong> {{ disciplina.cargaHoraria }} horas</div>
-        <div ng-show="disciplina.opcional" flex flex-gt-sm><strong>Opcional:</strong> SIM</div>
-        <div ng-hide="disciplina.opcional" flex flex-gt-sm><strong>Opcional:</strong> NÃO</div>
+        <div flex flex-gt-sm style="margin-bottom: 10px;"><strong>Curso:</strong> {{ disciplina.curso.nome }}</div>
+        <div flex flex-gt-sm style="margin-bottom: 10px;"><strong>Etapa:</strong> {{ disciplina.etapa.nome }}</div>
+        <div flex flex-gt-sm style="margin-bottom: 10px;"><strong>Carga Horária:</strong> {{ disciplina.cargaHoraria }} horas</div>
+        <div style="margin-bottom: 10px;" ng-show="disciplina.opcional" flex flex-gt-sm><strong>Opcional:</strong> SIM</div>
+        <div style="margin-bottom: 10px;" ng-hide="disciplina.opcional" flex flex-gt-sm><strong>Opcional:</strong> NÃO</div>
     </div>
 </div>
 

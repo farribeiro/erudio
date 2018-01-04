@@ -1,0 +1,134 @@
+<div layout-gt-sm="row">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome</label>
+        <md-icon class="material-icons">account_circle</md-icon>
+        <input id="nome" ng-model="pessoa.nome" type="text" name="nome" required/>
+        <div ng-messages="perfilForm.pessoa.nome.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="cnpj">CPF</label>
+        <md-icon class="material-icons">account_box</md-icon>
+        <input id="cnpj" class="maskCPF" ng-model="pessoa.cpfCnpj" type="text" name="cnpj"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="email">E-Mail</label>
+        <md-icon class="material-icons">email</md-icon>
+        <input id="email" ng-model="pessoa.email" type="text" name="email"/>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="dataNasc">Data de Nascimento</label>
+        <md-icon class="material-icons">cake</md-icon>
+        <input id="dataNasc" class="maskData" ng-model="pessoa.dataNascimento" type="text" name="nome" required/>
+        <div ng-messages="perfilForm.pessoa.dataNascimento.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="genero">Gênero</label>
+        <md-icon class="material-icons">wc</md-icon>
+        <md-select ng-model="pessoa.genero" id="generos" name="generos" required>
+            <md-option value=""></md-option>
+            <md-option value="M">Masculino</md-option>
+            <md-option value="F">Feminino</md-option>
+        </md-select>
+        <div ng-messages="perfilForm.pessoa.genero.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="etnias">Etnia</label>
+        <md-icon class="material-icons">wc</md-icon>
+        <md-select ng-model="pessoa.raca.id" id="etnias" name="etnias" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="etnia in ctrl.etnias track by $index" value="{{etnia.id}}">{{ etnia.nome }}</md-option>
+        </md-select>
+        <div ng-messages="perfilForm.pessoa.raca.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row">
+        
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nacionalidades">Nacionalidade</label>
+        <md-icon class="material-icons">flag</md-icon>
+        <md-select ng-model="pessoa.nacionalidade" id="nacionalidades" name="nacionalidades" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="nacionalidade in ctrl.nacionalidades track by $index" value="{{ nacionalidade }}">{{ nacionalidade }}</md-option>
+        </md-select>
+        <div ng-messages="perfilForm.pessoa.nacionalidade.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container ng-if="pessoa.nacionalidade === 'BRASILEIRO'" class="md-icon-float autocomplete-wrap" md-block flex-gt-sm>
+        <md-icon class="material-icons">location_city</md-icon>
+        <md-autocomplete class="autocomplete-form" flex md-input-name="naturalidade" md-input-minlength="3" md-selected-item="ctrl.pessoa.naturalidade" md-search-text="ctrl.nomeNaturalidade" md-items="item in ctrl.buscarCidadesNaturalidade(ctrl.nomeNaturalidade)" md-item-text="item.nome + ' - ' + item.estado.sigla" md-floating-label="Naturalidade" md-require-match>
+            <span md-highlight-text="ctrl.nomeNaturalidade">{{ item.nome }} - {{ item.estado.sigla }}</span>
+        </md-autocomplete>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="civil">Estado Civil</label>
+        <md-icon class="material-icons">group</md-icon>
+        <md-select ng-model="pessoa.estadoCivil.id" id="civil" name="civil" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="civil in ctrl.estadosCivis track by $index" value="{{ civil.id }}">{{ civil.nome }}</md-option>
+        </md-select>
+        <div ng-messages="perfilForm.pessoa.estadoCivil.id.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+</div>
+
+<div layout-gt-sm="row">
+        
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="mae">Filiação 1</label>
+        <md-icon class="material-icons">people</md-icon>
+        <input id="mae" ng-model="pessoa.nomeMae" type="text" name="mae" required/>
+        <div ng-messages="perfilForm.pessoa.nomeMae.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="pai">Filiação 2</label>
+        <md-icon class="material-icons">people</md-icon>
+        <input id="pai" ng-model="pessoa.nomePai" type="text" name="pai"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="responsavel">Responsável</label>
+        <md-icon class="material-icons">group</md-icon>
+        <md-select ng-model="ctrl.responsavel" id="civil" name="civil" required>
+            <md-option value=""></md-option>
+            <md-option ng-repeat="filiacao in ctrl.filiacoes track by $index" value="{{ filiacao }}">{{ filiacao }}</md-option>
+        </md-select>
+        <div ng-messages="perfilForm.responsavel.$error" class="errors-wrapper">
+            <div ng-message="required">Este campo é obrigatório.</div>
+        </div>
+    </md-input-container>
+    
+    <md-input-container ng-show="ctrl.responsavel === 'Outro'" class="md-icon-float" md-block flex-gt-sm>
+        <label for="responsavelNome">Nome do Responsável</label>
+        <md-icon class="material-icons">edit</md-icon>
+        <input id="responsavelNome" ng-model="pessoa.responsavelNome" type="text" name="responsavelNome" required/>
+    </md-input-container>
+</div>

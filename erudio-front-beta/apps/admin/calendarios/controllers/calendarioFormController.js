@@ -21,6 +21,7 @@
             this.linkModulo = "/#!/calendarios/";
             this.nomeForm = "calendarioForm";
             this.itemBusca = '';
+            this.novo = true;
             this.hoje = new Date();
             this.dataInicio = new Date();
             this.dataTermino = new Date();

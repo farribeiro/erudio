@@ -49,7 +49,7 @@
             this.scope.grade = this.service.getEstrutura();
             if (!this.util.isNovo(this.routeParams.id)) {
                 this.novo = false;
-                this.service.get(this.routeParams.id).then((modulo) => {
+                this.service.get(this.routeParams.id).then((grade) => {
                     this.scope.grade = grade;
                     this.util.aplicarMascaras();
                 });

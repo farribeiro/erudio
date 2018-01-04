@@ -149,7 +149,7 @@
                 'cpfCnpj': null, 'certidaoNascimento': null,
                 'dataExpedicaoCertidaoNascimento': null, 'codigoInep': null,
                 'nis': null, 'pisPasep': null, 'endereco': null,
-                'inep': null, 'cns': null
+                'inep': null, 'cns': null, 'paisOrigem': null, 'beneficiosSociais': []
             };
 
             /* Estrutura de enredeco */
@@ -268,7 +268,7 @@
                     'cpfCnpj': null, 'certidaoNascimento': null,
                     'dataExpedicaoCertidaoNascimento': null,
                     'codigoInep': null, 'nis': null, 'endereco': null,
-                    'responsavelNome': null
+                    'responsavelNome': null, 'paisOrigem': null, 'beneficiosSociais': []
                 };
                 $scope.endereco = {
                     'logradouro': '', 'numero': null, 'bairro': null, 'complemento': null, 'cep': null,
@@ -304,6 +304,9 @@
                         break;
                         case 5:
                             $('ul.tabs').tabs('select_tab', 'tab-necessidades');
+                        break;
+                        case 6:
+                            $('ul.tabs').tabs('select_tab', 'tab-beneficios');
                         break;
                     }
                 }
@@ -614,6 +617,10 @@
             $scope.carregarCidade = function (cidade) {
                 $scope.pessoa.naturalidade = cidade;
             };
+            
+            $scope.carregarPais = function (pais) {
+                $scope.pessoa.paisOrigem = pais;
+            };
 
             /* Busca cidade naturalidade */
             $scope.buscarNaturalidade = function () {
@@ -625,6 +632,20 @@
 
                 } else {
                     $scope.cidadesDrop = [];
+                }
+            };
+            
+            /* Busca pais origem */
+            $scope.paisesDrop = [];
+            $scope.buscarPaises = function () {
+                if ($scope.pessoa.paisOrigem.nome.length >= 3) {
+                    var promise = Servidor.buscar('paises', {'nome': $scope.pessoa.paisOrigem.nome});
+                    promise.then(function (response) {
+                        $scope.paisesDrop = response.data;
+                    });
+
+                } else {
+                    $scope.paisesDrop = [];
                 }
             };
 
@@ -859,6 +880,20 @@
                     }
                 }
             };
+            
+            $scope.salvarBeneficio = function (beneficio) {
+                $timeout(function(){
+                    if ($('#beneficio' + beneficio.id).is(':checked')) {
+                        $scope.pessoa.beneficiosSociais.push(beneficio);
+                    } else {
+                        for (var i = 0; i < $scope.pessoa.beneficiosSociais.length; i++) {
+                            if ($scope.pessoa.beneficiosSociais[i].id === beneficio.id) {
+                                $scope.pessoa.beneficiosSociais.splice(i, 1);
+                            }
+                        }
+                    }
+                },500);
+            };
 
             /*Verifica as Particularidades da Pessoa*/
             $scope.verificaParti = function (id) {
@@ -876,6 +911,17 @@
                 if ($scope.pessoa.necessidadesEspeciais) {
                     for (var i = 0; i < $scope.pessoa.necessidadesEspeciais.length; i++) {
                         if ($scope.pessoa.necessidadesEspeciais[i].id === id) {
+                            return true;
+                        }
+                    }
+                }
+            };
+            
+            /*Verifica as Necessidades da Pessoa*/
+             $scope.verificaBeneficio = function (id) {
+                if ($scope.pessoa.beneficiosSociais) {
+                    for (var i = 0; i < $scope.pessoa.beneficiosSociais.length; i++) {
+                        if ($scope.pessoa.beneficiosSociais[i].id === id) {
                             return true;
                         }
                     }
@@ -1017,6 +1063,14 @@
                 });
                 $scope.buscarParticularidades();
                 $scope.buscarNecessidadesEspeciais();
+                $scope.buscarBeneficios();
+            };
+            
+            $scope.buscarBeneficios = function (){
+                var promise = Servidor.buscar('beneficios-sociais',null);
+                promise.then(function(response){
+                    $scope.beneficios = response.data;
+                });
             };
 
             /*Cadastro de Pessoa*/
@@ -1134,8 +1188,8 @@
                     'nacionalidade': null, 'numeroRG': null,
                     'dataExpedicaoRg': null, 'orgaoExpedidorRg': null,
                     'cpfCnpj': null, 'certidaoNascimento': null,
-                    'dataExpedicaoCertidaoNascimento': null, 'codigoInep': null,
-                    'nis': null, 'endereco': null, 'responsavelNome': null
+                    'dataExpedicaoCertidaoNascimento': null, 'codigoInep': null, 'beneficiosSociais': [], 
+                    'nis': null, 'endereco': null, 'responsavelNome': null, 'paisOrigem': null
                 };
             };
 
@@ -1297,6 +1351,7 @@
             $scope.salvarPessoa = function () {
                 if ($scope.validarPessoa('validate-pessoa') || $scope.telaNumero > 1) {
                     $scope.mostraLoader();
+                    
                     if ($scope.pessoa.id !== null && $scope.pessoa.id !== undefined && $scope.telaNumero === 3) {
                         if($scope.verificaCertidaoAntiga()) { $scope.montaCertidao(); }
                         else { if ($scope.pessoa.certidaoNascimento !== undefined && $scope.pessoa.certidaoNascimento.length > 0 && $scope.pessoa.certidaoNascimento.length !== 32) { $scope.fechaLoader(); $scope.fechaProgresso(); return Servidor.customToast("Certidão não possui 32 dígitos."); } else { $scope.fechaLoader(); $scope.fechaProgresso(); } }

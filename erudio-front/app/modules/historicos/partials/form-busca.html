@@ -65,22 +65,22 @@
                         </div>
                     </div>                                                            
                     <div class="row card-panel" style="background-color: #FAFAFA; margin-top: -1rem">
-                        <div class="input-field col s12 m12 l6">
+                        <div class="input-field col s12 m12 l6" ng-hide="buscaPorTurma">
                             <i class="material-icons prefix">perm_identity</i>
                             <input id="nomeAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.aluno"/>
                             <label for="nomeAlunoMatricula">Nome do Aluno</label>
                         </div>
-                        <div class="input-field col s12 m12 l6"> 
+                        <div class="input-field col s12 m12 l6" ng-hide="buscaPorTurma"> 
                             <i class="material-icons prefix">toll</i>
                             <input id="codigoBuscaMatricula" type="text" length="11" class="validate counter numeros"  data-ng-model="matriculaBusca.codigo"/>
                             <label for="codigoBuscaMatricula">Código de Matrícula</label>
                         </div>
-                        <div class="input-field col s12 m12 l6">
+                        <div class="input-field col s12 m12 l6" ng-hide="buscaPorTurma">
                             <i class="material-icons prefix">perm_identity</i>
                             <input id="nascAlunoMatricula" type="text" class="validate" data-ng-model="matriculaBusca.dataNascimento"/>
                             <label for="nascAlunoMatricula">Data de Nascimento</label>
                         </div>
-                        <!--<div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
+                        <div class="input-field col s12 m12 l6" data-ng-hide="isAdmin">
                             <i class="material-icons prefix">account_balance</i>
                             <select id="unidadeBuscaMatricula" data-ng-change="selecionaUnidade()" data-ng-model="matriculaBusca.unidade">
                                 <option value="{{unidade.id}}" data-ng-repeat="unidade in unidades" data-ng-selected="unidades.length === 1">{{unidade.nomeCompleto | uppercase}}</option>
@@ -92,16 +92,40 @@
                             <span class="digitable-icon"><i class="material-icons">border_color</i></span>
                             <input id="unidadeMatriculaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesMatriculaBusca">
                             <label for="unidadeMatriculaAutoComplete">Unidade de Ensino</label>
-                        </div>-->
+                        </div>
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">school</i>
-                            <select id="cursoBuscaMatricula" data-ng-model="matriculaBusca.curso">
+                            <select id="cursoBuscaMatricula" ng-change="buscarEtapasCursoBusca()" data-ng-model="matriculaBusca.curso">
                                 <option value="" disabled selected></option>
                                 <option value="{{ curso.id}}" data-ng-repeat="curso in cursos">{{curso.nome| uppercase}}</option>
                             </select>
                             <label for="cursoBuscaMatricula">Curso</label>
                         </div>
-                        <div class="input-field col s12 m12 l6" >
+                        <div class="input-field col s12 m12 l6" ng-show="buscaPorTurma">
+                            <i class="material-icons prefix">school</i>
+                            <select id="etapaBuscaMatricula" data-ng-model="matriculaBusca.etapa">
+                                <option value="" disabled selected></option>
+                                <option value="{{ etapa.id}}" data-ng-repeat="etapa in etapasBusca">{{etapa.nomeExibicao| uppercase}}</option>
+                            </select>
+                            <label for="etapaBuscaMatricula">Etapa</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" ng-show="buscaPorTurma">
+                            <i class="material-icons prefix">chrome_reader_mode</i>
+                            <select id="encerrada" ng-model="turmaEncerrada" ng-change="buscarTurmasBusca()">
+                                <option selected></option> 
+                                <option value="{{ encerrado.id }}" data-ng-repeat="encerrado in encerrados track by $index">{{ encerrado.nome }}</option>
+                            </select>
+                            <label for="encerrada">Turma Encerrada?</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" ng-show="buscaPorTurma">
+                            <i class="material-icons prefix">school</i>
+                            <select id="turmaBuscaMatricula" data-ng-model="matriculaBusca.turma">
+                                <option value="" disabled selected></option>
+                                <option value="{{ turma.id}}" data-ng-repeat="turma in turmaBusca">{{turma.nomeCompleto| uppercase}}</option>
+                            </select>
+                            <label for="turmaBuscaMatricula">Turma</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6" ng-hide="buscaPorTurma">
                             <i class="material-icons prefix">description</i>
                             <select id="statusBuscaMatricula" data-ng-model="matriculaBusca.status">
                                 <option disabled selected></option>
@@ -114,8 +138,13 @@
                             </select>
                             <label for="statusBuscaMatricula">Status</label>
                         </div>
+                        <div class="input-field col s12 m12 l12" style="margin-bottom: 25px;">
+                            <input type="checkbox" class="filled-in" id="checkboxTurma" ng-model="buscaPorTurma" data-ng-click="buscarPorTurma()"/>
+                            <label for="checkboxTurma">Histórico por turma</label>
+                        </div>
                         <div class="end-card col s12" style="padding-top: 1rem">                        
-                            <a data-ng-click="buscarMatriculas(matriculaBusca, '', 'botao')" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>                        
+                            <a data-ng-click="buscarMatriculas(matriculaBusca, '', 'botao')" ng-hide="buscaPorTurma" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">search</i>BUSCAR</a>
+                            <a data-ng-click="getPDF(config.urlRelatorios+'/historico-turma?turma='+matriculaBusca.turma)" ng-show="buscaPorTurma" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">print</i>IMPRIMIR</a>
                             <a data-ng-click="reiniciarMatriculaBusca()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>                        
                         </div>
                     </div>                    
@@ -156,7 +185,7 @@
                                     </th>
                                     <th class="hide-on-small-only center-align" data-field='curso'>Curso</th>
                                     <th class="hide-on-small-only center-align" data-field='status'>Status</th>
-                                    <th class='center-align hide-on-small-only center-align' data-field='opcoes'>Unidade de Ensino</th>
+                                    <th class='center-align hide-on-small-only center-align' data-field='unidade'>Unidade de Ensino</th>
                                 </tr>
                             </thead>
                             <tbody>

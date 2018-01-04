@@ -26,9 +26,9 @@
 
 </div>
 
-<div layout-gt-sm="row">
+<div layout-gt-sm="row" ng-show="ctrl.novo">
 
-    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.novo">
         <label for="inicio" class="date-label">Início</label>
         <md-datepicker required ng-model="ctrl.dataInicio" name="inicio" md-min-date="ctrl.hoje" md-open-on-focus>
         <div class="hint">Apenas Números</div>
@@ -37,7 +37,7 @@
         </div>
     </md-input-container>
 
-    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.novo">
         <label for="termino" class="date-label">Término</label>
         <md-datepicker required ng-model="ctrl.dataTermino" name="termino" md-min-date="ctrl.hoje" md-open-on-focus>
         <div class="hint">Apenas Números</div>
@@ -48,9 +48,9 @@
 
 </div>
 
-<div layout-gt-sm="column" style="margin-bottom: 20px;">
+<div layout-gt-sm="column" style="margin-bottom: 20px;" ng-show="ctrl.novo">
         
-    <md-input-container class="md-icon-float autocomplete-wrap fix-wrap" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+    <md-input-container class="md-icon-float autocomplete-wrap fix-wrap" md-block flex-gt-sm ng-show="ctrl.isAdmin && ctrl.novo">
         <md-icon class="material-icons">account_balance</md-icon>
         <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.unidade" 
                 md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"

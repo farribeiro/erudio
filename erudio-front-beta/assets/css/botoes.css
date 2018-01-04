@@ -1,6 +1,6 @@
 .add-btn { position: absolute !important; top: 100px; right: 15px; }
 .add-btn-professor { position: absolute !important; top: 100px; right: 15px; }
-.add-btn-mobile { position: fixed !important; bottom: -3px; right: -1px; }
+.add-btn-mobile { position: fixed !important; bottom: 5px; right: 5px; }
 .back-btn-mobile { position: fixed !important; bottom: 30px; right: 15px; }
 .add-btn-professor-mobile { position: fixed !important; bottom: 30px; right: 15px; }
 .back-btn { position: absolute; top: 8px; right: 0px; z-index: 1004; }
@@ -11,3 +11,13 @@
 .btn-voltar-avaliacao-fix { position: fixed; right: 25px; top: 46px; }
 .material-btn { border: none !important; background: transparent !important; width: 60px !important; text-align: center; }
 .btn-login-mobile { position: absolute; bottom: 0; right: 8px; }
+.paginador-home .paginador-wrapper { width: 100%; top: 0px; height: 40px !important; }
+.paginador-home .paginador-wrapper div { width: 100%; }
+.paginador-left { position: absolute; left: 0; width: 50px !important; top: 3px; }
+.paginador-right { position: absolute; right: 0; width: 50px !important; top: 3px; }
+.btn-accordion { float: right; }
+.btn-tirar-foto { position: fixed; opacity: 0.6; top: 75%; left: 25%; z-index: 1006 !important; }
+.btn-cancelar-foto { position: fixed; opacity: 0.6; top: 75%; right: 25%; z-index: 1006 !important; }
+.btn-deletar-foto { position: fixed; opacity: 0.6; top: 75%; left: 25%; z-index: 1006 !important; }
+.btn-salvar-foto { position: fixed; opacity: 0.6; top: 75%; right: 25%; z-index: 1006 !important; }
+.fix-voltar { left: 0px; top: 8px; }

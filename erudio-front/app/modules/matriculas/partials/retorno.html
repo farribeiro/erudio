@@ -1,0 +1,108 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class="row">
+    <div class="col s12 matricula-banner topo-pagina">
+    </div>
+</div>
+<div class="row">
+    <div class="col s1 l1"></div>
+    <div class="col s12 l12 mobile full">
+        <div class="row"style="margin-top: -64px;" >
+            <div class=" col s12 l12 mobile full">
+                <div class="card-panel">
+                    <div class="row">
+                        <h3 class='card-title' style="padding: 1.5rem 1.5rem 0rem; margin-bottom: 0rem;">
+                            Retornar Matrícula
+                            <br/>
+                        </h3>
+                        <small class="obriga-campos"><em>Os campos marcados com * são obrigatórios</em></small>
+                        <!-- INFORMAÇÕES DO ALNO -->
+                        <div id="infoAluno" class="row" data-ng-show="matricula.aluno.id">
+                            <div class="col s12 m12 l2 center-mobile">
+                                <i class="material-icons prefix" style="font-size: 8rem !important">face</i>
+                            </div>
+                            <div class="ajusta-mobile col s12 m12 l10" style="font-size: 1.3rem; padding-top: 1rem">
+                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                                    <span class="sub-titulo"><b>NOME:</b></span> {{ matricula.aluno.nome | uppercase }}
+                                </div>
+                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                                    <span class="sub-titulo"><b>DATA DE NASCIMENTO:</b></span> {{ matricula.aluno.dataNascimento | date: 'dd/MM/yyyy' }}
+                                </div>
+                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                                    <span class="sub-titulo"><b>CPF:</b></span> {{ matricula.aluno.cpfCnpj }}
+                                </div>
+                                <div class="col s12 m12 l6 center-mobile truncate" style="margin-top: 0.5rem; margin-bottom: 0.5rem">
+                                    <span class="sub-titulo"><b>EMAIL:</b></span> {{ matricula.aluno.email }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MATRICULAR -->
+                        <div id="divMatricula" class="row" style="margin-top: 2rem">
+                            <div class="col s12" style="margin-bottom: 1rem">
+                                <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> REATIVAR </h5>
+                            </div>
+                            <div>
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">view_week</i>
+                                    <select id="selectEtapaRetorno" data-ng-model="retorno.etapa.id" data-ng-change="buscarTurmasRetorno(etapa.id)" required>
+                                        <option value="" disabled selected></option>
+                                        <option value="{{ etapa.id }}" data-ng-repeat="etapa in etapasRetorno">{{ etapa.nome | uppercase}}</option>
+                                    </select>
+                                    <label for="selectEtapaRetorno" class="ajuste-select-top-label">Etapa*</label>
+                                </div>
+
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <select id="selectTurmaRetorno" data-ng-model="turmaRetorno" required>
+                                        <option value="" disabled selected></option>
+                                        <option value="{{ turma.id }}" data-ng-repeat="turma in turmasRetorno">{{ turma.nomeCompleto | uppercase}}</option>
+                                    </select>
+                                    <label for="selectTurmaRetorno" class="ajuste-select-top-label">Turma*</label>
+                                </div>
+
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">perm_identity</i>
+                                    <input id="origemRetorno" type="text" class="validate" data-ng-model="retorno.origem"/>
+                                    <label for="origemRetorno">Origem</label>
+                                </div>
+
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">perm_identity</i>
+                                    <input id="justificativaRetorno" type="text" class="validate" data-ng-model="retorno.justificativa"/>
+                                    <label for="justificativaRetorno">Justificativa</label>
+                                </div>
+                            </div>
+                            <div class="end-card col s12" style="padding-top: 1rem">                        
+                                <a data-ng-click="salvarRetorno()" class="waves-effect waves-blue btn-flat right"><i class="material-icons left">save</i>REATIVAR</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

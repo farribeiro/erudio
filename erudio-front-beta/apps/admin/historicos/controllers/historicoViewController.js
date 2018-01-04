@@ -5,7 +5,7 @@
      * @Controller InstituicaoFormController
      */
     class HistoricoViewController {
-        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, etapaService, etapaCursadaService, disciplinaCursadaService, $mdDialog, mediaService, disciplinaService){
+        constructor(service, util, erudioConfig, routeParams, $timeout, $scope, etapaService, etapaCursadaService, disciplinaCursadaService, $mdDialog, mediaService, disciplinaService, $filter){
             this.service = service;
             this.scope = $scope;
             this.util = util;
@@ -14,14 +14,16 @@
             this.mdDialog = $mdDialog;
             this.timeout = $timeout;
             this.scope.matricula = null;
+            this.filter = $filter;
             this.etapaService = etapaService;
             this.mediaService = mediaService;
             this.disciplinaService = disciplinaService;
             this.etapaCursadaService = etapaCursadaService;
             this.disciplinaCursadaService = disciplinaCursadaService;
-            this.disciplinasCursadas = null;
+            this.disciplinasCursadas = [];
             this.modalDiscplina = null;
             this.scope.matricula = null;
+            this.linhasTabela = [];
             this.permissaoLabel = "RELATORIOS";
             this.titulo = "Histórico Escolar";
             this.linkModulo = "/#!/historicos/";
@@ -41,8 +43,28 @@
             this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
         }
         
-        buscarEtapas(matricula) { this.etapaService.getAll({curso: matricula.curso.id},true).then((etapas) => { this.etapas = etapas; this.buscarEtapasCursadas(matricula); }); }
-        buscarDisciplinasCursadas(etapa, matricula) { this.disciplinaCursadaService.getAll({etapa: etapa.id, matricula: matricula.id},true).then((disciplinasCursadas) => this.disciplinasCursadas = disciplinasCursadas); }
+        buscarEtapas(matricula) { 
+            this.linhasTabela = [];
+            this.etapaService.getAll({curso: matricula.curso.id},true).then((etapas) => { 
+                this.etapas = etapas; this.buscarEtapasCursadas(matricula); 
+                this.buscarDisciplinasCursadas(matricula);
+            });
+        }
+
+        filtrarNota(disciplina, etapa) {
+            var filtrados = this.filter('filter')(this.disciplinasCursadas, {disciplina: {id: disciplina.disciplina.id},etapa: {ordem: etapa.ordem}});
+            if (filtrados.length === 0) { return '-';
+            } else {
+                if (this.util.isVazio(filtrados[0].mediaFinal)) { return 'N/A';
+                } else { return filtrados[0].mediaFinal; }
+            }
+        }
+        
+        buscarDisciplinasCursadas(matricula) { 
+            this.disciplinaCursadaService.getAll({matricula: matricula.id},true).then((disciplinasCursadas) => { 
+                this.disciplinasCursadas = disciplinasCursadas;
+            });
+        }
 
         buscarEtapasCursadas(matricula) { 
             this.etapaCursadaService.getAll({matricula: matricula.id},true).then((etapasCursadas) => {
@@ -113,6 +135,11 @@
                     this.mdDialog.hide( this.modalDiscplina, "finished" );
                 });
             }
+        }
+
+        imprimir() {
+            var url = this.erudioConfig.urlServidor+'/report/historico?matricula='+this.scope.matricula.id;
+            this.util.getPDF(url,"application/pdf",'_blank');
         }
 
         modalDisciplinasControl($scope, attrs) { 
@@ -220,6 +247,6 @@
         }
     }
     
-    HistoricoViewController.$inject = ["MatriculaService","Util","ErudioConfig","$routeParams","$timeout","$scope","EtapaService","EtapaCursadaService","DisciplinaCursadaService","$mdDialog","MediaService","DisciplinaService"];
+    HistoricoViewController.$inject = ["MatriculaService","Util","ErudioConfig","$routeParams","$timeout","$scope","EtapaService","EtapaCursadaService","DisciplinaCursadaService","$mdDialog","MediaService","DisciplinaService","$filter"];
     angular.module('HistoricoViewController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('HistoricoViewController',HistoricoViewController);
 })();

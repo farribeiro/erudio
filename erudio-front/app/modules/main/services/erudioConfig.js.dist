@@ -1,0 +1,27 @@
+(function () {
+    var erudioConfig = angular.module('erudioConfig',[]);
+
+    erudioConfig.service('ErudioConfig', [function () {
+        this.dominio = 'https://erudio.itajai.sc.gov.br';
+        this.extraUrl = '';
+        
+        this.urlServidor = this.dominio + '/erudio-server/web/api';
+        this.urlRelatorios = this.dominio + '/erudio-server/web/api/report';
+        this.urlUpload = '';
+
+        this.urlTemplateInicio = '/app/modules/';
+        this.urlTemplateFinal = '/partials/';
+        
+        this.getTemplateLista = function (modulo) { 
+            return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "lista.html"; 
+        };
+        this.getTemplateForm = function (modulo) { 
+            return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + "form.html"; 
+        };
+        this.getTemplateCustom = function (modulo,arquivo) { 
+            return this.extraUrl + this.urlTemplateInicio + modulo + this.urlTemplateFinal + arquivo + ".html"; 
+        };
+    }]);
+
+})();
+

@@ -1,6 +1,6 @@
 <div class="lista-items" ng-repeat="subheader in ctrl.subheaders">
     <md-subheader data-ng-show="ctrl.objetos.length" class="md-primary">{{ subheader.label }}</md-subheader>
-    <md-card class="no-margin-up-down">
+    <md-card class="no-margin-up">
         <md-card-content class="no-padding">
             <md-list flex class="no-padding white-content">
                 <md-list-item id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.objetos">

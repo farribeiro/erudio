@@ -47,6 +47,9 @@
         return { restrict: 'E', templateUrl: 'app/modules/matriculas/partials/form.html' };
     });
     
+    matriculaDirectives.directive('matriculaRetorno', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/matriculas/partials/retorno.html' };
+    });
     /*matriculaDirectives.directive('formCadastro', function (){
         return { restrict: 'E', templateUrl: 'app/modules/matriculas/partials/form-cadastro.html' };
     });*/

@@ -50,6 +50,10 @@
         return { restrict: 'E', templateUrl: 'app/modules/pessoas/partials/form-contatos.html' };
     });     
     
+    pessoaDirectives.directive('beneficiosPessoa', function (){
+        return { restrict: 'E', templateUrl: 'app/modules/pessoas/partials/form-beneficios.html' };
+    });     
+    
     pessoaDirectives.directive('controlePessoa', function (){
         return { restrict: 'E', templateUrl: 'app/modules/pessoas/partials/controle.html' };
     });

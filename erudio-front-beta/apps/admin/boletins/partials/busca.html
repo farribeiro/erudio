@@ -1,0 +1,79 @@
+<md-tabs class="tab_busca" style="min-height: 270px;">
+    <md-tab label="boletim por turma" ng-click="ctrl.objetos = []">
+        <md-content style="padding: 10px 20px 3px 20px; background: #fff;">
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+                    <md-icon class="material-icons">account_balance</md-icon>
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.unidade" 
+                            md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
+                            md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
+                        <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>
+                    </md-autocomplete>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="curso">Curso</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="ctrl.curso.id" ng-change="ctrl.buscarEtapas()" id="curso" name="curso">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.curso.id }}">{{ item.curso.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+
+            <div layout-gt-sm="row">
+
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="etapa">Etapa</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="ctrl.etapa.id" id="etapa" name="etapa">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="turmaEncerrada">Turma Encerrada?</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="ctrl.encerrada" ng-change="ctrl.buscarTurmas()" id="turmaEncerrada" name="turmaEncerrada">
+                        <md-option value=""></md-option>
+                        <md-option value="1">Sim</md-option>
+                        <md-option value="0">Não</md-option>
+                    </md-select>
+                </md-input-container>
+                
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="turma">Turma</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="ctrl.turma.id" ng-change="ctrl.mostrarImpressao()" id="turma" name="turma">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.turmas track by $index" value="{{ item.id }}">{{ item.nomeCompleto }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+
+            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="ctrl.turma.id !== null" style="margin-bottom: 20px;" ng-click="ctrl.imprimir('TURMA')" class="md-raised save-button-fix">IMPRIMIR</md-button>
+            <md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBusca()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>
+        </md-content>
+    </md-tab>
+    <md-tab label="boletim por aluno">
+        <md-content style="padding: 10px 20px 10px 20px; background: #fff;">
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <md-icon class="material-icons">people</md-icon>
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.matricula" 
+                            md-search-text="ctrl.itemBuscaMatricula" md-items="item in ctrl.filtrarMatricula(ctrl.itemBuscaMatricula)"  md-input-name="aluno"
+                            md-item-text="item.aluno.nome" md-floating-label="Nome do Aluno">
+                        <span md-highlight-text="ctrl.itemBuscaMatricula">{{ item.aluno.nome }} - {{ item.aluno.dataNascimento | date:'dd/MM/yyyy' }} - {{ item.curso.nome }}</span>
+                    </md-autocomplete>
+                </md-input-container>
+
+            </div>
+        </md-content>
+    </md-tab>
+</md-tabs>
+

@@ -81,6 +81,14 @@
                     </div>
                     <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
                         <i class="material-icons prefix">chrome_reader_mode</i>
+                        <select id="encerrada" ng-model="turmaEncerrada" ng-change="buscarTurmas('formBusca',turmaEncerrada)">
+                            <option selected></option> 
+                            <option value="{{ encerrado.id }}" data-ng-repeat="encerrado in encerrados track by $index">{{ encerrado.nome }}</option>
+                        </select>
+                        <label for="encerrada">Turma Encerrada?</label>
+                    </div>
+                    <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                        <i class="material-icons prefix">chrome_reader_mode</i>
                         <select id="turma" data-ng-change="selecionarTurma(turmaBusca.turma.id)" data-ng-model="turmaBusca.turma.id" data-ng-disabled="!turmas.length">
                             <option selected></option> 
                             <option data-ng-selected="turmas.length === 1" value="{{ turma.id }}" data-ng-repeat="turma in turmas | orderBy: 'nome'">{{ turma.nomeCompleto }}</option>

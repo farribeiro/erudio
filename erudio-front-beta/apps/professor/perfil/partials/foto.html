@@ -1,0 +1,44 @@
+<div layout-gt-sm="row" layout-align="center center">
+    
+    <span ng-click="ctrl.abreArquivo()" class="clicavel" >
+        <md-button class="md-fab" aria-label="Enviar uma foto">
+            <md-icon class="material-icons">cloud_upload</md-icon>
+        </md-button>
+        Envie uma foto.
+    </span>
+    <div show-gt-sm hide flex="30"></div>
+    <span ng-click="ctrl.mostraCameraStream()" class="clicavel">
+        <md-button class="md-fab" aria-label="Tirar uma foto">
+            <md-icon class="material-icons">add_a_photo</md-icon>
+        </md-button>
+        Tire uma foto.
+    </span>
+
+    <input id="foto-perfil" style="position: absolute; z-index: -1;" accept="image/*;capture=camera" type="file" name="foto-perfil"/>
+
+</div>
+
+<div class="cortina-foto"></div>
+
+<div layout="row" layout-align="center center" class="start-video" style="display: none; overflow: hidden; margin-top: 30px; margin-bottom: 15px;">
+    <video id="camera-stream" class="video-mobile md-whiteframe-2dp" style="width: 68%;"></video>
+
+    <md-button ng-click="ctrl.capturar()" ng-hide="ctrl.temFoto" class="md-fab btn-tirar-foto" aria-label="Capturar foto">
+        <md-icon class="material-icons">photo_camera</md-icon>
+    </md-button>
+
+    <md-button ng-click="ctrl.salvarFoto()" ng-show="ctrl.temFoto" class="md-fab btn-deletar-foto" aria-label="Enviar foto">
+        <md-icon class="material-icons">done</md-icon>
+    </md-button>
+
+    <md-button ng-click="ctrl.removerPreFoto()" ng-show="ctrl.temFoto" class="md-fab btn-salvar-foto" aria-label="Remover foto">
+        <md-icon class="material-icons">delete</md-icon>
+    </md-button>
+
+    <md-button ng-click="ctrl.cancelarFoto()" ng-hide="ctrl.temFoto" class="md-fab btn-cancelar-foto" aria-label="Cancelar foto">
+        <md-icon class="material-icons">clear</md-icon>
+    </md-button>
+    
+    <img id="foto-perfil-preview" class="invisivel foto-fixed"></img>
+    <canvas style="display: none; position: absolute;"></canvas>
+</div>

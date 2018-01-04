@@ -168,7 +168,9 @@
 
         /* SALVAR GRUPO DE PERMISSOES */
         $scope.salvarPermissoes = function () {
-            if ($scope.verificarPermissao()) { var entidade = $scope.atribuicao.idEntidade; $scope.reativarRoles($scope.permissao,entidade); } else { $scope.reativarRoles($scope.permissao,null); }
+            if ($scope.verificarPermissao()) { 
+                var entidade = $scope.atribuicao.idEntidade; $scope.reativarRoles($scope.permissao,entidade); } else { $scope.reativarRoles($scope.permissao,null); 
+            }
         };
 
         /* PEGA LISTA DE PERMISSOES DO GRUPO DE PERMISSAO */

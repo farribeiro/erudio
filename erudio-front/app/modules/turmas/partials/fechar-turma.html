@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <div class="card-panel col s12" ng-show="endTurma">
-    <div style="margin-top: 25px;" class="input-field col s12 m12 l12">
+    <div style="margin-top: 25px;" ng-hide="botaoEncerrarInfantil" class="input-field col s12 m12 l12">
         <i class="material-icons prefix">import_contacts</i>
         <select id="disciplina" data-ng-model="disciplinaTurma.id" ng-change="buscarAlunos(disciplinaTurma.id)">
             <option selected></option> 
@@ -40,22 +40,49 @@
         <div style="text-align: center;" class="col s1" ng-show="mdfinal">Média Final</div>
         <div style="text-align: center;" class="col s1" ng-hide="mdfreq">Frequência Prevista</div>
         <div style="text-align: center;" class="col s1" ng-show="mdfreq">Frequência</div>
-        <div style="text-align: center;" class="col s1" ng-hide="mdfinal">Status Previsto</div>
-        <div style="text-align: center;" class="col s1" ng-show="mdfinal">Status</div>
+        <div style="text-align: center;" class="col s1">Status</div>
     </strong></div>
     <div class="row" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;" data-ng-repeat="enturmacao in enturmacoesNotas track by $index">
         <div class="col s3">{{ enturmacao.matricula.nomeAluno }}</div>
-        <div data-ng-repeat="md in totalMedias track by $index" style="text-align: center;" class="col s1">{{ enturmacao.medias[$index].valor}}</div>
+        <div data-ng-repeat="md in totalMedias track by $index" style="text-align: center;" ng-if="enturmacao.medias[$index].valor >= 0" class="col s1">{{ enturmacao.medias[$index].valor}}</div>
+        <div data-ng-repeat="md in totalMedias track by $index" style="text-align: center;" ng-if="enturmacao.medias[$index].valor === undefined" class="col s1">-</div>
         <div class="col s1" style="text-align: center;" ng-hide="mdfinal">{{ enturmacao.mediaPreliminar }}</div><div style="text-align: center;" class="col s1" ng-show="mdfinal">{{ enturmacao.mediaFinal }}</div>
         <div style="text-align: center;" ng-hide="mdfreq" class="col s1">{{ enturmacao.frequenciaPreliminar }}%</div><div style="text-align: center;" ng-show="mdfreq" class="col s1">{{ enturmacao.frequenciaTotal }}%</div>
-        <div style="text-align: center;" ng-hide="mdfinal" class="col s1">{{ enturmacao.statusPrevisto }}</div><div style="text-align: center;" ng-show="mdfinal" class="col s1">{{ enturmacao.status }}</div>
+        <div style="text-align: center;" ng-class="corStatus(enturmacao.statusPrevisto)" class="col s1">{{ enturmacao.statusPrevisto }}</div>
     </div>
     <div class="row" ng-hide="botoesEncerrar">
-        <div ng-show="emAberto" class="col s12 right-align end-card">
-            <a ng-show="enturmacoesNotas.length" href="#fecha-modal-turma" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat modal-trigger"><i class="material-icons left">save</i>SALVAR</a>
+        <div class="col s6 left-align end-card" ng-show="!botaoEncerrarInfantil" >
+            <a href="#fecha-modal-turma" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat modal-trigger"><i class="material-icons left">save</i>CALCULAR NOTA</a>
         </div>
-        <div ng-hide="emAberto" class="col s12 right-align end-card">
-            <a ng-click="encerrarTurma()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat">ENCERRAR TURMA</a>
+        <div ng-hide="emAberto" class="col s6 right-align end-card">
+            <a href="#fecha-modal-turma-final" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat modal-trigger">ENCERRAR TURMA</a>
+        </div>
+    </div>
+    <div class="row" ng-show="botaoEncerrarInfantil">
+        <div class="col s12 right-align end-card">
+            <a href="#fecha-modal-turma-final" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat modal-trigger">ENCERRAR TURMA</a>
+        </div>
+    </div>
+</div>
+
+<div id="fecha-modal-turma-final" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-title-info-aluno">
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 6rem; color: white;">Calcular Média Final</h4>
+                </div>
+                <p>
+                    O Cálculo da média final irá aprovar ou reprovar os alunos e encerrar a turma. <br />
+                    Deseja calcular a média final?
+                </p>
+            </div>
+            <div class="end-card" style="margin-bottom: 0px">
+                <div class="modal-footer">
+                    <a href="" class="modal-action modal-close waves-effect waves-red btn-flat ">NÃO</a>
+                    <a href="" data-ng-click="encerrarTurma()" class="modal-action modal-close waves-effect waves-green btn-flat ">SIM</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -65,9 +92,14 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="modal-title-info-aluno">
-                    <h4 class="modal-alinha-texto" style="position: relative; top: 6rem; color: white;">Fechar Média da Turma</h4>
+                    <h4 class="modal-alinha-texto" style="position: relative; top: 6rem; color: white;">Calcular Média Final</h4>
                 </div>
-                <p>Você realmente deseja fechar a média desta turma?</p>
+                <p>
+                    Após encerrar a disciplina será calculada a média final e não será possível fazer mais nenhuma alteração nas notas dos alunos desta turma.
+                    <span ng-show="reprovadoPorFalta">
+                        <br /><br /><strong>Existem alunos reprovados por falta, deseja continuar mesmo assim?</strong>
+                    </span>
+                </p>
             </div>
             <div class="end-card" style="margin-bottom: 0px">
                 <div class="modal-footer">

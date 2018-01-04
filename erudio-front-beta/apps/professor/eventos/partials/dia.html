@@ -1,0 +1,12 @@
+<img src="{{ config.dominio }}/apps/admin/calendarios/assets/images/dia.jpg" class="modal-image" alt="Dia">
+<h2 class="modal-title">Eventos do dia {{ dia.data | date:'dd/MM/yyyy' }}</h2>
+<md-list class="md-dense" flex>
+    <md-list-item class="md-3-line" ng-repeat="evento in dia.eventos">
+        <div class="md-list-item-text">
+            <h3>{{ evento.evento.nome }}</h3>
+            <h4>{{ evento.inicio | date:'HH:ii' }} - {{ evento.termino | date:'HH:ii' }}</h4>
+            <p>{{ evento.evento.descricao }}</p>
+        </div>
+    </md-list-item>
+</md-list>
+

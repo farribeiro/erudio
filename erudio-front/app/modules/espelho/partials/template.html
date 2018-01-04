@@ -81,6 +81,14 @@
             </div>
             <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
                 <i class="material-icons prefix">chrome_reader_mode</i>
+                <select id="encerrada" ng-model="turmaEncerradaEspelho" ng-change="buscarTurmas('formBusca',turmaEncerradaEspelho)">
+                    <option selected></option> 
+                    <option value="{{ encerrado.id }}" data-ng-repeat="encerrado in encerrados track by $index">{{ encerrado.nome }}</option>
+                </select>
+                <label for="encerrada">Turma Encerrada?</label>
+            </div>
+            <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                <i class="material-icons prefix">chrome_reader_mode</i>
                 <select id="turma" data-ng-change="selecionarTurma(turmaBusca.turma.id)" data-ng-model="turmaBusca.turma.id" data-ng-disabled="!turmas.length">
                     <option selected></option> 
                     <option data-ng-selected="turmas.length === 1" value="{{ turma.id }}" data-ng-repeat="turma in turmas | orderBy: 'nome'">{{ turma.nomeCompleto }}</option>
@@ -123,6 +131,14 @@
                         <option data-ng-selected="etapas.length === 1" value="{{ etapa.id }}" data-ng-repeat="etapa in etapas | orderBy: 'nome'">{{ etapa.nomeExibicao }}</option>
                     </select>
                     <label for="etapaNota">Etapa</label>
+                </div>
+                <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
+                    <i class="material-icons prefix">chrome_reader_mode</i>
+                    <select id="encerrada" ng-model="turmaEncerradaEspelho" ng-change="buscarTurmas('formBusca',turmaEncerradaEspelho)">
+                        <option selected></option> 
+                        <option value="{{ encerrado.id }}" data-ng-repeat="encerrado in encerrados track by $index">{{ encerrado.nome }}</option>
+                    </select>
+                    <label for="encerrada">Turma Encerrada?</label>
                 </div>
                 <div class="input-field col s12 m12 l6" data-ng-show="Servidor.verificaSuperAdmin() || !Servidor.verificarPermissoes('SECRETARIA')">
                     <i class="material-icons prefix">chrome_reader_mode</i>

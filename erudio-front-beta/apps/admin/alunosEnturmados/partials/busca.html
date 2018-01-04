@@ -1,0 +1,122 @@
+<md-tabs class="tab_busca" style="min-height: 270px;">
+    <md-tab label="nominal por turma" ng-click="ctrl.objetos = []">
+        <md-content style="padding: 10px 20px 3px 20px; background: #fff;">
+
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+                    <md-icon class="material-icons">account_balance</md-icon>
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="busca.unidadeEnsino" 
+                            md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
+                            md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
+                        <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>
+                    </md-autocomplete>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="curso">Curso</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-change="ctrl.buscarEtapas(busca.cursoOfertado)" ng-model="busca.cursoOfertado" id="curso" name="curso">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.cursosOfertados track by $index" value="{{ item.curso.id }}">{{ item.curso.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+
+            <div layout-gt-sm="row">
+                    
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="etapa">Etapa</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="busca.etapa" ng-change="ctrl.buscarTurmas(busca.cursoOfertado,busca.etapa)" id="etapa" name="etapa">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+                
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="turma">Turma</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="busca.turma" ng-change="ctrl.mostrarImpressao()" id="turma" name="turma">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.turmas track by $index" value="{{ item.id }}">{{ item.nomeCompleto }}</md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="busca.turma !== null" style="margin-bottom: 20px;" ng-click="ctrl.imprimir()" class="md-raised save-button-fix">IMPRIMIR</md-button>
+            <md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBusca()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>
+
+        </md-content>
+    </md-tab>
+
+    <md-tab label="nominal por unidade">
+        <md-content style="padding: 10px 20px 10px 20px; background: #fff;">
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+                    <md-icon class="material-icons">account_balance</md-icon>
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="buscaPorUnidade.unidadeEnsino" 
+                            md-search-text="ctrl.itemBuscaPorUnidade" md-items="item in ctrl.filtrar(ctrl.itemBuscaPorUnidade)"  md-input-name="unidade"
+                            md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
+                        <span md-highlight-text="ctrl.itemBuscaPorUnidade">{{ item.nomeCompleto }}</span>
+                    </md-autocomplete>
+                </md-input-container>
+
+            </div>
+
+            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="buscaPorUnidade.unidadeEnsino !== null" style="margin-bottom: 20px;" ng-click="ctrl.imprimirNominalPorUnidade()" class="md-raised save-button-fix">IMPRIMIR</md-button>
+            <md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBuscaPorUnidade()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>
+        </md-content>
+    </md-tab>
+
+    <md-tab label="quantitativo por instituição">
+        <md-content style="padding: 10px 20px 10px 20px; background: #fff;">
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="instituicao">Instituição</label>
+                    <md-icon class="material-icons">account_balance</md-icon>
+                    <md-select ng-model="buscaQuanti.instituicao" id="instituicao" name="instituicao">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.instituicoes track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                    <label for="curso">Curso</label>
+                    <md-icon class="material-icons">school</md-icon>
+                    <md-select ng-model="buscaQuanti.curso" id="curso" name="curso">
+                        <md-option value=""></md-option>
+                        <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+
+            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="buscaQuanti.curso !== null" style="margin-bottom: 20px;" ng-click="ctrl.imprimirQuantiPorInstituicao()" class="md-raised save-button-fix">IMPRIMIR</md-button>
+            <md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBuscaQuanti()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>
+        </md-content>
+    </md-tab>
+
+    <md-tab label="quantitativo por unidade">
+        <md-content style="padding: 10px 20px 10px 20px; background: #fff;">
+            <div layout-gt-sm="row">
+                        
+                <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
+                    <md-icon class="material-icons">account_balance</md-icon>
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="buscaPorUnidadeQuanti.unidadeEnsino" 
+                            md-search-text="ctrl.itemBuscaPorUnidadeQuanti" md-items="item in ctrl.filtrar(ctrl.itemBuscaPorUnidadeQuanti)"  md-input-name="unidade"
+                            md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
+                        <span md-highlight-text="ctrl.itemBuscaPorUnidadeQuanti">{{ item.nomeCompleto }}</span>
+                    </md-autocomplete>
+                </md-input-container>
+
+            </div>
+
+            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-show="buscaPorUnidadeQuanti.unidadeEnsino !== null" style="margin-bottom: 20px;" ng-click="ctrl.imprimirQuantiPorUnidade()" class="md-raised save-button-fix">IMPRIMIR</md-button>
+            <md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBuscaPorUnidadeQuanti()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>
+        </md-content>
+    </md-tab>
+</md-tabs>

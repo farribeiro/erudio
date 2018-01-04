@@ -160,9 +160,9 @@
 
         //getpdf
         $scope.getPDF = function (url){
-            $scope.mostraProgresso();
+            //$scope.mostraProgresso();
             var promise = Servidor.getPDF(url);
-            promise.then(function(){ $scope.fechaProgresso(); });
+            //promise.then(function(){ $scope.fechaProgresso(); });
         };
 
         // Vai para o módulo de pessoas
@@ -1428,10 +1428,48 @@
                 $('#unidadeBusca, #cursoBusca, #statusBusca').material_select();
             }, 50);
         };
+        
+        $scope.turmaRetorno = null; $scope.turmasRetorno = [];
+        $scope.retornoMatricula = function (matricula, index){
+            $scope.matricula = matricula; $scope.indexRetorno = index; $scope.editando = false; $scope.mostraRetorno = true;
+            $scope.retorno = {matricula:{id:matricula.id}, etapa:{id: null}, origem: null, justificativa: null, unidadeEnsino:{id: $scope.unidadeAlocacao}};
+            var promise = Servidor.buscar('etapas',{curso: matricula.curso.id});
+            promise.then(function(response){
+                $scope.etapasRetorno = response.data;
+                $timeout(function(){
+                    $('#selectEtapaRetorno').material_select('destroy'); $('#selectEtapaRetorno').material_select();
+                },500);
+            });
+        };
+        
+        $scope.buscarTurmasRetorno = function () {
+            $scope.mostraProgresso();
+            var promise = Servidor.buscar('turmas',{etapa: $scope.retorno.etapa.id, curso: $scope.matricula.curso.id, unidadeEnsino: $scope.unidadeAlocacao});
+            promise.then(function(response){
+                $scope.turmasRetorno = response.data; $timeout(function(){ 
+                    $('#selectTurmaRetorno').material_select('destroy'); $('#selectTurmaRetorno').material_select(); $scope.fechaProgresso();  
+                },500);
+            });
+        };
+        
+        $scope.salvarRetorno = function () {
+            if ($scope.retorno.etapa.id !== null && $scope.turmaRetorno !== null) {
+                $scope.mostraProgresso();
+                var promise = Servidor.finalizar($scope.retorno,'retornos','Reativação');
+                promise.then(function(){
+                    var enturmacao = { turma: {id:$scope.turmaRetorno}, matricula: {id:$scope.retorno.matricula.id} };
+                    var promiseEnturmacao = Servidor.finalizar(enturmacao,'enturmacoes','Enturmação');
+                    promiseEnturmacao.then(function(){
+                        $scope.selecionaOpcao('home'); $scope.matriculas.splice($scope.indexRetorno, 1); $scope.fechaProgresso();
+                    });
+                });
+            } else { Servidor.customToast("Etapa e Turma são campos obrigatórios"); }
+        };
 
         $scope.fecharFormulario = function () {
             $scope.fechaProgresso();
             $scope.mostraFrequencias = false;
+            $scope.mostraRetorno = false; $scope.turmaRetorno = null;
             $scope.mostraNotas = false;
             $scope.mostraMovimentacoes = false;
             $scope.mostraDisciplinas = false;
@@ -2131,6 +2169,7 @@
             $scope.mostraDisciplinas = false;
             $scope.informacaoatual = false;
             $scope.mostraFrequencias = false;
+            $scope.mostraRetorno = false; $scope.turmaRetorno = null;
             $scope.mostraMovimentacoes = false;
             $scope.mostraEnturmacoes = false;
             $scope.mostraEnturmar = false;
@@ -2142,6 +2181,7 @@
             switch (opcao) {
                 case 'home':
                     $scope.informacaoatual = true;
+                    $scope.editando = true;
                 break
                 case 'movimentacoes':
                     $scope.mostraMovimentacoes = true;
@@ -2335,10 +2375,10 @@
                     botao.text("keyboard_arrow_down");
                 }
                 if ($scope.enturmacoes[index].matricula.disciplinas !== undefined) { return; }
-                $scope.requisicoes++;
+                $scope.requisicoes++; $scope.fechaProgresso(); $scope.fechaLoader();
                 var promise = Servidor.buscar('disciplinas-cursadas', {enturmacao: $scope.enturmacoes[index].id});
                 promise.then(function(response) {
-                    $scope.requisicoes--;
+                    $scope.requisicoes--; $scope.fechaProgresso(); $scope.fechaLoader();
                     $scope.enturmacoes[index].matricula.disciplinas = response.data;
                     $scope.enturmacoes[index].matricula.disciplinas.forEach(function(cursada) {
                         $scope.requisicoes++;
@@ -2349,10 +2389,10 @@
                         promise.then(function(response) {
                             cursada.medias = response.data;
                             $scope.requisicoes--;
-                            $scope.fechaProgresso();
+                            $scope.fechaProgresso(); $scope.fechaLoader();
                         });
                         $scope.requisicoes++;
-                        $scope.fechaProgresso();
+                        $scope.fechaProgresso(); $scope.fechaLoader();
                         /*var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
                         promise.then(function(response) {                        
                             cursada.faltas = 0;
@@ -2366,9 +2406,8 @@
                             $scope.fechaProgresso();
                         });*/
                     });
-                    $scope.fechaProgresso();
                 });
-            });
+            }); $scope.fechaLoader(); $scope.fechaProgresso();
         };
 
         $scope.buscarInformacoesDisciplina = function(indice) {
@@ -2432,9 +2471,9 @@
                     $scope.sistemaAvaliacao = 'quantitativas';
                 }
                 $scope.requisicoes--;
-                $scope.fechaProgresso();
+                $scope.fechaProgresso(); $scope.fechaLoader();
             });
-            $scope.fechaProgresso();
+            $scope.fechaProgresso(); $scope.fechaLoader();
         };
         
         $scope.reativarMatricula = function(matricula) {

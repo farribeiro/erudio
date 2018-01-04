@@ -8,7 +8,7 @@
         <meta name="theme-color" content="#000">
         <link rel="icon" href="assets/images/erudio.png">
         <link rel="stylesheet" href="lib/material/angular-material.min.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
         <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
         
         <!-- JQUERY -->
@@ -52,8 +52,22 @@
                     </md-card-title-text>
                     <md-card-content>
                         <form id="authForm" name="authForm" ng-init="inicializaEnter()">
-                            <form-input grid="flex-gt-sm" identidade="username" label="'CPF'" model="auth" obrigatorio="required" campo="username" tipo="'text'" nome="'username'" erro="'authForm.username.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
-                            <form-input grid="flex-gt-sm" identidade="password" label="'Senha'" model="auth" obrigatorio="required" campo="password" tipo="'password'" nome="'password'" erro="'authForm.password.$error'" mensagem="'required,Este campo é obrigatório'"></form-input>
+                            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                                <label for="username">CPF</label>
+                                <md-icon class="material-icons">account_circle</md-icon>
+                                <input id="username" ng-model="auth.username" type="number" name="username" required/>
+                                <div ng-messages="authForm.username.$error" class="errors-wrapper">
+                                    <div ng-message="required">Este campo é obrigatório.</div>
+                                </div>
+                            </md-input-container>
+                            <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                                <label for="password">Senha</label>
+                                <md-icon class="material-icons">vpn_key</md-icon>
+                                <input id="password" ng-model="auth.password" type="password" name="password" required/>
+                                <div ng-messages="authForm.password.$error" class="errors-wrapper">
+                                    <div ng-message="required">Este campo é obrigatório.</div>
+                                </div>
+                            </md-input-container>
                         </form>
                     </md-card-content>
                     <md-card-actions layout="row" layout-align="end center" class="btn-login-mobile">

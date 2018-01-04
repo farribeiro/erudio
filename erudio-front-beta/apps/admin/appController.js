@@ -21,7 +21,7 @@
 
         //CRIANDO ROTAS
         $routeProvider
-            .when('/',{ templateUrl: 'apps/admin/home/partials/template.html', controller: 'HomeController' })
+            .when('/',{ templateUrl: 'apps/admin/home/partials/template.html', controller: 'HomeController' })            
             .when('/instituicoes',{ templateUrl: 'apps/admin/instituicoes/partials/index.html', controller: 'InstituicaoController', controllerAs: 'ctrl' })
             .when('/instituicoes/:id',{ templateUrl: 'apps/admin/instituicoes/partials/form.html', controller: 'InstituicaoFormController', controllerAs: 'ctrl' })
             .when('/tipos-unidade',{ templateUrl: 'apps/admin/tiposUnidade/partials/index.html', controller: 'TipoUnidadeController', controllerAs: 'ctrl' })
@@ -51,6 +51,22 @@
             .when('/eventos/:id',{ templateUrl: 'apps/admin/eventos/partials/form.html', controller: 'EventoFormController', controllerAs: 'ctrl' })
             .when('/historicos',{ templateUrl: 'apps/admin/historicos/partials/index.html', controller: 'HistoricoController', controllerAs: 'ctrl' })
             .when('/historicos/:id',{ templateUrl: 'apps/admin/historicos/partials/view.html', controller: 'HistoricoViewController', controllerAs: 'ctrl' })
+            .when('/historicos/:id/disciplinas',{ templateUrl: 'apps/admin/historicos/partials/adicionar-disciplina.html', controller: 'HistoricoDisciplinaController', controllerAs: 'ctrl' })
+            .when('/historicos/:id/dados-conclusao',{ templateUrl: 'apps/admin/historicos/partials/dados-conclusao.html', controller: 'HistoricoConclusaoController', controllerAs: 'ctrl' })
+            .when('/historicos/:id/observacoes',{ templateUrl: 'apps/admin/historicos/partials/observacoes.html', controller: 'HistoricoObservacaoController', controllerAs: 'ctrl' })
+            .when('/pessoas',{ templateUrl: 'apps/admin/pessoas/partials/index.html', controller: 'PessoaController', controllerAs: 'ctrl' })
+            .when('/pessoas/:id',{ templateUrl: 'apps/admin/pessoas/partials/stepper.html', controller: 'PessoaFormController', controllerAs: 'ctrl' })
+            .when('/boletins',{ templateUrl: 'apps/admin/boletins/partials/index.html', controller: 'BoletimController', controllerAs: 'ctrl' })
+            .when('/ata-final',{ templateUrl: 'apps/admin/ataFinal/partials/index.html', controller: 'AtaController', controllerAs: 'ctrl' })
+            .when('/certificados',{ templateUrl: 'apps/admin/certificados/partials/index.html', controller: 'CertificadoController', controllerAs: 'ctrl' })
+            .when('/diario-frequencias',{ templateUrl: 'apps/admin/diariosFrequencia/partials/index.html', controller: 'DiarioFrequenciaController', controllerAs: 'ctrl' })
+            .when('/diario-notas',{ templateUrl: 'apps/admin/diariosNotas/partials/index.html', controller: 'DiarioNotasController', controllerAs: 'ctrl' })
+            .when('/rematricula',{ templateUrl: 'apps/admin/fichasRematricula/partials/index.html', controller: 'FichaRematriculaController', controllerAs: 'ctrl' })
+            .when('/ieducar',{ templateUrl: 'apps/admin/ieducar/partials/index.html', controller: 'IeducarController', controllerAs: 'ctrl' })
+            .when('/alunos-defasados',{ templateUrl: 'apps/admin/ieducar/partials/index.html', controller: 'AlunosDefasadosController', controllerAs: 'ctrl' })
+            .when('/alunos-enturmados',{ templateUrl: 'apps/admin/alunosEnturmados/partials/index.html', controller: 'AlunosEnturmadosController', controllerAs: 'ctrl' })
+            .when('/alunos-anee',{ templateUrl: 'apps/admin/alunosANEE/partials/index.html', controller: 'AlunosANEEController', controllerAs: 'ctrl' })
+            .when('/perfil',{ templateUrl: 'apps/professor/perfil/partials/index.html', controller: 'PerfilController', controllerAs: 'ctrl' })
             .when('/teste',{ templateUrl: 'apps/admin/teste/partials/teste.html', controller: 'TESTE', controllerAs: 'ctrl' })
             .otherwise({ redirectTo: '/404' })
         ;
@@ -65,13 +81,14 @@
         RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
     
-    erudio.controller('AppController',['$scope', '$mdSidenav', '$mdDialog', 'Util', '$translate', '$timeout', 'ErudioConfig', 'BaseService', function($scope, $mdSidenav, $mdDialog, Util, $translate, $timeout, ErudioConfig, BaseService){
+    erudio.controller('AppController',['$scope', '$http', '$mdSidenav', '$mdDialog', 'Util', '$translate', '$timeout', 'ErudioConfig', 'BaseService', function($scope, $http, $mdSidenav, $mdDialog, Util, $translate, $timeout, ErudioConfig, BaseService){
         
         //SE NÃO TEM SESSÃO, REDIRECIONA PRO LOGIN
         if (!sessionStorage.getItem('autenticado')) { window.location = ErudioConfig.dominio + '/login.html'; }
         
         //TITULO DA TOOLBAR
         $scope.titulo = 'Erudio';
+        $scope.foto = null;
         $scope.atribuicoes = [];
         $scope.cortinaAlocacao = true;
         $('.loader').hide();
@@ -88,6 +105,19 @@
             if (!Util.isVazio(sessionStorage.getItem("atribuicao-ativa"))) { $scope.cortinaAlocacao = false; var attrAtiva = JSON.parse(sessionStorage.getItem("atribuicao-ativa")); $scope.attrAtual.attr.id = attrAtiva.id; }
         };
         $scope.buscarUsuario();
+
+        //BUSCA FOTO
+        $scope.carregarFoto = function () {
+            var atribuicoes = JSON.parse(sessionStorage.getItem('atribuicoes'));
+            var token = "Bearer "+sessionStorage.getItem('token');
+            var fileUrl = ErudioConfig.urlServidor+'/pessoas/'+atribuicoes.pessoa.id+'/foto';
+            return $http.get(fileUrl,{headers: {"JWT-Authorization":token},responseType: 'arraybuffer'}).then((data) => {
+                return new Promise((resolve) => {
+                    var file = new Blob([data.data],{type: 'image/jpg'}); resolve(URL.createObjectURL(file));
+                });
+            }, (error) => { return new Promise((resolve) => { resolve(ErudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"); }) });
+        };
+        $scope.carregarFoto().then((foto) => { $scope.foto = foto; });
                 
         //CARREGAR ABTRIBUICAO
         $scope.carregarAtribuicao = function (id) { 
@@ -98,9 +128,9 @@
         //CRIANDO LABELS DOS MENUS
         var menuLabels = ['INSTITUICOES_UNIDADES','INSTITUICOES','TIPOS_UNIDADE','UNIDADES_ENSINO',"GESTAO","REGIMES_ENSINO","CURSOS","ETAPAS","DISCIPLINAS",
             "MODULOS","TURNOS","MODELOS_HORARIO","QUADROS_HORARIO","CALENDARIOS","EVENTOS","VIDA_ESCOLAR","TURMAS","MATRICULAS","MOVIMENTACOES","NOTAS",
-            "PESSOAS_TITULO","PESSOAS","CARGOS","FUNCIONARIOS","AVALIACOES_TITLE","TIPOS_AVALIACAO","HABILIDADES","AVALIACOES","DOCUMENTOS","BOLETIM",
-            "DIARIO_FREQUENCIA","DIARIO_NOTAS","RELATORIOS","ALUNOS_DEFASADOS","HISTORICO_ESCOLAR","ALUNOS_ENTURMADOS","ESPELHO_NOTA","ADMINISTRADOR", "USUARIOS","PERMISSOES","GRUPOS_PERMISSOES",
-            "PERFIL","SOBRE","MUDOU","CONFIG","SAIR"];
+            "PESSOAS_TITULO","PESSOAS","CARGOS","FUNCIONARIOS","AVALIACOES_TITLE","TIPOS_AVALIACAO","HABILIDADES","DOCUMENTOS","BOLETIM",
+            "DIARIO_FREQUENCIA","DIARIO_NOTAS","RELATORIOS","ALUNOS_DEFASADOS","ATA_FINAL","CERTIFICADOS","REMATRICULA","HISTORICO","ALUNOS_ENTURMADOS","ESPELHO_NOTA","ADMINISTRADOR", "USUARIOS","PERMISSOES","GRUPOS_PERMISSOES",
+            "PERFIL","SOBRE","MUDOU","CONFIG","SAIR","IEDUCAR","ANEE"];
         
         $timeout(function(){
             $translate(menuLabels).then(function(traducoes){
@@ -157,15 +187,19 @@
                         links: [ 
                             { label: traducoes.TIPOS_AVALIACAO, href: "#!/tipos-avaliacao", permissao: 'TIPOS_AVALIACAO' },
                             { label: traducoes.HABILIDADES, href: "#!/habilidades", permissao: 'HABILIDADES' },
-                            { label: traducoes.AVALIACOES, href: "#!/avaliacoes", permissao: 'AVALIACAO' }
                         ]
                     },
                     { 
                         categoria: traducoes.DOCUMENTOS, temSubmenu : true,
                         links: [ 
                             { label: traducoes.BOLETIM, href: "#!/boletins", permissao: 'BOLETIM_ESCOLAR' },
+                            { label: traducoes.ATA_FINAL, href: "#!/ata-final", permissao: 'RELATORIOS' },
+                            { label: traducoes.CERTIFICADOS, href: "#!/certificados", permissao: 'RELATORIOS' },
                             { label: traducoes.DIARIO_FREQUENCIA, href: "#!/diario-frequencias", permissao: 'DIARIO_FREQUENCIA' },
-                            { label: traducoes.DIARIO_NOTAS, href: "#!/diario-notas", permissao: 'RELATORIOS' }
+                            { label: traducoes.DIARIO_NOTAS, href: "#!/diario-notas", permissao: 'RELATORIOS' },
+                            { label: traducoes.REMATRICULA, href: "#!/rematricula", permissao: 'RELATORIOS' },
+                            { label: traducoes.HISTORICO, href: "#!/historicos", permissao: 'RELATORIOS' },
+                            { label: traducoes.IEDUCAR, href: "#!/ieducar", permissao: 'RELATORIOS' },
                         ]
                     },
                     { 
@@ -173,7 +207,7 @@
                         links: [ 
                             { label: traducoes.ALUNOS_DEFASADOS, href: "#!/alunos-defasados", permissao: 'RELATORIOS' },
                             { label: traducoes.ALUNOS_ENTURMADOS, href: "#!/alunos-enturmados", permissao: 'RELATORIOS' },
-                            { label: traducoes.HISTORICO_ESCOLAR, href: "#!/historicos", permissao: 'RELATORIOS' },
+                            { label: traducoes.ANEE, href: "#!/alunos-anee", permissao: 'RELATORIOS' },
                             { label: traducoes.ESPELHO_NOTA, href: "#!/espelho-notas", permissao: 'RELATORIOS' }
                         ]
                     },
@@ -188,6 +222,8 @@
                 ];
             });
         },200);
+
+        $scope.redirect = function (url){ window.location = ErudioConfig.dominio + url; };
         
         //VERIFICA PERMISSÃO
         $scope.verificaPermissao = function (role) { return Util.verificaPermissao(role); };
@@ -197,12 +233,14 @@
         $scope.menuToggle = function (index) { if (index !== $scope.menuAberto) { $('.submenu').hide(); } $scope.menuAberto = index; $(".submenu"+index).slideToggle(150); };
         
         //ABRINDO MODAL O QUE MUDOU
-        $scope.oQueMudou = function (event) { Util.modal(event, 'apps/templates/partials/oQueMudou.html', $mdDialog); };
+        $scope.oQueMudou = function (event) { Util.modal(event, 'apps/admin/templates/partials/oQueMudou.html', $mdDialog); };
         
         //TELA CHEIA
         $scope.ajustarTelaCheia = function () {
             if ($scope.isProfessor) { return 'tela-cheia'; } else { return ''; }
         };
+
+        $scope.logout = function(){ window.location = ErudioConfig.dominio + '/login.html' };
 
         //ELIMINANDO MENUS VAZIOS
         angular.element(document).ready(function(){ $timeout(function(){ Util.ajustaMenus(); },500); });
@@ -211,7 +249,7 @@
         if (!Util.isVazio(sessionStorage.getItem('atribuicao-ativa'))) {
             $scope.isProfessor = false;
             var ativa = JSON.parse(sessionStorage.getItem('atribuicao-ativa'));
-            if (ativa.apelido === "Professor") { 
+            if (ativa.grupo.nome === "Professor") { 
                 $scope.isProfessor = true;
             }
         }

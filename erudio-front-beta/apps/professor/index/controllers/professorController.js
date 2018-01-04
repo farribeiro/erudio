@@ -5,25 +5,35 @@
      * @Controller InstituicaoController
      */
     class ProfessorController {
-        constructor (util, $mdDialog, erudioConfig, $timeout, baseService) {
-            this.util = util;
+        constructor (util, $mdDialog, erudioConfig, $timeout, baseService, enturmacaoService, shared) {
+            this.util = util; this.shared = shared;
             this.mdDialog = $mdDialog;
             this.erudioConfig = erudioConfig;
             this.baseService = baseService;
+            this.enturmacaoService = enturmacaoService;
             this.timeout = $timeout;
             this.permissaoLabel = "HOME_PROFESSOR";
             this.linkModulo = "/#!/";
-            this.avaliacoesTemplate = erudioConfig.dominio+"/apps/professor/avaliacoes/partials/index.html";
-            this.aulasUrl = erudioConfig.dominio+"/apps/professor/aulas/partials/index.html";
-            this.chamadasUrl = erudioConfig.dominio+"/apps/professor/chamadas/partials/index.html";
-            this.aulasTemplate = null;
-            this.chamadasTemplate = null;
+            this.avaliacoesUrl = erudioConfig.dominio+"/apps/professor/avaliacoes/partials/index.html";
+            this.mediasUrl = erudioConfig.dominio+"/apps/professor/medias/partials/index.html";
+            this.eventosUrl = erudioConfig.dominio+"/apps/professor/eventos/partials/index.html";
+            this.aulasTemplate = erudioConfig.dominio+"/apps/professor/aulas/partials/index.html";
+            this.eventosTemplate = null;
+            this.mediasTemplate = null;
+            this.avaliacoesTemplate = null;
             this.buscaIcone = 'search';
             this.turmaSelecionada = null;
+            this.possuiEnturmacoes = null;
             this.buscarDisciplinas();
         }
 
-        refresh() { sessionStorage.setItem('turmaSelecionada',JSON.stringify(this.turmaSelecionada)); this.timeout(() => {location.reload();}, 500); }
+        refresh() { 
+            sessionStorage.setItem('turmaSelecionada',JSON.stringify(this.turmaSelecionada)); 
+            this.enturmacaoService.getAll({encerrado: 0, turma: this.turmaSelecionada.turma.id},true).then((enturmacoes) => {
+                if (enturmacoes.length > 0) { sessionStorage.setItem('possuiEnturmacoes',1); this.timeout(() => {location.reload();}, 500); } 
+                else { sessionStorage.removeItem('possuiEnturmacoes'); sessionStorage.setItem('possuiEnturmacoes',0); this.timeout(() => {location.reload();}, 500); }
+            });
+        }
 
         buscarDisciplinas() {
             this.isQualitativa = false;
@@ -31,7 +41,7 @@
                 this.disciplinasLecionadas = disciplinas;
                 disciplinas.forEach((disciplina) => {
                     var obj = JSON.parse(sessionStorage.getItem('turmaSelecionada'));
-                    if (disciplina.id === parseInt(obj.id)){
+                    if (!this.util.isVazio(obj) && disciplina.id === parseInt(obj.id)){
                         this.turmaSelecionada = disciplina;
                     }
                 });
@@ -42,15 +52,24 @@
         inserirConteudo(tab) {
             switch (tab) {
                 case 'aulas':
-                    if (this.util.isVazio(this.aulasTemplate)) { this.aulasTemplate = this.aulasUrl; }
+                    this.shared.setAbaHome('aulas'); $('.btn-home').hide();
                 break;
-                case 'chamadas':
-                    if (this.util.isVazio(this.chamadasTemplate)) { this.chamadasTemplate = this.chamadasUrl; }
+                case 'avaliacoes':
+                    this.shared.setAbaHome('calendarios'); $('.btn-home').hide();
+                    if (this.util.isVazio(this.avaliacoesTemplate)) { this.avaliacoesTemplate = this.avaliacoesUrl; }
+                break;
+                case 'medias':
+                    this.shared.setAbaHome('medias'); $('.btn-home').hide();
+                    if (this.util.isVazio(this.mediasTemplate)) { this.mediasTemplate = this.mediasUrl; }
+                break;
+                case 'eventos':
+                    this.shared.setAbaHome('eventos'); $('.btn-home').hide();
+                    if (this.util.isVazio(this.eventosTemplate)) { this.eventosTemplate = this.eventosUrl; }
                 break;
             }
         }
     }
     
-    ProfessorController.$inject = ["Util","$mdDialog","ErudioConfig","$timeout","BaseService"];
+    ProfessorController.$inject = ["Util","$mdDialog","ErudioConfig","$timeout","BaseService","EnturmacaoService","Shared"];
     angular.module('ProfessorController',['ngMaterial', 'util', 'erudioConfig']).controller('ProfessorController',ProfessorController);
 })();

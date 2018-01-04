@@ -65,7 +65,7 @@
                 </div>
                 <div class="row end-card" style="padding-top: 15px; padding-bottom: 15px;" data-ng-show="escrita">
                     <div class="col s12 right-align">
-                        <a data-ng-click="gerarPdf()" class="waves-effect waves-azul btn-flat"><i class="material-icons left">local_printshop</i>Imprimir</a>
+                        <a data-ng-click="getPDF(config.urlServidor+'/report/atestados/matricula?matricula='+matricula.id)" class="waves-effect waves-azul btn-flat"><i class="material-icons left">local_printshop</i>Imprimir</a>
                     </div>
                 </div>
             </form>

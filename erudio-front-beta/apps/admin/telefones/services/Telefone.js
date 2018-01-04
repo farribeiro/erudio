@@ -7,32 +7,32 @@
             this.url = 'telefones';
         }
         
-        get(id){ return this.rest.um(this.url,id); }
+        get(id,loader){ return this.rest.um(this.url,id,loader); }
         getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getAllByPessoa(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
         getEstrutura() { return {descricao: '', falarCom: null, numero: null, pessoa: { id: null } }; }
         
-        salvar(objeto,feedback) { 
+        salvar(objeto,feedback,loader) { 
             if (feedback === true) {
-                return this.rest.salvar(this.url, objeto, "Telefone", "M");
+                return this.rest.salvar(this.url, objeto, "Telefone", "M",loader);
             } else {
                 return this.rest.salvar(this.url, objeto);
             }
         }
         
-        atualizar(objeto,feedback) { 
+        atualizar(objeto,feedback,loader) { 
             if (feedback === true) {
-                return this.rest.atualizar(objeto, "Telefone", "M");
+                return this.rest.atualizar(objeto, "Telefone", "M",loader);
             } else {
                 return this.rest.atualizar(objeto);
             }
         }
         
-        remover(objeto,feedback) {
+        remover(objeto,feedback,loader) {
             if (feedback === true) {
-                return this.rest.remover(objeto, "Telefone", "M", true);
+                return this.rest.remover(objeto, "Telefone", "M", loader);
             } else {
-                return this.rest.remover(objeto, null, null, true);
+                return this.rest.remover(objeto, null, null, loader);
             }
         }
     }

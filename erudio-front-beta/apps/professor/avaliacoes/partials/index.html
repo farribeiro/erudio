@@ -1,108 +1,115 @@
 <div layout="column" id="avaliacoesHome" ng-controller="ProfAvaliacoesController as ctrl">
 
-    <div layout-gt-sm="row" ng-show="ctrl.disciplinaEscolhida">
+    <div layout-gt-sm="row" ng-show="ctrl.disciplinaEscolhida && ctrl.possuiEnturmacoes">
 
-        <md-card flex-gt-sm="40" ng-show="!ctrl.isQualitativa && !ctrl.editando">
-            <md-card-content>
-                <div flex-gt-sm="100">
-                
-                    <h1>Avaliações de hoje</h1>
-
-                    <md-card-content class="no-padding">
-                        <md-list flex class="no-padding white-content">
-                            <md-list-item style="border-bottom: 1px solid #eee;" id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.avaliacoesDia">
-                                <a class="link-list"><div class="md-list-item-text" layout="column">
-                                    <div>
-                                        <h3>{{ objeto.nome }}</h3>
-                                        <p>{{ objeto.disciplina.nomeExibicao }}<span ng-if="objeto.dataEntrega.length"> - {{ objeto.dataEntrega | date:'dd/MM/yyyy' }}</span></p>
-                                    </div>
-                                </div></a>
-                            </md-list-item>
-                        </md-list>
-
-                        <div flex="100" ng-show="ctrl.msgVazioDia">
-                            Nenhuma avaliação registrada para hoje.
-                        </div>
-                    </md-card-content>
-
-                </div>
-            </md-card-content>
-        </md-card>
-
-        <md-card flex-gt-sm="{{ ctrl.tamanhoCard }}" ng-hide="ctrl.msgVazio || ctrl.listaQualitativa">
-            <md-card-content>
-                <div flex-gt-sm="100" layout="column">
-                            
-                    <div flex-gt-sm="100" ng-show="ctrl.editando">
-    
-                        <h1>Cadastrando avaliação</h1>
-                        
-                        <form id="avaliacaoForm" name="avaliacaoForm">
-                            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                                <label for="nome">Nome</label>
-                                <md-icon class="material-icons">account_circle</md-icon>
-                                <input id="nome" ng-model="ctrl.avaliacao.nome" type="text" name="nome" required/>
-                                <div ng-messages="avaliacaoForm.avaliacao.nome.$error" class="errors-wrapper">
-                                    <div ng-message="required">Este campo é obrigatório.</div>
-                                </div>
-                            </md-input-container>
-    
-                            <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
-                                <label for="dataEntrega" class="date-label">Data Entrega</label>
-                                <md-icon class="material-icons">event</md-icon>
-                                <input id="dataEntrega" class="maskData" ng-model="ctrl.dataEntrega" type="text" name="dataEntrega" required/>
-                                <div class="hint">Apenas Números</div>
-                                <div ng-messages="avaliacaoForm.dataEntrega.$error" class="errors-wrapper">
-                                    <div ng-message="required">Este campo é obrigatório.</div>
-                                </div>
-                            </md-input-container>
-    
-                            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                                <label for="media">Média</label>
-                                <md-icon class="material-icons">filter_7</md-icon>
-                                <md-select ng-model="ctrl.avaliacao.media" id="media" name="media" required>
-                                    <md-option value=""></md-option>
-                                    <md-option ng-repeat="item in ctrl.medias track by $index" value="{{ $index+1 }}">{{ item }}</md-option>
-                                </md-select>
-                                <div ng-messages="avaliacaoForm.avaliacao.media.$error" class="errors-wrapper">
-                                    <div ng-message="required">Este campo é obrigatório.</div>
-                                </div>
-                            </md-input-container>
-    
-                            <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
-                                <label for="tipoAvaliacao">Tipo</label>
-                                <md-icon class="material-icons">playlist_add_check</md-icon>
-                                <md-select ng-model="ctrl.avaliacao.tipo.id" id="tipoAvaliacaoID" name="tipoAvaliacao" required>
-                                    <md-option value=""></md-option>
-                                    <md-option ng-repeat="item in ctrl.tiposAvaliacao track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
-                                </md-select>
-                                <div ng-messages="avaliacaoForm.avaliacao.tipo.id.$error" class="errors-wrapper">
-                                    <div ng-message="required">Este campo é obrigatório.</div>
-                                </div>
-                            </md-input-container>
-
-                            <md-input-container ng-show="ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
-                                <label for="tipoAvaliacao">Tipo</label>
-                                <md-icon class="material-icons">playlist_add_check</md-icon>
-                                <md-select ng-model="ctrl.avaliacao.tipo" id="tipoAvaliacao" name="tipoAvaliacao" required>
-                                    <md-option value=""></md-option>
-                                    <md-option ng-repeat="item in ctrl.tiposQuali track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
-                                </md-select>
-                                <div ng-messages="avaliacaoForm.avaliacao.tipo.$error" class="errors-wrapper">
-                                    <div ng-message="required">Este campo é obrigatório.</div>
-                                </div>
-                            </md-input-container>
-    
-                            <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvar('avaliacaoForm')" class="md-raised save-button-fix">Salvar</md-button>
-                        </form>
-    
-                    </div>
-    
-                    <div flex="100" ng-hide="ctrl.editando">
-    
-                        <h1>Avaliações cadastradas</h1>
-    
+        <div flex layout="column" ng-show="!ctrl.isQualitativa && !ctrl.editando && !ctrl.atribuindoNota">
+            <md-subheader class="md-primary margin-top-subheader form-header">Avaliações de hoje</md-subheader>
+            <md-card class="no-margin-up-down"  flex-gt-sm="40">
+                <md-card-content>
+                    <div flex-gt-sm="100">
                         <md-card-content class="no-padding">
+                            <md-list flex class="no-padding white-content">
+                                <md-list-item style="border-bottom: 1px solid #eee;" id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.avaliacoesDia">
+                                    <a class="link-list"><div class="md-list-item-text" layout="column">
+                                        <div>
+                                            <h3>{{ objeto.nome }}</h3>
+                                            <p>{{ objeto.disciplina.nomeExibicao }}<span ng-if="objeto.dataEntrega.length"> - {{ objeto.dataEntrega | date:'dd/MM/yyyy' }}</span></p>
+                                        </div>
+                                    </div></a>
+                                </md-list-item>
+                            </md-list>
+
+                            <div flex="100" ng-show="ctrl.msgVazioDia">
+                                Nenhuma avaliação registrada para hoje.
+                            </div>
+                        </md-card-content>
+
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+
+        <div flex layout="column">
+            <md-subheader ng-hide="ctrl.msgVazio || ctrl.listaQualitativa" class="md-primary margin-top-subheader form-header">{{ ctrl.avaliacaoLabel }}</md-subheader>
+            <md-card style="max-height: none;" flex-gt-sm="{{ ctrl.tamanhoCard }}" class="no-margin-up-down" ng-hide="ctrl.msgVazio || ctrl.listaQualitativa">
+                <md-card-content>
+                    <div flex-gt-sm="100" layout="column">
+                                
+                        <div flex-gt-sm="100" ng-show="ctrl.editando">                       
+                            
+                            <form id="avaliacaoForm" name="avaliacaoForm">
+                                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="nome">Nome</label>
+                                    <md-icon class="material-icons">account_circle</md-icon>
+                                    <input id="nome" ng-model="ctrl.avaliacao.nome" type="text" name="nome" required/>
+                                    <div ng-messages="avaliacaoForm.avaliacao.nome.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+        
+                                <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="dataEntrega" class="date-label">Data Entrega</label>
+                                    <md-icon class="material-icons">event</md-icon>
+                                    <input id="dataEntrega" class="maskData" ng-model="ctrl.dataEntrega" type="text" name="dataEntrega" required/>
+                                    <div class="hint">Apenas Números</div>
+                                    <div ng-messages="avaliacaoForm.dataEntrega.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+        
+                                <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="media">Média</label>
+                                    <md-icon class="material-icons">filter_7</md-icon>
+                                    <md-select ng-model="ctrl.avaliacao.media" id="media" name="media" required>
+                                        <md-option value=""></md-option>
+                                        <md-option ng-repeat="item in ctrl.medias track by $index" value="{{ $index+1 }}">{{ item }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="avaliacaoForm.avaliacao.media.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="peso">Peso</label>
+                                    <md-icon class="material-icons">filter_3</md-icon>
+                                    <input id="peso" class="maskDoisNumeros" min="1" max="10" ng-model="ctrl.avaliacao.peso" type="number" name="peso" required/>
+                                    <div class="hint">O uso do peso maior que 1 passa a utilizar média ponderada ao invés de média aritmética</div>
+                                    <div ng-messages="avaliacaoForm.avaliacao.peso.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+        
+                                <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="tipoAvaliacao">Tipo</label>
+                                    <md-icon class="material-icons">playlist_add_check</md-icon>
+                                    <md-select ng-model="ctrl.avaliacao.tipo.id" id="tipoAvaliacaoID" name="tipoAvaliacao" required>
+                                        <md-option value=""></md-option>
+                                        <md-option ng-repeat="item in ctrl.tiposAvaliacao track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="avaliacaoForm.avaliacao.tipo.id.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container ng-show="ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
+                                    <label for="tipoAvaliacao">Tipo</label>
+                                    <md-icon class="material-icons">playlist_add_check</md-icon>
+                                    <md-select ng-model="ctrl.avaliacao.tipo" id="tipoAvaliacao" name="tipoAvaliacao" required>
+                                        <md-option value=""></md-option>
+                                        <md-option ng-repeat="item in ctrl.tiposQuali track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="avaliacaoForm.avaliacao.tipo.$error" class="errors-wrapper">
+                                        <div ng-message="required">Este campo é obrigatório.</div>
+                                    </div>
+                                </md-input-container>
+        
+                                <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvar('avaliacaoForm')" class="md-raised save-button-fix">Salvar</md-button>
+                            </form>
+        
+                        </div>
+        
+                        <div flex="100" ng-hide="ctrl.editando">
+        
                             <md-list flex class="no-padding white-content">
                                 <md-list-item style="border-bottom: 1px solid #eee;" id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.objetos">
                                     <a class="link-list"><div class="md-list-item-text" ng-click="ctrl.carregarAvaliacao(objeto)" layout="column">
@@ -114,67 +121,100 @@
                                     <opcao-lista class="md-secondary"></opcao-lista>
                                 </md-list-item>
                             </md-list>
-                        </md-card-content>
 
-                    </div>
-
-                    <div flex="30" ng-hide="ctrl.editando">
-                        <md-button hide show-gt-md ng-show="ctrl.mostraBotao" ng-class="ctrl.tipoBotaoAdd()" md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.abrirForm()" class="save-button-fix md-fab md-mini">
-                            <md-tooltip md-direction="left">Adicionar avaliação</md-tooltip>
-                            <md-icon class="material-icons">add</md-icon>
-                        </md-button>
-
-                        <md-button hide-gt-md ng-show="ctrl.mostraBotao" md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.abrirForm()" class="save-button-fix md-fab add-btn-mobile">
-                            <md-icon class="material-icons">add</md-icon>
-                        </md-button>
-                    </div>
-
-                    <div flex="30" ng-show="ctrl.editando">
-                        <md-button ng-class="ctrl.tipoBotaoVoltar()" ng-click="ctrl.fecharForm()" class="md-icon-button" aria-label="Voltar">
-                            <md-tooltip md-direction="left">Voltar</md-tooltip>
-                            <md-icon style="color: #000;" class="material-icons">arrow_back</md-icon>
-                        </md-button>
-                    </div>
-    
-                </div>
-            </md-card-content>
-        </md-card>
-
-        <div flex-gt-sm="100" ng-show="ctrl.listaQualitativa">
-            <md-button ng-class="ctrl.tipoBotaoVoltar()" ng-click="ctrl.fecharForm()" class="md-icon-button" style="top: 22px;" aria-label="Voltar">
-                <md-tooltip md-direction="left">Voltar</md-tooltip>
-                <md-icon style="color: #000;" class="material-icons">arrow_back</md-icon>
-            </md-button>
-
-            <h1 class="modal-title">Avaliações > Notas</h1>
-
-            <md-grid-list hide show-gt-md md-cols-gt-sm="5" md-cols-xs="2" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="5" 
-            md-gutter="12px" md-gutter-xs="2px" md-row-height="1:1">
-                <md-grid-tile ng-repeat="aluno in ctrl.mediasModal">
-                    <md-card flex-gt-sm="100" style="position:relative; cursor: pointer; overflow: hidden;" ng-click="ctrl.darNotas(aluno,true,true)">
-                        <img ng-show="aluno.urlFoto !== undefined" src="{{ aluno.urlFoto }}" style="width: 100%; height: 100%;" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}">
-                        <img ng-show="aluno.urlFoto === undefined" src="{{ ctrl.erudioConfig.dominio }}/apps/professor/avaliacoes/assets/images/avatar.png" style="width: 100%; height: 100%;" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}">
-                        <div style="position: absolute; bottom: 0; width: 100%; height: 50px; overflow: hidden; background: #000; opacity: 0.7;">
-                            <md-truncate><h4 style="color: #fff; margin-top: 17px;" class="modal-title">{{ aluno.disciplinaCursada.matricula.nomeAluno }}</h4></md-truncate>
                         </div>
-                    </md-card>
-                </md-grid-tile>
-            </md-grid-list>
 
-            <md-list hide-gt-md class="md-dense" flex>
-                <md-list-item ng-repeat="aluno in ctrl.mediasModal" ng-click="ctrl.darNotas(aluno,true,true)">
-                    <img ng-show="aluno.urlFoto !== undefined" src="{{ aluno.urlFoto }}" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="md-avatar">
-                    <img ng-show="aluno.urlFoto === undefined" src="{{ ctrl.erudioConfig.dominio }}/apps/professor/avaliacoes/assets/images/avatar.png" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="md-avatar">
-                    <div class="md-list-item-text"><h3>{{ aluno.disciplinaCursada.matricula.nomeAluno }}</h3></div>
-                </md-list-item>
-            </md-list>
+                        <div flex="30" ng-hide="ctrl.editando">
+                            <md-button hide show-gt-md ng-show="ctrl.mostraBotao" ng-class="ctrl.tipoBotaoAdd()" md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.abrirForm()" class="save-button-fix md-fab md-mini">
+                                <md-tooltip md-direction="left">Adicionar avaliação</md-tooltip>
+                                <md-icon class="material-icons">add</md-icon>
+                            </md-button>
+
+                            <md-button hide-gt-md ng-show="ctrl.mostraBotao" md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.abrirForm()" class="save-button-fix md-fab add-btn-mobile">
+                                <md-icon class="material-icons">add</md-icon>
+                            </md-button>
+                        </div>
+
+                    </div>
+                </md-card-content>
+            </md-card>
+        </div>
+
+        <div flex-gt-sm="100" ng-show="ctrl.listaQualitativa" layout="column">
+            <md-subheader class="md-primary margin-top-subheader form-header">Notas da Avaliação</md-subheader>
+            <md-card class="no-margin-up-down" flex>
+                <md-card-content ng-class="ctrl.paddingAccordion()">
+
+                    <md-list class="md-dense" ng-show="!ctrl.isQualitativa" flex>
+                        <md-list-item ng-repeat="aluno in ctrl.mediasModal" class='modal-list'>
+                            <img ng-show="aluno.urlFoto !== undefined" src="{{ aluno.urlFoto }}" class="md-avatar" alt="{{aluno.nome}}" />
+                            <div class="md-list-item-text">
+                                <h3>{{ aluno.disciplinaCursada.matricula.nomeAluno }}</h3>
+                            </div>
+                            <div class="md-secondary">
+                                <form class="formNotas">
+                                    <md-input-container md-block flex-gt-sm class="mobile-modal-fix">
+                                        <input id="aluno{{aluno.id}}" data-media="{{aluno.id}}" ng-class="ctrl.isNotaSalva(aluno)" ng-model="aluno.nota" type="number" min="0" max="10" placeholder="Nota" name="nota"/>
+                                    </md-input-container>
+                                </form>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                    <div flex-gt-sm="40">
+                        <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvarNotasQuantitativas()" ng-if="!ctrl.isQualitativa" class="md-raised salvar-notas-quanti save-button-fix">Salvar</md-button>
+                    </div>
+
+                    <div class="expansion-wrapper" ng-show="ctrl.isQualitativa" ng-repeat="aluno in ctrl.mediasModal track by $index">
+                        <div layout="row" layout-align="left center" ng-click="ctrl.abrirPainel($index, aluno)" ng-class="ctrl.ultimoPainel($index)" style="padding: 5px 15px 5px 15px; margin: 0 !important;" class="condensed-panel-{{ $index }} condensed-panel md-whiteframe-2dp relative">
+                            <div flex layout="row" layout-align="start center">
+                                <img src="{{ aluno.urlFoto }}" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="avatar-mascara">
+                                <strong>{{ aluno.disciplinaCursada.matricula.nomeAluno }}</strong>
+                            </div>
+                        </div>
+                        <div class="expanded-panel-{{ $index }} expanded-panel md-whiteframe-3dp">
+                            <div layout="row" ng-click="ctrl.fecharPainel()" layout-align="left center" class="row expanded-title">
+                                <div flex layout="row" layout-align="start center">
+                                    <img src="{{ aluno.urlFoto }}" alt="{{ aluno.disciplinaCursada.matricula.nomeAluno }}" class="avatar-mascara">
+                                    <strong>{{ aluno.disciplinaCursada.matricula.nomeAluno }}</strong>
+                                </div>
+                            </div>
+                            <div class="row"style="padding-top: 15px;">
+                                <md-content style="background: #fff; margin-left: 10px; margin-right: 10px;">
+                                    <h2 class="modal-title" id="modal-qualitativa" data-media="{{ aluno.id }}">Conceitos</h2>
+                                    <md-list class="md-dense" flex>
+                                        <md-list-item ng-repeat="habilidade in ctrl.habilidades track by $index" class='modal-list height-fix'>
+                                            <div class="md-list-item-text">
+                                                <h3>{{ habilidade.nome }}</h3>
+                                            </div>
+                                            <div class="md-secondary">
+                                                <md-input-container md-block flex-gt-sm>
+                                                    <label for="conceito">Conceito</label>
+                                                    <md-select ng-model="ctrl.notasAvaliadas[$index]" class="conceitos" name="conceito">
+                                                        <md-option value=""></md-option>
+                                                        <md-option ng-repeat="conceito in ctrl.conceitos track by $index" ng-selected="" value="{{ conceito.id }}">{{ conceito.sigla }}</md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                        </md-list-item>
+                                    </md-list>
+                                </md-content>
+                                <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvarNotasQualitativas()" class="md-raised salvar-notas-quali save-button-fix">Salvar</md-button>
+                                <md-divider style="margin-top: 10px;"></md-divider>
+                            </div>
+                        </div>
+                    </div>
+                </md-card-content>
+            </md-card>
         </div>
         
     </div>
 
-    <div style="margin-top: 150px; text-align: center;" layout-gt-sm="column" layout-align="center center" ng-show="ctrl.msgVazio && !ctrl.editando">
+    <div style="margin-top: 150px; text-align: center;" layout-gt-sm="column" layout-align="center center" ng-show="ctrl.msgVazio && !ctrl.editando && ctrl.possuiEnturmacoes">
         Nenhuma avaliação cadastrada.<br />
         <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.abrirForm()" class="md-raised save-button-fix">Adicionar Avaliação</md-button>
     </div>
 
+    <div layout="row" ng-if="!ctrl.possuiEnturmacoes" layout-align="center center" style="margin-top: 25px;">
+        Não há alunos enturmados.
+    </div>
 </div>

@@ -5,7 +5,7 @@
      * @Controller InstituicaoController
      */
     class InstituicaoController {
-        constructor (service, util, $mdDialog, erudioConfig, $timeout) {
+        constructor (service, util, $mdDialog, erudioConfig, $timeout, $filter) {
             this.service = service;
             this.util = util;
             this.mdDialog = $mdDialog;
@@ -13,6 +13,7 @@
             this.timeout = $timeout;
             this.permissaoLabel = "INSTITUICOES";
             this.titulo = "Instituições";
+            this.filter = $filter;
             this.linkModulo = "/#!/instituicoes/";
             this.instituicao = null;
             this.pagina = 0;
@@ -45,7 +46,9 @@
             });
         }
         
-        executarOpcao(event,opcao,objeto) { this.instituicao = objeto; this.modalExclusao(event); }
+        executarOpcao(event,opcao,objeto) { 
+            this.instituicao = objeto; this.modalExclusao(event);
+        }
         
         modalExclusao(event) {
             var self = this;
@@ -103,6 +106,6 @@
         }
     }
     
-    InstituicaoController.$inject = ["InstituicaoService","Util","$mdDialog","ErudioConfig","$timeout"];
+    InstituicaoController.$inject = ["InstituicaoService","Util","$mdDialog","ErudioConfig","$timeout","$filter"];
     angular.module('InstituicaoController',['ngMaterial', 'util', 'erudioConfig']).controller('InstituicaoController',InstituicaoController);
 })();

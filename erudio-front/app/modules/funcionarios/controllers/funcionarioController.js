@@ -378,6 +378,14 @@
                     var result = Servidor.finalizar(vinculo, 'vinculos', 'Funcionário');
                     result.then(function(response) {
                         vinculo = response.data;
+                        if (!$scope.isAdmin) {
+                            var unidade = JSON.parse(sessionStorage.getItem("unidade"));
+                            $scope.nomeUnidade = unidade.nomeCompleto;
+                            $scope.alocacao.instituicao = unidade;
+                            $timeout(function(){
+                                Servidor.verificaLabels();
+                            },500);
+                        }
                         $scope.fechaLoader();
                         if (!$scope.vinculo.id) {
                             $scope.vinculo = response.data;

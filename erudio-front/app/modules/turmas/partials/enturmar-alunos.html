@@ -24,26 +24,26 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
-<div class="row form-geral card-panel" data-ng-if="!enturmacaoAutomatica">
+<div class="row form-geral card-panel" data-ng-if="!botaoEnturmacaoAutomatica">
     <div class="col s12 mobile-full">
         <div class="row form-box show-form">
             <div id="paginaAlunos">
                 <div class="row">
                     <h3 class='col s12 m8 l8 card-title-h3' style="padding: 20px; padding-top: 30px">Pesquisar Matriculas</h3>
-                    <div class="col s12 m4 l4" data-ng-if="botaoEnturmacaoAutomatica">
+                    <!--<div class="col s12 m4 l4" data-ng-if="botaoEnturmacaoAutomatica">
                         <a data-ng-click="carregarFormularioEnturmacaoAutomatica()" class="waves-effect waves-light btn dropdown-button green lighten-1 black-text right" style="top: 2.25rem">Enturmação Automática</a>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row">
                     <div class="row">
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">account_balance</i>
-                            <input id="unidadeEnsinoTurma" type="text" class="validate labelDisabled" value="{{turma.unidadeEnsino.tipo.sigla | uppercase}} {{turma.unidadeEnsino.nome | uppercase}}" disabled />
+                            <input id="unidadeEnsinoTurma" type="text" class="validate labelDisabled" value="{{ turma.unidadeEnsino.nomeCompleto | uppercase}}" disabled />
                             <label for="unidadeEnsinoTurma" class="labelDisabled">Unidade de Ensino</label>
                         </div>
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">school</i>
-                            <input id="cursoMatriculaTurma" type="text" class="validate labelDisabled"  value="{{turma.etapa.curso.nome| uppercase}}" disabled />
+                            <input id="cursoMatriculaTurma" type="text" class="validate labelDisabled" value="{{turma.etapa.curso.nome | uppercase}}" disabled />
                             <label for="cursoMatriculaTurma" class="labelDisabled">Curso</label>
                         </div>
                         <div class="input-field col s12 m12 l6">
@@ -77,7 +77,8 @@
         </div>
     </div>    
 </div>
-<div class="row col s12 card-panel" data-ng-if="!enturmacaoAutomatica && matriculas.length" style="margin-top: 2rem">
+
+<div class="row col s12 card-panel" data-ng-if="!botaoEnturmacaoAutomatica && matriculas.length" style="margin-top: 2rem">
     <div class="row">
         <h3 class='card-title-h3' style="padding: 1.5rem">Matrículas Compatíveis</h3>        
     </div>
@@ -110,7 +111,99 @@
         <a data-ng-click="enturmarMatriculas()" class="waves-effect waves-blue btn-flat right">ENTURMAR</a>                            
     </div>
 </div>
-<div class="row form-geral card-panel" data-ng-if="enturmacaoAutomatica">
+
+<div class="row form-geral card-panel" data-ng-if="botaoEnturmacaoAutomatica">
+    <div class="col s12 mobile-full">
+        <div class="row form-box show-form">
+            <div id="paginaAlunos">
+                <div class="row">
+                    <h3 class='col s12 m8 l8 card-title-h3' style="padding: 20px; padding-top: 30px">Remanejar Matriculas</h3>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">account_balance</i>
+                            <input id="unidadeEnsinoTurmaAuto" type="text" class="validate labelDisabled" value="{{ turma.unidadeEnsino.nomeCompleto | uppercase}}" disabled />
+                            <label for="unidadeEnsinoTurmaAuto" class="labelDisabled">Unidade de Ensino</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">school</i>
+                            <input id="cursoMatriculaTurmaAuto" type="text" class="validate labelDisabled"  value="{{turma.etapa.curso.nome | uppercase}}" disabled />
+                            <label for="cursoMatriculaTurmaAuto" class="labelDisabled">Curso</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">layers</i>
+                            <select id="etapa" data-ng-model="turmasAuto.etapa.id" data-ng-change="buscarTurmasAuto();" data-ng-disabled="!etapas.length">
+                                <option disabled selected></option> 
+                                <option ng-if="etapa.ordem < turma.etapa.ordem" data-ng-selected="etapas.length === 1" value="{{ etapa.id }}" data-ng-repeat="etapa in etapas | orderBy: 'nome'">{{ etapa.nomeExibicao }}</option>
+                            </select>
+                            <label for="etapa">Etapa</label>
+                        </div>
+                        <div class="input-field col s12 m12 l6">
+                            <i class="material-icons prefix">layers</i>
+                            <select id="turma" data-ng-model="turmasAuto.turma.id" data-ng-disabled="!turmasAutoSelect.length">
+                                <option disabled selected></option> 
+                                <option data-ng-selected="turmasAutoSelect.length === 1" value="{{ turma.id }}" data-ng-repeat="turma in turmasAutoSelect | orderBy: 'nome'">{{ turma.nomeCompleto }}</option>
+                            </select>
+                            <label for="turma">Turma</label>
+                        </div>
+                    </div>
+                    <div class="row end-card">
+                        <div class="col s12 right-align">
+                            <a data-ng-click="reiniciarBuscaMatriculasRemanejamento()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                            <a data-ng-click="buscarMatriculasRemanejamento()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">search</i>BUSCAR</a>
+                        </div>
+                    </div>
+                </div>
+                <div data-ng-show="matriculas.length && false" class="fixed-action-btn">
+                    <a class="btn-floating btn-large red">
+                        <i class="medium material-icons">apps</i>
+                    </a>
+                    <ul style="bottom: 70px !important;">
+                        <li><a class="tooltipped btn-floating yellow darken-1" data-position="left" data-delay="50" data-tooltip="Desmarcar Todas" data-ng-click="removerTodasMatriculas()"><i class="material-icons">check_box_outline_blank</i></a></li>
+                        <li><a data-ng-show="(turma.limiteAlunos - turma.quantidadeAlunos) > 0" class="tooltipped btn-floating green" data-position="left" data-delay="50" data-tooltip="Salvar Enturmação" data-ng-click="finalizarEnturmacao()"><i class="material-icons">save</i></a></li>
+                    </ul>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<div class="row col s12 card-panel" data-ng-if="botaoEnturmacaoAutomatica && matriculasAuto.length" style="margin-top: 2rem">
+    <div class="row">
+        <h3 class='card-title-h3' style="padding: 1.5rem">Alunos Disponíveis</h3>        
+    </div>
+    <div style="padding-left: 1.5rem" data-ng-class="{'texto-vermelho': alunosCompativeisSelecionadosAuto > turma.limiteAlunos-turma.quantidadeAlunos, 'negrito': alunosCompativeisSelecionadosAuto > turma.limiteAlunos-turma.quantidadeAlunos}">
+        Vagas a serem preenchidas: {{alunosCompativeisSelecionadosAuto}}/{{turma.limiteAlunos - turma.quantidadeAlunos}}
+    </div>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th style="padding-left: 1.5rem">
+                    <input checked type="checkbox" class="filled-in" id="enturmacoesCheckAllAuto" data-ng-click="selecionarTodasMatriculasAutomaticas()"/>
+                    <label for="enturmacoesCheckAllAuto"></label>
+                </th>
+                <th>Código</th>
+                <th>Aluno</th>                                
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="matricula in matriculasAuto| orderBy:'aluno.nome':reverse">
+                <td style="padding-left: 1.5rem">
+                    <input checked class="filled-in matricula-compativel-auto" type="checkbox" id="{{matricula.matricula.codigo}}turmaAuto" data-ng-click="selecionarUmaMatriculaCompativelAuto(matricula.matricula.codigo)"/>
+                    <label for="{{matricula.matricula.codigo}}turmaAuto"></label>
+                </td>
+                <td>{{ matricula.matricula.codigo | uppercase}}</td>
+                <td>{{ matricula.matricula.aluno.nome | uppercase}}</td>                                                            
+            </tr>
+        </tbody>
+    </table>
+    <div class="row end-card">
+        <a data-ng-click="enturmarMatriculasAutomaticas()" class="waves-effect waves-blue btn-flat right">REMANEJAR</a>                            
+    </div>
+</div>
+
+<!--<div class="row form-geral card-panel" data-ng-if="enturmacaoAutomatica">
     <div class="col s12 mobile-full" style="padding-left: 0; padding-right: 0">
         <div class="row form-box show-form">
             <div class="row">
@@ -177,4 +270,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

@@ -38,6 +38,7 @@
                     <li id="tab_documentos" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(3, false)" href="#tab-documentos" >Documentos</a></li>
                     <li id="tab_particularidades" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(4, false)" href="#tab-particularidades" >Deficiencias</a></li>
                     <li id="tab_necessidades" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(5, false)" href="#tab-necessidades" >Necessidades</a></li>
+                    <li id="tab_beneficios" class="tab col s3" data-ng-class="{'disabled': !pessoa.id}"><a data-ng-click="mudaTelaCadastro(6, false)" href="#tab-beneficios" >Benefícios</a></li>
                 </ul>
                 <form id="cadastroForm">                           
                     <div data-ng-show="dados" id="tab-dados" style="margin-top: 1rem;">               
@@ -98,6 +99,12 @@
                                     <input id="naturalidade" class="dropdown" type="text" data-ng-model="pessoa.naturalidade.nome" data-ng-change="buscarNaturalidade()" data-ng-disabled="!escrita" data-activates='dropCidades'>
                                     <label for="naturalidade">Naturalidade</label>
                                 </div>
+                                <div class="input-field col s12 m12 l6" data-ng-show="pessoa.nacionalidade === 'ESTRANGEIRO' || pessoa.nacionalidade === 'ESTRANGEIRO_NATURALIZADO'">
+                                    <i class="material-icons prefix">place</i>
+                                    <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                    <input id="paisOrigem" class="dropdown" type="text" data-ng-model="pessoa.paisOrigem.nome" data-ng-change="buscarPaises()" data-ng-disabled="!escrita" data-activates='dropPaises'>
+                                    <label for="paisOrigem">País de Origem</label>
+                                </div>
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">wc</i>
                                     <select id="estadoCivil" style="display: none;" data-ng-model="pessoa.estadoCivil.id" data-ng-disabled="!escrita" required>                                
@@ -145,6 +152,7 @@
                     <docs-pessoa id="tab-documentos"></docs-pessoa>
                     <parti-pessoa id="tab-particularidades"></parti-pessoa>                                        
                     <contatos-pessoa id="tab-contatos"></contatos-pessoa>  
+                    <beneficios-pessoa id="tab-beneficios"></beneficios-pessoa>  
                     <div class="row end-card" style="padding-top:15px;padding-bottom:15px;" data-ng-if="escrita">
                         <div class="col s12 right-align" id="avancaEtapa">
                             <a data-ng-click="verificaPessoa()" class="waves-effect waves-blue btn-flat"><i class="material-icons left">save</i>SALVAR</a>

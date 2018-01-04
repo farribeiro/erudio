@@ -1,0 +1,74 @@
+<div layout-gt-sm="row" style="margin-top: 20px;">
+    
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nome">Nome/Sobrenome</label>
+        <md-icon class="material-icons">assignment_ind</md-icon>
+        <input id="nome" ng-model="ctrl.busca.nome" type="text" name="nome"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="dataNasc">Data de Nascimento</label>
+        <md-icon class="material-icons">event</md-icon>
+        <input id="dataNasc" ng-model="ctrl.busca.dataNasc" class="maskData" type="text" name="dataNasc"/>
+        <div class="hint">Apenas Números</div>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="nomeMae">Nome da Mãe</label>
+        <md-icon class="material-icons">assignment_ind</md-icon>
+        <input id="nomeMae" ng-model="ctrl.busca.nomeMae" type="text" name="nomeMae"/>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="tipo_documento">Documento</label>
+        <md-icon class="material-icons">perm_identity</md-icon>
+        <md-select ng-model="ctrl.busca.tipoDocumento" id="tipo_documento" name="tipo_documento">
+            <md-option value=""></md-option>
+            <md-option value="CPF">CPF</md-option>
+            <md-option value="certidaoNova">Certidão Nova (32 dígitos)</md-option>
+            <md-option value="certidaoAntiga">Certidão Antiga (termo/livro/folha)</md-option>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.busca.tipoDocumento === 'CPF'">
+        <label for="cpf">CPF</label>
+        <md-icon class="material-icons">credit_card</md-icon>
+        <input id="cpf" ng-model="ctrl.busca.cpf" type="text" name="cpf"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.busca.tipoDocumento === 'certidaoNova'">
+        <label for="cNova">Certidão</label>
+        <md-icon class="material-icons">book</md-icon>
+        <input id="cNova" ng-model="ctrl.busca.certidaoNova" type="text" name="cNova"/>
+    </md-input-container>
+
+</div>
+
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.busca.tipoDocumento === 'certidaoAntiga'">
+        <label for="cTermo">Termo</label>
+        <md-icon class="material-icons">book</md-icon>
+        <input id="cTermo" ng-model="ctrl.busca.termo" type="text" name="cTermo"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.busca.tipoDocumento === 'certidaoAntiga'">
+        <label for="cLivro">Livro</label>
+        <md-icon class="material-icons">book</md-icon>
+        <input id="cLivro" ng-model="ctrl.busca.livro" type="text" name="cLivro"/>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.busca.tipoDocumento === 'certidaoAntiga'">
+        <label for="cFolha">Folha</label>
+        <md-icon class="material-icons">book</md-icon>
+        <input id="cFolha" ng-model="ctrl.busca.folha" type="text" name="cFolha"/>
+    </md-input-container>
+
+</div>
+
+<md-button md-colors="::{backgroundColor: 'default-accent-500'}" style="margin-bottom: 20px;" ng-click="ctrl.buscarPessoas()" class="md-raised save-button-fix">Buscar</md-button>
+<md-button style="margin-bottom: 20px;" ng-click="ctrl.limparBusca()" class="md-raised md-primary save-button-fix">Limpar Busca</md-button>

@@ -1,66 +1,128 @@
-<img src="{{ config.dominio }}/apps/admin/historicos/assets/images/alunos.jpg" class="modal-image" alt="Médias Parciais">
-<h2 class="modal-title">Gerenciar disciplinas</h2>
-<md-content class="modal-content">
-    <div class="row" style="margin-bottom: 15px;">
-        <div class="modal-info"><small>Se a disciplina desejada não estiver na lista, entre em contato com o Administrador do Sistema para incluí-la.</small></div>
+<div layout-gt-sm="row">
+    <div layout-gt-sm="row" class="lista-items w100">
+        <md-card flex-gt-sm="50">
+            <md-card-content>
+                <h3>Disciplinas Cadastradas</h3>
+                <md-list flex class="no-padding white-content">
+                    <md-list-item id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.disciplinasCursadas">
+                        <a class="link-list" ng-click="ctrl.carregarDisciplina(objeto,$index)"><div class="md-list-item-text" layout="column">
+                            <h3>{{ objeto.nomeExibicao }}</h3>
+                            <p>{{ objeto.etapa.nomeExibicao }}</p>
+                        </div></a>
+                        <div class="md-secondary">
+                            <md-button hide show-gt-sm ng-click="ctrl.modalExclusao($event, objeto)" class="md-icon-button" aria-label="remover">
+                                <md-tooltip md-direction="top">Remover</md-tooltip>
+                                <md-icon class="material-icons">delete</md-icon>
+                            </md-button>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-card-content>
+        </md-card>
+
+        <md-card flex-gt-sm="50">
+            <md-card-content>
+                <h3 ng-show="ctrl.cursada.id === undefined">Criar Disciplina</h3>
+                <h3 ng-show="ctrl.cursada.id !== undefined">Disciplina: {{ ctrl.cursada.disciplina.nomeExibicao }}</h3>
+                <small ng-show="ctrl.cursada.id === undefined">Se a disciplina desejada não estiver na lista, entre em contato com o Administrador do Sistema para incluí-la.</small>
+
+                <form style="margin-top: 10px;" id="novaDisciplinaForm" name="novaDisciplinaForm" class="modal-form">
+                    <div class="row" ng-show="ctrl.cursada.id === undefined">
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="etapa">Etapa</label>
+                            <md-icon class="material-icons">school</md-icon>
+                            <md-select ng-model="ctrl.etapa" ng-change="ctrl.buscarDisciplinas(ctrl.etapa)" id="etapa" name="etapa" required>
+                                <md-option value=""></md-option>
+                                <md-option ng-repeat="item in ctrl.etapas track by $index" value="{{ item.id }}">{{ item.nomeExibicao }}</md-option>
+                            </md-select>
+                            <div ng-messages="novaDisciplinaForm.etapa.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+
+                    <div class="row" ng-show="ctrl.cursada.id === undefined">
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="disciplina">Disciplina</label>
+                            <md-icon class="material-icons">school</md-icon>
+                            <md-select ng-change="ctrl.selecionarDisciplina(ctrl.disciplina)" ng-model="ctrl.disciplina" id="disciplina" name="disciplina" required>
+                                <md-option value=""></md-option>
+                                <md-option ng-repeat="item in ctrl.disciplinasTodas track by $index" value="{{ item.id }}">{{ item.nomeExibicao }}</md-option>
+                                <md-option value="outro">Outro</md-option>
+                            </md-select>
+                            <div ng-messages="novaDisciplinaForm.disciplina.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+            
+                    <md-input-container class="md-icon-float autocomplete-wrap" ng-show="ctrl.abreNaoOfertada" md-block flex-gt-sm>
+                        <md-icon class="material-icons">school</md-icon>
+                        <md-autocomplete class="autocomplete-form" flex md-input-name="disciplinasNaoOfertadas" md-input-minlength="3" md-selected-item="ctrl.cursada.disciplina" md-search-text="ctrl.nomeDisciplina" md-items="item in ctrl.buscarDisciplinaNaoOfertada(ctrl.nomeDisciplina)" md-item-text="item.nomeExibicao" md-floating-label="Procurar Disciplina" md-require-match>
+                            <span md-highlight-text="ctrl.nomeDisciplina">{{ item.nomeExibicao }}</span>
+                        </md-autocomplete>
+                    </md-input-container>
+
+                    <div class="row">
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="media">Média Final</label>
+                            <md-icon class="material-icons">filter_7</md-icon>
+                            <input id="media" ng-model="ctrl.cursada.mediaFinal" class="maskNumeros" type="text" name="media" required/>
+                            <div class="hint">Apenas Números</div>
+                            <div ng-messages="novaDisciplinaForm.cursada.mediaFinal.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+            
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="freq">Frequência(%)</label>
+                            <md-icon class="material-icons">filter_5</md-icon>
+                            <input id="freq" ng-model="ctrl.cursada.frequenciaTotal" class="maskNumeros" type="text" name="freq" required/>
+                            <div class="hint">Apenas Números</div>
+                            <div ng-messages="novaDisciplinaForm.cursada.frequenciaTotal.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+            
+                    <div class="row">
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="status">Status</label>
+                            <md-icon class="material-icons">location_on</md-icon>
+                            <md-select ng-disabled="atualizacaoDisciplina" ng-model="ctrl.cursada.status" id="status" name="status" required>
+                                <md-option value=""></md-option>
+                                <md-option value="APROVADO">Aprovado</md-option>
+                                <md-option value="DISPENSADO">Dispensado</md-option>
+                            </md-select>
+                            <div ng-messages="novaDisciplinaForm.cursada.cursada.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container class="md-icon-float" md-block flex-gt-sm>
+                            <label for="ano">Ano Encerramento</label>
+                            <md-icon class="material-icons">event</md-icon>
+                            <input id="ano" ng-model="ctrl.cursada.ano" type="text" class="maskNumeros" name="ano" required/>
+                            <div class="hint">Apenas Números (YYYY)</div>
+                            <div ng-messages="novaDisciplinaForm.cursada.ano.$error" class="errors-wrapper">
+                                <div ng-message="required">Este campo é obrigatório.</div>
+                            </div>
+                        </md-input-container>
+                    </div>
+            
+                    <div class="row"  ng-if="ctrl.cursada.id === undefined">
+                        <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvarNovaDisciplina()" class="md-raised">SALVAR</md-button>
+                        <md-button ng-click="ctrl.limparCampos()" class="md-raised md-primary">LIMPAR CAMPOS</md-button>
+                    </div>
+            
+                    <div class="row"  ng-if="ctrl.cursada.id !== undefined">
+                        <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.atualizarDisciplina()" class="md-raised">ATUALIZAR</md-button>
+                        <md-button ng-click="ctrl.limparCampos()" class="md-raised md-primary">LIMPAR CAMPOS</md-button>
+                    </div>
+                </form>
+            </md-card-content>
+        </md-card>
     </div>
+</div>
 
-    <form id="novaDisciplinaForm" name="novaDisciplinaForm" class="modal-form">
-        <div class="row">
-            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                <label for="disciplina">Disciplina</label>
-                <md-icon class="material-icons">import_contacts</md-icon>
-                <md-select ng-disabled="atualizacaoDisciplina" ng-model="cursada.disciplina.id" id="disciplina" name="disciplina" required>
-                    <md-option value=""></md-option>
-                    <md-option ng-repeat="item in todasDisciplinas track by $index" value="{{ item.id }}">{{ item.nomeExibicao }}</md-option>
-                </md-select>
-                <div ng-messages="novaDisciplinaForm.cursada.disciplina.id.$error" class="errors-wrapper">
-                    <div ng-message="required">Este campo é obrigatório.</div>
-                </div>
-            </md-input-container>
-        </div>
-
-        <div class="row">
-            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                <label for="media">Média Final</label>
-                <md-icon class="material-icons">filter_7</md-icon>
-                <input id="media" ng-model="cursada.mediaFinal" type="text" name="media" required/>
-                <div ng-messages="novaDisciplinaForm.cursada.mediaFinal.$error" class="errors-wrapper">
-                    <div ng-message="required">Este campo é obrigatório.</div>
-                </div>
-            </md-input-container>
-
-            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                <label for="freq">Frequência(%)</label>
-                <md-icon class="material-icons">filter_5</md-icon>
-                <input id="freq" ng-model="cursada.frequenciaTotal" type="text" name="freq" required/>
-                <div ng-messages="novaDisciplinaForm.cursada.frequenciaTotal.$error" class="errors-wrapper">
-                    <div ng-message="required">Este campo é obrigatório.</div>
-                </div>
-            </md-input-container>
-        </div>
-
-        <div class="row">
-            <md-input-container class="md-icon-float" md-block flex-gt-sm>
-                <label for="status">Status</label>
-                <md-icon class="material-icons">location_on</md-icon>
-                <md-select ng-disabled="atualizacaoDisciplina" ng-model="cursada.status" id="status" name="status" required>
-                    <md-option value=""></md-option>
-                    <md-option value="APROVADO">Aprovado</md-option>
-                    <md-option value="DISPENSADO">Dispensado</md-option>
-                </md-select>
-                <div ng-messages="novaDisciplinaForm.cursada.cursada.$error" class="errors-wrapper">
-                    <div ng-message="required">Este campo é obrigatório.</div>
-                </div>
-            </md-input-container>
-        </div>
-
-        <div class="row"  ng-if="cursada.id === undefined">
-            <md-button ng-click="travarCampos()" class="md-accent salvar-nova-disciplina">Salvar</md-button>
-        </div>
-
-        <div class="row"  ng-if="cursada.id !== undefined">
-            <md-button class="md-accent atualizar-nova-disciplina">Atualizar</md-button>
-        </div>
-    </form>
-</md-content>
+<botao-voltar></botao-voltar>

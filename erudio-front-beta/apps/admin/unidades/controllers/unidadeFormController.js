@@ -184,7 +184,7 @@
                         if (idx === -1) { this.removerCurso.splice(idx,1); }
                     });
                 }
-                this.scope.unidade.cursos = this.cursosUnidade; console.log(this.cursosUnidade);
+                this.scope.unidade.cursos = this.cursosUnidade;
                 this.scope.unidade.removerCurso = this.removerCurso;
                 this.scope.unidade.instituicaoPai.id = parseInt(this.scope.unidade.instituicaoPai.id);
                 this.scope.unidade.tipo.id = parseInt(this.scope.unidade.tipo.id);

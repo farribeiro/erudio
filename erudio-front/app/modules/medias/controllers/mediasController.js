@@ -115,6 +115,7 @@
                     for (var i=0; i<qtdeMedias; i++) { 
                         var label = (i+1)+"º "+unidade; medias.push({id:i+1, nome: label}); 
                         if (i === qtdeMedias-1) { 
+                            medias.push({id:i+2, nome: (i+2)+"º Avaliação"});
                             $timeout(function (){ $scope.medias = medias; },100); $timeout(function () { $('#media').material_select('destroy'); $('#media').material_select(); $('#mediaNota').material_select('destroy'); $('#mediaNota').material_select();  }, 500);
                         }
                     }
@@ -123,7 +124,20 @@
         };
         
         //VERIFICA TIPO DE AVALIACAO
-        $scope.verificaTipoAvaliacao = function (){ var retorno = false; if ($scope.tipoAvaliacao === "QUANTITATIVO") { retorno = true; } else { retorno = false; } return retorno; };
+        $scope.verificaTipoAvaliacao = function (){ 
+            var retorno = false; 
+            if ($scope.tipoAvaliacao === "QUANTITATIVO") { 
+                retorno = true; 
+            } else { 
+                console.log($scope.enturmacoesNotas);
+                if ($scope.enturmacoesNotas.length > 0 && $scope.enturmacoesNotas[0].nome === "EXAME") {
+                    retorno = true;
+                } else {
+                    retorno = false; 
+                }
+            } 
+            return retorno; 
+        };
         
         //CARREGA O SELECT DE ETAPAS
         $scope.buscarEtapas = function (id) {
@@ -306,14 +320,19 @@
                     for (var qualitativa in $scope.qualitativas) {
                         $scope.qualitativas[qualitativa].avaliacao = {id: $scope.avaliacaoQualitativaAtual.id}; notas.push($scope.qualitativas[qualitativa]);
                         if (cont === tamanho-1){
+                            var notaQualitativa = null;
                             if ($scope.notaQualitativaAtual.length === 0) {
-                                var notaQualitativa = angular.copy($scope.notaQualitativa);
+                                notaQualitativa = $scope.notaQualitativa;
                                 notaQualitativa.avaliacao = {id: $scope.avaliacaoQualitativaAtual.id};
                                 notaQualitativa.media = {id: $scope.enturmacao.id};
                             } else {
-                                var notaQualitativa = angular.copy($scope.notaQualitativaAtual);
+                                notaQualitativa = $scope.notaQualitativaAtual;
+                                notas.forEach(function(nota,n){
+                                    nota.avaliacao = {id: notaQualitativa.avaliacao.id};
+                                    if (n === notas.length-1) { notaQualitativa.habilidadesAvaliadas = notas; }
+                                });
+                                 notaQualitativa.media = {id: notaQualitativa.media.id};
                             }
-                            notaQualitativa.habilidadesAvaliadas = notas;
                             $timeout(function(){
                                 if (notaQualitativa.avaliacao.id !== undefined) { delete notaQualitativa.avaliacao.disciplina.professores; }
                                 var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
@@ -321,7 +340,7 @@
                                     var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
                                     promiseMedia.then(function(response){
                                         if (response.data !== null && response.data !== undefined) { 
-                                            var media = response.data; var result = Servidor.customPut(media,'medias/'+media.id+'?calcular=1',null);
+                                            var media = response.data; media.valor = null; var result = Servidor.customPut(media,'medias/'+media.id,null);
                                             result.then(function(){
                                                 $scope.buscarAlunos(); $scope.fechaProgresso(); 
                                             });
@@ -339,7 +358,7 @@
                 var avaliacaoQualitativa = angular.copy($scope.avaliacaoQualitativa); var notas = [];
                 avaliacaoQualitativa.nome = 'Avaliação Final'; var tamanhoHabilidades = $scope.habilidades.length;
                 avaliacaoQualitativa.media = $scope.turmaBusca.media.id; avaliacaoQualitativa.disciplina.id = $scope.turmaBusca.disciplina.id;
-                console.log($scope.avaliacaoAtiva);
+                //console.log($scope.avaliacaoAtiva);
                 if ($scope.avaliacaoAtiva !== null) {
                     var tamanho = Object.keys($scope.qualitativas).length; var cont = 0;
                     if (tamanho === tamanhoHabilidades) {
@@ -350,13 +369,14 @@
                                 notaQualitativa.avaliacao = {id: $scope.avaliacaoAtiva.id};
                                 notaQualitativa.media = {id: $scope.enturmacao.id};
                                 notaQualitativa.habilidadesAvaliadas = notas;
+                                delete notaQualitativa.valor;
                                 $timeout(function(){
                                     var promiseNota = Servidor.finalizar(notaQualitativa, 'notas-qualitativas','Notas');
                                     promiseNota.then(function(response){ 
                                         var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
                                         promiseMedia.then(function(response){
                                             if (response.data !== null && response.data !== undefined) { 
-                                                var media = response.data; var result = Servidor.customPut(media,'medias/'+media.id+'?calcular=1',null);
+                                                var media = response.data; media.valor = null; var result = Servidor.customPut(media,'medias/'+media.id,null);
                                                 result.then(function(){
                                                     $scope.buscarAlunos(); $scope.fechaProgresso();
                                                 });
@@ -388,7 +408,7 @@
                                             var promiseMedia = Servidor.buscarUm('medias',response.data.media.id);
                                             promiseMedia.then(function(response){
                                                 if (response.data !== null && response.data !== undefined) { 
-                                                    var media = response.data; var result = Servidor.customPut(media,'medias/'+media.id+'?calcular=1',null);
+                                                    var media = response.data; media.valor = null; var result = Servidor.customPut(media,'medias/'+media.id,null);
                                                     result.then(function(){
                                                         $scope.buscarAlunos(); $scope.fechaProgresso();
                                                     });

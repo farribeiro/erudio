@@ -1,0 +1,32 @@
+<div layout-gt-sm="row">
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="particularidades">Particularidades</label>
+        <md-icon class="material-icons">accessible</md-icon>
+        <md-select ng-model="ctrl.particularidadesSelecionadas" id="particularidades" name="particularidades" multiple>
+            <md-optgroup label="Particularidades">
+                <md-option ng-repeat="particularidade in ctrl.particularidades track by $index" value="{{particularidade.id}}">{{ particularidade.nome }}</md-option>
+            </md-optgroup>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container ng-show="ctrl.necessidades.length > 0" class="md-icon-float" md-block flex-gt-sm>
+        <label for="necessidades">Necessidades Especiais</label>
+        <md-icon class="material-icons">accessible</md-icon>
+        <md-select ng-model="ctrl.necessidadesSelecionadas" id="necessidades" name="necessidades" multiple>
+            <md-optgroup label="Necessidades">
+                <md-option ng-repeat="necessidade in ctrl.necessidades track by $index" value="{{necessidade.id}}">{{ necessidade.nome }}</md-option>
+            </md-optgroup>
+        </md-select>
+    </md-input-container>
+
+    <md-input-container class="md-icon-float" md-block flex-gt-sm>
+        <label for="beneficios">Benefícios Sociais</label>
+        <md-icon class="material-icons">assignment_turned_in</md-icon>
+        <md-select ng-model="ctrl.beneficiosSelecionados" id="beneficios" name="beneficios" multiple>
+            <md-optgroup label="Benefícios">
+                <md-option ng-repeat="beneficio in ctrl.beneficios track by $index" value="{{beneficio.id}}">{{ beneficio.nome }}</md-option>
+            </md-optgroup>
+        </md-select>
+    </md-input-container>
+</div>

@@ -1,0 +1,93 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<!-- CSS DO MODULO -->
+<link rel="stylesheet" type="text/css" href="{{ cssUrl }}/app/modules/ieducar/assets/css/ieducar.css"/>
+
+<div id="listaTurma" style="position: relative;" >
+    
+    <!-- BANNER --> 
+    <div class="row" style="height: 150px;">
+        <div class="col s12 certificado-banner"></div>
+        <div class="col s12 gradient relative" style="height: 150px;">
+            <div class='absolute title-module' style='bottom: 10px; color: #fafafa; font-size: 2.5rem;'></div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div id="faltas" class="col s12" style="padding: 0;">
+            <!-- BUSCA -->
+            <div class="row" data-ng-show="lista === true">
+                <div style="background: #fafafa; padding-top: 10px;" class="col s12">
+                    <!--<div class="input-field col s12 m12 l6" data-ng-show="isAdmin">
+                        <i class="material-icons prefix">account_balance</i>
+                        <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                        <input id="unidadeTurmaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaIeducar">
+                        <label for="unidadeTurmaAutoComplete">Unidade de Ensino</label>
+                    </div>-->
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">people</i>
+                        <input id="nomeAluno" type="text" class="validate" data-ng-model="alunoNome" required />
+                        <label for="nomeAluno">Nome do Aluno*</label>
+                    </div>
+                    <div class="col s12 m12 l6 input-field">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="nomeAluno" type="text" class="validate data" data-ng-model="dataNascAluno" required />
+                        <label for="dataNasc">Data de Nascimento*</label>
+                    </div>
+                    
+                    <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px;">
+                        <a data-ng-click="reiniciarBusca()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">delete</i>LIMPAR BUSCA</a>
+                        <a ng-click="buscarAlunos()" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">search</i>BUSCAR ALUNOS</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div ng-show="alunos.length" class="row mobile-full">
+                <table class='highlight striped table-pattern'>
+                    <thead>
+                        <tr>
+                            <th class="hide-on-small-only left-align" data-field='aluno'>Aluno</th>
+                            <th class='center-align hide-on-small-only center-align' data-field='opcoes'>Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="aluno in alunos track by $index">
+                            <td style="cursor: pointer;" class="hide-on-small-only center-align">{{ aluno.nome }}</td>
+                            <td class="center-align hide-on-small-only">
+                                <i style="cursor: pointer;" ng-click="gerarHistorico(aluno)" class="material-icons">print</i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+    
+    <controle-ieducar></controle-ieducar>
+    <modal-ieducar></modal-ieducar>
+</div>

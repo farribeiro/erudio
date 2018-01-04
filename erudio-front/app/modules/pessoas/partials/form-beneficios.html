@@ -1,0 +1,13 @@
+<div id="benefPessoa">
+    <div class="row">
+        <div class="col s12 m12 l12">
+            <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card">Benefícios Sociais</h5>
+        </div>                        
+    </div>
+    <div class="row ajuste-margin-bottom" style="margin-bottom: 2.5rem !important;">
+        <div class="input-field col s12 m12 l6" style="margin-top:2rem;"data-ng-repeat="beneficio in beneficios">                           
+            <input data-ng-checked="verificaBeneficio(beneficio.id)" data-ng-click="salvarBeneficio(beneficio)" type="checkbox" class="filled-in" id="beneficio{{beneficio.id}}" data-ng-disabled="!escrita" />
+            <label style="font-size: 0.8rem !important;" id="beneficios" for="beneficio{{beneficio.id}}" >{{beneficio.nome| uppercase}}</label>
+        </div>
+    </div> 
+</div>

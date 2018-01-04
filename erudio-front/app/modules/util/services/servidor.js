@@ -73,11 +73,16 @@
             
         //GET PDF
         this.getPDF = function(url){
-            var token = "Bearer "+sessionStorage.getItem('token');
+            var token = "Bearer "+sessionStorage.getItem('token'); self = this;
             return $http.get(url,{headers: {"JWT-Authorization":token},responseType: 'arraybuffer'}).success(function(data){
                 var file = new Blob([data],{type: 'application/pdf'});
                 var fileURL = URL.createObjectURL(file);
                 window.open(fileURL);
+            }).error(function(data){
+                var dataView = new DataView(data);
+                var decoder = new TextDecoder('utf8');
+                var response = JSON.parse(decoder.decode(dataView));
+                Materialize.toast(response.error.message, 4000);
             });
         };
         
@@ -127,6 +132,11 @@
             var rest = this.preparaRestangular();
             rest.setFullResponse(true);
             return rest.all(endereco).getList(opcoes);
+        };
+        
+        this.buscarIeducar = function(endereco) {
+            var token = "Bearer "+sessionStorage.getItem('token'); self = this;
+            return $http.get(endereco,{headers: {"JWT-Authorization":token}});
         };
         
         this.getDate = function() {
@@ -229,6 +239,23 @@
             }, function(error) { Toast.show('','', error.status); });
             return resultado;
         };
+        
+        this.customPost = function (objeto, endereco, label) {
+            resultado = $http({
+                method: "POST",
+                url: Restangular.configuration.baseUrl + "/" + endereco,
+                data: objeto,
+                headers: {'JWT-Authorization': this.criarHeader()}
+            });
+            resultado.then(function(data){
+                if (data.status === 200 || data.status === 204) {
+                    if (label) { Toast.show(label, 'salvo(a)', data.status); }
+                } else {
+                    resultado = false;
+                }
+            }, function(error) { Toast.show('','', error.status); });
+            return resultado;
+        };
 
         this.salvarLote = function(objeto, endereco, label) {
             resultado = $http({
@@ -279,6 +306,17 @@
                     $(this).find('label').removeClass('active');
                 }
                 if ($(this).find('input').hasClass('select-dropdown')) {
+                    $(this).find('label').removeClass('active');
+                }
+            });
+        };
+        
+        this.verificaTextarea = function (){
+            $('.input-field').each(function (){
+                var val2 = $(this).find('textarea').val();
+                if (val2 !== null && val2 !== undefined && val2 !== '') {
+                    $(this).find('label').addClass('active');
+                } else {
                     $(this).find('label').removeClass('active');
                 }
             });

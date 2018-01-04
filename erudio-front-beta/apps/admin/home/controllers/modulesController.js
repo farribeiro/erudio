@@ -44,7 +44,24 @@
         'ProfessorController',
         'ProfAvaliacoesController',
         'AulaController',
-        'ChamadaController',
+        'MediaController',
+        'EventoHomeController',
+        'PerfilController',
+        'PessoaController',
+        'PessoaFormController',
+        'BoletimController',
+        'AtaController',
+        'CertificadoController',
+        'DiarioFrequenciaController',
+        'DiarioNotasController',
+        'FichaRematriculaController',
+        'HistoricoDisciplinaController',
+        'HistoricoConclusaoController',
+        'HistoricoObservacaoController',
+        'IeducarController',
+        'AlunosDefasadosController',
+        'AlunosEnturmadosController',
+        'AlunosANEEController',
         'teste'
     ];
     
@@ -112,7 +129,15 @@
         'AulaService',
         'DiaService',
         'DisciplinaOfertadaService',
-        'FrequenciaService'
+        'FrequenciaService',
+        'BeneficioService',
+        'AlocacaoService',
+        'ObservacaoService',
+        'IeducarService',
+        'AlunosDefasadosService',
+        'AlunosEnturmadosService',
+        'EtapaOfertadaService',
+        'AlunoANEEService'
     ];
     
     var todosModulos = configs.concat(services,controllers,directives);

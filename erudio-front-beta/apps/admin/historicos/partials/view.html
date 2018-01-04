@@ -1,59 +1,31 @@
 <div layout-gt-sm="row">
     <div class="lista-items w100">
-        <md-subheader class="md-primary">Etapas</md-subheader>
-        <md-content class="no-margin-up-down">
+        <md-card>
+            <md-card-content>
+                <h3>Aluno: {{ matricula.aluno.nome }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Disciplina</th>
+                            <th ng-repeat="etapa in ctrl.etapas track by $index">{{ etapa.nomeExibicao }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="disciplina in ctrl.disciplinasCursadas track by $index">
+                            <td>{{ disciplina.disciplina.nome }}</td>
+                            <td ng-repeat="etapa in ctrl.etapas track by $index">{{ ctrl.filtrarNota(disciplina,etapa) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+            <md-card-actions>
+                <a href="#!/historicos/{{ matricula.id }}/disciplinas"><md-button md-colors="::{backgroundColor: 'default-accent-500'}" class="md-raised">GERENCIAR DISCIPLINAS</md-button></a>
+                <a href="#!/historicos/{{ matricula.id }}/dados-conclusao"><md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.buscarMatriculas(true)" class="md-raised">DADOS DE CONCLUSÃO</md-button></a>
+                <a href="#!/historicos/{{ matricula.id }}/observacoes"><md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.buscarMatriculas(true)" class="md-raised">OBSERVAÇÕES</md-button></a>
+                <md-button ng-click="ctrl.imprimir()" class="md-raised md-primary">IMPRIMIR</md-button>
+            </md-card-actions>
+        </md-card>
 
-            <div class="expansion-wrapper" ng-repeat="objeto in ctrl.etapas">
-                <div ng-if="objeto.etapaCursada === undefined" ng-click="ctrl.abrirPainel($index, objeto)" ng-class="ctrl.ultimoPainel($index)" class="condensed-panel-{{ $index }} condensed-panel md-whiteframe-2dp">
-                    <strong>{{ objeto.nome }}</strong>
-                </div>
-                <div ng-if="objeto.etapaCursada !== undefined" ng-click="ctrl.abrirPainel($index, objeto)" ng-class="ctrl.ultimoPainel($index)" class="condensed-panel-{{ $index }} condensed-panel md-whiteframe-2dp">
-                    <strong>{{ objeto.nome }}</strong> - <em>{{ objeto.etapaCursada.unidadeEnsino }}/{{ objeto.etapaCursada.ano }}</em> - <small>{{ objeto.etapaCursada.cidade.nome }}/{{ objeto.etapaCursada.cidade.estado.sigla }}</small>
-                </div>
-                <div class="expanded-panel-{{ $index }} expanded-panel md-whiteframe-3dp">
-                    <div ng-if="objeto.etapaCursada === undefined" class="row expanded-title">{{ objeto.nome }}</div>
-                    <div ng-if="objeto.etapaCursada !== undefined" class="row expanded-title"><strong>{{ objeto.nome }}</strong> - <em>{{ objeto.etapaCursada.unidadeEnsino }}/{{ objeto.etapaCursada.ano }}</em> - <small>{{ objeto.etapaCursada.cidade.nome }}/{{ objeto.etapaCursada.cidade.estado.sigla }}</small></div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="first-column">Disciplina</th>
-                                <th>Frequência</th>
-                                <th>Média Final</th>
-                                <th>Status</th>
-                                <th class="last-column">Opções</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="disciplina in ctrl.disciplinasCursadas">
-                                <td class="left-text-table">{{ disciplina.disciplina.nomeExibicao }}</td>
-                                <td ng-click="ctrl.abrirMediaParcial(disciplina)" class="table-clicavel" ng-if="disciplina.frequenciaTotal !== undefined && disciplina.auto">{{ disciplina.frequenciaTotal }}%</td>
-                                <td class="table-clicavel" ng-if="disciplina.frequenciaTotal !== undefined && !disciplina.auto">{{ disciplina.frequenciaTotal }}%</td>
-                                <td ng-if="disciplina.frequenciaTotal === undefined">Frequência não finalizada.</td>
-                                <td ng-click="ctrl.abrirMediaParcial(disciplina)" class="table-clicavel" ng-if="disciplina.mediaFinal !== undefined && disciplina.auto">{{ disciplina.mediaFinal }}</td>
-                                <td class="table-clicavel" ng-if="disciplina.mediaFinal !== undefined && !disciplina.auto">{{ disciplina.mediaFinal }}</td>
-                                <td ng-if="disciplina.mediaFinal === undefined">Média não finalizada.</td>
-                                <td ng-if="disciplina.status === 'APROVADO'">Aprovado</td>
-                                <td ng-if="disciplina.status === 'DISPENSADO'">Dispensado</td>
-                                <td class="last-column table-with-icons">
-                                    <md-button ng-if="!disciplina.auto" ng-click="ctrl.abrirDisciplinasModal(objeto.etapaCursada,disciplina,$index)" class="md-icon-button" aria-label="Editar">
-                                        <md-icon class="material-icons">edit</md-icon>
-                                        <md-tooltip md-direction="left">Editar</md-tooltip>
-                                    </md-button>
-                                    <md-button ng-if="!disciplina.auto" ng-click="ctrl.modalExclusao($event,disciplina)" class="md-icon-button" aria-label="Remover">
-                                        <md-icon class="material-icons">delete</md-icon>
-                                        <md-tooltip md-direction="left">Remover Disciplina</md-tooltip>
-                                    </md-button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="row end-table" layout-align="right">
-                        <md-button ng-click="ctrl.abrirDisciplinasModal(objeto.etapaCursada)" class="md-primary">Adicionar Disciplina</md-button> <md-button class="md-accent">Dados de Conclusão</md-button>
-                    </div>
-                </div>
-            </div>
-
-        </md-content>
     </div>
 </div>
 
