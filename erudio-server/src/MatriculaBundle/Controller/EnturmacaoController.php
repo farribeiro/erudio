@@ -62,14 +62,15 @@ class EnturmacaoController extends AbstractEntityController {
     /**
     *   @ApiDoc()
     * 
-    *   @FOS\Get("enturmacoes")
-    *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
-    *   @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "matricula_enturmado", nullable = true)
-    *   @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "turma_unidadeEnsino", requirements="\d+", nullable = true)
-    *   @FOS\QueryParam(name = "aprovado", nullable = true)
-    *   @FOS\QueryParam(name = "encerrado", default = false)
+    * @FOS\Get("enturmacoes")
+    * @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "matricula_enturmado", nullable = true)
+    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "turma_unidadeEnsino", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "aprovado", nullable = true)
+    * @FOS\QueryParam(name = "emAndamento", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "encerrado", default = false)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

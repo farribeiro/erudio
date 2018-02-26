@@ -67,14 +67,11 @@ class MovimentacaoTurmaFacade extends AbstractFacade {
                 'Uma movimentação de turma só pode ser realizada entre turmas da mesma etapa.'
             );
         }
+        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
         $enturmacaoDestino = $this->enturmacaoFacade->create(
             new Enturmacao($movimentacao->getMatricula(), $movimentacao->getTurmaDestino())
         );
         $movimentacao->aplicar($enturmacaoDestino);
-    }
-    
-    protected function afterCreate($movimentacao) {
-        $this->enturmacaoFacade->encerrarPorMovimentacao($movimentacao->getEnturmacaoOrigem());
     }
     
 }

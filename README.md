@@ -70,7 +70,7 @@ Dependendo das configurações do seu servidor, as variáveis urlServidor e urlR
 
 #### 6. Acesse o Erudio em seu navegador
 
-Abra o navegador e acesse a url do seu servidor. Faça o login na aplicação utilizando o usuário *admin* e senha *admin*. Recomenda-se alterar a senha deste usuário por segurnaça.
+Abra o navegador e acesse a url do seu servidor. Faça o login na aplicação utilizando o usuário *admin* e senha *123456*. Recomenda-se alterar a senha deste usuário por segurnaça.
 
 ## Documentação
 

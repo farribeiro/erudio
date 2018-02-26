@@ -105,7 +105,7 @@ class Enturmacao extends AbstractEditableEntity {
     * @JMS\VirtualProperty
     * @JMS\Type("boolean")
     */
-    function isEmAndamento() {
+    function getEmAndamento() {
         return !$this->encerrado && !$this->concluido;
     }
     
@@ -120,10 +120,14 @@ class Enturmacao extends AbstractEditableEntity {
     }
     
     function isAprovado() {
-        return !$this->getDisciplinasCursadas()->exists(function($k, $d) {
-            return $d->getStatus() != DisciplinaCursada::STATUS_APROVADO &&
-                   $d->getStatus() != DisciplinaCursada::STATUS_DISPENSADO;
-        });
+        if ($this->etapaCursada) {
+            return $this->etapaCursada->isAprovado();
+        } else {
+            return !$this->getDisciplinasCursadas()->exists(function($k, $d) {
+                return $d->getStatus() != DisciplinaCursada::STATUS_APROVADO &&
+                       $d->getStatus() != DisciplinaCursada::STATUS_DISPENSADO;
+            });
+        }
     }
     
     function getAluno() {

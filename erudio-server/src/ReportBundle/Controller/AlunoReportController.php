@@ -69,11 +69,12 @@ class AlunoReportController extends Controller {
     */
     function defasadosNominalPorCursoAction(Request $request) {
         try {
+            $dataReferencia = $request->query->get('dataReferencia', null);
             $curso = $this->cursoFacade->find($request->query->getInt('curso'));
             $ofertados = $this->cursoOfertadoFacade->findAll(['curso' => $curso->getId()]);
             $relatorios = [];
             foreach ($ofertados as $c) {
-                $relatorios[] = $this->gerarRelatorioDefasados($c);
+                $relatorios[] = $this->gerarRelatorioDefasados($c, $dataReferencia);
             }
             return $this->render('reports/aluno/defasados-nominal.pdf.twig', [
                 'instituicao' => $curso->getInstituicao(),
@@ -100,8 +101,9 @@ class AlunoReportController extends Controller {
     */
     function defasadosNominalPorCursoOfertadoAction(Request $request) {
         try {
+            $dataReferencia = $request->query->get('dataReferencia', null);
             $cursoOfertado = $this->cursoOfertadoFacade->find($request->query->getInt('curso'));
-            $relatorio = $this->gerarRelatorioDefasados($cursoOfertado);
+            $relatorio = $this->gerarRelatorioDefasados($cursoOfertado, $dataReferencia);
             return $this->render('reports/aluno/defasadosNominal.pdf.twig', [
                 'instituicao' => $cursoOfertado->getUnidadeEnsino(),
                 'relatorios' => [$relatorio]
@@ -117,10 +119,10 @@ class AlunoReportController extends Controller {
      * @param type $cursoOfertado
      * @return type
      */
-    private function gerarRelatorioDefasados($cursoOfertado) {
+    private function gerarRelatorioDefasados($cursoOfertado, $dataReferencia = null) {
         $relatorio = ['unidadeEnsino' => $cursoOfertado->getUnidadeEnsino(), 'alunosPorEtapa' => []];
         foreach ($cursoOfertado->getCurso()->getEtapas() as $etapa) {
-            $enturmacoes = $this->enturmacaoFacade->getAlunosDefasados($cursoOfertado, $etapa);
+            $enturmacoes = $this->enturmacaoFacade->getAlunosDefasados($cursoOfertado, $etapa, $dataReferencia);
             if (count($enturmacoes)) {
                 $relatorio['alunosPorEtapa'][$etapa->getNomeExibicao()] = $enturmacoes;
             }

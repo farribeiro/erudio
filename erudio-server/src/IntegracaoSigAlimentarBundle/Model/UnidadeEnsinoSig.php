@@ -30,11 +30,11 @@ class UnidadeEnsinoSig {
         return new UnidadeEnsinoSig(
             $unidade->getNomeCompleto(),
             $unidade->getId(),
-            $unidade->getCodigoInep(),
+            $unidade->getCodigoInep() ? $unidade->getCodigoInep() : '',
             '',
-            $unidade->getEndereco() ? $unidade->getEndereco()->getBairro() : '',
-            $unidade->getEndereco() ? $unidade->getEndereco()->getLogradouro() : '',
-            $unidade->getEndereco() ? $unidade->getEndereco()->getNumero() : 0,
+            $unidade->getEndereco()->getBairro() ? $unidade->getEndereco()->getBairro() : '',
+            $unidade->getEndereco()->getLogradouro() ? $unidade->getEndereco()->getLogradouro() : '',
+            $unidade->getEndereco()->getNumero() ? $unidade->getEndereco()->getNumero() : 0,
             $unidade->getTipo()->getNome()
         );
     }

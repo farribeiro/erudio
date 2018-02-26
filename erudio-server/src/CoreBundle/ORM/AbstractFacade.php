@@ -173,7 +173,7 @@ abstract class AbstractFacade {
             $this->afterCreate($entidade);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             if ($isTransaction) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
@@ -182,18 +182,24 @@ abstract class AbstractFacade {
     /**
      * 
      * @param ArrayCollection $entidades
+     * @param boolean skipNonUnique indica se cadastros que violam unicidade devem 
+     *      ser ignorados ou causarão rollback da operação como outras exceções.
      * @return boolean
      * @throws \Exception
      */
-    function createBatch(ArrayCollection $entidades) {
+    function createBatch(ArrayCollection $entidades, $skipNonUnique = false) {
         try {
             $this->orm->getManager()->beginTransaction();
             foreach($entidades as $entidade) {
-                $this->create($entidade, false);
+                try {
+                    $this->create($entidade, false);
+                } catch (UniqueViolationException $unqEx) {
+                    if (!$skipNonUnique) { throw $unqEx;}
+                }
             }
            $this->orm->getManager()->commit();
            return true;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
@@ -225,7 +231,7 @@ abstract class AbstractFacade {
             $this->update($entidade, false);
             if ($isTransaction) { $this->orm->getManager()->commit(); }
             return $entidade;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             if ($isTransaction) { $this->orm->getManager()->rollback(); }
             throw $ex;
         }
@@ -245,7 +251,7 @@ abstract class AbstractFacade {
             }
             $this->orm->getManager()->commit();
             return true;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->orm->getManager()->rollback();
             throw $ex;
         }
@@ -308,7 +314,7 @@ abstract class AbstractFacade {
             }
             $this->orm->getManager()->commit();
             return true;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->orm->getManager()->rollback();
             throw $ex;
         }

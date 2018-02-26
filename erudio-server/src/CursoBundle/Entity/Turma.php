@@ -186,17 +186,19 @@ class Turma extends AbstractEditableEntity {
         )->count();
     }
     
-    function getEnturmacoes() {
+    function getEnturmacoes($orderByName = true) {
         $enturmacoes = $this->enturmacoes->matching(
             Criteria::create()->where(Criteria::expr()->andX(              
                 Criteria::expr()->eq('ativo', true), 
                 Criteria::expr()->eq('encerrado', false)
             ))
         )->toArray();
-        usort($enturmacoes, function($e1, $e2) {
-            return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
-                $e2->getMatricula()->getAluno()->getNome()); 
-        });
+        if ($orderByName) {
+            usort($enturmacoes, function($e1, $e2) {
+                return strcasecmp($e1->getMatricula()->getAluno()->getNome(), 
+                    $e2->getMatricula()->getAluno()->getNome()); 
+            });
+        }
         return new ArrayCollection($enturmacoes);
     }
     

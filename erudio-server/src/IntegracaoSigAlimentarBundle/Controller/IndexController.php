@@ -62,7 +62,7 @@ class IndexController {
         $enturmacoesSig = array_map(function($e) {
             return MatriculaSig::fromEnturmacao($e);
         }, $enturmacoes);
-        return $this->viewHandler->handle(View::create(['dados' => $enturmacoesSig]));
+        return $this->viewHandler->handle(View::create($enturmacoesSig));
     }
     
     /**

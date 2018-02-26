@@ -25,7 +25,7 @@ class HistoricoFacade {
         $notas = [];
         $frequencias = [];
         foreach ($etapas as $etapa) {
-            $disciplinas = $this->disciplinaCursadaFacade->findAprovadas($matricula, $etapa);
+            $disciplinas = $this->disciplinaCursadaFacade->findFinalizadas($matricula, $etapa, true);
             $numeroDisciplinas = count($disciplinas);
             $frequencias[$etapa->getOrdem()] = $numeroDisciplinas ? 0 
                     : ($this->possuiEtapaCursada($matricula, $etapa) ? 100 : 0);

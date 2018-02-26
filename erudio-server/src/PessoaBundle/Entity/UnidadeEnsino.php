@@ -50,7 +50,11 @@ class UnidadeEnsino extends Instituicao {
     */
     function getNomeCompleto() {
         return $this->tipo != null ? "{$this->tipo->getSigla()} {$this->getNome()}" : $this->getNome();
-    }    
+    }
+    
+    function getNomeCompletoPorExtenso() {
+        return $this->tipo != null ? "{$this->tipo->getNome()} {$this->getNome()}" : $this->getNome();
+    }
     
     function getTipo() {
         return $this->tipo;

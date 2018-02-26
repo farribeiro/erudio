@@ -132,12 +132,12 @@ class DisciplinaCursadaFacade extends AbstractFacade {
         ]);
     }
     
-    function findFinalizadas(Matricula $matricula, Etapa $etapa) {
+    function findFinalizadas(Matricula $matricula, Etapa $etapa, $incluirNaoOfertadas = false) {
         return $this->findByMatriculaAndEtapa($matricula, $etapa, [
             DisciplinaCursada::STATUS_APROVADO, 
             DisciplinaCursada::STATUS_REPROVADO,
             DisciplinaCursada::STATUS_DISPENSADO
-        ], false);
+        ], $incluirNaoOfertadas);
     }
     
     function findEmAndamento(Matricula $matricula, Etapa $etapa) {

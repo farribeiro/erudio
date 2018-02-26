@@ -70,6 +70,9 @@ class EnturmacaoFacade extends AbstractFacade {
             'turma_unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('turma.unidadeEnsino = :unidadeEnsino')->setParameter('unidadeEnsino', $value);
             },
+            'turma_etapa' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('turma.etapa = :etapa')->setParameter('etapa', $value);
+            },
             'encerrado' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('e.encerrado = :encerrado')->setParameter('encerrado', $value);
             },
@@ -83,7 +86,11 @@ class EnturmacaoFacade extends AbstractFacade {
                    ->setParameter('dataAula', $data);
             },
             'emAndamento' => function(QueryBuilder $qb, $value) {
-                $qb->andWhere("e.concluido = false")->andWhere("e.encerrado = false");
+                if ($value) {
+                    $qb->andWhere("e.concluido = false")->andWhere("e.encerrado = false");
+                } else {
+                    $qb->andWhere("(e.concluido = true OR e.encerrado = true)");
+                }
             },
             'aprovado' => function(QueryBuilder $qb, $value) {
                 $operator = $value ? '=' : '<>';
@@ -102,7 +109,7 @@ class EnturmacaoFacade extends AbstractFacade {
     function uniqueMap($enturmacao) {
         return [[
             'matricula' => $enturmacao->getMatricula(), 
-            'turma' => $enturmacao->getTurma(), 
+            'turma_etapa' => $enturmacao->getTurma()->getEtapa(), 
             'encerrado' => false,
             'concluido' => false
         ]];
@@ -114,9 +121,13 @@ class EnturmacaoFacade extends AbstractFacade {
      * @param Etapa $etapa
      * @return array alunos defasados
      */
-    function getAlunosDefasados($cursoOfertado, $etapa, \DateTime $dataReferencia = null) {
-        $dataLimite = $dataReferencia ? $dataReferencia 
-                : \DateTime::createFromFormat('Y-m-d', (new \DateTime())->format('Y') . '-03-31');
+    function getAlunosDefasados($cursoOfertado, $etapa, $dataReferencia = null) {
+        $dataLimite = $dataReferencia 
+                ? ($dataReferencia instanceof \DateTime 
+                    ? $dataReferencia 
+                    : \DateTime::createFromFormat('Y-m-d', $dataReferencia)
+                )
+                : \DateTime::createFromFormat('Y-m-d', date('Y') . '-03-31');
         $idadeLimite = $etapa->getIdadeRecomendada() + $etapa->getCurso()->getLimiteDefasagem();
         $dataLimite->sub(new \DateInterval("P{$idadeLimite}Y"));
         $qb = $this->orm->getManager()->createQueryBuilder()->select('en')
@@ -128,7 +139,7 @@ class EnturmacaoFacade extends AbstractFacade {
             ->andWhere('a.dataNascimento < :limiteInferior')
             ->setParameter('etapa', $etapa->getId())
             ->setParameter('unidadeEnsino', $cursoOfertado->getUnidadeEnsino()->getId())
-            ->setParameter('limiteInferior', $dataLimite);
+            ->setParameter('limiteInferior', $dataLimite->format('Y-m-d'));
         return $qb->getQuery()->getResult();
     }
     
@@ -194,13 +205,16 @@ class EnturmacaoFacade extends AbstractFacade {
         if ($turmaOrigem->getEtapa()->getOrdem() + 1 != $turmaDestino->getEtapa()->getOrdem()) {
             throw new IllegalOperationException('A turma destino deve ser da etapa seguinte à de origem');
         }
-        $enturmacoes = array_diff($turmaOrigem->getEnturmacoes()->toArray(), $exclusoes);
-        $novasEnturmacoes = array_map(function($e) use ($turmaDestino) {
-            return new Enturmacao($e->getMatricula(), $turmaDestino);
-        }, array_filter($enturmacoes, function($e) {
-            return $e->isAprovado() && $e->getMatricula()->isCursando();
-        }));
-        $this->createBatch(new ArrayCollection($novasEnturmacoes));
+        $enturmacoes = count($exclusoes) > 0 
+                ? array_diff($turmaOrigem->getEnturmacoes(false)->toArray(), $exclusoes)
+                : $turmaOrigem->getEnturmacoes(false)->toArray();
+        $novasEnturmacoes = [];
+        foreach ($enturmacoes as $e) {
+            if ($e->isAprovado() && $e->getMatricula()->isCursando()) {
+                $novasEnturmacoes[] = new Enturmacao($e->getMatricula(), $turmaDestino);
+            }
+        }
+        $this->createBatch(new ArrayCollection($novasEnturmacoes), true);
     }
     
     protected function selectMap() {
@@ -226,6 +240,9 @@ class EnturmacaoFacade extends AbstractFacade {
         }
         if ($enturmacao->getMatricula()->getCurso() != $enturmacao->getTurma()->getEtapa()->getCurso()) {
             throw new IllegalOperationException('Curso da matrícula e da turma são incompatíveis');
+        }
+        if ($enturmacao->getTurma()->getUnidadeEnsino() != $enturmacao->getMatricula()->getUnidadeEnsino()) {
+            throw new IllegalOperationException('Aluno não pode ser enturmado em uma unidade diferente da que está matriculado');
         }
     }
     

@@ -114,7 +114,7 @@ class MatriculaFacade extends AbstractFacade {
     
     protected function beforeCreate($matricula) {
         if ($this->jaExiste($matricula)) {
-            throw new IllegalOperationException('Pessoa já possui matrícula neste curso');
+            throw new IllegalOperationException('Pessoa já possui matrícula em aberto neste curso');
         }
         $this->gerarCodigo($matricula);
     }

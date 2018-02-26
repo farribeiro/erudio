@@ -81,6 +81,11 @@ class Dia extends AbstractEditableEntity {
         $this->eventos = new ArrayCollection();
     }
     
+    function addEvento(Evento $evento, $inicio, $termino) {
+        $diaEvento = new DiaEvento($this, $evento, $inicio, $termino);
+        $this->eventos->add($diaEvento);
+    }
+    
     function getData() {
         return $this->data;
     }

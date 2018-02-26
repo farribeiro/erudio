@@ -33,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Psr\Log\LoggerInterface;
 use IntegracaoIEducarBundle\Service\IEducarFacade;
@@ -105,7 +106,7 @@ class IndexController extends Controller {
     *   section = "Módulo Integração I-Educar",
     *   description = "Histórico do I-Educar em formato JSON",
     *   statusCodes = {
-    *       200 = "Documento PDF"
+    *       200 = "Dados do histórico"
     *   }
     * )
     * 
@@ -116,10 +117,13 @@ class IndexController extends Controller {
             $unidadesEnsino = $request->query->getInt('unidadeEnsino');
             $aluno = $request->query->getInt('aluno');
             $historico = file_get_contents(self::URL_SERVICO . "?ws=his&alu={$aluno}&esc={$unidadesEnsino}");
-            return new Response($historico);
+            if (!$historico) {
+                throw new NotFoundHttpException('Não foram encontrados dados sobre o histórico do aluno');
+            }
+            return Response($historico);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
+            throw $ex;
         }
     }
     
@@ -139,20 +143,24 @@ class IndexController extends Controller {
         try {
             $unidadesEnsino = $request->query->getInt('unidadeEnsino');
             $aluno = $request->query->getInt('aluno');
+            $paramEscola = $unidadesEnsino ? "&esc={$unidadesEnsino}" : '';
             $options = ['http' => [
                 'method' => 'GET',
                 'header' => 'Accept: application/pdf'
             ]];
             $context = stream_context_create($options);
             $historico = file_get_contents(
-                self::URL_SERVICO . "?ws=his&alu={$aluno}&esc={$unidadesEnsino}",
+                self::URL_SERVICO . "?ws=his&alu={$aluno}{$paramEscola}",
                 false,
                 $context
             );
-            return new Response($historico);
+            if (!$historico) {
+                throw new NotFoundHttpException('Não foram encontrados dados sobre o histórico do aluno');
+            }
+            return Response($historico);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());
-            return new Response($ex->getMessage(), 500);
+            throw $ex;
         }
     }
     

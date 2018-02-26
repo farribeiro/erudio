@@ -33,10 +33,13 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
 use CoreBundle\Event\EntityEvent;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use CoreBundle\ORM\Exception\IllegalUpdateException;
 use VinculoBundle\Entity\Vinculo;
 
 class VinculoFacade extends AbstractFacade {
+    
+    const LIMITE_VINCULOS_ATIVOS = 2;
     
     function __construct(RegistryInterface $orm, EventDispatcherInterface $eventDispatcher) {
         parent::__construct($orm, null, $eventDispatcher);
@@ -81,6 +84,7 @@ class VinculoFacade extends AbstractFacade {
     }
     
     protected function beforeCreate($vinculo) {
+        $this->validarNumeroVinculos($vinculo);
         $this->gerarCodigo($vinculo);
     }
     
@@ -117,6 +121,19 @@ class VinculoFacade extends AbstractFacade {
             $numero = $ano . $vinculo->getInstituicao()->getId() . '00000';
         }
         $vinculo->definirCodigo($numero + 1);
+    }
+    
+    protected function validarNumeroVinculos(Vinculo $vinculo) {
+        $quantidadeVinculosAtivos = $this->count([
+            'funcionario' => $vinculo->getFuncionario(),
+            'status' => Vinculo::STATUS_ATIVO
+        ]);
+        if ($quantidadeVinculosAtivos > self::LIMITE_VINCULOS_ATIVOS) {
+            throw new IllegalOperationException(
+                'A pessoa não pode possuir mais de ' . self::LIMITE_VINCULOS_ATIVOS 
+                .' vínculos ativos'
+            );
+        }
     }
 
 }

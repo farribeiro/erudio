@@ -142,10 +142,9 @@ class Calendario extends AbstractEditableEntity {
             $dia->setEfetivo($d->getEfetivo());
             $dia->setLetivo($d->getLetivo());
             $dia->init();
-            if ($d->getEventos() != null) {
+            if ($d->getEventos()) {
                 foreach($d->getEventos() as $e) {
-                    $diaEvento = new DiaEvento($dia, $e->getEvento(), $e->getInicio(), $e->getTermino());
-                    $dia->getEventos()->add($diaEvento);
+                    $dia->addEvento($e->getEvento(), $e->getInicio(), $e->getTermino());
                 }
             }
             $this->dias->add($dia);

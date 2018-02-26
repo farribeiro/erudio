@@ -61,7 +61,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `edu_acesso_usuario` WRITE;
 /*!40000 ALTER TABLE `edu_acesso_usuario` DISABLE KEYS */;
-REPLACE INTO `edu_acesso_usuario` VALUES (1,'Administrador','76133334851','','e10adc3949ba59abbe56e057f20f883e',0,'2016-07-07 17:00:00',NULL,NULL,1);
+REPLACE INTO `edu_acesso_usuario` VALUES (1,'Administrador','admin','','e10adc3949ba59abbe56e057f20f883e',0,'2016-07-07 17:00:00',NULL,NULL,1);
 /*!40000 ALTER TABLE `edu_acesso_usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
