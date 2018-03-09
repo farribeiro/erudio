@@ -63,6 +63,8 @@ class QuadroHorarioController extends AbstractEntityController {
     *   @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
     *   @FOS\QueryParam(name = "nome", nullable = true)
     *   @FOS\QueryParam(name = "unidadeEnsino", requirements="\d+", nullable = true)
+    *   @FOS\QueryParam(name = "turno", requirements="\d+", nullable = true) 
+    *   @FOS\QueryParam(name = "modelo_curso", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());

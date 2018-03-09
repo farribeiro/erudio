@@ -48,6 +48,11 @@
     <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar para o histórico"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
 </div>
 
+<!-- Botão Voltar para as informações do historico -->
+<div data-ng-click="voltarHistorico()" data-ng-show="isCriandoHistorico" class="btn-voltar hide-on-med-and-down">
+    <a class="tooltipped btn-floating btn waves-effect waves-circle waves-light grey lighten-4" data-position="left" data-delay="50" data-tooltip="Voltar"><i style="color: #212121;" class="material-icons">arrow_back</i></a>
+</div>
+
 <i data-ng-hide="editando" class="material-icons btn-voltar hide-on-large-only" data-ng-click="fecharFormulario()">arrow_back</i>
 
 <div data-ng-click="voltarEnturmacao()" data-ng-show="disciplinasTurma" class="btn-voltar-enturmacao hide-on-med-and-down">

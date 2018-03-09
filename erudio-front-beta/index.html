@@ -127,7 +127,7 @@
                             <md-button ng-hide="isProfessor" hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
 
-                            <md-button style="display: none; right: 37px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
+                            <md-button style="display: none; right: 25px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
                                 <md-tooltip md-direction="left">Voltar</md-tooltip>
                                 <md-icon class="material-icons white-icon">arrow_back</md-icon>
                             </md-button>
@@ -152,7 +152,7 @@
                         <div class="md-toolbar-tools">
                             <md-button ng-hide="isProfessor" hide-gt-md ng-click="abrirMenu()" class="md-icon-button btn-zindex" aria-label="Menu"><md-icon class="material-icons">menu</md-icon></md-button>
                             <h2 class="titulo-toolbar" flex md-truncate></h2>
-                            <md-menu md-position-mode="target-right target">
+                            <md-menu md-position-mode="target-right target" style="margin-right: 12px;">
                                 <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
                                 <md-menu-content class="main-menu" width="2">
                                     <md-menu-item><md-button ng-click="redirect('#!/perfil')"><div layout="row" flex><p flex>{{ perfil }}</p></div></md-button></md-menu-item>
@@ -163,7 +163,7 @@
                                 </md-menu-content>
                             </md-menu>
 
-                            <md-button style="display: none; top: 12px; right: 60px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
+                            <md-button style="display: none; top: 10px; right: 13px;" class="md-icon-button back-btn btn-home" aria-label="{{ ctrl.fab.tooltip }}">
                                 <md-tooltip md-direction="left">Voltar</md-tooltip>
                                 <md-icon class="material-icons white-icon">arrow_back</md-icon>
                             </md-button>
@@ -332,7 +332,6 @@
         <script src="apps/admin/periodos/services/Periodo.js"></script>
         
         <script src="apps/admin/turmas/services/Turma.js"></script>
-        <script src="apps/admin/turmas/directives/turmaDirectives.js"></script>
         
         <script src="apps/admin/matriculas/services/Matricula.js"></script>
         
@@ -352,31 +351,24 @@
         <script src="apps/admin/grupos/services/Grupo.js"></script>
         
         <script src="apps/admin/cargos/services/Cargo.js"></script>
-        <script src="apps/admin/cargos/directives/cargosDirectives.js"></script>
         
         <script src="apps/admin/tipoAvaliacoes/services/TipoAvaliacao.js"></script>
-        <script src="apps/admin/tipoAvaliacoes/directives/tipoAvaliacaoDirectives.js"></script>
         
         <script src="apps/admin/habilidades/services/Habilidade.js"></script>
-        <script src="apps/admin/habilidades/directives/habilidadeDirectives.js"></script>
         
         <script src="apps/admin/avaliacoes/services/Avaliacoes.js"></script>
-        <script src="apps/admin/avaliacoes/directives/avaliacaoDirectives.js"></script>
         
         <script src="apps/admin/grupos/services/Grupo.js"></script>
-        <script src="apps/admin/grupos/directives/grupoDirectives.js"></script>
         
         <script src="apps/admin/atribuicoes/services/Atribuicao.js"></script>
         
         <script src="apps/admin/grupoPermissoes/services/GrupoPermissao.js"></script>
-        <script src="apps/admin/grupoPermissoes/directives/grupoPermissaoDirectives.js"></script>
         
         <script src="apps/admin/permissoesGrupo/services/PermissaoGrupo.js"></script>
         
         <script src="apps/admin/permissoes/services/Permissao.js"></script>
         
         <script src="apps/admin/usuarios/services/Usuario.js"></script> 
-        <script src="apps/admin/usuarios/directives/usuarioDirectives.js"></script>
 
         <!-- Professor 
         <script src="apps/professor/index/controllers/moduloProfessor.js"></script> -->

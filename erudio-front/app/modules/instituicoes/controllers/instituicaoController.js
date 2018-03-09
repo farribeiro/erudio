@@ -434,7 +434,7 @@
         
         /* Busca de endereço pelo CEP */
         $scope.buscaCEP = function (query) {
-            $timeout.cancel($scope.delayBusca);
+            /*$timeout.cancel($scope.delayBusca);
             $scope.delayBusca = $timeout(function(){
                 if (query === undefined || query === null) { query = ''; }
                 if (query.length === 8) {
@@ -443,7 +443,7 @@
                         var endereco = Servidor.recuperaCep();
                         if (endereco[0] && endereco[0] !== null || endereco[0] !== undefined) { $scope.instituicao.endereco.logradouro = endereco[0]; } else { $scope.instituicao.endereco.logradouro = ''; }
                         if (endereco[1] && endereco[1] !== null || endereco[1] !== undefined) { $scope.instituicao.endereco.bairro = endereco[1]; } else { $scope.instituicao.endereco.bairro = ''; }
-                        /* Buscando Estado */
+                        
                         if (endereco[3]) {
                             var promise = Servidor.buscar('estados',{'sigla': endereco[3]});
                             promise.then(function (response){ 
@@ -453,7 +453,7 @@
                                 $scope.buscaCidades();
                                 $timeout(function() { $('#estadoInstituicao').material_select('destroy'); $('#estadoInstituicao').material_select(); }, 50);
                                 if (endereco[2]) {
-                                    /* Buscando Cidade */
+                                    
                                     var promise = Servidor.buscar('cidades',{'nome': endereco[2],'estado': $scope.instituicao.endereco.cidade.estado.id });
                                     promise.then(function (response){
                                         var cidade = response.data; $scope.instituicao.endereco.cidade = cidade[0]; $scope.cidadeId = cidade[0].id;
@@ -477,7 +477,7 @@
                     },1000);
                     $scope.fechaLoader();
                 }
-            }, 200);
+            }, 200);*/
         };
         
          /* Limpar busca */

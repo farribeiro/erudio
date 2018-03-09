@@ -23,7 +23,7 @@ security:
             anonymous: true
         
         api_interna:
-            pattern: ^/(api|integracoes)/
+            pattern: ^/(api|integracoes/ieducar)
             stateless: true
             guard:
                 authenticators:

@@ -26,8 +26,6 @@ O servidor REST do Erudio é implementado na linguagem PHP, e suas dependências
 
   	$ php composer.phar install
 
-* ATENÇÃO: Antes de executar o composer, é necessário criar uma pasta com o nome var na raiz do servidor (erudio-server).
-
 
 #### 3. Configuração do servidor
 
@@ -72,7 +70,7 @@ Dependendo das configurações do seu servidor, as variáveis urlServidor e urlR
 
 #### 6. Acesse o Erudio em seu navegador
 
-Abra o navegador e acesse a url do seu servidor. Faça o login na aplicação utilizando o usuário *admin* e senha *123456*. Recomenda-se alterar a senha deste usuário por segurnaça.
+Abra o navegador e acesse a url do seu servidor. Faça o login na aplicação utilizando o usuário *admin* e senha *admin*. Recomenda-se alterar a senha deste usuário por segurnaça.
 
 ## Documentação
 

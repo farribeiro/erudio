@@ -59,7 +59,6 @@
         });
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
-            //$scope.inicializar();
             if (query) {
                 if (MatriculaService.aluno.id) { $scope.matricular(MatriculaService.aluno); }
                 $scope.matricular();
@@ -68,7 +67,6 @@
         });
 
         $scope.$watch('matriculaService.voltaMatricula', function (query){
-            //$scope.inicializar();
             if (query) {
                 if (MatriculaService.aluno.id) { $scope.matricular(MatriculaService.aluno); }
                 $scope.matricular();
@@ -1026,7 +1024,7 @@
 				},500);
 			});
                     }
-                } else { console.log($scope.config); window.location.href = $scope.config.dominio+'/#/'; }
+                } else { window.location.href = $scope.config.dominio+'/#/'; }
             }
         };
 
@@ -1119,7 +1117,7 @@
             });
         };
 
-        $scope.buscarTurmas = function () {
+        /*$scope.buscarTurmas = function () {
             $scope.mostraTurmas = true;
             $scope.mostraProgresso();
             $scope.enturmacoesMatricula = [];
@@ -1175,7 +1173,7 @@
                 });
             });
             $scope.fechaProgresso();
-        };
+        };*/
 
         $scope.carregarDisciplinas = function () {
             $scope.mostraListaDisciplinas = false;
@@ -1609,7 +1607,7 @@
             }, 50);
         };
 
-        $scope.gerarFrequenciaFinal = function(disciplina) {
+        /*$scope.gerarFrequenciaFinal = function(disciplina) {
             var promise = Servidor.buscar('frequencias', {matricula: $scope.matricula.id, disciplina: disciplina});
             promise.then(function(response) {
                 var frequencias = response.data;
@@ -1626,7 +1624,7 @@
                     });
                 });
             });
-        };
+        };*/
 
         $scope.buscarDisciplinasCursadasEnturmacao = function(etapaId) {
             var promise = Servidor.buscar('disciplinas-cursadas', {etapa: etapaId, matricula: $scope.matricula.id});
@@ -2080,16 +2078,16 @@
             });
         };
 
-        $scope.buscarFrequencias = function () {
+        /*$scope.buscarFrequencias = function () {
             $scope.frequencias = [];
             var promise = Servidor.buscar('frequencias', {'matricula': $scope.matricula.id, 'disciplina': $scope.disciplinaId});
             promise.then(function (response) {
                 $scope.frequencias = response.data;
                 $timeout(function(){ $('.tooltipped').tooltip({delay: 50});},75); $scope.fechaProgresso();
             });
-        };
+        };*/
 
-        $scope.buscarHistorico = function () {
+        /*$scope.buscarHistorico = function () {
             if ($scope.disciplinaHistorico === 'frequencias')
             {
                 $scope.buscarFrequencias();
@@ -2098,7 +2096,7 @@
                 $scope.buscarNotas();
                 $scope.frequencias = [];
             }
-        };
+        };*/
 
         /*Abrir uma opção de matricula*/
         $scope.selecionaOpcao = function (opcao) {
@@ -2119,28 +2117,79 @@
                     $scope.informacaoatual = true;
                     $scope.disciplinasCursadasTabela = []; $scope.naoOfertados = []; $scope.manuais = [];
                     
-                    var promise = Servidor.buscar('disciplinas-cursadas',{matricula: $scope.matricula.id, status:'APROVADO'});
+                    var promise = Servidor.buscar('disciplinas-cursadas',{matricula: $scope.matricula.id});
                     promise.then(function(response){
                         $scope.mostraSpinner = true; 
                         $scope.disciplinasCursadasTabela = response.data;
+                        
+                        $scope.labelsDisciplinas = [];
+                        $scope.disciplinasCursadasTabela.forEach(function(cursada,i){
+                            if ($scope.labelsDisciplinas.indexOf(cursada.nomeExibicao) === -1) {
+                                $scope.labelsDisciplinas.push(cursada.nomeExibicao);
+                            }
+                            
+                            if (!cursada.auto) {
+                                $scope.manuais.push(cursada);
+                            }
+                        });
+                        
                         /*if ($scope.etapas !== undefined){
                             $scope.buscarNotasDisciplinas();
                         } else {*/
                             var promise = Servidor.buscar('etapas',{curso: $scope.matricula.curso.id});
                             promise.then(function(response){
-                                if ($scope.etapas !== undefined && $scope.etapas[0].modulo.nome !== response.data[0].modulo.nome){
-                                    $scope.etapas = response.data;
+                                $scope.etapas = response.data;
+                                /*if ($scope.etapas !== undefined && $scope.etapas[0].modulo.nome !== response.data[0].modulo.nome){
+                                    
                                     $scope.buscarNotasDisciplinas();
                                 } else if ($scope.etapas !== undefined && $scope.etapas[0].modulo.nome === response.data[0].modulo.nome) {
                                     $scope.buscarNotasDisciplinas();
                                 } else {
                                     $scope.etapas = response.data;
                                     $scope.buscarNotasDisciplinas();
-                                }                                
+                                }    */                            
                             });
                         //}
                     });                        
                 break
+            }
+        };
+        
+        $scope.filtrarPorEtapa = function (disciplina,etapa,form) {
+            var cursada = $filter('filter')($scope.disciplinasCursadasTabela, { disciplina:{ nomeExibicao:disciplina }, etapa:{ ordem: etapa.ordem } });
+            if (cursada.length > 0) {
+                if (cursada[0].mediaFinal === undefined) {
+                    if (form) {
+                        return '';
+                    } else {
+                        return '-';
+                    }
+                } else {
+                    return cursada[0].mediaFinal;
+                }
+            } else {
+                if (form) {
+                    return '';
+                } else {
+                    return '-';
+                }
+            }
+        };
+        
+        $scope.filtrarPorEtapaClasse = function (disciplina,etapa) {
+            var cursada = $filter('filter')($scope.disciplinasCursadasTabela, { disciplina:{ nomeExibicao:disciplina }, etapa:{ ordem: etapa.ordem } });
+            if (cursada.length > 0) {
+                if (cursada[0].mediaFinal === undefined) {
+                    return '-';
+                } else {
+                    if (cursada[0].status === 'REPROVADO') {
+                        return 'historico-reprovado';
+                    } else {
+                        return '';
+                    }
+                }
+            } else {
+                return '-';
             }
         };
         
@@ -2184,7 +2233,7 @@
         };
         
         $scope.manuais = [];
-        $scope.buscarNotasDisciplinas = function (){
+        /*$scope.buscarNotasDisciplinas = function (){
             $scope.disciplinasTabela = [];
             $scope.etapas.forEach(function(etapa,i){
                 var promiseD = Servidor.buscar('disciplinas',{incluirNaoOfertadas: true,etapa: etapa.id});
@@ -2198,7 +2247,7 @@
                             if (result.length > 0) {
                                 result.forEach(function(cursada,i){
                                     var existente = $filter('filter')($scope.disciplinasTabela, { disciplina:{ nomeExibicao:cursada.nomeExibicao } });
-                                    if (existente.length === 0) { $scope.disciplinasTabela.push(cursada); console.log($scope.disciplinasTabela); }
+                                    if (existente.length === 0) { $scope.disciplinasTabela.push(cursada); }
                                 });
                             }
                             
@@ -2226,7 +2275,7 @@
                     }
                 });
             });
-        };
+        };*/
         
         $scope.autocompleteDisciplina = false; $scope.disciplinaNome = null; $scope.disciplinaConclusaoOutroId = null;
         $scope.verificarDisciplina = function(){
@@ -2457,7 +2506,7 @@
         
         $scope.isAdicionandoDisciplina = false; $scope.isDisciplinaForm = false; $scope.anoDisc = null;
         $scope.addDisciplina = function (disciplina,etapa,disciplinaCursadaId) {
-            $scope.autocompleteDisciplina = false; $scope.manuaisBackup = $scope.manuais; $scope.disciplinasTabelaBackup = $scope.disciplinasTabela;
+            $scope.autocompleteDisciplina = false; $scope.manuaisBackup = $scope.manuais; $scope.disciplinasTabelaBackup = $scope.disciplinasCursadasTabela;
             $scope.freqConclusao = 100;
             if (disciplinaCursadaId !== undefined) {
                 $scope.acaoDisciplina = 'Editar';
@@ -2612,8 +2661,6 @@
                 });
             } else {
                 Servidor.customToast("Preencha os dados de conclusão para finalizar e salve novamente.");
-                //$scope.selecionaOpcao('home');
-                //$scope.voltaHistorico();
             }
                 
         };
@@ -2653,7 +2700,6 @@
                 $scope.disciCursada = disciplinaCursada;
                 $scope.selecionaOpcao('home');
                 $scope.resetFormDisciplina();
-                //$scope.gerarEtapaCursada(disciplinaCursada);
             }, function (error){
                 Servidor.customToast(error.data.message);
             });
@@ -2676,7 +2722,7 @@
         };
         
         $scope.modalRemoveDisciplinaNova = function (disciplina,etapa) {
-            var promise = Servidor.buscarUm('disciplinas-cursadas', disciplina.cursadaId);
+            var promise = Servidor.buscarUm('disciplinas-cursadas', disciplina.id);
             promise.then(function(response){
                 $scope.nomeDisciplinaRemover = response.data.nomeCompleto;
                 $scope.removerDiscNova = response.data;
@@ -2712,102 +2758,6 @@
             });
             $scope.fechaProgresso();
             return retorno;
-        };
-
-        $scope.buscarMediasFrequenciasAluno = function(index) {
-            var promise = Servidor.buscarUm('enturmacoes',$scope.enturmacoes[index].id);
-            promise.then(function(response){
-                var botao = $('#btn-ent'+$scope.enturmacoes[index].id);
-                if (botao.text() === "keyboard_arrow_down") {
-                    botao.text("keyboard_arrow_up");
-                } else {
-                    botao.text("keyboard_arrow_down");
-                }
-                if ($scope.enturmacoes[index].matricula.disciplinas !== undefined) { return; }
-                $scope.requisicoes++;
-                var promise = Servidor.buscar('disciplinas-cursadas', {enturmacao: $scope.enturmacoes[index].id});
-                promise.then(function(response) {
-                    $scope.requisicoes--;
-                    $scope.enturmacoes[index].matricula.disciplinas = response.data;
-                    $scope.enturmacoes[index].matricula.disciplinas.forEach(function(cursada) {
-                        $scope.requisicoes++;
-                        if (cursada.mediaPreliminar === undefined) {
-                            cursada.mediaPreliminar = 'ND';
-                        }
-                        var promise = Servidor.buscar('medias', {disciplinaCursada: cursada.id});
-                        promise.then(function(response) {
-                            cursada.medias = response.data;
-                            $scope.requisicoes--;
-                            $scope.fechaProgresso();
-                        });
-                        $scope.requisicoes++;
-                        var promise = Servidor.buscar('frequencias', {disciplina: cursada.id});
-                        promise.then(function(response) {                        
-                            cursada.faltas = 0;
-                            var frequencias = response.data;
-                            frequencias.forEach(function(frequencia) {
-                                if (frequencia.status === 'FALTA') {
-                                    cursada.faltas++;
-                                }
-                            });
-                            $scope.requisicoes--;
-                            $scope.fechaProgresso();
-                        });
-                    });
-                    $scope.fechaProgresso();
-                });
-            });
-        };
-
-        $scope.buscarInformacoesDisciplina = function(indice) {
-            var botao = $('#btn-etapa'+$scope.etapas[indice].id);
-            if (botao.text() === "keyboard_arrow_down") {
-                botao.text("keyboard_arrow_up");
-            } else {
-                botao.text("keyboard_arrow_down");
-            }
-            if ($scope.etapas[indice].disciplinasCursadas !== undefined) {
-                $scope.etapas[indice].disciplinasCursadas.forEach(function(cursada) {
-                    if (cursada.porcentagem === undefined) {
-                        var promise = Servidor.buscarUm('disciplinas-cursadas', cursada.id);
-                        promise.then(function(response) {
-                            Servidor.buscar('medias', {disciplinaCursada: cursada.id}).then(function(response) {
-                                cursada.medias = response.data;
-                            });
-                            if(response.data.enturmacao !== undefined) {
-                                cursada.enturmacao = response.data.enturmacao;
-                                Servidor.buscar('frequencias', {disciplina: cursada.id}).then(function(response) {
-                                    cursada.faltas = 0;
-                                    cursada.presencas = 0;
-                                    var frequencias = response.data;
-                                    frequencias.forEach(function(frequencia) {
-                                        if(frequencia.status === 'PRESENCA') {
-                                            cursada.presencas++;
-                                        }
-                                    });
-                                    if (cursada.enturmacao.turma !== undefined && cursada.disciplinaOfertada !== undefined) {
-                                        promise = Servidor.buscar('turmas/'+cursada.enturmacao.turma.id+'/aulas', {disciplina: cursada.disciplinaOfertada.id});
-                                        promise.then(function(response) {
-                                            var aulas = response.data.length;
-                                            if (aulas) {
-                                                cursada.porcentagem = ((cursada.presencas * 100) / aulas)+'%';
-                                                if(cursada.porcentagem.length > 5) {
-                                                    cursada.porcentagem = cursada.porcentagem.slice(0, 5)+'%';
-                                                }
-                                            } else {
-                                                cursada.porcentagem = "ND";
-                                            }
-                                            $scope.fechaProgresso();
-                                        });
-                                    }
-                                });
-                            } else {
-                                cursada.porcentagem = "ND";
-                            }
-                        });
-                    }
-                });
-            }
         };
 
         $scope.buscarSistemaAvaliacao = function(etapa) {
@@ -3032,6 +2982,256 @@
             }
             $scope.fechaProgresso();
         };
+        
+        $scope.gerenciandoHistorico = false;
+        $scope.gerenciarHistorico = function (etapa) {
+            $scope.isCriandoHistorico = true;
+            $scope.gerenciandoHistorico = true;
+            $scope.etapaAtual = $scope.etapas[0].id;
+            $scope.addFormDisciplinaHistorico = false;
+            $scope.buscaEstados();
+            $scope.novaDisciplina = {
+                matricula: {id: $scope.matricula.id},
+                disciplina: {id: null},
+                mediaFinal: null,
+                frequenciaTotal: null,
+                status: null,
+                ano: null
+            };
+            var promise = Servidor.buscar('etapas-cursadas', {matricula: $scope.matricula.id});
+            promise.then(function(response){
+                $scope.etapasCursadas = response.data;
+                if (etapa) {
+                    $scope.etapaAtual = etapa;
+                    $scope.etapaCursadaHistorico = $filter('filter')($scope.etapasCursadas, { etapa:{ ordem: etapa } });
+                    if ($scope.etapaCursadaHistorico.length > 0) {
+                        $scope.nomeCidade = $scope.etapaCursadaHistorico[0].cidade.nome;
+                        $scope.estadoId = $scope.etapaCursadaHistorico[0].cidade.estado.id;
+                        $scope.etapaCursadaHistorico = $scope.etapaCursadaHistorico[0];
+                    }
+                    $scope.buscaNotasPorEtapa(etapa);
+                } else {
+                    $scope.etapaCursadaHistorico = { 
+                        matricula: {id: $scope.matricula.id},
+                        etapa: {id: $scope.etapaAtual },
+                        unidadeEnsino: null,
+                        ano: null,
+                        cidade: {id: null}
+                    };
+                }
+            });
+            $timeout(function(){ 
+                $('#etapaHistorico').material_select('destroy'); $('#etapaHistorico').material_select();
+                $('#estadoConclusao2').material_select('destroy'); $('#estadoConclusao2').material_select();
+            },1000);
+        };
+        
+        $scope.voltarHistorico = function (){
+            $scope.gerenciandoHistorico = false;
+            $scope.isCriandoHistorico = false;
+            $scope.mostrarHistoricoTabela = false;
+        };
+        
+        $scope.isCriandoHistorico = false;
+        $scope.mostrarHistoricoTabela = false;
+        $scope.buscaNotasPorEtapa = function (etapaAtual) {
+            $scope.etapaCursadaHistorico = $filter('filter')($scope.etapasCursadas, { etapa:{ ordem: etapaAtual } });
+            if ($scope.etapaCursadaHistorico.length > 0) {
+                $scope.nomeCidade = $scope.etapaCursadaHistorico[0].cidade.nome;
+                $scope.estadoId = $scope.etapaCursadaHistorico[0].cidade.estado.id;
+                $scope.cidadeId = $scope.etapaCursadaHistorico[0].cidade.id;
+                $scope.etapaCursadaHistorico = $scope.etapaCursadaHistorico[0];
+            }
+            $scope.cursadasPorEtapa = $filter('filter')($scope.disciplinasCursadasTabela, { etapa:{ ordem: etapaAtual } });
+            $scope.mostrarHistoricoTabela = true;
+            if ($scope.cursadasPorEtapa.length > 0) {
+                $timeout(function(){ 
+                    $('#etapaHistorico').material_select('destroy'); $('#etapaHistorico').material_select();
+                    $('#estadoConclusao2').material_select('destroy'); $('#estadoConclusao2').material_select();
+                    $('.statusConclusaoH1').material_select('destroy'); $('.statusConclusaoH1').material_select();
+                    $('.statusConclusaoH2').material_select('destroy'); $('.statusConclusaoH2').material_select();
+                    Servidor.verificaLabels();
+                },1000);
+            } else {
+                $scope.disciplinasCursadas = [];
+                var promise = Servidor.buscar('disciplinas',{etapa: etapaAtual});
+                promise.then(function(response){
+                    $scope.disciplinasEtapa = response.data;
+                    $scope.disciplinasEtapa.forEach(function(disciplina,i){
+                        var obj = {
+                            matricula: {id: $scope.matricula.id},
+                            disciplina: {id: disciplina.id},
+                            mediaFinal: null,
+                            frequenciaTotal: null,
+                            status: null,
+                            ano: null
+                        };
+                        $scope.disciplinasCursadas.push(obj);
+                    });
+                    $timeout(function(){ 
+                        $('#etapaHistorico').material_select('destroy'); $('#etapaHistorico').material_select();
+                        $('#estadoConclusao2').material_select('destroy'); $('#estadoConclusao2').material_select();
+                        $('.statusConclusaoH1').material_select('destroy'); $('.statusConclusaoH1').material_select();
+                        $('.statusConclusaoH2').material_select('destroy'); $('.statusConclusaoH2').material_select();
+                        Servidor.verificaLabels();
+                    },1000);
+                });
+            }
+            
+        };
+        
+        $scope.salvarNotasHistorico = function () {
+            $scope.gerarEtapaCursadaHistorico();
+        };
+        
+        $scope.gerarEtapaCursadaHistorico = function () {
+            if ($scope.etapaCursadaHistorico.unidadeEnsino !== undefined && $scope.etapaCursadaHistorico.ano !== undefined && $scope.cidadeId !== undefined) {
+                if ($scope.etapaCursadaHistorico.id === undefined) {
+                    $scope.etapaCursadaHistorico = { 
+                        matricula: {id: $scope.matricula.id},
+                        etapa: {id: $scope.etapaAtual },
+                        unidadeEnsino: $scope.etapaCursadaHistorico.unidadeEnsino,
+                        ano: $scope.etapaCursadaHistorico.ano,
+                        cidade: {id: $scope.cidadeId}
+                    };
+                } else {
+                    $scope.etapaCursadaHistorico.cidade = {id:$scope.cidadeId};
+                    $scope.etapaCursadaHistorico.etapa = {id:$scope.etapaCursadaHistorico.etapa.id};
+                    $scope.etapaCursadaHistorico.matricula = {id:$scope.etapaCursadaHistorico.matricula.id};
+                }
+                if(! $scope.etapaCursadaHistorico.auto) {
+                    Servidor.finalizar($scope.etapaCursadaHistorico,'etapas-cursadas','Etapa Cursada');
+                }
+                $scope.gerarDisciplinaCursadaHistorico($scope.etapaCursadaHistorico.ano); 
+                
+            } else {
+                Servidor.customToast("Preencha os dados para salvar e tente novamente.");
+            }
+                
+        };
+        
+        $scope.reiniciarHistorico = function (){
+            $scope.mostrarHistoricoTabela = false;
+            $scope.etapaCursadaHistorico = { 
+                matricula: {id: $scope.matricula.id},
+                etapa: {id: null },
+                unidadeEnsino: null,
+                ano: null,
+                cidade: {id: null}
+            };
+            $scope.cursadasPorEtapa = [];
+            $scope.estadoId = null;
+            $scope.nomeCidade = '';
+            $scope.addFormDisciplinaHistorico = false;
+            $timeout(function(){
+                $scope.gerenciarHistorico();
+                $('#etapaHistorico').material_select('destroy'); $('#etapaHistorico').material_select();
+                $('#estadoConclusao2').material_select('destroy'); $('#estadoConclusao2').material_select();
+            },1000);
+        };
+        
+        $scope.gerarDisciplinaCursadaHistorico = function (ano) {
+            if ($scope.cursadasPorEtapa.length > 0) {
+                $scope.cursadasPorEtapa.forEach(function(cursada,i){
+                    cursada.ano = ano;
+                    var promise = Servidor.finalizar(cursada, 'disciplinas-cursadas', 'Disciplina');
+                    promise.then(function(response){
+                        if (i === $scope.cursadasPorEtapa.length-1) {
+                            $scope.reiniciarHistorico();
+                        }
+                    }, function (error){
+                        Servidor.customToast(error.data.message);
+                    });
+                });
+            } else {
+                $scope.disciplinasCursadas.forEach(function(disciplina,i){
+                    disciplina.ano = ano;
+                    var promise = Servidor.finalizar(disciplina, 'disciplinas-cursadas', 'Disciplina');
+                    promise.then(function(response){
+                        if (i === $scope.disciplinasCursadas.length-1) {
+                            $scope.reiniciarHistorico();
+                        }
+                    }, function (error){
+                        Servidor.customToast(error.data.message);
+                    });
+                });
+            }
+        };
+        
+        $scope.addFormDisciplinaHistorico = false;
+        $scope.addDisciplinaHistorico = function (){
+            $scope.addFormDisciplinaHistorico = true;
+            $scope.disciplinaNome = "";
+        };
+        
+        $scope.salvarNovaDisciplina = function (){
+            if ($scope.novaDisciplina.disciplina.id !== null && $scope.novaDisciplina.mediaFinal !== null && $scope.novaDisciplina.frequenciaTotal !== null && $scope.novaDisciplina.status !== null) {
+                $scope.novaDisciplina.ano = $scope.etapaCursadaHistorico.ano;
+                var promise = Servidor.finalizar($scope.novaDisciplina, 'disciplinas-cursadas', 'Disciplina');
+                promise.then(function(response){
+                    $scope.novaDisciplina = {
+                        matricula: {id: $scope.matricula.id},
+                        disciplina: {id: null},
+                        mediaFinal: null,
+                        frequenciaTotal: null,
+                        status: null,
+                        ano: null
+                    };
+                    $scope.addFormDisciplinaHistorico = false;
+                    $scope.disciplinasCursadasTabela.push(response.data);
+                    $scope.labelsDisciplinas.push(response.data.nomeExibicao);
+                    $scope.manuais.push(response.data);
+                    $timeout(function(){
+                        $scope.buscaNotasPorEtapa(response.data.etapa.id);
+                    },500);
+                }, function (error){
+                    Servidor.customToast(error.data.message);
+                });
+            } else {
+                Servidor.customToast('Preencha todos os campos para criar uma nova disciplina.');
+            }
+        };
+        
+        $scope.getTodasDisciplinasHistorico = function (nome) {
+            var promise = Servidor.buscar('disciplinas',{incluirNaoOfertadas: true, etapa: $scope.etapaAtual, nome: nome});
+            $scope.todasDisciplinasHistorico = [];
+            promise.then(function(response){
+                $scope.todasDisciplinasHistorico = response.data;
+            });
+        };
+        
+        $scope.carregarDisciplinaHistorico = function (disciplina){
+            $scope.disciplinaNome = disciplina.nomeExibicao;
+            $scope.novaDisciplina.disciplina.id = disciplina.id;
+            $timeout(function(){ Servidor.verificaLabels(); },500);
+        };
+        
+        $scope.getDisciplinasPorNome = function (nomeDisciplina,elemento) {
+
+            if(nomeDisciplina.length < 4) {
+                return;
+            }
+            var promise = Servidor.buscar('disciplinas',{incluirNaoOfertadas: true, etapa: $scope.etapaNovaDisc, nome: nomeDisciplina});
+            $scope.todasDisciplinasDisponiveis = [];
+            promise.then(function(response){
+                $scope.todasDisciplinas = [];
+                response.data.forEach(function(disciplina,i){
+                    if (!disciplina.ofertado) {
+                        var result = $filter('filter')($scope.disciplinasCursadasTabela, { disciplina: { nome:disciplina.nome }, etapa:{ ordem: disciplina.etapa.ordem } });
+                        if (result.length === 0){ $scope.todasDisciplinasDisponiveis.push(disciplina); }
+                    } else {
+                        var result = $filter('filter')($scope.disciplinasCursadasTabela, { disciplina: { nome:disciplina.nome }, etapa:{ ordem: disciplina.etapa.ordem } });
+                        if (result.length === 0){ $scope.todasDisciplinas.push(disciplina); }
+                    }
+                    if (i === response.data.length-1){
+                        $scope.todasDisciplinasBackup = $scope.todasDisciplinasDisponiveis;
+                        $timeout(function (){ $(elemento).material_select('destroy'); $(elemento).material_select(); Servidor.verificaLabels(); },1000);
+                    }
+                });
+            });
+        };
+        
+        $scope.verificaSelectStatusHistorico = function (status,compara) {  if (status === compara) { return true; } };
 
         $scope.inicializar(true, true);
     }]);

@@ -35,7 +35,7 @@
         $scope.tela = ErudioConfig.getTemplateLista('relatorios'); $scope.lista = true;
         //ATRIBUTOS
         $scope.titulo = "Alunos Defasados"; $scope.progresso = false; $scope.cortina = false; $scope.nomeUnidade = null; $scope.cursosOfertados = []; $scope.cursoOfertado = {id:null}; $scope.unidade = {id:null};  $scope.height = $(window).height()-150;
-        $scope.unidades = [];
+        $scope.unidades = []; $scope.anoReferencia = null;
         //ABRE AJUDA
         $scope.ajuda = function () { $('#modal-ajuda-relatorio-defasado').openModal(); };
         //CONTROLE DO LOADER
@@ -58,7 +58,8 @@
         //getpdf
         $scope.getPDF = function (url){
             $scope.mostraProgresso();
-            var promise = Servidor.getPDF(url);
+            var urlFinal = url+'&dataReferencia='+Servidor.formataDataBanco($scope.anoReferencia);
+            var promise = Servidor.getPDF(urlFinal);
             promise.then(function(){ $scope.fechaProgresso(); });
         };
         
@@ -118,6 +119,9 @@
             $('.title-module').html($scope.titulo); $('.material-tooltip').remove();
             $timeout(function(){
                 $('#modal-ajuda-relatorio-defasado').leanModal(); 
+                $timeout(function() {
+                    $('.data').mask('00/00/0000');
+                }, 500);
                 //$('#modal-ajuda-relatorio').modal(); 
                 $('select').material_select('destroy'); $('select').material_select();
                 $('.dropdown').dropdown({ inDuration: 300, outDuration: 225, constrain_width: true, hover: false, gutter: 45, belowOrigin: true, alignment: 'left' });

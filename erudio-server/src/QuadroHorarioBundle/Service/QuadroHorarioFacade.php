@@ -48,6 +48,13 @@ class QuadroHorarioFacade extends AbstractFacade {
             },
             'unidadeEnsino' => function(QueryBuilder $qb, $value) {
                 $qb->andWhere('q.unidadeEnsino = :unidade')->setParameter('unidade', $value);
+            },
+            'turno' => function(QueryBuilder $qb, $value) {
+                $qb->andWhere('q.turno = :turno')->setParameter('turno', $value);
+            },
+            'modelo_curso' => function(QueryBuilder $qb, $value) {
+                $qb->join('q.modelo', 'modelo')
+                   ->andWhere('modelo.curso = :curso')->setParameter('curso', $value);
             }
         ];
     }

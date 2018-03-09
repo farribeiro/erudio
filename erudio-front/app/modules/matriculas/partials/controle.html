@@ -101,3 +101,8 @@
         </a>
     </li>
 </ul>
+<!-- Dropdown Retorno de Matricula -->
+<ul id='dropUnidadesBusca' class='dropdown-content'>
+    <li class="divider"></li>
+    <li data-ng-repeat="unidade in unidades"><a class="drop-item-busca" data-ng-click="selecionarUnidade(unidade)">{{ unidade.tipo.sigla | uppercase }} {{unidade.nome | uppercase}}</a></li>
+</ul>

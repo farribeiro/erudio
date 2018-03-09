@@ -252,12 +252,6 @@ class Matricula extends AbstractEditableEntity {
         );
     }
     
-    /**
-    * @JMS\Groups({"DETAILS"})
-    * @JMS\VirtualProperty
-    * @JMS\MaxDepth(depth = 3)
-    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Enturmacao>")
-    */
     function getEnturmacoesAtivas() {
         return $this->enturmacoes->matching(
             Criteria::create()->where(Criteria::expr()->andX(              
@@ -267,6 +261,11 @@ class Matricula extends AbstractEditableEntity {
         );  
     }
     
+    /**
+    * @JMS\Groups({"DETAILS"})
+    * @JMS\VirtualProperty
+    * @JMS\Type("ArrayCollection<MatriculaBundle\Entity\Enturmacao>")
+    */
     function getEnturmacoesEmAndamento() {
         return $this->enturmacoes->matching(
             Criteria::create()->where(Criteria::expr()->andX(              

@@ -33,7 +33,7 @@
         <div class="col s12 l12 mobile-full">
             <div class="row" style="margin-top: -64px;">
                 <div class="col s12 l12 mobile-full" data-ng-hide="detalhesTransferencia || detalhesMovimentacoes">
-                    <div class="card">
+                    <div class="card" ng-hide="telaHistoricoCompleto">
                         <div class="card-content">
                             <h3 class='card-title-h3'>Movimentação</h3>
                             <div class='row hide-on-small-only'>
@@ -67,7 +67,7 @@
                             <li class="tab col s6  waves-effect waves-light lighten-4 truncate"><a href="#historicoMovimentacao" data-ng-click="trocarTab('historico')">Histórico</a></li>
                         </ul>
                     </div>
-                    <div id="historicoMovimentacao">
+                    <div id="historicoMovimentacao" ng-hide="telaHistoricoCompleto">
                         <div data-ng-hide="editando" style="background: #fafafa; padding-top: 1rem; margin-top: -1rem;" class="z-depth-1 row">
                             <div class="col s12">
                                 <div class="input-field col s12 m12 l6">

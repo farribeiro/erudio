@@ -35,7 +35,7 @@
         $scope.tela = ErudioConfig.getTemplateLista('ieducar'); $scope.lista = true;
         //ATRIBUTOS
         $scope.titulo = "iEducar"; $scope.progresso = false; $scope.cortina = false;  $scope.unidades = []; $scope.unidade = {id:null};
-        $scope.alunos = []; $scope.alunoNome = ''; $scope.dataNascAluno = ''; $scope.nomeUnidade = '';
+        $scope.alunos = []; $scope.alunoNome = ''; $scope.dataNascAluno = ''; $scope.nomeUnidade = ''; $scope.mostraCampo =  false;
         //CONTROLE DO LOADER
         $scope.mostraProgresso = function () { $scope.progresso = true; $scope.cortina = true; };
         $scope.fechaProgresso = function () { $scope.progresso = false; $scope.cortina = false; };
@@ -51,10 +51,15 @@
             $('.data').mask('00/00/0000');
             $scope.mostraProgresso(); $scope.unidades = [];
             var endereco = ErudioConfig.urlServidor.replace('api','integracoes/ieducar');
-            //if (!$scope.isAdmin) { unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.nome; }
+            if (!$scope.isAdmin && unidade === undefined) { unidade = JSON.parse(sessionStorage.getItem('unidade')).nome; }
             var promise = Servidor.buscarIeducar(endereco+'/unidades-ensino?nome='+unidade);
             promise.success(function(response) {
                 $scope.unidades = response;
+                if (response.length === 0) { $scope.mostraCampo = true; }
+                if (response.length === 1) {
+                    $scope.unidade = response[0];
+                    $scope.unidade.id = response[0].cod_escola;
+                }
                 $timeout(function () { $('#unidade').material_select('destroy'); $('#unidade').material_select(); $scope.fechaProgresso(); }, 500);
             });
         };
@@ -64,8 +69,8 @@
             $scope.nomeUnidade = unidade.esco_nome;
         };
         
-        $scope.buscarAlunos = function(){ console.log($scope.unidade);
-            if ($scope.alunoNome !== undefined && $scope.alunoNome.length > 0 && $scope.dataNascAluno !== undefined && $scope.dataNascAluno.length > 0) {
+        $scope.buscarAlunos = function(){
+            if ($scope.alunoNome !== undefined && $scope.alunoNome.length > 0) {
                 $scope.mostraProgresso(); $scope.alunos = [];
                 var endereco = ErudioConfig.urlServidor.replace('api','integracoes/ieducar');
                 var promise = Servidor.buscarIeducar(endereco+'/alunos?nome='+$scope.alunoNome+'&dataNascimento='+$scope.dataNascAluno);
@@ -90,8 +95,8 @@
         //GERAR BOLETIM
         $scope.gerarHistorico = function (aluno) {
             var endereco = ErudioConfig.urlServidor.replace('api','integracoes/ieducar');
-            //var url = endereco+'/historicos-impressos?aluno='+aluno.cod_aluno+"&unidadeEnsino="+$scope.unidade.id;
-            var url = endereco+'/historicos-impressos?aluno='+aluno.cod_aluno;
+            var url = endereco+'/historicos-impressos?aluno='+aluno.cod_aluno+"&unidadeEnsino="+$scope.unidade.id;
+            //var url = endereco+'/historicos-impressos?aluno='+aluno.cod_aluno;
             $scope.getHistorico(url);
         };
         

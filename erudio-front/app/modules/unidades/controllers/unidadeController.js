@@ -201,7 +201,7 @@
 
         /* Buscar endereço pelas coordenadas */
         $scope.getEnderecoPorCoordenada = function() {
-            $.ajax({
+            /*$.ajax({
                 url: 'http://maps.google.com/maps/api/geocode/json?address=' + $scope.unidade.endereco.latitude + ',' + $scope.unidade.endereco.longitude + '&sensor=false',
                 dataType: 'JSON', type: 'get',
                 success: function(data){
@@ -211,7 +211,7 @@
                         $scope.buscaCEP($scope.unidade.endereco.cep);
                     } else {Servidor.customToast('CEP não identificado, digite o endereço manualmente.');}
                 }
-            });
+            });*/
         };
 
         /* Busca coordenada por endereço */
@@ -287,7 +287,29 @@
         $scope.cursosSalvar = [];
         $scope.selecionarCurso = function(curso) {
             if ($scope.unidade.id !== undefined && $scope.ofertados !== undefined) {
-                $scope.ofertados.forEach(function(cursoOfertado, i){
+                
+                if (!$('#c'+curso.id).is(':checked')) {
+                    //delete
+                    $scope.ofertados.forEach(function(cursoOfertado, i){
+                        if (cursoOfertado.curso.id === curso.id) {
+                            Servidor.remover(cursoOfertado,'Curso');
+                        }
+                    });
+                } else {
+                    //create
+                    var c = { curso: { id:curso.id }, unidadeEnsino: { id: $scope.unidade.id } };
+                    var promise = Servidor.finalizar(c,'cursos-ofertados','Curso');
+                    promise.then(function(response){
+                        var promiseCursos = Servidor.buscar('cursos-ofertados',{unidadeEnsino: $scope.unidade.id});
+                        promiseCursos.then(function(response){
+                            if (response.data.length > 0) {
+                                $scope.ofertados = response.data;
+                            }
+                        });
+                    });
+                }
+                
+                /*$scope.ofertados.forEach(function(cursoOfertado, i){
                     var del = false;
                     if (cursoOfertado.curso.id === curso.id) {
                         Servidor.remover(cursoOfertado,'Curso');
@@ -296,7 +318,7 @@
                         var c = { curso: { id:curso.id }, unidadeEnsino: { id: $scope.unidade.id } };
                         Servidor.finalizar(c,'cursos-ofertados','Curso');
                     }
-                });
+                });*/
             } else {
                 var idx = $scope.cursosSalvar.indexOf(curso.id);
                 if (idx > -1) {
@@ -791,7 +813,7 @@
 
         /* Busca de endereço pelo CEP */
         $scope.buscaCEP = function (query) {
-            $timeout.cancel($scope.delayBusca);
+            /*$timeout.cancel($scope.delayBusca);
             $scope.delayBusca = $timeout(function(){
                 if (query === undefined || query === null) { query = ''; }
                 var tamanho = query.length;
@@ -802,7 +824,7 @@
                         var endereco = Servidor.recuperaCep();
                         if (endereco[0]) { $scope.unidade.endereco.logradouro = endereco[0]; } else { $scope.unidade.endereco.logradouro = ''; }
                         if (endereco[1]) { $scope.unidade.endereco.bairro = endereco[1]; } else { $scope.unidade.endereco.bairro = ''; }
-                        /* Buscando Estado */
+                        
                         if (endereco[3]) {
                             var promise = Servidor.buscar('estados',{'sigla': endereco[3]});
                             promise.then(function (response){
@@ -816,7 +838,7 @@
                                 $scope.buscaCidades();
                                 if (endereco[2]) {
                                     $timeout(function (){
-                                        /* Buscando Cidade */
+                                        
                                         var promise = Servidor.buscar('cidades',{'nome': endereco[2],'estado': $scope.unidade.endereco.cidade.estado.id });
                                         promise.then(function (response){
                                             var cidade = response.data;
@@ -843,7 +865,7 @@
                         } else { $scope.fechaLoader(); $scope.endereco.cidade.estado.id = ''; $('#estado').material_select(); }
                     }, 500);
                 }
-            }, 200);
+            }, 200);*/
         };
 
         $scope.selecionaTipo = function (tipo){

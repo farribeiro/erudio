@@ -1366,7 +1366,7 @@
 
         /*Altera o status da frequencia do aulo em cada aula*/
         $scope.setaFrequenciaAluno = function (aula, matricula) {
-            if($scope.aulas.length > 1){ var matricula = $scope.matricula.id; }
+            /*if($scope.aulas.length > 1){ var matricula = $scope.matricula.id; }
             var promise = Servidor.buscar('matriculas/' + matricula + '/disciplinas-cursadas', {'disciplina': $scope.disciplina.disciplina.id});
             promise.then(function (response) {
                 $scope.frequenciasAluno.forEach(function (f, $index) {
@@ -1380,7 +1380,7 @@
                         Servidor.finalizar($scope.frequenciasAluno[$index], 'frequencias', 'Frequência');
                     }
                 });
-            });
+            });*/
         };
 
         $scope.verificaJustificarFalta = function(aula, matricula) {
@@ -1519,7 +1519,7 @@
 
         /*Salva Chamada*/
         $scope.finalizarChamada = function () {
-            var objetoAdd = {'frequencias': []};
+            /*var objetoAdd = {'frequencias': []};
             objetoAdd.frequencias = $scope.frequenciasAlunosTurma;
             var result = Servidor.finalizar(objetoAdd, 'frequencias/*', 'Chamada');
             result.then(function (response) {
@@ -1532,7 +1532,7 @@
                     'aula': {'id': null},
                     'justificativa': null
                 };
-            });
+            });*/
         };
 
         /* Colore os dias do calendário */

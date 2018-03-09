@@ -70,7 +70,7 @@ class Enturmacao extends AbstractEditableEntity {
     
     /**  
     * @JMS\Groups({"LIST"})
-    * @JMS\MaxDepth(depth = 2)
+    * @JMS\MaxDepth(depth = 3)
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turma", inversedBy = "enturmacoes")
     * @ORM\JoinColumn(nullable = false)
     */

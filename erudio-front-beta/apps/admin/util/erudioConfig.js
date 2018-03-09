@@ -12,7 +12,7 @@
          * @attrDescription O endereço acessado no navegador.
          * @attrExample http://erudio.itajai.sc.gov.br
          */
-        this.dominio = 'http://10.100.0.143/erudio/erudio/erudio-front-beta';
+        this.dominio = 'http://10.100.2.99/erudio/erudio-front-beta';
         
         /*
          * @attr urlTemplates
@@ -38,7 +38,7 @@
          */
         //this.urlServidor = 'http://10.1.11.7/erudio/erudio-server/web/app_dev.php/api';
         //this.urlServidor = 'http://10.100.2.243/erudio/erudio-server/web/app_dev.php/api';
-        this.urlServidor = 'http://10.100.2.99/erudio/erudio-server/web/app_dev.php/api';
+        this.urlServidor = 'http://10.100.2.92/erudio/erudio-server/web/app_dev.php/api';
         
         /*
          * @attr urlRelatorios
@@ -48,7 +48,7 @@
          */
         //this.urlRelatorios = 'http://10.1.11.7/erudio/erudio-server/web/app_dev.php/api/report';
         //this.urlRelatorios = 'http://10.100.2.243/erudio/erudio-server/web/app_dev.php/api/report';
-        this.urlRelatorios = 'http://10.100.2.99/erudio/erudio-server/web/app_dev.php/api/report';
+        this.urlRelatorios = 'http://10.100.2.92/erudio/erudio-server/web/app_dev.php/api/report';
         
         /*
          * @attr urlUpload
@@ -58,7 +58,7 @@
          */
         //this.urlUpload = 'http://10.1.11.7/erudio/erudio-server/web/bundles/assets/uploads/';
         //this.urlUpload = 'http://10.100.2.243/erudio/erudio/erudio-server/web/bundles/assets/uploads/';
-        this.urlUpload = 'http://10.100.2.99/erudio/erudio-server/web/bundles/assets/uploads/';
+        this.urlUpload = 'http://10.100.2.92/erudio/erudio-server/web/bundles/assets/uploads/';
     }]);
 
 })();

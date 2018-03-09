@@ -17,7 +17,7 @@
             this.calendario = null;
             this.mesCalendario = [];
             this.semanaCalendario = [];
-            this.permissaoLabel = "EVENTOS";
+            this.permissaoLabel = "HOME_PROFESSOR";
             this.linkModulo = "/#!/calendarios/";
             this.nomeForm = "calendarioForm";
             this.mes = null;

@@ -2,7 +2,7 @@
     <div ng-show="ctrl.possuiEnturmacoes" style="border-bottom: 1px solid #eee; text-align: center; font-size: 1.5rem; padding: 10px 0 10px 0; background: #e0e0e0;">
         {{ ctrl.nomeMes }} / {{ ctrl.ano }}
     </div>
-    <table ng-show="ctrl.possuiEnturmacoes" class="w100 calendar-table" md-swipe-right="ctrl.paginaProxima()" md-swipe-left="ctrl.paginaAnterior()">
+    <table ng-show="ctrl.possuiEnturmacoes" class="w100 calendar-table" md-swipe-left="ctrl.paginaProxima()" md-swipe-right="ctrl.paginaAnterior()">
         <thead hide show-gt-sm><th>Domingo</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></thead>
         <thead hide-gt-sm><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></thead>
         <tbody>

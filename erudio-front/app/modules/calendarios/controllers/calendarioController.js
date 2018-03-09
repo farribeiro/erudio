@@ -118,16 +118,17 @@
             $scope.abrirCortina();
             $scope.calendariosBases = [];
             var unidade = ($scope.isAdmin) ? null : JSON.parse(sessionStorage.getItem('unidade')).id;
-            var promise = Servidor.buscar('calendarios', {instituicao: unidade});
+            var promise = Servidor.buscar('calendarios', {instituicao: unidade, ano: new Date().getFullYear()});
             promise.then(function(response) {
                 $scope.calendarios = response.data;                    
                 $('.tooltipped').tooltip('remove');
                 $timeout(function() { $('.tooltipped').tooltip({delay: 50}); }, 250);
                 $scope.buscarInstituicoesUnidades();
             });
-            var u = ($scope.isAdmin) ? 16138 : JSON.parse(sessionStorage.getItem('unidade')).id;
-            var promise = Servidor.buscar('calendarios', {instituicao: u});
+            var u = ($scope.isAdmin) ? JSON.parse(sessionStorage.getItem('unidade')).id : JSON.parse(sessionStorage.getItem('unidade')).instituicaoPai.id;
+            var promise = Servidor.buscar('calendarios', {instituicao: u, ano: new Date().getFullYear()});
             promise.then(function(response) {
+                console.log('haa');
                 $scope.calendariosBases = response.data;
             });
         };
@@ -193,7 +194,7 @@
                 for (var i = 0; i < $scope.sistemaAvaliacao.quantidadeMedias; i++) {
                     $scope.periodosMedia.push({
                         sistemaAvaliacao: angular.copy(response.data),
-                        media: i+1,
+                        numero: i+1,
                         dataInicio: '',
                         dataTermino: ''
                     });
@@ -502,7 +503,7 @@
             var promise = Servidor.buscarUm('calendarios', calendario.id);
             promise.then(function(response) {
                 $scope.calendario = response.data;
-                $scope.baseCalendario();
+                $scope.baseCalendario(parseInt($scope.calendario.dataInicio.split('-')[1]));
                 $scope.fecharCortina();
             });
         };
@@ -648,6 +649,7 @@
                                         }
                                     });                                        
                                 }
+                                $scope.fecharCortina();
                             });
                         });                                
                     } else {
@@ -678,7 +680,10 @@
             var result = Servidor.finalizar(evento, 'calendarios/' + calendario.id + '/dias/' + evento.dia.id + '/eventos', '');
             result.then(function (response) {                        
                 if(calendario.id === $scope.calendario.id) {
-                    $scope.eventos.push(response.data);                    
+                    if ($scope.eventos === undefined) {
+                        $scope.eventos = [response.data];
+                    } else { $scope.eventos.push(response.data); }
+                    
                     for (var i = 0; i < $scope.semanas.length; i++) {
                         switch (response.data.dia.id) {
                             case $scope.semanas[i].domingo.id:
@@ -872,8 +877,9 @@
 
         /* Desvincula um evento à um dia */
         $scope.removerEvento = function(evento, dia) {
-            $scope.abrirCortina();            
-            var promise = Servidor.buscarUm('calendarios/'+$scope.calendario.id+'/dias/'+dia.id+'/eventos/'+evento.id);
+            //$scope.abrirCortina();
+            var promise = Servidor.buscarUm('calendarios/'+$scope.calendario.id+'/dias/'+dia.id+'/eventos',evento.id);
+            //var promise = Servidor.buscarUm('eventos',evento.evento.id);
             promise.then(function(response) {
                 var evento = response.data;
                 Servidor.remover(evento, 'Evento');

@@ -31,16 +31,21 @@ namespace MatriculaBundle\Service;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 use CoreBundle\ORM\AbstractFacade;
+use CoreBundle\ORM\Exception\IllegalOperationException;
 use MatriculaBundle\Entity\Desligamento;
 use MatriculaBundle\Entity\Matricula;
 
 class DesligamentoFacade extends AbstractFacade {
     
     private $enturmacaoFacade;
+    private $matriculaFacade;
     
-    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade) {
+    function __construct(RegistryInterface $doctrine, EnturmacaoFacade $enturmacaoFacade,
+            MatriculaFacade $matriculaFacade) 
+    {
         parent::__construct($doctrine);
         $this->enturmacaoFacade = $enturmacaoFacade;
+        $this->matriculaFacade = $matriculaFacade;
     }
     
     function getEntityClass() {
@@ -52,12 +57,18 @@ class DesligamentoFacade extends AbstractFacade {
     }
     
     function parameterMap() {
-        return array (
+        return [
             'matricula' => function(QueryBuilder $qb, $value) {
                 $qb->join('d.matricula', 'matricula')
                    ->andWhere('matricula.id = :matricula')->setParameter('matricula', $value);
             }
-        );
+        ];
+    }
+    
+    protected function beforeCreate($desligamento) {
+        if (!$desligamento->getMatricula()->isCursando()) {
+            throw new IllegalOperationException('Matrícula não pode ser desligada em sua situação atual');
+        }
     }
     
     protected function afterCreate($desligamento) {
@@ -83,7 +94,7 @@ class DesligamentoFacade extends AbstractFacade {
             case Desligamento::CANCELAMENTO:
                 $matricula->setStatus(Matricula::STATUS_CANCELADO);
         }
-        $this->orm->getManager()->flush($matricula);
+        $this->matriculaFacade->patch($matricula->getId(), $matricula);
     }
     
     private function encerrarEnturmacoes(Matricula $matricula) {

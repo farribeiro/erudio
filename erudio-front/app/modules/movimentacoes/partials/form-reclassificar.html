@@ -45,11 +45,20 @@
         </select>
         <label for="turma">Turma Destino</label>
     </div>
+    <div class="row" ng-show="disciplinasNotas.length">
+        <div class="col l6">
+            <span style="width: 50%; margin: 0; height: 20px; font-weight: bold; padding-left: 10px;">Disciplina</span>    
+        </div>
+        <div class="col l6 right-align">
+            <span style="width: 50%; margin: 80px; height: 20px; font-weight: bold;">Nota</span>    
+        </div>
+    </div>
     <div class="row">
-        <div style="padding-top:15px; padding-bottom: 8px; border-top: 1px solid #eee;" class="col s12" data-ng-repeat="disciplina in disciplinasNotas">
-            <div class="col s11">{{disciplina.nomeExibicao}}</div>
-            <div class="col s1 input{{$index}}" style="cursor: pointer;">
-                <input type="text" class="nota{{$index}}" data-ng-model="notas[$index].valor" style="width: 50%; margin: 0; height: 20px;" />
+        <div style="border-top: 1px solid #eee;" class="col s12" data-ng-repeat="disciplina in disciplinasNotas">
+            <div class="col s11" style="padding-top: 20px;">{{disciplina.nomeExibicao}}</div>
+            <div class="col s1 input-field input{{$index}}" style="cursor: pointer;">
+                <input type="text" id="nota{{$index}}" class="nota{{$index}} validate" data-ng-model="notas[$index].valor" style=" margin: 0;width: 50%;" />
+                <label for="nota{{$index}}" >Nota</label>
             </div>
         </div>
     </div>

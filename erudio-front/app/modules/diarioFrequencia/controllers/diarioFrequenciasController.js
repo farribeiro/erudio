@@ -208,7 +208,7 @@
             }, 250);
         };
 
-        $scope.prepararVisualizacao = function(disciplina, mes) {
+        /*$scope.prepararVisualizacao = function(disciplina, mes) {
             $scope.mostrarCortina();
             $scope.disciplinasSelecionadas = [];
             $scope.disciplinasSelecionadas.push(disciplina);
@@ -282,7 +282,7 @@
                     });
                 });
             });
-        };
+        };*/
 
         $scope.gerarPdfDisciplina = function(disciplina) {
             $scope.disciplinasSelecionadas = []; $scope.disciplinasSelecionadas.push(disciplina);
@@ -291,7 +291,7 @@
             setTimeout(function(){$scope.gerarPdf();},50);
         };
 
-        $scope.gerarPdf = function(){
+        /*$scope.gerarPdf = function(){
             $scope.mostrarCortina();
             var mes = parseInt($scope.busca.mes.numero);
             if (mes < 10) { $scope.busca.mes.numero = '0' + mes; }
@@ -338,7 +338,7 @@
                     });
                 });
             });
-        };
+        };*/
 
         $scope.fecharFormulario = function(){
             $scope.editando = false;

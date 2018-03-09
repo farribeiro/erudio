@@ -40,9 +40,9 @@ use CoreBundle\ORM\AbstractEditableEntity;
 */
 class Turma extends AbstractEditableEntity {
     
-    const STATUS_CRIADO = 'CRIADO',
-          STATUS_EM_ANDAMENTO = 'EM_ANDAMENTO',
-          STATUS_ENCERRADO = 'ENCERRADO';
+    const STATUS_CRIADO = 'CRIADO'; // legado
+    const STATUS_EM_ANDAMENTO = 'EM_ANDAMENTO';
+    const STATUS_ENCERRADO = 'ENCERRADO';
     
     /** 
     * @JMS\Groups({"LIST"})
@@ -156,6 +156,7 @@ class Turma extends AbstractEditableEntity {
     private $vagas;
     
     function init() {
+        $this->turno = $this->quadroHorario->getTurno();
         $this->status = self::STATUS_EM_ANDAMENTO;
         $this->enturmacoes = new ArrayCollection();
         $this->vagas = new ArrayCollection();
@@ -262,6 +263,11 @@ class Turma extends AbstractEditableEntity {
             : $nome;
     }
     
+    function encerrar() {
+        $this->status = self::STATUS_ENCERRADO;
+        $this->dataEncerramento = new \DateTime();
+    }
+    
     function getNomeExibicao() {
         return $this->getNomeCompleto();
     }
@@ -317,7 +323,9 @@ class Turma extends AbstractEditableEntity {
     }
     
     function getDataEncerramento() {
-        return $this->dataEncerramento;
+        return $this->dataEncerramento 
+                ? $this->dataEncerramento 
+                : $this->calendario->getDataTermino();
     }
     
     function setNome($nome) {
@@ -330,10 +338,6 @@ class Turma extends AbstractEditableEntity {
 
     function setLimiteAlunos($limiteAlunos) {
         $this->limiteAlunos = $limiteAlunos;
-    }
-
-    function setTurno(Turno $turno) {
-        $this->turno = $turno;
     }
     
     function setAgrupamento(AgrupamentoTurma $agrupamento = null) {
@@ -350,6 +354,7 @@ class Turma extends AbstractEditableEntity {
     
     function setQuadroHorario($quadroHorario) {
         $this->quadroHorario = $quadroHorario;
+        $this->turno = $quadroHorario->getTurno();
     }
     
     function setPeriodo($periodo) {

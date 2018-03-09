@@ -48,7 +48,8 @@
             <div style="border-bottom: 1px solid #eee; text-align: center; font-size: 1.5rem; padding: 10px 0 10px 0; background: #e0e0e0;">
                 {{ ctrl.nomeMes }} / {{ ctrl.ano }}
             </div>
-            <table class="w100 aulas-table" style="margin-bottom: 50px;" md-swipe-right="ctrl.paginaProxima()" md-swipe-left="ctrl.paginaAnterior()">
+            <table class="w100 aulas-table" style="margin-bottom: 50px;">
+            <!--<table class="w100 aulas-table" style="margin-bottom: 50px;" md-swipe-right="ctrl.paginaAnterior()" md-swipe-left="ctrl.paginaProxima()">-->
                 <thead hide show-gt-sm><th>Domingo</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th><th>Sábado</th></thead>
                 <thead hide-gt-sm><th>Dom</th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th><th>Sáb</th></thead>
                 <tbody>
@@ -148,7 +149,7 @@
                 </md-card>
             </div>
 
-            <div flex-gt-sm="100" layout="column">
+            <div flex-gt-sm="100" layout="column" style="margin-bottom: 42px;">
                 <md-subheader class="md-primary margin-top-subheader form-header">Chamada: {{ ctrl.diaSelecionado.data | date:'dd/MM/yyyy' }}</md-subheader>
                 <md-card class="no-margin-up-down" flex-gt-sm="100">
                     <md-card-content class="no-padding">

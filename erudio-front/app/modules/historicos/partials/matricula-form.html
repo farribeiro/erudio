@@ -42,7 +42,7 @@
                             </div>
                             <div class="col s12 m12 l12 input-field" ng-show="disciCursada.id === undefined">
                                 <i class="material-icons prefix">location_on</i>
-                                <select id="discEtapa" ng-change="escolherDisciplinas()" data-ng-model="etapaNovaDisc" data-ng-disabled="!escrita" required>
+                                <select id="discEtapa" data-ng-model="etapaNovaDisc" data-ng-disabled="!escrita" required>
                                     <option></option>
                                     <option value="{{ etapa.id }}" data-ng-repeat="etapa in etapas">{{ etapa.nomeExibicao }}</option>
                                 </select>
@@ -60,7 +60,7 @@
                             <div class="input-field col s12 m12 l12" data-ng-show="autocompleteDisciplina">
                                 <i class="material-icons prefix">location_on</i>
                                 <span class="digitable-icon"><i class="material-icons">border_color</i></span>
-                                <input id="naoOfertadas" class="dropdown" type="text" ng-change="filtroDisciplina()" data-ng-model="disciplinaNome" data-ng-disabled="!escrita" data-activates='dropNaoOfertadas'>
+                                <input id="naoOfertadas" class="dropdown" type="text" ng-change="getDisciplinasPorNome(disciplinaNome,'#discConclusao')" data-ng-model="disciplinaNome" data-ng-disabled="!escrita" data-activates='dropNaoOfertadas'>
                                 <label for="naoOfertadas">Digite uma disciplina</label>
                             </div>
                             <ul id='dropNaoOfertadas' class='dropdown-content'>
@@ -180,17 +180,17 @@
                                     <tr data-ng-repeat="manual in manuais track by $index" ng-if="!manual.auto">
                                         <td class="hide-on-small-only center-align">{{ manual.nomeExibicao }} - {{ manual.etapa.nomeExibicao }}</td>
                                         <td class="center-align hide-on-small-only">
-                                            <i style="cursor: pointer;" ng-click="addDisciplina(manual,manual.etapa,manual.cursadaId)" class="material-icons">edit</i>
+                                            <i style="cursor: pointer;" ng-click="addDisciplina(manual,manual.etapa,manual.id)" class="material-icons">edit</i>
                                             <i style="cursor: pointer;" ng-click="modalRemoveDisciplinaNova(manual,etapa)" class="material-icons">delete</i>
                                         </td>
                                     </tr>
-                                    <tr data-ng-repeat="disciplina in disciplinasTabelaInterna track by $index" ng-if="!disciplina.ofertado">
+                                    <!--<tr data-ng-repeat="disciplina in disciplinasTabelaInterna track by $index" ng-if="!disciplina.ofertado">
                                         <td class="hide-on-small-only center-align">{{ disciplina.nomeExibicao }} - {{ disciplina.etapa.nomeExibicao }}</td>
                                         <td class="center-align hide-on-small-only">
                                             <i style="cursor: pointer;" ng-click="addDisciplina(disciplina,disciplina.etapa,disciplina.cursadaId)" class="material-icons">edit</i>
                                             <i style="cursor: pointer;" ng-click="modalRemoveDisciplinaNova(disciplina,etapa)" class="material-icons">delete</i>
                                         </td>
-                                    </tr>
+                                    </tr>-->
                                 </tbody>
                             </table>
                         </div>
@@ -230,9 +230,10 @@
                 </div>
                 
                 <div class="card" ng-hide="isAdicionandoDisciplina">
-                    <div class="card-content white-text" style='color: #000 !important;'>
+                    <div class="card-content white-text" style='color: #000 !important;' ng-hide="gerenciandoHistorico">
                         <span class="card-title" style='color: #000;'>Histórico - {{ matricula.aluno.nome }}</span>
                         <table>
+                            
                             <thead>
                                 <tr>
                                     <th>DISCIPLINAS</th>
@@ -240,22 +241,218 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="disciplina in disciplinasTabela track by $index">
-                                    <td><span>{{ disciplina.nomeExibicao }}</span></td>
-                                    <td ng-repeat="etapa in etapas track by $index">
-                                        <span ng-if="filtrarNota(disciplina,etapa) === '-'">{{ filtrarNota(disciplina,etapa) }}</span>
-                                        <span ng-if="filtrarNota(disciplina,etapa) !== '-'">{{ filtrarNota(disciplina,etapa) }}</span>
-                                        <span ng-if="filtrarNota(disciplina,etapa) !== '-' && !disciplina.ofertado"></span>
+                                <tr ng-repeat="disciplina in labelsDisciplinas track by $index">
+                                    <td><span>{{ disciplina }}</span></td>
+                                    <td ng-repeat="etapa in etapas track by $index" class="{{ filtrarPorEtapaClasse(disciplina,etapa) }}">
+                                        <span>{{ filtrarPorEtapa(disciplina,etapa) }}</span>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="end-card right-align" style="margin-bottom:0px; padding: 0;">
-                        <a class="waves-effect waves-blue btn-flat" ng-click="addDisciplina()">Gerenciar disciplinas</a>
-                        <a class="waves-effect waves-blue btn-flat" ng-click="addDadosConclusao()">Dados de conclusão</a>
+                    <div class="end-card right-align" style="margin-bottom:0px; padding: 0;" ng-hide="gerenciandoHistorico">
+                        <a class="waves-effect waves-blue btn blue darken-1" ng-click="gerenciarHistorico()">GERENCIAR HISTÓRICO</a>
+<!--                        <a class="waves-effect waves-blue btn-flat" ng-click="addDisciplina()">Gerenciar disciplinas</a>-->
+                        <!--<a class="waves-effect waves-blue btn-flat" ng-click="addDadosConclusao()">Dados de conclusão</a>-->
                         <a class="waves-effect waves-blue btn-flat" ng-click="addObservacoesForm()">Observações</a>
                         <a class="waves-effect waves-blue btn-flat" ng-click="getPDF(config.urlRelatorios+'/historico?matricula='+matricula.id)">IMPRIMIR</a>
+                    </div>
+                    
+                    <div class="card-content white-text" style='color: #000 !important; min-height: 60rem;' ng-show="gerenciandoHistorico">
+                        <span class="card-title" style='color: #000;'>Histórico - {{ matricula.aluno.nome }}</span>
+                        
+                        <div class="input-field col s12 m12 l12">
+                            <i class="material-icons prefix">school</i>
+                            <select id="etapaHistorico" data-ng-change="buscaNotasPorEtapa(etapaAtual)" data-ng-model="etapaAtual">
+                                <option></option>
+                                <option value="{{ etapa.ordem }}" data-ng-repeat="etapa in etapas track by $index">{{etapa.nome | uppercase}}</option>
+                            </select>
+                            <label for="etapaHistorico">Etapa:</label>
+                        </div> 
+                        
+                        <div>
+                            <div class="col s12 m12 l6 input-field">
+                                <i class="material-icons prefix">account_box</i>
+                                <input id="unidade" type="text" focus-on="focusMe" class="validate" data-ng-model="etapaCursadaHistorico.unidadeEnsino" data-ng-disabled="!escrita || etapaCursada.auto === true" required />
+                                <label for="unidade">Unidade de Ensino*</label>
+                            </div>
+                            <div class="col s12 m12 l6 input-field">
+                                <i class="material-icons prefix">number</i>
+                                <input id="ano" type="text" class="validate" data-ng-model="etapaCursadaHistorico.ano" data-ng-disabled="!escrita" required />
+                                <label for="ano">Ano*</label>
+                            </div>
+                            <div class="col s12 m12 l12 input-field">
+                                <i class="material-icons prefix">location_on</i>
+                                <select id="estadoConclusao2" data-ng-change="selecionaEstado()" data-ng-model="estadoId" data-ng-disabled="!escrita" required>
+                                    <option value="{{ estado.id }}" data-ng-selected="verificaSelectEstado(estado.id)" data-ng-repeat="estado in estados">{{ estado.nome }}</option>
+                                </select>
+                                <label for="estadoConclusao2" class="ajuste-select-top-label">Estado*</label>
+                            </div>
+                            <div class="col s12 m12 l12 input-field">
+                                <i class="material-icons prefix">location_on</i>
+                                <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                <input id="cidade" class="dropdown" type="text" data-ng-model="nomeCidade" data-ng-change="buscarCidades()" data-activates='dropCidadesConclusao'>
+                                <label for="cidades">Cidades</label>
+                            </div>
+                            <ul id='dropCidadesConclusao' class='dropdown-content'>
+                                <li class="divider"></li>
+                                <li data-ng-repeat="cidade in cidadesConclusao">
+                                    <a data-ng-click="carregarCidadeConclusao(cidade)">{{ cidade.nome | uppercase }} - {{cidade.estado.sigla}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <table ng-show="mostrarHistoricoTabela">
+                            
+                            <thead>
+                                <tr>
+                                    <th>DISCIPLINA</th>
+                                    <th>Média</th>
+                                    <th>Frequência</th>
+                                    <th>Status</th>
+                               </tr>
+                            </thead>
+                            <tbody class="tbodyDisciplinas">
+<!--                                <tr ng-show="addFormDisciplinaHistorico">
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <i class="material-icons prefix">location_on</i>
+                                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                            <input id="naoOfertadas" class="dropdown" type="text" ng-change="getTodasDisciplinasHistorico(disciplinaNome)" data-ng-model="disciplinaNome" data-ng-disabled="!escrita" data-activates='dropNaoOfertadas2'>
+                                            <label for="naoOfertadas">Digite uma disciplina</label>
+                                        </div>
+                                        <ul id='dropNaoOfertadas2' class='dropdown-content'>
+                                            <li class="divider"></li>
+                                            <li data-ng-repeat="disciplina in todasDisciplinasHistorico track by $index">
+                                                <a ng-if="!discplina.ofertado" data-ng-click="carregarDisciplinaHistorico(disciplina)">{{ disciplina.nomeExibicao }} - {{ disciplina.etapa.nomeExibicao }}</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="notaD" type="text" ng-model="novaDisciplina.mediaFinal" class="validate"/>
+                                            <label for="notaD">Média:</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="freqD" type="text" ng-model="novaDisciplina.frequenciaTotal" class="validate"/>
+                                            <label for="freqD">Frequência(%):</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col s12 m12 l12 input-field" style="position: relative;">
+                                            <select style="padding-left: 0px !important; width: 50%;" class="statusConclusaoH2" data-ng-model="novaDisciplina.status" required>
+                                                <option></option>
+                                                <option value="APROVADO">APROVADO</option>
+                                                <option value="DISPENSADO">DISPENSADO</option>
+                                            </select>
+                                            <label for="statusConclusaoH2">Status:</label>
+                                        </div>
+                                        <div style="position: absolute; right: 15px; top: 25rem;">
+                                            <a data-ng-click="salvarNovaDisciplina()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light rosa add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Disciplina"><i class="material-icons load-map">add</i></a>
+                                        </div>
+                                    </td>
+                                </tr>-->
+                                
+                                <tr ng-repeat="cursada in cursadasPorEtapa track by $index" ng-show="cursadasPorEtapa.length > 0">
+                                    <td>{{ cursada.disciplina.nomeExibicao }}</td>
+                                    <td >
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="notaC{{cursada.id}}" type="text" class="validate" ng-model="cursada.mediaFinal"/>
+                                            <label for="notaC{{cursada.id}}">Média:</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="freqC{{cursada.id}}" type="text" class="validate" ng-model="cursada.frequenciaTotal"/>
+                                            <label for="freqC{{cursada.id}}">Frequência(%):</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col s12 m12 l12 input-field">
+                                            <select style="padding-left: 0px !important;" class="statusConclusaoH1" data-ng-model="cursada.status" required>
+                                                <option></option>
+                                                <option value="APROVADO" data-ng-selected="verificaSelectStatusHistorico('APROVADO',cursada.status)">APROVADO</option>
+                                                <option value="DISPENSADO" data-ng-selected="verificaSelectStatusHistorico('DISPENSADO',cursada.status)">DISPENSADO</option>
+                                            </select>
+                                            <label for="statusConclusaoH1">Status:</label>
+                                        </div>
+                                    </td>
+                                </tr>   
+                                <tr ng-repeat="disciplina in disciplinasEtapa track by $index" ng-hide="cursadasPorEtapa.length > 0">
+                                    <td>{{ disciplina.nomeExibicao }}</td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="notaD{{disciplina.id}}E{{disciplina.etapa.id}}" type="text" ng-model="disciplinasCursadas[$index].mediaFinal" class="validate"/>
+                                            <label for="notaD{{disciplina.id}}E{{disciplina.etapa.id}}">Média:</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="freqD{{disciplina.id}}E{{disciplina.etapa.id}}" type="text" ng-model="disciplinasCursadas[$index].frequenciaTotal" class="validate"/>
+                                            <label for="freqD{{disciplina.id}}E{{disciplina.etapa.id}}">Frequência(%):</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col s12 m12 l12 input-field">
+                                            <select style="padding-left: 0px !important;" class="statusConclusaoH2" data-ng-model="disciplinasCursadas[$index].status" required>
+                                                <option></option>
+                                                <option value="APROVADO">APROVADO</option>
+                                                <option value="DISPENSADO">DISPENSADO</option>
+                                            </select>
+                                            <label for="statusConclusaoH2">Status:</label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-show="addFormDisciplinaHistorico">
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+<!--                                            <i class="material-icons prefix">location_on</i>-->
+                                            <span class="digitable-icon"><i class="material-icons">border_color</i></span>
+                                            <input id="naoOfertadas" class="dropdown" type="text" ng-change="getTodasDisciplinasHistorico(disciplinaNome)" data-ng-model="disciplinaNome" data-ng-disabled="!escrita" data-activates='dropNaoOfertadas2'>
+                                            <label for="naoOfertadas">Disciplina</label>
+                                        </div>
+                                        <ul id='dropNaoOfertadas2' class='dropdown-content'>
+                                            <li class="divider"></li>
+                                            <li data-ng-repeat="disciplina in todasDisciplinasHistorico track by $index">
+                                                <a ng-if="!discplina.ofertado" data-ng-click="carregarDisciplinaHistorico(disciplina)">{{ disciplina.nomeExibicao }} - {{ disciplina.etapa.nomeExibicao }}</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="notaD" type="text" ng-model="novaDisciplina.mediaFinal" class="validate"/>
+                                            <label for="notaD">Média:</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-field col s12 m12 l12">
+                                            <input id="freqD" type="text" ng-model="novaDisciplina.frequenciaTotal" class="validate"/>
+                                            <label for="freqD">Frequência(%):</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col s12 m12 l12 input-field" style="position: relative;">
+                                            <select style="padding-left: 0px !important; width: 50%;" class="statusConclusaoH2" data-ng-model="novaDisciplina.status" data-ng-change="salvarNovaDisciplina()" required>
+                                                <option></option>
+                                                <option value="APROVADO">APROVADO</option>
+                                                <option value="DISPENSADO">DISPENSADO</option>
+                                            </select>
+                                            <label for="statusConclusaoH2">Status:</label>
+                                        </div>
+<!--                                        <div style="position: absolute;right: 2px;to;top: 91%;">
+                                            <a data-ng-click="salvarNovaDisciplina()" class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light green add-btn" data-position="left" data-delay="50" data-tooltip="Adicionar Disciplina"><i class="material-icons load-map">add</i></a>
+                                        </div>-->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="end-card right-align" style="margin-bottom:0px; padding: 0;" ng-show="gerenciandoHistorico">
+                        <a class="waves-effect waves-blue btn-flat" ng-click="addDisciplinaHistorico()">Adicionar disciplina</a>
+                        <a class="waves-effect waves-blue btn-flat" ng-click="salvarNotasHistorico()">Salvar</a>
                     </div>
                 </div>
             </div>

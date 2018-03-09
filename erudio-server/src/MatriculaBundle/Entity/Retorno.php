@@ -46,8 +46,9 @@ class Retorno extends Movimentacao {
     /**
     * @JMS\Groups({"LIST"})
     * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @JMS\SerializedName("unidadeEnsinoDestino")
     * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
-    * @ORM\JoinColumn(nullable = false)
+    * @ORM\JoinColumn(name = "unidade_ensino_id", nullable = false)
     */
     private $unidadeEnsino;
     
@@ -58,7 +59,7 @@ class Retorno extends Movimentacao {
     */
     private $etapa;
     
-    public function getUnidadeEnsino() {
+    function getUnidadeEnsino() {
         return $this->unidadeEnsino;
     }
     

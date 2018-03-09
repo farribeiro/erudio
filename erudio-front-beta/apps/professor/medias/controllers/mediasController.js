@@ -5,13 +5,13 @@
      * @Controller InstituicaoFormController
      */
     class MediaController {
-        constructor(service, util, erudioConfig, $timeout, $mdDialog, disciplinaCursadaService, avaliacaoService, etapaService, $http, mediaService, disciplinaOfertadaService, shared){
+        constructor(service, util, erudioConfig, $timeout, $mdDialog, disciplinaCursadaService, avaliacaoService, etapaService, $http, mediaService, disciplinaOfertadaService, shared, $scope){
             this.service = service; this.util = util; this.shared = shared; this.disciplinaEscolhida = false;
-            this.erudioConfig = erudioConfig; this.http = $http; this.mediaService = mediaService;
+            this.erudioConfig = erudioConfig; this.http = $http; this.mediaService = mediaService; this.scope = $scope;
             this.disciplina = JSON.parse(sessionStorage.getItem('turmaSelecionada')); this.permissaoLabel = "AVALIACAO";
-            this.disciplinaCursadaService = disciplinaCursadaService; this.mdDialog = $mdDialog;
+            this.disciplinaCursadaService = disciplinaCursadaService; this.mdDialog = $mdDialog; this.scope.shared = shared;
             this.medias = []; this.headers = []; this.cursadas = []; this.etapaService = etapaService;
-            this.avaliacaoService = avaliacaoService; this.isQualitativa = false; this.parciais = [];
+            this.avaliacaoService = avaliacaoService; this.isQualitativa = false; this.parciais = []; this.timeout = $timeout;
             this.disciplinaOfertadaService = disciplinaOfertadaService; this.possuiEnturmacoes = parseInt(sessionStorage.getItem('possuiEnturmacoes'));
             this.iniciar();
         }
@@ -89,16 +89,52 @@
 
         calcularMedia(media,$index) {
             this.mediaService.get(media.id,true).then((mediaObj) => {
-                delete mediaObj.valor; mediaObj.disciplinaCursada = { id: mediaObj.disciplinaCursada.id }; delete mediaObj.faltas;
-                this.mediaService.atualizar(mediaObj).then((mediaCalculada) => { this.buscarAlunos(false, mediaCalculada); });
+                mediaObj.valor = null; mediaObj.disciplinaCursada = { id: mediaObj.disciplinaCursada.id }; delete mediaObj.faltas;
+                this.mediaService.atualizar(mediaObj).then((mediaCalculada) => { 
+                    this.buscarAlunos(false, mediaCalculada);
+                });
             });
         }
 
-        redirectAvaliacao(avaliacao) {
-            this.shared.setAvaliacao(avaliacao); var self = this;
-            angular.forEach(angular.element(".md-tab"), (val,key) => {
-                if ($(val).text() === 'avaliações') { setTimeout(() => { $(val).trigger('click'); },10); }
+        recalcularMedia(media,index) {
+            this.mediaService.get(media.id,true).then((mediaObj) => {
+                mediaObj.valor = null; mediaObj.disciplinaCursada = { id: mediaObj.disciplinaCursada.id }; delete mediaObj.faltas;
+                this.mediaService.atualizar(mediaObj).then((mediaCalculada) => {
+                    $('.media-valor-'+mediaCalculada.id).html(mediaCalculada.valor);
+                });
             });
+        }
+
+        recalcularMediaRemota(valor) {
+            if (valor && !this.util.isVazio(valor)) {
+                this.shared.retornarParaMedias = null;
+                var cursada = this.shared.getCursada();
+                var index = $('.expanded-panel:visible').attr('data-index-id');
+                var avaliacaoId = this.shared.getAvaliacao().id;
+                $('.nota-avaliacao-'+avaliacaoId).html(this.shared.getAvaliacaoNota());
+
+                cursada.medias.forEach((media,i) => {
+                    if (!this.util.isVazio(media.valor) && !this.util.isVazio(media.parciais)) {
+                        media.parciais.forEach((parcial, j) => {
+                            if (parcial.avaliacao.id === avaliacaoId) {
+                                this.recalcularMedia(media, index);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        redirectAvaliacao(avaliacao,cursada) {
+            this.shared.setAvaliacao(null);
+            this.shared.setCursada(null);
+            this.timeout(() => {
+                this.shared.setCursada(cursada);
+                this.shared.setAvaliacao(avaliacao); var self = this;            
+                angular.forEach(angular.element(".md-tab"), (val,key) => {
+                    if ($(val).text() === 'avaliações') { setTimeout(() => { $(val).trigger('click'); },10); }
+                });
+            },200);
         }
 
         calcularMediaFinal() { 
@@ -116,6 +152,7 @@
                 this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back'};
                 this.util.comPermissao();
                 this.attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
+                this.scope.$watch("shared.retornarParaMedias",(query) => { this.recalcularMediaRemota(query); });
                 this.escrita = this.verificaEscrita();
                 this.isAdmin = this.util.isAdmin();
                 this.buscarAlunos(true);
@@ -124,6 +161,6 @@
         }
     }
     
-     MediaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","$mdDialog","DisciplinaCursadaService","AvaliacaoService","EtapaService","$http","MediaService","DisciplinaOfertadaService","Shared"];
+     MediaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","$mdDialog","DisciplinaCursadaService","AvaliacaoService","EtapaService","$http","MediaService","DisciplinaOfertadaService","Shared","$scope"];
     angular.module('MediaController',['ngMaterial', 'util', 'erudioConfig']).controller('MediaController',MediaController);
 })();

@@ -65,16 +65,7 @@
         'teste'
     ];
     
-    var directives = [
-        'turmaDirectives',
-        'cargosDirectives',
-        'tipoAvaliacaoDirectives',
-        'habilidadeDirectives',
-        'avaliacaoDirectives',
-        'grupoDirectives',
-        'grupoPermissaoDirectives',
-        'usuarioDirectives'
-    ];
+    var directives = [];
     
     var services = [
         'BaseService',

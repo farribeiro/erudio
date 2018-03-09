@@ -25,7 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 
 <div class="mobile-full">
-    <div id="movimentacoesBusca">
+    <div id="movimentacoesBusca" ng-hide="telaHistoricoCompleto">
         <div data-ng-hide="editando" style="background: #fafafa; padding-top: 1rem; margin-top: -1rem;" class="z-depth-1 row">
             <div class="col s12">
                 <!--
@@ -95,7 +95,7 @@
         </div>
     </div>
     <div data-ng-show="matriculas.length && mostraListaMovimentacoes"  style="margin-top: 15px;">
-        <div class="col s12 m12 l12 card-panel">
+        <div class="col s12 m12 l12 card-panel" ng-hide="telaHistoricoCompleto">
             <ul class="pagination" data-ng-show="quantidadePaginas > 1">
                 <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === 1}" data-ng-click="atualizarPagina(-1)"><a><</a></li>
                 <li class="waver-effect static-element clickable" data-ng-class="{'active': paginaAtual === 1}" data-ng-click="atualizarPagina(1, true)"><a>1</a></li>
@@ -127,18 +127,11 @@
                     <tbody>
                         <tr data-ng-repeat="matricula in matriculas | orderBy:'aluno.nome':reverse | comecarEm: (paginaAtual-1)*50+1 | limitTo: 50">
                             <td class="celula-link relative mobile-full left-align" style="padding: 0px !important; width: 981px;">
-                                <div class="hide-on-small-only" style="padding: 15px">{{matricula.aluno.nome}}</div>
-                                <div class="hide-on-med-and-up" style="padding: 15px">{{matricula.aluno.nome}}</div>
-                                <div style="display: none; z-index: 300; top: 0; left: 0; width: 100%; height: 100%;" class="opcoesMobile row absolute opcoesCurso{{matricula.pessoa.id}}">
-                                    <div style="height: 100%" data-ng-click="$scope.editandoMobile = true;
-                                                carregarTransferencia(transferencia)" class="col s6 yellow lighten-1 center-align waves-effect waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">edit</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">editar</div></div>
-                                    <div style="height: 100%" data-ng-click="prepararRemover(matricula)" data-target="remove-modal-instituicao" class="col s6 red darken-1 white-text center-align waves-effect modal-trigger waves-light"><i style="float:left; line-height: 3.8rem; margin-left: 1rem;" class="material-icons">delete</i><div style="float: left; line-height: 3.5rem; margin-left: 7px;">remover</div></div>
-                                </div>
+                                <div ng-click="carregarHistoricoCompleto(matricula)" style="padding: 15px">{{matricula.aluno.nome}}</div>
                             </td>
                             <td class='hide-on-small-only center-align' style="padding: 0px !important;">{{ matricula.status }}</td>
                             <td class='hide-on-small-only center-align' style="padding: 0px !important;" data-ng-show="escrita">
                                 <i data-ng-click="carregar(matricula, 'Transferência')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Transferência' class="material-icons info-icon tooltipped" style="padding-right: 5px">account_balance</i>
-                                <i data-ng-click="abrirModalTransferenciaLocal(matricula)" data-ng-show="matricula.unidadeEnsino.id !== unidade.id && (matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO')" data-position='top' data-delay='50' data-tooltip='Transferência para minha Unidade' class="material-icons info-icon tooltipped">swap_vert</i>
                                 <i data-ng-click="carregar(matricula, 'Movimentação')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Movimentação' class="material-icons info-icon tooltipped" style="padding-right: 5px">compare_arrows</i>
                                 <i data-ng-click="carregar(matricula, 'Etapa')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Alterar Etapa' class="material-icons info-icon tooltipped">cached</i>
                                 <i data-ng-click="carregar(matricula, 'Reclassificação')" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidade.id" data-position='top' data-delay='50' data-tooltip='Reclassificação' class="material-icons info-icon tooltipped">publish</i>
@@ -158,5 +151,7 @@
                 <li class="waves-effect static-element bold" data-ng-class="{'disabled': paginaAtual === quantidadePaginas}" data-ng-click="atualizarPagina(1)"><a>></a></li>
             </ul>
         </div>
+        <historico-completo ng-show="telaHistoricoCompleto"></historico-completo>
+        
     </div>
 </div>

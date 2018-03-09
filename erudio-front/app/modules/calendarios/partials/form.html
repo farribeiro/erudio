@@ -72,13 +72,13 @@
                     <input id="instituicaoAutoCompleteCalendario" class="dropdown-input" type="text" data-ng-model="nomeInstituicao" data-ng-change="buscarInstituicoesNome(nomeInstituicao)" data-activates="dropInstituicoesBuscaNome">
                     <label for="instituicaoAutoCompleteCalendario">Instituição/Unidade de Ensino</label>
                 </div>
-                <div class="input-field col s12 m12 l6" data-ng-hide="calendario.calendarioBase.id || calendario.id">
+                <span ng-hide="!isAdmin"><div class="input-field col s12 m12 l6" data-ng-hide="calendario.calendarioBase.id || calendario.id">
                     <i class="material-icons prefix">playlist_add_check</i>
                     <select id="sistemasAvaliacao" data-ng-model="sistemaAvaliacao.id" data-ng-change="selecionarSistemaAvaliacao(sistemaAvaliacao.id)" data-ng-disabled="calendario.id">
                         <option value="{{sistemaAvaliacao.id}}" data-ng-repeat="sistemaAvaliacao in sistemasAvaliacao">{{sistemaAvaliacao.nome | uppercase}}</option>
                     </select>
                     <label for="sistemasAvaliacao">Sistema de Avaliação</label>
-                </div>
+                </div></span>
             </div>
             <div class="col s12"style="margin-bottom: 1rem" data-ng-show="periodosMedia.length && !calendario.calendarioBase.id">
                 <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> Períodos das Médias </h5>

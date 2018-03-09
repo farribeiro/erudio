@@ -74,7 +74,7 @@ class QuadroHorario extends AbstractEditableEntity {
     private $unidadeEnsino;
     
     /**
-    * @JMS\Groups({"DETAILS"})       
+    * @JMS\Groups({"LIST"})       
     * @ORM\ManyToOne(targetEntity = "CursoBundle\Entity\Turno") 
     */
     private $turno;
@@ -115,9 +115,6 @@ class QuadroHorario extends AbstractEditableEntity {
     }
    
     function validarHorarioInicio(\DateTime $inicio) {
-        $inicio->setDate(2000, 1, 1);
-        $this->turno->getInicio()->setDate(2000, 1, 1);
-        $this->turno->getTermino()->setDate(2000, 1, 1);
         if ($inicio < $this->turno->getInicio() || $inicio > $this->turno->getTermino()) {
             throw new \Exception("Horário de início deve ser entre {$this->turno->getInicio()->format('H:i:s')} e"
                 . $this->turno->getTermino()->format('H:i:s'));

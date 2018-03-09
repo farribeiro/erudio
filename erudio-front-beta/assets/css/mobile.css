@@ -9,7 +9,7 @@
     .empty-state { width: 80%; height: 3%; position: absolute; left: 50%; margin-left: -39%; top: -1.5%; margin-top: 45%; text-align: center; }
     md-input-container.md-icon-left { padding-left: 36px; padding-right: 0; }
     .sem-alocacao-texto, .sem-permissao-texto { overflow-x: hidden !important; position: absolute; left: 50%; margin-left: -25%; color: #fff; z-index: 22; margin-top: 50%; top: -25%; }
-    md-input-container { width: calc(100% - 36px) !important; }
+    md-input-container { width: calc(100% - 45px) !important; }
     .loader { position: fixed; right: 6px; top: 9px; z-index: 1005; display: block; }
     .link-list { text-decoration: none;  width: 85% !important; }
     /*._md-datepicker-floating-label>md-datepicker .md-datepicker-button { float: left; margin-top: -12px; top: 9.5px; left: -14px; color: black; }*/
@@ -33,7 +33,7 @@
 }
 
 @media screen and (max-width: 960px) and (orientation: landscape) {
-    .back-btn { position: absolute; top: 4px; right: 0px; z-index: 22; }
+    .back-btn { position: absolute; top: 10px; right: 15px; z-index: 22; }
 }
 
 @media screen and (max-width: 620px) {
@@ -42,7 +42,7 @@
 
 /*LOGIN*/
 @media screen and (min-width: 960px) {
-    .corpoLogin { background: url('../images/login.jpg') no-repeat center center; background-size: 100% 100%; font-size: Roboto; }
+    .corpoLogin { background: url('../images/login.jpg') no-repeat center center; background-size: 100% 100%; font-size: Arial, sans-serif; }
     .valign-login { position: absolute !important; top: 25% !important; height: auto !important; }
     .valign-helper { display: block !important; position: absolute; bottom: 0%; right: 8px; }
     .valign-helper-mobile { display: none !important; }

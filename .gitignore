@@ -1,5 +1,6 @@
 erudio-server/vendor
 erudio-server/var
+erudio-server/uploads
 erudio-server/web/bundles
 erudio-server/composer\.lock
 erudio-server/app/config/parameters\.yml
@@ -8,4 +9,4 @@ erudio-front-beta/nbproject
 erudio-front-beta/node_modules
 erudio-front/nbproject
 erudio-front/app/modules/main/services/erudioConfig\.js
-/erudio-server/uploads/
+.vsproject

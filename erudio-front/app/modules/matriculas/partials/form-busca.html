@@ -180,7 +180,6 @@
                                         <a target="_blank" ng-click="getPDF(config.urlServidor+'/report/atestados/matricula?matricula='+matricula.id)"><i data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i></a>
                                         <i data-ng-click="retornoMatricula(matricula, $index)" data-ng-show="matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO'" data-position="top" data-delay="50" data-tooltip="Reativar" class="material-icons info-icon tooltipped">arrow_upward</i>
                                         <!-- <i data-ng-click="mostraOpcoes(matricula, 'pdf', true)" data-ng-show="isAdmin || matricula.unidadeEnsino.id === unidadeAlocacao" data-position='top' data-delay='50' data-tooltip='Atestado de Matrícula e Frequência' class="material-icons info-icon tooltipped">local_printshop</i> -->
-                                        <!--<i data-ng-click="abrirModalTransferenciaLocal(matricula)" data-ng-show="matricula.unidadeEnsino.id !== unidadeAlocacao && (matricula.status === 'ABANDONO' || matricula.status === 'TRANCADO')" data-position="top" data-delay="50" data-tooltip="Transferir para minha Unidade" class="material-icons info-icon tooltipped">swap_vert</i>-->
                                     </td>                                    
                                 </tr>
                             </tbody>

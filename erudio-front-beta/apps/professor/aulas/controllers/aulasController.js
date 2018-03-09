@@ -108,7 +108,11 @@
                             }
                         });
                     } else {
-                        aulas.forEach((aula) => { aula.horario.inicio = this.util.converteHora(aula.horario.inicio); });
+                        aulas.forEach((aula) => { 
+                            if (!this.util.isVazio(aula.horario)) {
+                                aula.horario.inicio = this.util.converteHora(aula.horario.inicio);
+                            }
+                        });
                         this.aula = aulas[0]; this.aulas = aulas; this.buscarAnotacoes(this.aula);
                         this.frequenciaService.getAll({aula: this.aula.id}, true).then((alunos) => {
                             /*if (alunos.length === 0) {
@@ -167,15 +171,19 @@
         }
 
         salvarAnotacao() {
-            var anotacao = this.aulaService.getEstruturaAnotacao();
-            if (this.util.isVazio(this.conteudo)) {
-                this.util.toast("Não é possível criar anotações vazias.");
+            var dataAula = new Date(this.diaSelecionado.data);
+            if (dataAula <= new Date()) {
+                var anotacao = this.aulaService.getEstruturaAnotacao();
+                if (this.util.isVazio(this.conteudo)) {
+                    this.util.toast("Não é possível criar anotações vazias.");
+                } else {
+                    anotacao.aula.id = this.aula.id;
+                    anotacao.conteudo = this.conteudo;
+                    this.aulaService.salvarAnotacao(anotacao,true).then(() => { this.conteudo = null; this.buscarAnotacoes(this.aula); });
+                }
             } else {
-                anotacao.aula.id = this.aula.id;
-                anotacao.conteudo = this.conteudo;
-                this.aulaService.salvarAnotacao(anotacao,true).then(() => { this.conteudo = null; this.buscarAnotacoes(this.aula); });
+                this.util.toast("Não é possível criar anotações em aulas futuras.");
             }
-            
         }
 
         removerAnotacao(event, anotacao) {
@@ -217,18 +225,23 @@
         }
 
         darFrequencia(frequencia, loader) {
-            if (frequencia.status === "PRESENCA") {
-                frequencia.status = "FALTA";
-                if (!this.util.isVazio(frequencia.justificativa)) { frequencia.justificativa = ''; }
-                //if (!this.util.isVazio(frequencia.id)) { 
-                    this.frequenciaService.atualizar(frequencia,true);
-                //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
+            var dataAula = new Date(this.diaSelecionado.data);
+            if (dataAula <= new Date()) {
+                if (frequencia.status === "PRESENCA") {
+                    frequencia.status = "FALTA";
+                    if (!this.util.isVazio(frequencia.justificativa)) { frequencia.justificativa = ''; }
+                    //if (!this.util.isVazio(frequencia.id)) { 
+                        this.frequenciaService.atualizar(frequencia,true);
+                    //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
+                } else {
+                    frequencia.status = "PRESENCA"; frequencia.justificativa = "";
+                    $(".justificativa-aluno-"+frequencia.id).hide();
+                    //if (!this.util.isVazio(frequencia.id)) { 
+                        this.frequenciaService.atualizar(frequencia,true); 
+                    //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
+                }
             } else {
-                frequencia.status = "PRESENCA"; frequencia.justificativa = "";
-                $(".justificativa-aluno-"+frequencia.id).hide();
-                //if (!this.util.isVazio(frequencia.id)) { 
-                    this.frequenciaService.atualizar(frequencia,true); 
-                //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
+                this.util.toast("Não é possível dar presença em aulas futuras.");
             }
         }
 
@@ -266,7 +279,7 @@
             if (!this.util.isVazio(dia)) { 
                 if (dia.efetivo) { 
                     classe += 'calendario-dia-efetivo'; 
-                    if (aulas.length > 0) { return classe +' clicavel';  } else { return classe; }
+                    if (!this.util.isVazio(aulas) && aulas.length > 0) { return classe +' clicavel';  } else { return classe; }
                 } 
                 else if (dia.letivo) { classe += 'calendario-dia-letivo'; return classe; } 
                 else { classe += 'calendario-dia-nao-letivo'; return classe; } 

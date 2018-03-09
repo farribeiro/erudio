@@ -63,9 +63,9 @@
                                 <thead>
                                     <tr>
                                         <th>Disciplina</th>
-                                        <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias">{{media.numero}}ªM</th>
+                                        <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias">{{media.numero}}ª{{ regimeLetra }}</th>
                                         <th>MF</th>
-                                        <th data-ng-repeat="media in enturmacao.matricula.disciplinas[0].medias track by $index">Faltas M{{$index+1}}</th>
+                                        <th data-ng-repeat="media in etapaTabela track by $index">Faltas {{$index+1}}º{{ regimeLetra }}</th>
                                         <th>Status</th>
                                     </tr>                                        
                                 </thead>
@@ -78,7 +78,7 @@
                                         </td>
                                         <td data-ng-hide="disciplina.mediaFinal">{{ disciplina.mediaPreliminar }}</td>
                                         <td data-ng-show="disciplina.mediaFinal">{{ disciplina.mediaFinal }}</td>
-                                        <td data-ng-repeat="media in disciplina.medias"><span>{{ media.faltas }}</span></td>
+                                        <td data-ng-repeat="media in disciplina.medias" data-ng-show="$index < etapaTabela.length"><span>{{ media.faltas }}</span></td>
                                         <td>{{ disciplina.status }}</td>
                                     </tr>
                                 </tbody>

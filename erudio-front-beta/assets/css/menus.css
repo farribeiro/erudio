@@ -6,4 +6,4 @@
 .submenu-item a { text-decoration: none; color: #000; font-size: 13px; }
 .main-menu md-menu-item button { font-size: 12px !important; }
 #menu-lateral { display: none; }
-.menu-professor { position: absolute !important; top: 15px; left: 10px; z-index: 100; }
+.menu-professor { position: absolute !important; top: 15px; right: 55px; z-index: 100; }

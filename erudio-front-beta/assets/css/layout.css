@@ -31,7 +31,7 @@ md-toolbar.content-bar {
 .login-wrap { margin-left: 20px !important; margin-right: 20px !important; margin-top: 10px !important; margin-bottom: 10px !important; }
 .title-login { font-size: 1.5rem; }
 .sub-text-login { color: #999; }
-.corpoLogin { background: url('../images/login.jpg') no-repeat center center; background-size: 100% 100%; font-size: Roboto; }
+.corpoLogin { background: url('../images/login.jpg') no-repeat center center; background-size: 100% 100%; font-size: Arial, sans-serif; }
 .valign-login { position: absolute; top: 0; height: 100%; margin: 0; }
 .valign-helper { display: none; }
 .valign-helper-mobile { display: block; position: absolute; bottom: 0; left: 8px; }
@@ -73,8 +73,8 @@ md-toolbar.content-bar {
 }
 .invisivel { display: none; }
 .visivel { display: block !important; }
-.foto-professor { position: absolute; top: 4px; left: 60px; z-index: 100; }
-.nome-professor { position: absolute; font-size: 12px; top: 24.5px; left: 115px; z-index: 100; color: #fafafa; }
+.foto-professor { position: absolute; top: 4px; right: 100px; z-index: 100; }
+.nome-professor { position: absolute; font-size: 12px; top: 24.5px; right: 170px; z-index: 100; color: #fafafa; }
 .cortina-foto{
     z-index: 1004;
     background: #000;

@@ -72,7 +72,7 @@
 </div>
 
 <!-- Botão Adicionar Alunos (enturmar)-->
-<div style="bottom: 90px;" data-ng-click="enturmarAlunos('importar')" id="enturmarAlunos" data-ng-show="escrita && turma.quantidadeAlunos === '0' && adicionarAlunos && !enturmandoAlunos" class="btn-add hide-on-small-only">
+<div style="bottom: 90px;" data-ng-click="enturmarAlunos('importar')" id="enturmarAlunos" data-ng-show="escrita && turma.quantidadeAlunos < turma.limiteAlunos && adicionarAlunos && !enturmandoAlunos" class="btn-add hide-on-small-only">
     <a class="tooltipped btn-floating btn-large waves-effect waves-circle waves-light teal add-btn" data-position="left" data-delay="50" data-tooltip="Remanejar Alunos"><i class="material-icons">file_download</i></a>
 </div>
 

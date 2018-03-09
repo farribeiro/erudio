@@ -19,7 +19,7 @@
                                 </md-list-item>
                             </md-list>
 
-                            <div flex="100" ng-show="ctrl.msgVazioDia">
+                            <div flex="100" ng-show="ctrl.msgVazioDia" style="font-size: 14px;">
                                 Nenhuma avaliação registrada para hoje.
                             </div>
                         </md-card-content>
@@ -29,7 +29,7 @@
             </md-card>
         </div>
 
-        <div flex layout="column">
+        <div flex layout="column" style="margin-bottom: 42px;">
             <md-subheader ng-hide="ctrl.msgVazio || ctrl.listaQualitativa" class="md-primary margin-top-subheader form-header">{{ ctrl.avaliacaoLabel }}</md-subheader>
             <md-card style="max-height: none;" flex-gt-sm="{{ ctrl.tamanhoCard }}" class="no-margin-up-down" ng-hide="ctrl.msgVazio || ctrl.listaQualitativa">
                 <md-card-content>
@@ -154,7 +154,7 @@
                             <div class="md-secondary">
                                 <form class="formNotas">
                                     <md-input-container md-block flex-gt-sm class="mobile-modal-fix">
-                                        <input id="aluno{{aluno.id}}" data-media="{{aluno.id}}" ng-class="ctrl.isNotaSalva(aluno)" ng-model="aluno.nota" type="number" min="0" max="10" placeholder="Nota" name="nota"/>
+                                        <input id="aluno{{aluno.id}}" data-media="{{aluno.id}}" data-aluno-id="{{aluno.disciplinaCursada.matricula.idAluno}}" ng-class="ctrl.isNotaSalva(aluno)" ng-model="aluno.nota" type="number" min="0" max="10" placeholder="Nota" name="nota"/>
                                     </md-input-container>
                                 </form>
                             </div>

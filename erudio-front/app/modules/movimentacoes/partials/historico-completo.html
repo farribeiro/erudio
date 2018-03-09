@@ -1,0 +1,90 @@
+<!--* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *    @author Municipio de Itajaí - Secretaria de Educação - DITEC         *
+ *    @updated 30/06/2016                                                  *
+ *    Pacote: Erudio                                                       *
+ *                                                                         *
+ *    Copyright (C) 2016 Prefeitura de Itajaí - Secretaria de Educação     *
+ *                       DITEC - Diretoria de Tecnologias educacionais     *
+ *                        ditec@itajai.sc.gov.br                           *
+ *                                                                         *
+ *    Este  programa  é  software livre, você pode redistribuí-lo e/ou     *
+ *    modificá-lo sob os termos da Licença Pública Geral GNU, conforme     *
+ *    publicada pela Free  Software  Foundation,  tanto  a versão 2 da     *
+ *    Licença   como  (a  seu  critério)  qualquer  versão  mais  nova.    *
+ *                                                                         *
+ *    Este programa  é distribuído na expectativa de ser útil, mas SEM     *
+ *    QUALQUER GARANTIA. Sem mesmo a garantia implícita de COMERCIALI-     *
+ *    ZAÇÃO  ou  de ADEQUAÇÃO A QUALQUER PROPÓSITO EM PARTICULAR. Con-     *
+ *    sulte  a  Licença  Pública  Geral  GNU para obter mais detalhes.     *
+ *                                                                         *
+ *    Você  deve  ter  recebido uma cópia da Licença Pública Geral GNU     *
+ *    junto  com  este  programa. Se não, escreva para a Free Software     *
+ *    Foundation,  Inc.,  59  Temple  Place,  Suite  330,  Boston,  MA     *
+ *    02111-1307, USA.                                                     *
+ *                                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+
+<div class=" row">
+    <div class="col s12 m12 l12">
+        <div class="row form-box">
+            <div class=" row card-panel">
+                <div class="row">
+                    <h3 class='card-title-h3' style="padding: 1.4rem; margin-bottom: 0rem;">
+                        Histórico de Movimentação
+                    </h3>
+                    <h5 class='card-title-h3' style="padding: 1.4rem; margin-bottom: 0rem;">
+                        {{matricula.nomeAluno}} - {{matricula.status}}
+                    </h5>
+                </div>
+            </div>
+            <div class=" row card-panel" style="margin-top: -1rem">
+                <div class="col l12">
+                    <table class="highlight striped table-pattern" ng-show="todasMovimentacoes.length > 0">
+                    <thead>
+                        <tr>
+                        <th>Data</th>
+                        <th>Movimentação</th>
+                        <th>Origem</th>
+                        <th></th>
+                        <th>Destino</th>
+                        <th>Justificativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="movimentacao in todasMovimentacoes track by $index ">
+                            <td class="relative mobile-full">{{movimentacao.dataMovimentacao}}</td>
+                            <td class="relative mobile-full">{{movimentacao.tipoMovimentacao}}</td>
+                            <td class="relative mobile-full">{{movimentacao.novaOrigem}}</td>
+                            <td class="relative mobile-full"><i class="material-icons">arrow_forward</i></td>
+                            <td class="relative mobile-full">{{movimentacao.novoDestino}}</td>
+                            <td class="relative mobile-full">{{movimentacao.justificativa}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="card-panel row" style="background: #fafafa; padding-top: 1rem; margin-top: -1rem;">
+    <div class="col l12">
+        <
+        <table>
+            <thead>
+            <th>x</th>
+            <th>y</th>
+            <th>z</th>
+            </thead>
+        </table>
+    Mussum Ipsum, cacilds vidis litro abertis. Mauris nec dolor in eros commodo tempor. Aenean 
+
+    aliquam molestie leo, vitae iaculis nisl. A ordem dos tratores não altera o pão duris. Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Detraxit consequat et quo num tendi nada.
+
+    Quem num gosta di mé, boa gentis num é. Suco de cevadiss deixa as pessoas mais interessantis. Praesent vel viverra nisi. Mauris aliquet nunc non turpis scelerisque, eget. Mais vale um bebadis conhecidiss, que um alcoolatra anonimis.
+
+    Si u mundo tá muito paradis? Toma um mé que o mundo vai girarzis! Praesent malesuada urna nisi, quis volutpat erat hendrerit non. Nam vulputate dapibus. Tá deprimidis, eu conheço uma cachacis que pode alegrar sua vidis. Mé faiz elementum girarzis, nisi eros vermeio.
+    </div>
+</div>-->

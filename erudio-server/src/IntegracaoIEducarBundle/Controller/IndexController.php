@@ -120,7 +120,7 @@ class IndexController extends Controller {
             if (!$historico) {
                 throw new NotFoundHttpException('Não foram encontrados dados sobre o histórico do aluno');
             }
-            return Response($historico);
+            return new Response($historico);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());
             throw $ex;
@@ -157,7 +157,7 @@ class IndexController extends Controller {
             if (!$historico) {
                 throw new NotFoundHttpException('Não foram encontrados dados sobre o histórico do aluno');
             }
-            return Response($historico);
+            return new Response($historico);
         } catch (\Exception $ex) {
             $this->logger->error($ex->getMessage());
             throw $ex;

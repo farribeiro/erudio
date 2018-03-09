@@ -30,15 +30,15 @@
     <div class="input-field col s12 m12 l6">
         <i class="material-icons prefix">account_balance</i>
         <span class="digitable-icon"><i class="material-icons">border_color</i></span>
-        <input id="unidadeDestinoAutoComplete" class="dropdown" type="text" data-ng-model="transferencia.unidadeEnsinoDestino.nome" data-ng-change="buscarUnidadesOrigem(transferencia.unidadeEnsinoDestino.nome)" data-activates="dropUnidades">
+        <input id="unidadeDestinoAutoComplete" class="dropdown" type="text" data-ng-model="transferencia.unidadeEnsinoDestino.nomeCompleto" data-ng-change="buscarUnidadesOrigem(transferencia.unidadeEnsinoDestino.nomeCompleto)" data-activates="dropUnidades">
         <label for="unidadeDestinoAutoComplete">Unidade Destino*</label>
     </div>
-    <div class="input-field col s12 m12 l6" data-ng-hide='matricula.curso.nome === "Educação Infantil"'>
+    <!--<div class="input-field col s12 m12 l6" data-ng-hide='matricula.curso.nome === "Educação Infantil"'>
         <i class="material-icons prefix">event</i>
         <input id="dataAgendamentoMovimentacoes" class="date" type="text"  data-ng-model="transferencia.dataAgendamento">
         <label for="dataAgendamentoMovimentacoes">Data de Agendamento</label>
-    </div>
-    <div class="input-field col s12 m12 l12">
+    </div>-->
+    <div class="input-field col s12 m12 l6">
         <i class="material-icons prefix">content_paste</i>
         <input id="justificativaMovimentacoes" type="text" data-ng-model="transferencia.justificativa" class="validate" required />
         <label for="justificativaMovimentacoes">Justificativa*</label>

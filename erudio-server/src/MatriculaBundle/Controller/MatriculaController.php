@@ -50,7 +50,7 @@ class MatriculaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Get("matriculas/{id}")
+    * @FOS\Get("matriculas/{id}", requirements = {"id": "\d+"})
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
@@ -90,7 +90,7 @@ class MatriculaController extends AbstractEntityController {
     /**
     * @ApiDoc()
     * 
-    * @FOS\Put("matriculas/{id}")
+    * @FOS\Put("matriculas/{id}", requirements = {"id": "\d+"})
     * @ParamConverter("matricula", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Matricula $matricula, ConstraintViolationListInterface $errors) {

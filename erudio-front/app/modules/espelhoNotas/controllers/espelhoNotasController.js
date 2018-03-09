@@ -189,7 +189,7 @@
             });
         };
 
-        $scope.buscarInfoPeriodo = function() {
+        /*$scope.buscarInfoPeriodo = function() {
             $scope.requisicoes = $scope.turmasSelecionadas.length;
             $scope.turmasSelecionadas.forEach(function(t) {
                 $scope.requisicoes--;
@@ -244,9 +244,9 @@
                     });
                 });
             });
-        };
+        };*/
 
-        $scope.buscarFrequenciasTurma = function() {
+        /*$scope.buscarFrequenciasTurma = function() {
             $scope.mostrarCortina();
             var turma = $scope.disciplinasSelecionadas[0].turma;
             var promise = Servidor.buscarUm('turmas', turma.id);
@@ -291,7 +291,7 @@
                     });
                 });
             });
-        };
+        };*/
 
         $scope.buscarMediasTurma = function(enturmacoes) {
             $scope.disciplinasSelecionadas.forEach(function(ofertada, i) {
@@ -422,7 +422,7 @@
             $scope.editandoAnual = false;
         };
 
-        $scope.carregarAnual =  function(turma, disciplina, id){
+        /*$scope.carregarAnual =  function(turma, disciplina, id){
             $scope.dataAtual();
             $scope.mostrarCortina();
             $scope.disciplinaSAnual = disciplina;
@@ -466,9 +466,9 @@
                     });
                 });
             });
-        };
+        };*/
 
-        $scope.carregarPeriodo =  function(turma){
+        /*$scope.carregarPeriodo =  function(turma){
             $scope.turma = turma;
             $scope.editandoInicial = false;
             $scope.mostrarCortina();
@@ -506,7 +506,7 @@
                     });
                 });
             });
-        };
+        };*/
 
         $scope.fecharVisualizadorAnual = function(){
             $scope.editandoEspelhoAnual = false;

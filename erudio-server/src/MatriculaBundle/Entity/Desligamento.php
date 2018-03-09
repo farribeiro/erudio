@@ -49,11 +49,29 @@ class Desligamento extends Movimentacao {
     */
     private $motivo;
     
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\Type("PessoaBundle\Entity\UnidadeEnsino")
+    * @JMS\SerializedName("unidadeEnsinoOrigem")
+    * @ORM\ManyToOne(targetEntity = "PessoaBundle\Entity\UnidadeEnsino")
+    * @ORM\JoinColumn(name = "unidade_ensino_id")
+    */
+    private $unidadeEnsino;
+    
     /** 
     * @JMS\Groups({"LIST"})  
     * @ORM\Column(type = "string", nullable = true) 
     */
     private $destino;
+    
+    function init() {
+        parent::init();
+        $this->unidadeEnsino = $this->getMatricula()->getUnidadeEnsino();
+    }
+    
+    function getUnidadeEnsino() {
+        return $this->unidadeEnsino;
+    }
     
     function getMotivo() {
         return $this->motivo;

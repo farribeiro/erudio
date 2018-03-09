@@ -191,7 +191,7 @@ class TurmaFacade extends AbstractFacade {
     }
  
     function finalizar(Turma $turma) {
-        $turma->setStatus(Turma::STATUS_ENCERRADO);
+        $turma->encerrar();
         foreach ($turma->getEnturmacoes() as $enturmacao) {
             $this->enturmacaoFacade->finalizar($enturmacao);
         }

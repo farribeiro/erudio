@@ -109,7 +109,7 @@
                         <div class="input-field col s12 m12 l6" data-ng-show="isAdmin && !turma.id">
                             <i class="material-icons prefix">account_balance</i>
                             <span class="digitable-icon"><i class="material-icons">border_color</i></span>
-                            <input id="unidadeTurmaAutoCompleteForm" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)" data-activates="dropUnidadesTurmaForm">
+                            <input id="unidadeTurmaAutoCompleteForm" class="dropdown" type="text" data-ng-model="nomeUnidade" data-ng-change="buscarUnidades(nomeUnidade)"  data-activates="dropUnidadesTurmaForm">
                             <label for="unidadeTurmaAutoCompleteForm">Unidade de Ensino*</label>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                         </div>
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">view_week</i>
-                            <select id="etapaForm" data-ng-model="turma.etapa.id" data-ng-change="buscaDisciplinaOfertada(turma.etapa.id)" data-ng-disabled="turma.id"  required>
+                            <select id="etapaForm" data-ng-model="turma.etapa.id" data-ng-change="buscaDisciplinaOfertada(turma.etapa.id);buscarQuadroHorariosGenerico(turma.unidadeEnsino.id,turma.etapa.curso.id,'#quadroHorarioTurmaFormulario');recarregaSelect('#quadroHorarioTurmaFormulario');" data-ng-disabled="turma.id" data-ng-blur="" required>
                                 <option value="" disabled selected></option>
                                 <option value="{{ etapa.id }}" data-ng-selected="verificaEtapa(etapa.id)" data-ng-repeat="etapa in etapas">{{ etapa.nomeExibicao | uppercase }}</option>
                             </select>
@@ -132,14 +132,6 @@
                         </div>                    
                     </div>
                     <div class="row">                    
-                        <div class="input-field col s12 m12 l6">
-                            <i class="material-icons prefix">settings_brightness</i>
-                            <select id="turnoTurmaForm" data-ng-model="turma.turno.id" data-ng-disabled="!isAdmin && turma.id" data-ng-change="carregarQuadroHorariosCompativeis(turma.turno.id)" required>
-                                <option disabled selected></option>
-                                <option value="{{ turno.id }}" data-ng-selected="verificaTurno(turno.id)" data-ng-repeat="turno in turnos">{{ turno.nome | uppercase }}</option>
-                            </select>
-                            <label for="turnoTurmaForm">Turno*</label>
-                        </div>                                
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">event</i>
                             <select id="calendarioTurmaForm" data-ng-change="buscarPeriodos(turma.calendario.id, turma.etapa.id)" data-ng-model="turma.calendario.id" data-ng-disabled="turma.id" required>
@@ -152,9 +144,9 @@
                     <div class="row">
                         <div class="input-field col s12 m12 l6">
                             <i class="material-icons prefix">view_module</i>
-                            <select id="quadroHorarioTurmaFormulario" data-ng-model="turma.quadroHorario.id"  data-ng-disabled="!isAdmin && turma.quadroHorario.id" required>
+                            <select id="quadroHorarioTurmaFormulario" name="quadroHorarioTurmaFormulario" data-ng-model="turma.quadroHorario.id"  data-ng-disabled="!isAdmin && turma.quadroHorario.id" required>
                                 <option></option>
-                                <option value="{{ quadroHorario.id }}" data-ng-selected="quadroHorario.id === turma.quadroHorario.id" data-ng-repeat="quadroHorario in quadroHorariosCompativeis">{{ quadroHorario.nome | uppercase }}</option>
+                                <option value="{{ quadroHorario.id }}" data-ng-selected="quadroHorario.id === turma.quadroHorario.id" data-ng-repeat="quadroHorario in quadroHorarios">{{ quadroHorario.nome | uppercase }}</option>
                             </select>
                             <label for="quadroHorarioTurmaFormulario">Quadro de Horário*</label>
                         </div>

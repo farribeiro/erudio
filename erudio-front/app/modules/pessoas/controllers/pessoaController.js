@@ -542,7 +542,7 @@
 
             /* Buscar endereço pelas coordenadas */
             $scope.getEnderecoPorCoordenada = function () {
-                $.ajax({
+                /*$.ajax({
                     url: 'http://maps.google.com/maps/api/geocode/json?address=' + $scope.pessoa.endereco.latitude + ',' + $scope.pessoa.endereco.longitude + '&sensor=false',
                     dataType: 'JSON', type: 'get',
                     success: function (data) {
@@ -554,7 +554,7 @@
                             Servidor.customToast('CEP não identificado, digite o endereço manualmente.');
                         }
                     }
-                });
+                });*/
             };
 
             /* Busca coordenada por endereço */
@@ -1611,7 +1611,7 @@
 
             /* Busca de endereço pelo CEP */
             $scope.buscaCEP = function (query) {
-                $timeout.cancel($scope.delayBusca);
+                /*$timeout.cancel($scope.delayBusca);
                 $scope.delayBusca = $timeout(function () {
                     if (query === undefined || query === null) {
                         query = '';
@@ -1629,7 +1629,7 @@
                                 $scope.pessoa.endereco.bairro = endereco[1];
                             }
                             
-                            /* Buscando Estado */
+                            
                             if (endereco[3]) {
                                 var promise = Servidor.buscar('estados', {'sigla': endereco[3]});
                                 promise.then(function (response) {
@@ -1645,7 +1645,7 @@
                                     $scope.buscaCidades();
                                     if (endereco[2]) {
                                         $timeout(function () {
-                                            /* Buscando Cidade */
+                                            
                                             var promise = Servidor.buscar('cidades', {'nome': endereco[2], 'estado': $scope.pessoa.endereco.cidade.estado.id});
                                             promise.then(function (response) {
                                                 var cidade = response.data;
@@ -1679,7 +1679,7 @@
                             }
                         }, 500);
                     }
-                }, 200);
+                }, 200);*/
             };
 
             $scope.temNaturalidade = function () {

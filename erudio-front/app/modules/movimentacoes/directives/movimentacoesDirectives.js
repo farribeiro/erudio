@@ -74,5 +74,8 @@
     movimentacoesDirectives.directive('modal', function() {
         return { restrict: 'E', templateUrl: 'app/modules/movimentacoes/partials/modal.html' };
     });
+    movimentacoesDirectives.directive('historicoCompleto', function() {
+        return { restrict: 'E', templateUrl: 'app/modules/movimentacoes/partials/historico-completo.html' };
+    });
     
 })();

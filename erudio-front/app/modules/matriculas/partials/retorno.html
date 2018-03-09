@@ -65,7 +65,18 @@
                             <div class="col s12" style="margin-bottom: 1rem">
                                 <h5 style="padding: 1rem;" class="no-margin ajuste-titulo-card"> REATIVAR </h5>
                             </div>
+                            
                             <div>
+                                <!--escolher unidade se for admin-->
+                                <div class="input-field col s12 m12 l6">
+                                    <i class="material-icons prefix">account_balance</i>
+                                    <span class="digitable-icon" data-ng-show='isAdmin'><i class="material-icons">border_color</i></span>
+                                    <input id="unidadeBuscaAutoComplete" class="dropdown" type="text" data-ng-model="nomeUnidadeBusca" data-ng-change="buscarUnidadesOrigem(nomeUnidadeBusca)" data-activates="dropUnidadesBusca" data-ng-disabled='!isAdmin'>
+                                    <label for="unidadeBuscaAutoComplete">Unidade de Ensino*</label>
+
+                                </div>
+                               
+                                <!--fim escolher unidade se for admin-->
                                 <div class="input-field col s12 m12 l6">
                                     <i class="material-icons prefix">view_week</i>
                                     <select id="selectEtapaRetorno" data-ng-model="retorno.etapa.id" data-ng-change="buscarTurmasRetorno(etapa.id)" required>

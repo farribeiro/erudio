@@ -49,7 +49,7 @@
         $scope.unidades = [];
         $scope.cargos = [];
         $scope.alocacoes = [];
-        $scope.nomePessoa = '';
+        $scope.nomePessoa = ''; $scope.mostraBotao = false;
         $scope.totalCargaHoraria = 0;
         $scope.totalUnidadesEscolares = 0;
         $scope.FuncionarioService = FuncionarioService;
@@ -226,6 +226,7 @@
         // Realiza a busca de vinculos
         $scope.buscarVinculos = function (vinculo, pagina, origem) {
             if($scope.validarBusca()){
+                $scope.mostraBotao = true;
                 if (pagina !== $scope.paginaAtual) {
                     if (pagina === 0) {
                         pagina = '0';
@@ -351,6 +352,7 @@
             $scope.mostraLoader();
             if(vinculo.alocacoes !== undefined) { delete vinculo.alocacoes; }
             vinculo.status = 'ATIVO';
+            
             var promise = Servidor.finalizar(vinculo, 'vinculos', 'Vínculo');
             promise.then(function(response) {
                 $scope.fechaLoader();
@@ -674,7 +676,8 @@
         // Salva a alocacao
         $scope.salvarAlocacao = function () {
             if ($scope.vinculo.id) {
-                $scope.alocacao.vinculo = {id: $scope.vinculo.id };               
+                $scope.alocacao.vinculo = {id: $scope.vinculo.id };
+                $scope.alocacao.instituicao = {id: $scope.alocacao.instituicao.id};
                 var promise = Servidor.finalizar($scope.alocacao, 'alocacoes', 'Alocação');
                 promise.then(function(response) {                    
                     $scope.totalCargaHoraria = $scope.verificarCargaHoraria(response.data.cargaHoraria);

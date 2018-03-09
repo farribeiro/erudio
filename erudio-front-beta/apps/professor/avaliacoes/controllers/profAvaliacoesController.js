@@ -168,7 +168,10 @@
 
         paginar(){ this.pagina++; this.buscarAvaliacoes(true); }
 
-        executarOpcao(event,opcao,objeto) {
+        executarOpcao(event,opcao,objeto,externo) {
+            if (this.util.isVazio(externo)) {
+                this.scope.shared.setAvaliacao(null);
+            }
             this.avaliacaoRemover = objeto;
             switch (opcao.opcao) {
                 case 'remover': this.modalExclusao(event); break; case 'notas': this.darNotas(objeto); break; default: return false; break;
@@ -298,24 +301,55 @@
         }
 
         salvarNotasQuantitativas() {
-            let tamanho = $('.formNotas').length; let contador = 0;
+            let tamanho = $('.formNotas').length; let contador = 0; var util = this.util;
             $('.formNotas').each((index, element) => {
                 var input = $(element).find('input');
                 if (input.val() === undefined || input.val() === null || input.val() === '') { contador++; }
-                if (index === tamanho-1) { if (contador > 0) { $scope.util.toast('O sistema irá salvar, mas há notas não preenchidas.'); } }
+                if (index === tamanho-1) { if (contador > 0) { util.toast('O sistema irá salvar, mas há notas não preenchidas.'); } }
             });
             if (this.editandoNota) {
                 var notasSalvas = $('.formNotas').find('input.isNotaSalva');
                 var notasNovas = $('.formNotas').find('input.isNotaNova');
+                var mediaRecalculada = false;
                 for (var i=0; i<notasSalvas.length; i++) {
                     var objeto = null; var mediaId = $(notasSalvas[i]).attr('data-media');
+                    var alunoId = $(notasSalvas[i]).attr('data-aluno-id');
                     this.notasAvaliacao.forEach((nota,j) => {
                         if (nota.media.id === parseInt(mediaId)) {
                             objeto = nota;
                             var value = $(notasSalvas[i]).val();
                             if (!this.util.isVazio(value)) { 
-                                objeto.valor = parseFloat(value); this.service.atualizar(objeto,false);
-                                if (i === notasSalvas.length-1) { this.util.toast("Notas atualizadas com sucesso."); }
+                                objeto.valor = parseFloat(value);
+                                var cursadaShared = this.scope.shared.getCursada();
+                                if (!this.util.isVazio(cursadaShared) && parseInt(alunoId) === cursadaShared.matricula.idAluno) {
+                                    this.scope.shared.setAvaliacaoNota(objeto.valor);
+                                }
+                                this.service.atualizar(objeto,false).then((nota) => {
+                                    if(!this.util.isVazio(nota.media.valor)){
+                                        if (!this.util.isVazio(this.scope.shared.getAvaliacao()) && !this.util.isVazio(this.scope.shared.getAvaliacao().id)){
+                                            this.scope.shared.retornarMedias(true);
+                                        } else {
+                                            this.recalcularMedia(nota.media);
+                                        }
+                                    }
+                                });
+                                if (i === notasSalvas.length-1) { 
+                                    this.util.toast("Notas atualizadas com sucesso.");
+                                    if (!this.util.isVazio(this.scope.shared.getAvaliacao()) && !this.util.isVazio(this.scope.shared.getAvaliacao().id)) {
+                                        this.mdDialog.show(this.mdDialog.alert()
+                                            .parent(angular.element(document.querySelector('#popupContainer')))
+                                            .clickOutsideToClose(true)
+                                            .title('Atenção!')
+                                            .textContent('Se os alunos já possueírem médias calculadas, alterar suas notas modificarão a média dos mesmos.')
+                                            .ariaLabel('Alerta de alteração de nota')
+                                            .ok('Entendi')
+                                            .targetEvent()
+                                        );
+                                        angular.forEach(angular.element(".md-tab"), (val,key) => {
+                                            if ($(val).text() === 'médias finais') { setTimeout(() => { $(val).trigger('click'); },10); }
+                                        });
+                                    }
+                                }
                             }
                         }
                     });
@@ -335,10 +369,27 @@
             }
         }
 
+        recalcularMedia(media) {
+            this.mediaService.get(media.id,true).then((mediaObj) => {
+                mediaObj.valor = null; mediaObj.disciplinaCursada = { id: mediaObj.disciplinaCursada.id }; delete mediaObj.faltas;
+                this.mediaService.atualizar(mediaObj);
+                this.mdDialog.show(this.mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Atenção!')
+                    .textContent('Se os alunos já possuírem médias calculadas, alterar suas notas modificará a média dos mesmos.')
+                    .ariaLabel('Alerta de alteração de nota')
+                    .ok('Entendi')
+                    .targetEvent()
+                );
+            });
+        }
+
         salvarNotaQuanti(objeto, mediaId, valor) {
             objeto = this.service.getEstruturaQuantitativa(); objeto.media = { id: mediaId }; 
             objeto.avaliacao = { id: this.avaliacaoModal.id };
             if (valor !== undefined && valor !== null && valor !== '') { 
+                if (this.util.isVazio(this.notasAvaliacao)){ this.notasAvaliacao = []; }
                 objeto.valor = parseFloat(valor); this.service.salvarQuantitativa(objeto,false).then((obj) => { this.notasAvaliacao.push(obj); });
             }
         }
@@ -356,8 +407,14 @@
         }
 
         abrirNotaRemota(query){
-            var avaliacao = this.scope.shared.getAvaliacao();
-            if (!this.util.isVazio(query)) { this.executarOpcao(null,{opcao:'notas'},avaliacao); }
+            if (query) {
+                var avaliacao = this.scope.shared.getAvaliacao();
+                if (!this.util.isVazio(query.id)) { 
+                    this.timeout(() => {
+                        this.executarOpcao(null,{opcao:'notas'},avaliacao,true);
+                    },500);
+                }
+            }
         };
 
         iniciar(){
@@ -365,7 +422,7 @@
             if (permissao) {
                 this.util.comPermissao(); this.escrita = this.verificaEscrita(); 
                 this.fab = { tooltip: 'Adicionar Avaliação', icone: 'add', href: this.link+'novo' };
-                this.scope.$watch("shared.avaliacaoAbrir.id",(query) => { this.abrirNotaRemota(query); });
+                this.scope.$watch("shared.avaliacaoAbrir",(query) => { this.abrirNotaRemota(query); });
                 this.scope.$watch("shared.abaHome",(query) => { this.fecharForm(); });
                 this.timeout(()=>{ this.validaCampo(); },500);
                 this.habilitarPaginacao(); this.buscarDisciplinas();

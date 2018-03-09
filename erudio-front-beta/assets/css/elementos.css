@@ -10,7 +10,7 @@ md-input-container:not(.md-input-has-value) input:not(:focus) { color: #000 !imp
 md-list.md-dense md-list-item.modal-list { min-height: 60px !important; height: 60px; border-bottom: 1px solid #eee; }
 md-list.md-dense md-list-item.modal-list.height-fix { min-height: 60px !important; height: initial !important; border-bottom: 1px solid #eee; }
 md-toast { z-index: 1004 !important; }
-md-input-container { width: calc(100% - 36px) !important; }
+md-input-container { width: calc(100% - 46px) !important; }
 md-sidenav { z-index: 1003; }
 md-backdrop { z-index: 1002 !important; }
 fieldset { margin-top: 20px; border-left: 0; border-right: 0; border-bottom: 0; border-top: 1px solid #999; text-align: center; font-size: 12px; color: #999; }

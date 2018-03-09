@@ -5,17 +5,17 @@
             <img src="{{ cursada.matricula.aluno.foto }}" alt="{{ cursada.matricula.nomeAluno }}" class="avatar-mascara">
             <strong>{{ cursada.matricula.nomeAluno }}</strong>
         </div>
-        <div class="expanded-panel-{{ $index }} expanded-panel md-whiteframe-3dp">
-            <div layout="row" ng-click="ctrl.fecharPainel()" layout-align="left center" class="row expanded-title"><img src="{{ cursada.matricula.aluno.foto }}" alt="{{ cursada.matricula.nomeAluno }}" class="avatar-mascara"> <strong>{{ cursada.matricula.nomeAluno }}</strong></div>
+        <div class="expanded-panel-{{ $index }} expanded-panel md-whiteframe-3dp" data-index-id="{{ $index }}">
+            <div layout="row" ng-click="ctrl.fecharPainel()" layout-align="left center" class="row expanded-title expanded-title-{{$index}}"><img src="{{ cursada.matricula.aluno.foto }}" alt="{{ cursada.matricula.nomeAluno }}" class="avatar-mascara"> <strong>{{ cursada.matricula.nomeAluno }}</strong></div>
             <div class="row" ng-repeat="media in cursada.medias track by $index" style="padding-top: 15px;">
                 <md-subheader class="subheader-expansion" style="margin: 0 !important;">
-                    <span style="margin-left: 5px;">{{ media.nome }} <span ng-hide="media.valor"> - Não calculado</span> <span ng-show="media.valor">- Nota:</span> {{ media.valor }}</span>
+                    <span style="margin-left: 5px;">{{ media.nome }} <span ng-hide="media.valor"> - Não calculado</span> <span ng-show="media.valor">- Nota:</span> <span class="media-valor-{{media.id}}">{{ media.valor }}</span></span>
                 </md-subheader>
                 <md-content style="background: #fff;">
                     <strong class="font-12" style="margin-left: 15px;">Composição da média:</strong>
                     <span class="font-12" ng-if="media.valor !== undefined && media.parciais.length === 0">Inserção Manual.</span>
                     <span class="font-12" ng-if="media.valor === undefined && media.parciais.length === 0">Sem avaliações cadastradas.</span>
-                    <md-chips><md-chip ng-click="ctrl.redirectAvaliacao(parcial.avaliacao)" class="font-12 chip-click" ng-repeat="parcial in media.parciais">{{ parcial.avaliacao.nome }}: {{ parcial.valor }}</md-chip></md-chips>
+                    <md-chips><md-chip ng-click="ctrl.redirectAvaliacao(parcial.avaliacao, cursada)" class="font-12 chip-click" ng-repeat="parcial in media.parciais">{{ parcial.avaliacao.nome }}: <span class="nota-avaliacao-{{parcial.avaliacao.id}}">{{ parcial.valor }}</span></md-chip></md-chips>
                 </md-content>
                 <md-button ng-if="media.valor === undefined && media.parciais.length > 0" md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.calcularMedia(media,$index)" class="md-raised" style="margin-left: 15px; margin-top: 10px;">Calcular Média</md-button>
                 <md-divider style="margin-top: 10px;"></md-divider>

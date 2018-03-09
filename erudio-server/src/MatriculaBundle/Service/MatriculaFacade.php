@@ -124,6 +124,18 @@ class MatriculaFacade extends AbstractFacade {
         EntityEvent::createAndDispatch($matricula, EntityEvent::ACTION_CREATED, $this->eventDispatcher);
     }
     
+    protected function beforeApplyChanges($matricula, $patch) {
+        if ($patch->getStatus() === Matricula::STATUS_CANCELADO) {
+            $agora = new \DateTime();
+            $tempoDecorrido = $agora->diff($matricula->getDataCadastro(), true);
+            if ($tempoDecorrido->days > 7) {
+                throw new IllegalOperationException(
+                    'Matrículas só podem ser canceladas em até 7 dias a contar de seu cadastro'
+                );
+            }
+        }
+    }
+    
     private function jaExiste(Matricula $matricula) {
         $qb = $this->orm->getManager()->createQueryBuilder();
         return $qb->select('COUNT(m.id)')

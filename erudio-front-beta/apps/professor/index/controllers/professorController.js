@@ -43,9 +43,15 @@
                     var obj = JSON.parse(sessionStorage.getItem('turmaSelecionada'));
                     if (!this.util.isVazio(obj) && disciplina.id === parseInt(obj.id)){
                         this.turmaSelecionada = disciplina;
+                    } else {
+                        if (disciplinas.length === 1) { 
+                            sessionStorage.setItem('turmaSelecionada',null);
+                            sessionStorage.setItem('turmaSelecionada',JSON.stringify(disciplina));
+                            this.turmaSelecionada = disciplina;
+                            this.refresh();
+                        }
                     }
                 });
-                if (disciplinas.length === 1) { this.turmaSelecionada = disciplinas[0]; }
             });
         }
 

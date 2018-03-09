@@ -65,6 +65,13 @@
                 </select>
                 <label for="curso">Cursos Ofertados</label>
             </div>
+            <div class="row">
+                <div class="input-field col s12 m12 l12">
+                    <i class="material-icons prefix">event</i>
+                    <input id="anoReferencia" type="text" class="validate data" data-ng-model="anoReferencia" data-ng-disabled="!escrita" required />
+                    <label for="anoReferencia">Data de Referência</label>
+                </div>                              
+            </div>
         </div>
         <div class="col s12 right-align" style="border-top: 1px solid #e0e0e0; margin-top:20px; position: absolute; bottom: 0;">
             <a target="_blank" ng-click="getPDF(config.urlServidor+'/report/alunos/defasados-nominal?curso='+cursoOfertado.id)" style="margin-top: 5px; margin-bottom: 5px;" class="waves-effect btn-flat"><i class="material-icons left">print</i>IMPRIMIR</a>        </div>

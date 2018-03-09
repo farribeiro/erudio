@@ -55,7 +55,7 @@ class Transferencia extends Movimentacao {
     private $dataAgendamento;
     
     /** 
-    * @JMS\Groups({"DETAILS"})
+    * @JMS\Groups({"LIST"})
     * @JMS\Type("DateTime<'Y-m-d\TH:i:s'>")
     * @ORM\Column(name = "data_encerramento", type = "datetime", nullable = true) 
     */
@@ -89,6 +89,14 @@ class Transferencia extends Movimentacao {
         if ($this->status != self::STATUS_ACEITO) {
             $this->status = self::STATUS_PENDENTE;
         }
+    }
+    
+    /**
+    * @JMS\Groups({"LIST"})
+    * @JMS\VirtualProperty
+    */
+    function getDataConcretizacao() {
+        return $this->dataEncerramento;
     }
     
     function getStatus() {

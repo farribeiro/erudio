@@ -38,6 +38,30 @@
          */
         this.abaHome = 'aulas';
 
+        /*
+         * @attr cursada
+         * @attrType object
+         * @attrDescription Objeto disciplina cursada
+         * @attrExample 
+         */
+        this.cursada = null;
+
+        /*
+         * @attr avaliacaoNota
+         * @attrType float
+         * @attrDescription Nota da avaliação
+         * @attrExample 
+         */
+        this.avaliacaoNota = null;
+
+        /*
+         * @attr retornarParaMedias
+         * @attrType boolean
+         * @attrDescription Flag de controle da tela de médias finais
+         * @attrExample 
+         */
+        this.retornarParaMedias = false;
+
          /*
          * @method setAbaHome
          * @methodReturn void
@@ -92,10 +116,48 @@
         this.setAvaliacao = function (avaliacao){ this.avaliacaoAbrir = avaliacao; };
         
         /*
+         * @method getAvaliacaoNota
+         * @methodReturn float
+         * @methodDescription Retorna nota da avaliação a ser mostrada.
+         */
+        this.getAvaliacaoNota = function (){ return this.avaliacaoNota; };
+
+        /*
+         * @method setAvaliacaoNota
+         * @methodReturn float
+         * @methodParams avaliacaoNota|float
+         * @methodDescription Guarda nota da avaliação a ser mostrada.
+         */
+        this.setAvaliacaoNota = function (avaliacaoNota){ this.avaliacaoNota = avaliacaoNota; };
+        
+        /*
          * @method getAvaliacao
          * @methodReturn int
          * @methodDescription Retorna id da avaliação a ser mostrada.
          */
         this.getAvaliacao = function (){ return this.avaliacaoAbrir; };
+
+        /*
+         * @method setCursada
+         * @methodReturn void
+         * @methodParams avaliacao|int
+         * @methodDescription Guarda id da disciplina cursada.
+         */
+        this.setCursada = function (cursada){ this.cursada = cursada; };
+        
+        /*
+         * @method getCursada
+         * @methodReturn object
+         * @methodDescription Retorna id da disciplina cursada.
+         */
+        this.getCursada = function (){ return this.cursada; };
+
+        /*
+         * @method retornarMedias
+         * @methodReturn void
+         * @methodParams boolean
+         * @methodDescription Redireciona para a tela de médias.
+         */
+        this.retornarMedias = function (valor){ this.retornarParaMedias = valor; };
     }]);
 })();
