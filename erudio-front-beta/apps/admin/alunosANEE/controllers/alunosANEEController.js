@@ -38,21 +38,21 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "RELATORIOS";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Alunos ANEE";
             /*
             * @attr linkModulo
             * @attrType int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/alunos-anee/";
             this.itemBusca = ''; this.iniciar();
@@ -116,7 +116,7 @@
          * @methodParams nome|String
          * @methodDescription Filtra as unidades de ensino do autocomplete.
          */
-        filtrar (query) { 
+        filtrar (query) {
             if (query.length > 2) {
                 return this.unidadeService.getAll({nome: query},true);
             } else { return []; }
@@ -163,7 +163,7 @@
                 this.util.comPermissao();
                 this.util.setTitulo(this.titulo);
                 this.escrita = this.verificaEscrita();
-                if (this.util.isAdmin()) { this.isAdmin = true;} else { 
+                if (this.util.isAdmin()) { this.isAdmin = true;} else {
                     this.isAdmin = false;
                     this.scope.busca.unidadeEnsino = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
                 }
@@ -171,7 +171,7 @@
                 this.preparaLista();
                 this.preparaBusca();
                 this.buscarInstituicoes();
-                this.timeout(() => { 
+                this.timeout(() => {
                     $('.empty-state').hide(); $('botao-adicionar').hide();
                     this.util.aplicarMascaras();
                 },500);
@@ -179,7 +179,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     AlunosANEEController.$inject = ["AlunoANEEService","Util","$mdDialog","ErudioConfig","$timeout","$scope","UnidadeService","InstituicaoService"];
     angular.module('AlunosANEEController',['ngMaterial', 'util', 'erudioConfig']).controller('AlunosANEEController',AlunosANEEController);
 })();

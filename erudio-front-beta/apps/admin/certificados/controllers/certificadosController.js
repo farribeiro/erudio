@@ -40,21 +40,21 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "RELATORIOS";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Certificados";
             /*
             * @attr linkModulo
             * @attrType int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/certificados/";
             this.iniciar();
@@ -105,7 +105,7 @@
          * @methodParams nome|String
          * @methodDescription Filtra as unidades de ensino do autocomplete.
          */
-        filtrar (query) { 
+        filtrar (query) {
             if (query.length > 2) {
                 return this.unidadeService.getAll({nome: query},true);
             } else { return []; }
@@ -193,7 +193,7 @@
                 this.util.comPermissao();
                 this.util.setTitulo(this.titulo);
                 this.escrita = this.verificaEscrita();
-                if (this.util.isAdmin()) { this.isAdmin = true;} else { 
+                if (this.util.isAdmin()) { this.isAdmin = true;} else {
                     this.isAdmin = false;
                     this.scope.unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
                     this.buscarCursos();
@@ -209,7 +209,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     CertificadoController.$inject = ["EtapaService","Util","$mdDialog","ErudioConfig","$timeout","CursoService","UnidadeService","$scope","CursoOfertadoService","TurmaService","CargoService","AlocacaoService"];
     angular.module('CertificadoController',['ngMaterial', 'util', 'erudioConfig']).controller('CertificadoController',CertificadoController);
 })();

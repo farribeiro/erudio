@@ -36,11 +36,11 @@
             this.mapa = {};
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaForm() {
             this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
             this.leitura = this.util.getTemplateLeitura();
@@ -54,7 +54,7 @@
             ];
             this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
         }
-        
+
         verificarEstado(estadoId) {
             if (!this.util.isVazio(estadoId)) {
                 var retorno = false;
@@ -66,7 +66,7 @@
                 return retorno;
             }
         }
-        
+
         buscarUnidade() {
             var self = this;
             this.scope.unidade = this.service.getEstrutura();
@@ -75,35 +75,35 @@
             if (!this.util.isNovo(this.routeParams.id)) {
                 this.novo = false;
                 this.cursoOfertadoService.getAll({ unidadeEnsino: this.routeParams.id }).then((cursos) => {
-                    cursos.forEach((curso) => { 
+                    cursos.forEach((curso) => {
                         self.cursosUnidade.push(curso.curso.id);
                         self.cursosUnidadeBkp.push(curso.curso.id);
                     });
                 });
                 this.service.get(this.routeParams.id).then((unidade) => {
                     this.scope.unidade = unidade;
-                    if (this.scope.unidade.telefones.length > 0) { 
-                        this.getTelefones(this.scope.unidade.telefones); 
+                    if (this.scope.unidade.telefones.length > 0) {
+                        this.getTelefones(this.scope.unidade.telefones);
                     }
-                    if (!this.util.isVazio(this.scope.unidade.endereco)) { 
-                        this.getEndereco(this.scope.unidade.endereco.id); 
+                    if (!this.util.isVazio(this.scope.unidade.endereco)) {
+                        this.getEndereco(this.scope.unidade.endereco.id);
                     }
                     this.util.aplicarMascaras();
                 });
             } else {
                 this.novo = true;
-                this.timeout(function(){ 
+                this.timeout(function(){
                     self.util.aplicarMascaras(); self.timeout(() => { self.initMapa(); },500);
                     self.buscarEstados().then((estados) => self.estados = estados);
                 },300);
             }
         }
-        
+
         getTiposUnidade() { this.tipoUnidadeService.getAll().then((tipos) => { this.tiposUnidade = tipos; }); }
         getInstituicoes() { this.instituicaoService.getAll().then((instituicoes) => { this.instituicoes = instituicoes; }); }
         getCursos() { this.cursoService.getAll().then((cursos) => { this.cursos = cursos; }); }
         buscarEstados () { return this.estadoService.getAll(); }
-        buscarCidades (query,unidade) { 
+        buscarCidades (query,unidade) {
             if (query.length > 2) {
                 var self = this;
                 if (unidade.endereco.cidade.estado.id === null) {
@@ -113,7 +113,7 @@
                 }
             }
         }
-        
+
         getEndereco(id) {
             var self = this;
             this.service.getEnderecoCompleto(id,true).then((endereco) => {
@@ -123,7 +123,7 @@
                     this.cidadeService.get(this.scope.unidade.endereco.cidade.id).then((cidade) => {
                         this.cidade = cidade;
                         this.scope.unidade.endereco.cidade = this.cidade;
-                        this.buscarEstados().then((estados) => { 
+                        this.buscarEstados().then((estados) => {
                             this.estados = estados;
                             this.timeout(()=>{this.util.validarCampos()},1000);
                         });
@@ -131,19 +131,19 @@
                 }
             });
         }
-        
+
         getTelefones(telefones) {
             var self = this;
             if (telefones.length > 0) {
                 $('md-divider.hide').show(); $('.md-subheader.hide').show();
-                for (var i=0; i<telefones.length; i++) { 
+                for (var i=0; i<telefones.length; i++) {
                     this.telefoneService.get(telefones[i].id).then((telefone) => { this.telefones.push(telefone); });
                 }
             } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
         }
-        
+
         validaCampo() { this.util.validaCampo(); }
-        
+
         validar() {
             var obrigatorios = this.util.validar(this.nomeForm); var cnpj = null;
             if (!this.util.isVazio(this.scope.unidade.cpfCnpj)) {
@@ -197,7 +197,7 @@
                 resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
             }
         }
-        
+
         adicionarTelefone() {
             var self = this; var tamanhoTelefone = this.scope.telefone.numero.length;
             if (!this.util.isVazio(this.scope.telefone.numero) && !this.util.isVazio(this.scope.telefone.descricao)) {
@@ -208,7 +208,7 @@
                 this.util.toast('Ambos os campos devem ser preenchidos para adicionar um telefone.');
             }
         }
-        
+
         removerTelefone(telefone, index) {
             var self = this;
             if (this.util.isNovoObjeto(telefone)) {
@@ -220,10 +220,10 @@
                 });
             }
         }
-        
+
         initMapa() {
             var lat; var lng;
-            if (this.util.isNovoObjeto(this.scope.unidade)) { lat = -26.930232; lng = -48.684180; } else { 
+            if (this.util.isNovoObjeto(this.scope.unidade)) { lat = -26.930232; lng = -48.684180; } else {
                 if (this.util.isVazio(this.scope.unidade.endereco.latitude)) {
                     lat = -26.930232; lng = -48.684180;
                 } else {
@@ -240,25 +240,25 @@
             this.marker = L.marker([lat, lng]).addTo(this.mapa);
             if (this.escrita){ this.mapa.on('click', this.adicionarMarcador.bind(this)); }
         }
-        
+
         adicionarMarcador(event) {
-            this.mapa.removeLayer(this.marker); 
+            this.mapa.removeLayer(this.marker);
             var self = this;
             this.marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo(this.mapa);
             this.marker.bindPopup('<div class="map-popup-content"><strong>Este é o endereço desejado?</strong><br /><br /><button id="btnMapaSim" class="material-btn">Sim</md-button><button class="material-btn">Não</md-button></div>').openPopup();
             $("#btnMapaSim").on('click',function(ev){ ev.preventDefault(); self.confirmaLatLng(event); });
         }
-        
+
         confirmaLatLng(event) {
             var lt = parseFloat(event.latlng.lat).toFixed(6); var ln = parseFloat(event.latlng.lng).toFixed(6);
             this.scope.unidade.endereco.latitude = parseFloat(lt); this.scope.unidade.endereco.longitude = parseFloat(ln); this.mapa.closePopup();
         }
-        
+
         preencheCEP() {
             var self = this;
             this.timeout(function(){ $("input[name=cep]").change(function(){ self.buscaCEP(); }); },500);
         }
-        
+
         buscaCEP () {
             if (!this.util.isVazio(this.scope.unidade.endereco.cep) && this.scope.unidade.endereco.cep.length === 8) {
                 this.util.buscaCEP(this.scope.unidade.endereco.cep).then((addr) => {
@@ -266,7 +266,7 @@
                     if(!this.util.isVazio(addr.logradouro)) { this.scope.unidade.endereco.logradouro = addr.logradouro; this.util.validarCampos(); }
                     if(!this.util.isVazio(addr.uf)) {
                         this.estados.forEach((estado) => {
-                            if(estado.sigla === addr.uf) { 
+                            if(estado.sigla === addr.uf) {
                                 this.scope.unidade.endereco.cidade.estado.id = estado.id;
                                 this.util.validarCampos();
                                 if (!this.util.isVazio(addr.localidade)) {
@@ -283,7 +283,7 @@
                 });
             }
         }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); var self = this;
             if (permissao) {
@@ -302,7 +302,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     UnidadeFormController.$inject = ["UnidadeService","Util","ErudioConfig","$routeParams","$timeout","EstadoService","CidadeService","EnderecoService","TelefoneService","TipoUnidadeService","InstituicaoService","CursoOfertadoService", "CursoService","$scope"];
     angular.module('UnidadeFormController',['ngMaterial', 'util', 'erudioConfig']).controller('UnidadeFormController',UnidadeFormController);
 })();

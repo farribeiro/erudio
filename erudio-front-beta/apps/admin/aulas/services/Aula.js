@@ -29,8 +29,8 @@
      * @Module aulas
      * @Controller AulaService
      */
-    'use strict';    
-    class AulaService {        
+    'use strict';
+    class AulaService {
         constructor(rest){
             this.rest = rest;
             this.url = 'professor/aulas';
@@ -109,11 +109,11 @@
          * @methodParams objeto|Object,loader|Boolean
          * @methodDescription Remove uma anotação ou aula
          */
-        remover(objeto,loader,anotacao) { 
-            if (anotacao) { this.rest.remover(objeto, "Anotação", "F",loader); } else { this.rest.remover(objeto, "Aula", "F",loader); }            
+        remover(objeto,loader,anotacao) {
+            if (anotacao) { this.rest.remover(objeto, "Anotação", "F",loader); } else { this.rest.remover(objeto, "Aula", "F",loader); }
         }
     };
-    
+
     angular.module('AulaService',[]).service('AulaService',AulaService);
     AulaService.$inject = ["BaseService"];
 })();

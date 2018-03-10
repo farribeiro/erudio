@@ -26,11 +26,11 @@
             this.possuiEnturmacoes = parseInt(sessionStorage.getItem('possuiEnturmacoes'));
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         resetCalendario() { this.mesCalendario = []; this.semanaCalendario = []; }
 
         preparaCalendario(mes,ano) {
@@ -60,8 +60,8 @@
             this.dia = dia; var self = this;
             this.mdDialog.show({locals: {dia: {dia: dia, config: this.erudioConfig} }, controller: this.modalControl, templateUrl: this.erudioConfig.dominio+'/apps/professor/eventos/partials/dia.html', parent: angular.element(document.body), targetEvent: event, clickOutsideToClose: true});
         }
-        
-        modalControl($scope, dia) { 
+
+        modalControl($scope, dia) {
             $scope.dia = dia.dia; $scope.config = dia.config;
             $scope.dia.eventos.forEach((evento) => {
                 let ini = evento.inicio.split(":");
@@ -71,11 +71,11 @@
             });
             $scope.abreMenu = function ($mdMenu, ev) { var origemEv = ev; $mdMenu.open(ev); };
         }
-        
+
         buscarEventos() {
             this.service.getDiasPorMes(this.calendario,this.mes+1,true).then((dias) => {
                 this.dias = dias;
-                for (var i=0; i<this.diasMes; i++) {                        
+                for (var i=0; i<this.diasMes; i++) {
                     this.counterCalendario++; this.semanaCalendario.push(this.dias[i]);
                     if (this.counterCalendario === 7) { this.mesCalendario.push(this.semanaCalendario); this.counterCalendario = 0; this.semanaCalendario = []; }
                     if (i === this.diasMes-1) {
@@ -85,14 +85,14 @@
                 }
             });
         }
-        
+
         linkPaginacao() {
             this.proximoMes = new Date(this.ano,this.mes,1); this.proximoMes.setMonth(this.proximoMes.getMonth()+1);
             this.mesAnterior = new Date(this.ano,this.mes,1); this.mesAnterior.setMonth(this.mesAnterior.getMonth()-1);
         }
-        
+
         classeTipoDia(dia){ if (!this.util.isVazio(dia)) { if (dia.efetivo) { return 'calendario-dia-efetivo'; } else if (dia.letivo) { return 'calendario-dia-letivo'; } else { return 'calendario-dia-nao-letivo'; } } }
-        
+
         paginaProxima(){ this.resetCalendario(); this.preparaCalendario(this.proximoMes.getMonth(),this.proximoMes.getFullYear()); }
         paginaAnterior(){ this.resetCalendario(); this.preparaCalendario(this.mesAnterior.getMonth(),this.mesAnterior.getFullYear()); }
 
@@ -110,7 +110,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     EventoHomeController.$inject = ["CalendarioService","Util","ErudioConfig","$routeParams","$timeout","$mdDialog","$mdMenu","TurmaService"];
     angular.module('EventoHomeController',['ngMaterial', 'util', 'erudioConfig']).controller('EventoHomeController',EventoHomeController);
 })();

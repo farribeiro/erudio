@@ -1,16 +1,16 @@
 (function (){
     var util = angular.module('util',['structure', 'validator', 'angular-md5', 'angular-sha1', 'erudioConfig', 'ngMaterial', 'auth']);
-    
+
     util.service('Util', ['$timeout', 'Structure', 'Validator', 'Restangular', 'md5', 'sha1', 'ErudioConfig', '$mdToast', '$filter', '$http', 'Auth', function($timeout, Structure, Validator, Restangular, md5, sha1, ErudioConfig, $mdToast, $filter, $http, Auth) {
-        
+
         this.teste = function(){ console.log('teste'); };
-        
+
         //SETA TITULO DA TOOLBAR
         this.setTitulo = function (titulo) { $('.titulo-toolbar').html(titulo); };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA
         this.getTemplateLista = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'lista.html'; };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA COM FOTO
         this.getTemplateListaComFoto = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'listaComFoto.html'; };
 
@@ -19,31 +19,31 @@
 
         //BUSCA O ENDERECO DO TEMPLATE DE BUSCA
         this.getTemplateBuscaSimples = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'buscaSimples.html'; };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE BUSCA CUSTOM
         this.getTemplateBuscaCustom = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'buscaCustom.html'; };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE LISTA ESPECIFICA
         this.getTemplateListaEspecifica = function (modulo) { return ErudioConfig.dominio+'/apps/admin/'+modulo+'/partials/lista.html'; };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE FORM
         this.getTemplateForm = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'form.html'; };
-        
+
         //BUSCA O ENDERECO DO TEMPLATE DE LEITURA
         this.getTemplateLeitura = function () { return ErudioConfig.dominio+ErudioConfig.urlTemplates+'leitura.html'; };
-        
+
         //BUSCA BLOCO DE INPUT CUSTOM
-        this.getInputBlockCustom = function (modulo, arquivo, app) { 
+        this.getInputBlockCustom = function (modulo, arquivo, app) {
             if (app !== undefined) {
                 return ErudioConfig.dominio+'/apps/'+app+'/'+modulo+'/partials/'+arquivo+'.html';
             } else {
                 return ErudioConfig.dominio+'/apps/admin/'+modulo+'/partials/'+arquivo+'.html';
             }
         };
-        
+
         //RETORNA ENDERECO BUSCA CUSTOM
         this.setBuscaCustom = function (url) { return ErudioConfig.dominio + url + '/busca.html'; };
-        
+
         //APLICAR MASCARAS
         this.aplicarMascaras = function () {
             $('.maskCNPJ').mask('99999999999999');
@@ -71,11 +71,11 @@
             while (n--) { u8arr[n] = bstr.charCodeAt(n); }
             return new File([u8arr],filename,{type:mime});
         };
-        
+
         //VALIDA CAMPO
         this.validaCampo = function() {
-            $('input').change(function(){ 
-                if (!$(this).hasClass('md-input-invalid')) { 
+            $('input').change(function(){
+                if (!$(this).hasClass('md-input-invalid')) {
                     $(this).parent().removeClass('md-input-invalid');
                     if ($(this).parent().parent().parent().parent().hasClass('autocomplete-wrap')) {
                         $(this).parent().parent().parent().parent().find('.md-input-message-animation').removeAttr('style');
@@ -83,8 +83,8 @@
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 }
             });
-            $('md-select').blur(function(){ 
-                if (!$(this).hasClass('md-input-invalid')) { 
+            $('md-select').blur(function(){
+                if (!$(this).hasClass('md-input-invalid')) {
                     $(this).parent().removeClass('md-input-invalid');
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 }
@@ -94,8 +94,8 @@
         //FORÇAR VALIDAR CAMPO
         this.validarCampos = function () {
             var self = this;
-            $('input').each(function(){ 
-                if (!$(this).hasClass('md-input-invalid')) { 
+            $('input').each(function(){
+                if (!$(this).hasClass('md-input-invalid')) {
                     $(this).parent().removeClass('md-input-invalid');
                     if ($(this).parent().parent().parent().parent().hasClass('autocomplete-wrap')) {
                         $(this).parent().parent().parent().parent().find('.md-input-messages-animation').removeAttr('style');
@@ -103,8 +103,8 @@
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 }
             });
-            $('md-select').each(function(){ 
-                if (!$(this).hasClass('ng-invalid')) { 
+            $('md-select').each(function(){
+                if (!$(this).hasClass('ng-invalid')) {
                     $(this).parent().removeClass('md-input-invalid');
                     $(this).parent().find('.md-input-message-animation').removeAttr('style');
                 } else {
@@ -129,7 +129,7 @@
             var confirm = $mdDialog.confirm().title(title).textContent(content).ariaLabel(label).targetEvent(event).ok('Remover').cancel('Cancelar');
             return confirm;
         };
-        
+
         //MOSTRA MODAL DE EXCLUSAO
         this.customDialog = function(event, title, content, label, $mdDialog) {
             var confirm = $mdDialog.confirm().title(title).textContent(content).ariaLabel(label).targetEvent(event).ok(label).cancel('Cancelar');
@@ -142,37 +142,37 @@
             list.forEach((item, i) => { if (id === item.id) { retorno = i; } });
             return retorno;
         };
-        
+
         //MOSTRA MODAL SIMPLES
         this.modal = function(event, url, $mdDialog) { $mdDialog.show({templateUrl: url, targetEvent: event, clickOutsideToClose:true}); };
-        
+
         //MOSTRA ALERT SIMPLES
         this.alert = function(event, title, content, label, $mdDialog) {
             var confirm = $mdDialog.alert().title(title).clickOutsideToClose(true).textContent(content).ariaLabel(label).targetEvent(event).ok('Entendi!');
             return confirm;
         };
-        
+
         //BUSCAR ESTADOS
         this.getEstados = function () { return this.buscar('estados',null); };
-        
+
         //BUSCAR CIDADES
         this.getCidades = function (estado) { return this.buscar('cidades',{ estado: estado }); };
-        
+
         //VERIFICA VARIAVEL VAZIA
         this.isVazio = function (value) { if (value === null || value === undefined || value === "" || value.length === 0) { return true; } else { return false; } };
-        
+
         //VERIFICA SE É CADASTRO OU EDICAO
         this.isNovoLabel = function (value) { if (value === 'novo') { return 'Cadastrar'; } else { return 'Editar'; } };
-        
+
         //VERIFICA SE É CADASTRO OU EDICAO
         this.isNovo = function (value) { if (value === 'novo') { return true; } else { return false; } };
-        
+
         //VERIIFCA SE É NOVO OBJETO
         this.isNovoObjeto = function (obj) { if (this.isVazio(obj.id)) { return true; } else { return false; } };
-        
-        //BUSCA ESTRUTURA DE OBJETO 
+
+        //BUSCA ESTRUTURA DE OBJETO
         this.getEstrutura = function (tipo) { return Structure.getObjeto(tipo); };
-        
+
         //VALIDA FORM
         this.validar = function (formId) {
             var self = this; var retorno = true;
@@ -188,7 +188,7 @@
                         auto.find('.md-input-message-animation').attr('style','opacity: 1; margin-top: -4px;');
                     }
                     retorno = false;
-                } 
+                }
             });
 
             $("form#"+formId+" md-select").each(function(){
@@ -199,62 +199,62 @@
                         $(this).parent().find('.md-input-message-animation').attr('style','opacity: 1; margin-top: 0px;');
                         retorno = false;
                     }
-                } 
+                }
             });
 
             if (!retorno) { $('.fit-screen').scrollTop(0); }
-            
+
             return retorno;
         };
-        
+
         //RETORNA QTDE DE ERROS OBRIGATORIOS
         this.getErrosInputObrigatorios = function (formId){
             var inputs = $('#'+formId).find('input[required]'); var contador = 0;
             for (var i=0; i<inputs.length; i++) { if (this.isVazio($(inputs[i]).val())) { contador++; } }
         };
-        
+
         //VALIDA CNPJ
-        this.validarCNPJ = function (cnpj) { 
+        this.validarCNPJ = function (cnpj) {
             var result = Validator.cnpj(cnpj);
             if (!result) { $('.form-errors').show(); $('.form-errors').append('<br />CNPJ Inválido.'); }
             return result;
         };
-        
+
         //CUSTOM TOAST
         this.toast = function (msg) { $mdToast.show($mdToast.simple().textContent(msg)); };
-        
+
         //REDIRECIONAR
         this.redirect = function (link) { window.location = link; };
-        
+
         //INICIALIZAR PÀGINA
         this.inicializar = function () {
             $('md-content').scroll(function () {
                 if (!$(this).parent().is('md-select-menu')) {
                     var top = $(this).scrollTop();
-                    if (top > 128) { 
+                    if (top > 128) {
                         $('.scroll-toolbar').css('top',0);  $('.back-btn').css('position','fixed');
                         $('.perfil-btn a').addClass('fix-voltar');
-                    } else { 
+                    } else {
                         $('.scroll-toolbar').css('top','-64px'); $('.back-btn').css('position','');
                         $('.perfil-btn a').removeClass('fix-voltar');
                     }
                 }
             });
         };
-        
+
         //MUDAR IMAGEM TOOLBAR
         this.mudarImagemToolbar = function (url) {
             var link = ErudioConfig.dominio + '/apps/admin/'+url;
             $('.content-bar').attr('style',"background: linear-gradient(to bottom,rgba(0, 0, 0, 1), rgba(123, 121, 121, 0.3),rgba(1,0,0,0)), url('"+link+"') center center no-repeat !important;");
         };
-        
+
         //FILTRAR AUTOCOMPLETE
         this.filtrar = function (query, items){
             var results = [];
             if (query) { results = $filter('filter')(items,{nome: query}); } else { results = items; }
             return results;
         };
-        
+
         //VERIFICAR PERMISSAO
         this.verificaPermissao = function (role) {
             role = 'ROLE_'+role; var attr = JSON.parse(sessionStorage.getItem('atribuicoes')); var roles = attr.roles;
@@ -262,7 +262,7 @@
             if (!retorno) { retorno = roles.includes("ROLE_SUPER_ADMIN"); }
             return retorno;
         };
-        
+
         //VERIFICA ESCRITA
         this.verificaEscrita = function (role) {
             role = 'ROLE_'+role; var attr = JSON.parse(sessionStorage.getItem('atribuicoes'));
@@ -276,17 +276,17 @@
             }
             return this.retornoEscrita;
         };
-        
+
         //VERIFICA ADMIN
         this.isAdmin = function () { return this.verificaPermissao("SUPER_ADMIN"); };
-        
+
         //VALIDA ESCRITA
         this.validarEscrita = function (opcao, opcoes, escrita) {
             this.validacaoEscrita = false;
             for (var i=0; i<opcoes.length; i++) { if (opcoes[i].opcao === opcao) { this.validacaoEscrita = escrita; } else { this.validacaoEscrita === true; } }
             return this.validacaoEscrita;
         };
-        
+
         //ELIMINA MENUS
         this.ajustaMenus = function () {
             var size = 0; var sizeHidden = 0;
@@ -301,39 +301,39 @@
 
         //BUSCA FOTO PADRAO
         this.avatarPadrao = function () { return ErudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"; };
-        
+
         //HABILITA CORTINA SEM PERMISSAO
         this.semPermissao = function () { $('.sem-permissao-cortina, .sem-permissao-texto').show(); };
-        
+
         //REMOVE CORTINA SEM PERMISSAO
         this.comPermissao = function () { $('.sem-permissao-cortina, .sem-permissao-texto').hide(); };
-        
+
         //CONVERTE HORA DE HH:MM:SS PARA HH:MM
         this.converteHora = function (strHora) { var arrData = strHora.split(':'); return arrData[0] + ':' + arrData[1]; };
 
         //CONVERTE DATA PT-BR PARA EN
         this.converteData = function (strData) { var arrData = strData.split('/'); return arrData[2] + '-' + arrData[1] + '-' + arrData[0]; };
-        
+
         //CONVERTE DATA EN PARA PT-BR
         this.formataData = function (strData) { var arrData = strData.split('-'); return arrData[2] + '/' + arrData[1] + '/' + arrData[0]; };
-        
+
         //DESABILITA TODO O FORM
         this.desabilitaForm = function (formId) { $(formId+" input").prop("disabled",true); };
-        
+
         //BUSCA DIAS NO MES
         this.diasNoMes = function (mes,ano) { return new Date(ano, mes+1, 0).getDate(); };
-        
+
         //RETORNA NOME DO MES
         this.nomeMeses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
         this.nomeMes = function (mes){ return this.nomeMeses[mes]; };
         this.nomeMesAbreviado = function (mes){ var nome = this.nomeMeses[mes]; return nome.substring(0,3); };
-        
+
         //RETORNA NOME DO DIA
         this.nomeDias = ["Segunda-Feira","Terça-Feira","Quarta-Feira","Quinta-Feira","Sexta-Feira","Sábado","Domingo"];
         this.nomeDia = function (dia) { return this.nomeDias[dia]; };
         this.nomeDiaReduzido = function (dia) { var nome = this.nomeDias[dia]; return nome.replace('-feira',''); };
         this.nomeDiaAbreviado = function (dia) { var nome = this.nomeDias[dia]; return nome.substring(0,3); };
-        
+
         //MOSTRAR LISTA
         //this.enterList = function (elem) { $(elem).each(function(i){ setTimeout(function(){ $(elem).eq(i).addClass('mostrar'); },175); }); };
 

@@ -1,8 +1,8 @@
 (function (){
     var validator = angular.module('validator',[]);
-    
+
     validator.service('Validator', ['$timeout', function($timeout) {
-        
+
         //VALIDADOR DE CNPJ
         this.cnpj = function (cnpj) {
             if (cnpj !== null && cnpj !== undefined && cnpj !== "") {

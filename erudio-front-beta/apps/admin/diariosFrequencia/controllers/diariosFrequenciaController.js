@@ -30,11 +30,11 @@
             this.isAdmin = false;
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaLista(){
             this.subheaders = [{ label: 'Nome do Aluno' }];
             this.opcoes = [{tooltip: 'Imprimir', icone: 'print', opcao: 'imprimir', validarEscrita: true}];
@@ -45,18 +45,18 @@
         }
 
         mostrarImpressao() { if (!this.util.isVazio(this.turmas)) { return true; } else { return false; } }
-        
+
         preparaBusca(){
             this.buscaCustomTemplate = this.util.getTemplateBuscaCustom();
             this.buscaCustom = this.util.setBuscaCustom('/apps/admin/diariosFrequencia/partials');
         }
 
-        filtrar (query) { 
+        filtrar (query) {
             if (query.length > 2) {
                 return this.unidadeService.getAll({nome: query},true);
             } else { return []; }
         }
-        
+
         buscarCursos() {
             this.cursoOfertadoService.getAll({unidadeEnsino: this.scope.unidade.id}, true).then((cursos) => this.cursos = cursos);
         }
@@ -81,14 +81,14 @@
             var url = this.erudioConfig.urlServidor+'/report/diarios-frequencia?turma='+this.turma.id+'&mes='+this.mes;
             this.util.getPDF(url,"application/pdf",'_blank');
         }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); let self = this;
             if (permissao) {
                 this.util.comPermissao();
                 this.util.setTitulo(this.titulo);
                 this.escrita = this.verificaEscrita();
-                if (this.util.isAdmin()) { this.isAdmin = true;} else { 
+                if (this.util.isAdmin()) { this.isAdmin = true;} else {
                     this.isAdmin = false;
                     this.scope.unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
                     this.buscarCursos();
@@ -104,7 +104,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     DiarioFrequenciaController.$inject = ["EtapaService","Util","$mdDialog","ErudioConfig","$timeout","CursoService","UnidadeService","$scope","CursoOfertadoService","TurmaService"];
     angular.module('DiarioFrequenciaController',['ngMaterial', 'util', 'erudioConfig']).controller('DiarioFrequenciaController',DiarioFrequenciaController);
 })();

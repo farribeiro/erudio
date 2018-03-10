@@ -10,13 +10,13 @@
         <link rel="stylesheet" href="lib/material/angular-material.min.css">
         <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
         <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
-        
+
         <!-- JQUERY -->
         <script src="lib/js/jquery/jquery.js"></script>
         <script src="lib/js/jquery/jquery.mask.js"></script>
         <script type="text/javascript" src="lib/js/jquery/moment.js"></script>
         <script type="text/javascript" src="lib/js/jquery/moment-timezone.js"></script>
-        
+
         <!-- ANGULAR -->
         <script src="lib/angular/angular.min.js"></script>
         <script src="lib/angular/angular-route.js"></script>
@@ -29,13 +29,13 @@
         <script type="text/javascript" src="lib/js/angular/restangular.min.js"></script>
         <script type="text/javascript" src="lib/js/angular/angular-md5.js"></script>
         <script type="text/javascript" src="lib/js/angular/sha1.js"></script>
-        
-        <!-- LEAFLET 
+
+        <!-- LEAFLET
         <link rel="stylesheet" href="assets/css/leaflet.css" />
         <script src="lib/js/jquery/leaflet.js"></script> -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
-        
+
         <!-- ANGULAR MATERIAL -->
         <script src="lib/material/angular-material.min.js"></script>
     </head>
@@ -43,10 +43,10 @@
         <!-- BARRA DE PROGRESSO -->
         <md-progress-linear class="md-warn progresso" md-mode="indeterminate"></md-progress-linear>
         <div class="cortina"></div>
-        
-        <md-content class="fit-screen" ng-controller="AppController">            
+
+        <md-content class="fit-screen" ng-controller="AppController">
             <section class="main-layout" layout="row" flex>
-                
+
                 <!-- MENU LATERAL -->
                 <md-sidenav ng-hide="isProfessor" class="md-sidenav-left md-whiteframe-3dp" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
                     <md-toolbar class="md-tall">
@@ -54,7 +54,7 @@
                             <div class="avatar-mascara foto-professor md-whiteframe-2dp" layout="row" layout-align="center center" style="overflow: hidden; left: 19px; top: 0px;">
                                 <img src="{{ foto }}" alt="{{ atribuicoes.pessoa.nome }}">
                             </div>
-                            
+
                             <h2 flex md-truncate></h2>
                             <md-menu md-position-mode="target-right target">
                                 <md-button class="md-icon-button" ng-click="$mdMenu.open($event)" aria-label="Mais"><md-icon class="material-icons">more_vert</md-icon></md-button>
@@ -82,7 +82,7 @@
                             </div>
                         </span>
                     </md-toolbar>
-                    
+
                     <!-- MENU -->
                     <md-content id="menu-lateral" ng-init="ajustaMenus()">
                         <ul class="menu" flex ng-repeat="menu in menus track by $index">
@@ -95,7 +95,7 @@
                         </ul>
                     </md-content>
                 </md-sidenav>
-                
+
                 <md-content ng-class="ajustarTelaCheia()" class="w100 conteudo">
                     <div ng-show="cortinaAlocacao" class="sem-alocacao-cortina"></div>
                     <div ng-show="cortinaAlocacao" class="sem-alocacao-texto">Para utilizar o sistema, por favor, selecione uma alocação.</div>
@@ -146,7 +146,7 @@
                             </div>
                         </span>
                     </md-toolbar>
-                    
+
                     <!-- TOOLBAR ATIVADA NO SCROLL -->
                     <md-toolbar class="scroll-toolbar">
                         <div class="md-toolbar-tools">
@@ -170,7 +170,7 @@
                         </div>
                         <span flex></span>
                     </md-toolbar>
-                    
+
                     <!-- CONTEUDO -->
                     <md-content id="conteudoArea" class="static h100-fix" flex ng-view></md-content>
                 </md-content>
@@ -179,7 +179,7 @@
                 </md-content>
             </section>
         </md-content>
-        
+
         <!-- CONTROLLERS -->
         <script src="apps/admin/home/controllers/modulesController.js"></script>
         <script src="apps/admin/util/erudioConfig.js"></script>
@@ -330,17 +330,17 @@
         <script src="apps/admin/alunosANEE/controllers/alunosANEEController.js"></script>
 
         <script src="apps/admin/periodos/services/Periodo.js"></script>
-        
+
         <script src="apps/admin/turmas/services/Turma.js"></script>
-        
+
         <script src="apps/admin/matriculas/services/Matricula.js"></script>
-        
+
         <script src="apps/admin/enturmacoes/services/Enturmacao.js"></script>
-        
+
         <script src="apps/admin/movimentacao/services/Desligamento.js"></script>
         <script src="apps/admin/movimentacao/services/Movimentacao.js"></script>
         <script src="apps/admin/movimentacao/services/Transferencia.js"></script>
-        
+
         <script src="apps/admin/pessoas/services/Pessoa.js"></script>
         <script src="apps/admin/estadosCivis/services/EstadoCivil.js"></script>
         <script src="apps/admin/racas/services/Raca.js"></script>
@@ -349,28 +349,28 @@
         <script src="apps/admin/necessidadesEspeciais/services/NecessidadeEspecial.js"></script>
         <script src="apps/admin/pessoas/services/Pessoa.js"></script>
         <script src="apps/admin/grupos/services/Grupo.js"></script>
-        
-        <script src="apps/admin/cargos/services/Cargo.js"></script>
-        
-        <script src="apps/admin/tipoAvaliacoes/services/TipoAvaliacao.js"></script>
-        
-        <script src="apps/admin/habilidades/services/Habilidade.js"></script>
-        
-        <script src="apps/admin/avaliacoes/services/Avaliacoes.js"></script>
-        
-        <script src="apps/admin/grupos/services/Grupo.js"></script>
-        
-        <script src="apps/admin/atribuicoes/services/Atribuicao.js"></script>
-        
-        <script src="apps/admin/grupoPermissoes/services/GrupoPermissao.js"></script>
-        
-        <script src="apps/admin/permissoesGrupo/services/PermissaoGrupo.js"></script>
-        
-        <script src="apps/admin/permissoes/services/Permissao.js"></script>
-        
-        <script src="apps/admin/usuarios/services/Usuario.js"></script> 
 
-        <!-- Professor 
+        <script src="apps/admin/cargos/services/Cargo.js"></script>
+
+        <script src="apps/admin/tipoAvaliacoes/services/TipoAvaliacao.js"></script>
+
+        <script src="apps/admin/habilidades/services/Habilidade.js"></script>
+
+        <script src="apps/admin/avaliacoes/services/Avaliacoes.js"></script>
+
+        <script src="apps/admin/grupos/services/Grupo.js"></script>
+
+        <script src="apps/admin/atribuicoes/services/Atribuicao.js"></script>
+
+        <script src="apps/admin/grupoPermissoes/services/GrupoPermissao.js"></script>
+
+        <script src="apps/admin/permissoesGrupo/services/PermissaoGrupo.js"></script>
+
+        <script src="apps/admin/permissoes/services/Permissao.js"></script>
+
+        <script src="apps/admin/usuarios/services/Usuario.js"></script>
+
+        <!-- Professor
         <script src="apps/professor/index/controllers/moduloProfessor.js"></script> -->
         <script src="apps/professor/index/controllers/professorController.js"></script>
         <script src="apps/professor/avaliacoes/controllers/profAvaliacoesController.js"></script>
@@ -380,7 +380,7 @@
         <script src="apps/professor/perfil/controllers/perfilController.js"></script>
 
         <script src="apps/admin/teste/controllers/testeController.js"></script>
-        
+
         <script src="apps/admin/appController.js"></script>
         <script src="apps/admin/appDirectives.js"></script>
     </body>

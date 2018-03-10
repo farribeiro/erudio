@@ -1,6 +1,6 @@
 (function (){
     var avaliacaoDirectives = angular.module('avaliacaoDirectives', []);
-    avaliacaoDirectives.directive('inputModulo', function (){ return { 
+    avaliacaoDirectives.directive('inputModulo', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/input-template.html',
             scope: { type:'=', model:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', classe:'@', id:'@' },
@@ -21,8 +21,8 @@
             }
         };
     });
-    
-    avaliacaoDirectives.directive('selectAvaliacoes', function (){ return { 
+
+    avaliacaoDirectives.directive('selectAvaliacoes', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/select-template.html',
             scope: { type:'=', model:'=', items:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', pattern:'@', classe:'@', nomeComum:'@', nomeExibicao:'@', nomeCompleto:'@', simples:'@', id:'@' },

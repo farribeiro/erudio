@@ -39,13 +39,13 @@ use VinculoBundle\Service\AlocacaoFacade;
  * @FOS\NamePrefix("disciplinas")
  */
 class ProfessorController extends Controller {
-    
+
     private $alocacaoFacade;
-    
+
     function __construct(AlocacaoFacade $alocacaoFacade) {
         $this->alocacaoFacade = $alocacaoFacade;
     }
-    
+
     /**
     * @ApiDoc(
     *   resource = true,
@@ -55,7 +55,7 @@ class ProfessorController extends Controller {
     *       200 = "Array de disciplinas"
     *   }
     * )
-    * 
+    *
     * @FOS\Get("disciplinas")
     * @FOS\QueryParam(name = "emAndamento", nullable = true)
     */
@@ -64,8 +64,8 @@ class ProfessorController extends Controller {
         $emAndamento = $paramFetcher->get('emAndamento');
         $alocacoes = $this->alocacaoFacade->findAll(['funcionario' => $professor, 'professor' => true]);
         $disciplinas = array_reduce($alocacoes, function($acc, $alocacao) use ($emAndamento) {
-            return array_merge($acc, $emAndamento 
-                ? $alocacao->getDisciplinasMinistradasEmAndamento()->toArray() 
+            return array_merge($acc, $emAndamento
+                ? $alocacao->getDisciplinasMinistradasEmAndamento()->toArray()
                 : $alocacao->getDisciplinasMinistradas()->toArray()
             );
         }, []);
@@ -90,5 +90,5 @@ class ProfessorController extends Controller {
             ];
         }, $disciplinas));
     }
-    
+
 }

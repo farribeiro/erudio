@@ -30,7 +30,7 @@
      * @Controller CargoService
      */
     'use strict';
-    class CargoService {        
+    class CargoService {
         constructor(rest,grupoService){
             this.rest = rest;
             this.grupoService = grupoService;
@@ -85,7 +85,7 @@
          */
         remover(objeto,loader) { this.rest.remover(objeto, "Cargo", "M",loader); }
     };
-    
+
     angular.module('CargoService',[]).service('CargoService',CargoService);
     CargoService.$inject = ["BaseService","GrupoService"];
 })();

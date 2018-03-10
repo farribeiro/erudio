@@ -21,7 +21,7 @@
             this.editando = false; this.mostraBotao = false; this.disciplinaEscolhida = false;
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
@@ -49,7 +49,7 @@
                     this.isQualitativa = true; this.tamanhoCard = 100;
                     this.service.getQualitativas({ page: this.pagina, disciplina: this.turmaSelecionada.id },false).then((avaliacoes) => {
                         if (avaliacoes.length === 0) { this.msgVazio = true; } else { this.msgVazio = false; }
-                        if (this.pagina === 0) { this.objetos = avaliacoes; } else { 
+                        if (this.pagina === 0) { this.objetos = avaliacoes; } else {
                             if (avaliacoes.length !== 0) { this.objetos = this.objetos.concat(avaliacoes); } else { this.finalLista = true; this.pagina--; }
                         }
                     });
@@ -61,7 +61,7 @@
                     this.isQualitativa = false; this.tamanhoCard = 60;
                     this.service.getQuantitativas({ page: this.pagina, disciplina: this.turmaSelecionada.id },false).then((avaliacoes) => {
                         if (avaliacoes.length === 0) { this.msgVazio = true; } else { this.msgVazio = false; }
-                        if (this.pagina === 0) { this.objetos = avaliacoes; } else { 
+                        if (this.pagina === 0) { this.objetos = avaliacoes; } else {
                             if (avaliacoes.length !== 0) { this.objetos = this.objetos.concat(avaliacoes); } else { this.finalLista = true; this.pagina--; }
                         }
                     });
@@ -177,7 +177,7 @@
                 case 'remover': this.modalExclusao(event); break; case 'notas': this.darNotas(objeto); break; default: return false; break;
             }
         }
-        
+
         modalExclusao(event) {
             var self = this;
             let confirm = this.util.modalExclusao(event, "Remover Avaliação", "Deseja remover esta avaliação?", 'remover', this.mdDialog);
@@ -205,7 +205,7 @@
 
         darNotas(objeto,loader) {
             this.mostraBotaoVoltar();
-            var self = this; this.desabilitarPaginacao(); this.listaQualitativa = true; this.atribuindoNota = true; 
+            var self = this; this.desabilitarPaginacao(); this.listaQualitativa = true; this.atribuindoNota = true;
             this.mediaService.getAll({ disciplinaOfertada: this.turmaSelecionada.id, numero: this.avaliacaoRemover.media },loader).then((medias) => {
                 this.mediasModal = medias; this.avaliacaoModal = this.avaliacaoRemover;
                 medias.forEach((media) => {
@@ -218,12 +218,12 @@
                         this.service.getHabilidades({disciplina:this.turmaSelecionada.disciplinaId, media: this.avaliacaoRemover.media}).then((habilidades) => {
                             this.habilidades = habilidades;
                         });
-                    });   
+                    });
                 } else {
                     this.service.getNotasQuantitativas({avaliacao: objeto.id},true).then((notas) => {
                         if (notas.length > 0) {
                             this.editandoNota = true; this.notasAvaliacao = notas;
-                            medias.forEach((media,index) => { 
+                            medias.forEach((media,index) => {
                                 notas.forEach((nota) => { if (nota.media.id === media.id) { media.nota = nota.valor; media.temValor = true; } });
                             });
                         } else { this.editandoNota = false; }
@@ -242,7 +242,7 @@
             }, (error) => { return new Promise((resolve) => { resolve(this.erudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"); }) });
         }
 
-        isNotaSalva (aluno){ 
+        isNotaSalva (aluno){
             if (!this.util.isVazio(aluno.temValor)) { return 'isNotaSalva'; } else { return 'isNotaNova'; }
         }
 
@@ -318,7 +318,7 @@
                         if (nota.media.id === parseInt(mediaId)) {
                             objeto = nota;
                             var value = $(notasSalvas[i]).val();
-                            if (!this.util.isVazio(value)) { 
+                            if (!this.util.isVazio(value)) {
                                 objeto.valor = parseFloat(value);
                                 var cursadaShared = this.scope.shared.getCursada();
                                 if (!this.util.isVazio(cursadaShared) && parseInt(alunoId) === cursadaShared.matricula.idAluno) {
@@ -333,7 +333,7 @@
                                         }
                                     }
                                 });
-                                if (i === notasSalvas.length-1) { 
+                                if (i === notasSalvas.length-1) {
                                     this.util.toast("Notas atualizadas com sucesso.");
                                     if (!this.util.isVazio(this.scope.shared.getAvaliacao()) && !this.util.isVazio(this.scope.shared.getAvaliacao().id)) {
                                         this.mdDialog.show(this.mdDialog.alert()
@@ -386,9 +386,9 @@
         }
 
         salvarNotaQuanti(objeto, mediaId, valor) {
-            objeto = this.service.getEstruturaQuantitativa(); objeto.media = { id: mediaId }; 
+            objeto = this.service.getEstruturaQuantitativa(); objeto.media = { id: mediaId };
             objeto.avaliacao = { id: this.avaliacaoModal.id };
-            if (valor !== undefined && valor !== null && valor !== '') { 
+            if (valor !== undefined && valor !== null && valor !== '') {
                 if (this.util.isVazio(this.notasAvaliacao)){ this.notasAvaliacao = []; }
                 objeto.valor = parseFloat(valor); this.service.salvarQuantitativa(objeto,false).then((obj) => { this.notasAvaliacao.push(obj); });
             }
@@ -409,7 +409,7 @@
         abrirNotaRemota(query){
             if (query) {
                 var avaliacao = this.scope.shared.getAvaliacao();
-                if (!this.util.isVazio(query.id)) { 
+                if (!this.util.isVazio(query.id)) {
                     this.timeout(() => {
                         this.executarOpcao(null,{opcao:'notas'},avaliacao,true);
                     },500);
@@ -420,7 +420,7 @@
         iniciar(){
             let permissao = this.verificarPermissao(); let self = this; $('.btn-home').hide();
             if (permissao) {
-                this.util.comPermissao(); this.escrita = this.verificaEscrita(); 
+                this.util.comPermissao(); this.escrita = this.verificaEscrita();
                 this.fab = { tooltip: 'Adicionar Avaliação', icone: 'add', href: this.link+'novo' };
                 this.scope.$watch("shared.avaliacaoAbrir",(query) => { this.abrirNotaRemota(query); });
                 this.scope.$watch("shared.abaHome",(query) => { this.fecharForm(); });
@@ -430,7 +430,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     ProfAvaliacoesController.$inject = ["AvaliacaoService","Util","$mdDialog","ErudioConfig","$timeout","BaseService","EtapaService","MediaService","$http","Shared","$scope"];
     angular.module('ProfAvaliacoesController',['ngMaterial', 'util', 'erudioConfig']).controller('ProfAvaliacoesController',ProfAvaliacoesController);
 })();

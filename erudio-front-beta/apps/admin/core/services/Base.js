@@ -1,6 +1,6 @@
 (function (){
     'use strict';
-    
+
     class BaseService {
         constructor(Restangular, $mdToast, $http, erudioConfig) {
             this.restangular = Restangular;
@@ -9,13 +9,13 @@
             this.erudioConfig = erudioConfig;
             this.loginPage = this.erudioConfig.dominio+'/login.html';
         }
-        
+
         //CONTROLE DA TELA DE PROGRESSO
         abreProgresso() { $('.progresso').show(); $('.cortina').show(); }
         fechaProgresso() { $('.progresso').hide(); $('.cortina').hide(); }
         abreLoader() { $('.loader').show(); }
         fechaLoader() { $('.loader').hide(); }
-        
+
         //PREPARA HEADER X-WSSE
         criarHeader() { var token = sessionStorage.getItem('token'); var header = "Bearer "+token; return header; }
 
@@ -28,7 +28,7 @@
             var rest = this.restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
             return rest;
         }
-        
+
         //REAUTENTICAR
         reautenticar() {
             let rest = this.preparaRestangular();
@@ -39,23 +39,23 @@
                 .catch(() => { this.redirect(this.loginPage); });
             });
         }
-        
+
         //REDIRECIONAR
         redirect(link) { window.location = link; };
-        
+
         //ATIVAR PROGRESSO
         ativarLoader(loader) { if (loader === undefined || loader === false) { this.abreProgresso(); } else { this.abreLoader(); } }
 
         //DESATIVAR PROGRESSO
         desativarLoader(loader) { if (loader === undefined || loader === false) { this.fechaProgresso(); } else { this.fechaLoader(); } }
-        
+
         //BUSCA POR ID
         um(id, endereco, loader) {
             var self = this; self.ativarLoader(loader);
             var rest = this.preparaRestangular(); rest.setFullResponse(true);
             return rest.one(id, endereco).get().then(function(response){
                 return new Promise((resolve) => { self.desativarLoader(loader); resolve(response.data); });
-            }, function (error){            
+            }, function (error){
                 return new Promise((resolve,reject) => {
                     if (error.data.code === 401) {
                         self.reautenticar().then(() => self.um(id, endereco, loader)).then((data) => { self.desativarLoader(loader); resolve(data); });
@@ -63,12 +63,12 @@
                 });
             });
         }
-        
+
         //BUSCA POR LISTA
         buscar(endereco, opcoes, loader) {
             var self = this; self.ativarLoader(loader);
             var rest = this.preparaRestangular(); rest.setFullResponse(true);
-            return rest.all(endereco).getList(opcoes).then(function(response){ 
+            return rest.all(endereco).getList(opcoes).then(function(response){
                 return new Promise((resolve) => { self.desativarLoader(loader); resolve(response.data); });
             }, function (error){
                 return new Promise((resolve,reject) => {
@@ -78,7 +78,7 @@
                 });
             });
         }
-        
+
         //BUSCAR VIA $HTTP
         buscarHTTP (endereco,loader) {
             var self = this; self.ativarLoader(loader);
@@ -96,14 +96,14 @@
 
         //HELPER PARA ORIENTACAO DAS PALAVRAS
         orientarLabel(label, orientacao){ var retorno = ''; if (orientacao === "M") { retorno = label+"o"; } else if (orientacao === "F") { retorno = label+"a"; } else { retorno = label+"e"; } return retorno; }
-        
+
         //SALVAR
         salvar(endereco, objeto, label, gen, loader) {
             var self = this; self.ativarLoader(loader);
             var rest = this.preparaRestangular(); rest.setFullResponse(true);
             var promise = this.buscarPromise(endereco);
             return promise.post(objeto).then(function(response) {
-                return new Promise((resolve) => { 
+                return new Promise((resolve) => {
                     if (response.status >= 200 || response.status <= 204) {
                         var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
                         if (label !== undefined && label !== null) { self.mdToast.show(self.mdToast.simple().textContent(label+' salv'+artigo+' com sucesso.')); }
@@ -118,7 +118,7 @@
                 });
             });
         }
-        
+
         //UPDATE
         atualizar(objeto, label, gen, loader) {
             var self = this; self.ativarLoader(loader);
@@ -126,7 +126,7 @@
             if (objeto !== null && objeto.id) {
                 if (objeto.route === undefined || objeto.route === null) { objeto.route = this.url; }
                 return objeto.put().then(function (response){
-                    return new Promise((resolve) => { 
+                    return new Promise((resolve) => {
                         if (response.status >= 200 || response.status <= 204) {
                             var artigo = 'e'; if (gen === 'M') { artigo = 'o'; } else if (gen === 'F') { artigo = 'a'; }
                             if (label !== undefined  && label !== null) { self.mdToast.show(self.mdToast.simple().textContent(label+' atualizad'+artigo+' com sucesso.')); }
@@ -142,7 +142,7 @@
                 });
             }
         }
-        
+
         //REMOVER OBJETO
         remover(objeto, label, orientacao, loader) {
             var self = this; self.ativarLoader(loader);
@@ -150,11 +150,11 @@
             objeto.remove();
             return new Promise((resolve) => {
                 var sufix = self.orientarLabel('removid', orientacao);
-                if (label !== null && label !== '' && label !== undefined) { self.mdToast.show(self.mdToast.simple().textContent(label+' '+sufix)); } 
+                if (label !== null && label !== '' && label !== undefined) { self.mdToast.show(self.mdToast.simple().textContent(label+' '+sufix)); }
                 self.desativarLoader(loader); resolve('removido');
             });
             //TRATAR ERRO
-            /*    
+            /*
             }, function(error) {
                 return new Promise((resolve,reject) => {
                     if (error.data.code === 401) {
@@ -163,7 +163,7 @@
                 });
             });*/
         }
-        
+
         //SALVAR EM BATCH
         salvarLote(objeto, endereco, label, gen, loader, isPost) {
             var tipoRequest = "PUT"; if (isPost) { tipoRequest = "POST"; }
@@ -214,7 +214,7 @@
             });
         }
     }
-    
+
     angular.module('BaseService',['ngMaterial','erudioConfig']).service('BaseService',BaseService);
     BaseService.$inject = ["Restangular",'$mdToast','$http',"ErudioConfig"];
 }());

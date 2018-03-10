@@ -22,11 +22,11 @@
             this.contadorTeste = 0;
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaLista(){
             this.subheaders = [{ label: 'Nome da Unidade' }];
             this.opcoes = [{ tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true }];
@@ -35,23 +35,23 @@
             this.template = this.util.getTemplateLista();
             this.lista = this.util.getTemplateListaEspecifica('unidades');
         }
-        
+
         preparaBusca(){
             this.buscaSimples = this.util.getTemplateBuscaSimples();
         }
-        
+
         buscarUnidades(loader) {
             this.service.getAll({page: this.pagina},loader).then((unidades) => {
-                if (this.pagina === 0) { this.objetos = unidades; } else { 
+                if (this.pagina === 0) { this.objetos = unidades; } else {
                     if (unidades.length !== 0) { this.objetos = this.objetos.concat(unidades); } else { this.finalLista = true; this.pagina--; }
                 }
             });
         }
-        
+
         executarOpcao(event,opcao,objeto) {
             this.unidade = objeto; this.modalExclusao(event);
         }
-        
+
         modalExclusao(event) {
             var self = this;
             let confirm = this.util.modalExclusao(event, "Remover Unidade de Ensino", "Deseja remover esta Unidade de Ensino?", 'remover', this.mdDialog);
@@ -64,9 +64,9 @@
                 }
             });
         }
-        
+
         verificaBusca(query) { if (this.util.isVazio(query)) { this.buscarUnidades(true); this.buscaIcone = 'search'; } else { this.executarBusca(query); } }
-        
+
         executarBusca(query) {
             this.timeout.cancel(this.delayBusca); var self = this;
             this.delayBusca = this.timeout(() => {
@@ -80,11 +80,11 @@
                 }
             },800);
         }
-        
+
         limparBusca() { this.busca = ''; $('.busca-simples').val(''); this.buscaIcone = 'search'; this.buscarUnidades(true); }
 
         paginar(){ this.pagina++; this.buscarUnidades(true); }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); let self = this;
             if (permissao) {
@@ -107,7 +107,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     UnidadeController.$inject = ["UnidadeService","Util","$mdDialog","ErudioConfig","$timeout"];
     angular.module('UnidadeController',['ngMaterial', 'util', 'erudioConfig']).controller('UnidadeController',UnidadeController);
 })();

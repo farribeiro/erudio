@@ -20,11 +20,11 @@
             this.nomeForm = "perfilForm"; this.tiposTelefone = ['CELULAR','COMERCIAL','RESIDENCIAL']; this.mapa = {}; this.abaAtiva = 0;
             this.temFoto = false; this.fotoSrc = null; this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaForm() {
             this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
             this.form = this.util.getInputBlockCustom('perfil','form','professor');
@@ -49,7 +49,7 @@
         }
 
         abreArquivo(){ $("#foto-perfil").trigger('click'); }
-        
+
         mostraCameraStream() {
             $(".cortina-foto").show();
             var video = document.querySelector('#camera-stream');
@@ -60,7 +60,7 @@
                 },(stream) => {
                     video.src = window.URL.createObjectURL(stream); $('.start-video').show(); video.play();
                 },(error) => { console.log(error); });
-            }            
+            }
         }
 
         capturar() {
@@ -124,7 +124,7 @@
                 var fd = new FormData(); fd.append('foto',file);
                 this.http.post(fileUrl,fd,{
                     headers: { "JWT-Authorization":token, 'Content-type':undefined }
-                }).then(() => { 
+                }).then(() => {
                     this.timeout(() => {
                         this.recarregarFoto().then((foto) => { $('.foto-professor img').attr('src',foto);  });
                     },500);
@@ -142,7 +142,7 @@
                 });
             }, (error) => { return new Promise((resolve) => { resolve(this.erudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"); }) });
         };
-        
+
         verificarEstado(estadoId) {
             if (!this.util.isVazio(estadoId)) {
                 var retorno = false;
@@ -152,7 +152,7 @@
         }
 
         getPasso(index) { this.abaAtiva = index; $('.step-tab').hide(); $('.step-tab-'+index).show(); }
-        
+
         buscarPessoa() {
             var self = this; var pessoaId = JSON.parse(sessionStorage.getItem('atribuicoes')).pessoa.id;
             this.scope.pessoa = this.service.getEstrutura(); this.senha = null; this.novaSenha = null;
@@ -217,14 +217,14 @@
                 } else { this.tipoCertidao = "certidao"; }
             }
         }
-        
+
         buscarEtnias() { this.service.getRacas(null,true).then((etnias) => { this.etnias = etnias; }); }
         buscarEstadosCivis() { this.service.getEstadosCivis(null,true).then((estadosCivis) => { this.estadosCivis = estadosCivis; }); }
         buscarParticularidades() { this.service.getParticularidades(null,true).then((particularidades) => { this.particularidades = particularidades; }); }
         buscarNecessidades() { this.necessidadeEspecialService.getAll(null,true).then((necessidades) => { this.necessidades = necessidades; }); }
         buscarBeneficios() { this.beneficioService.getAll(null,true).then((beneficios) => { this.beneficios = beneficios; }); }
         buscarEstados () { return this.estadoService.getAll(null,true); }
-        buscarCidades (query,pessoa) { 
+        buscarCidades (query,pessoa) {
             if (query.length > 2) {
                 var self = this;
                 if (pessoa.endereco.cidade.estado.id === null) {
@@ -235,10 +235,10 @@
             }
         }
 
-        buscarCidadesNaturalidade (query) { 
+        buscarCidadesNaturalidade (query) {
             if (query.length > 2) { return this.cidadeService.getAll({nome: query},true); }
         }
-        
+
         getEndereco(id) {
             var self = this;
             this.service.getEnderecoCompleto(id,true).then((endereco) => {
@@ -254,26 +254,26 @@
                 });
             });
         }
-        
+
         getTelefones(telefones) {
             var self = this;
             if (telefones.length > 0) {
                 $('md-divider.hide').show(); $('.md-subheader.hide').show();
-                for (var i=0; i<telefones.length; i++) { 
+                for (var i=0; i<telefones.length; i++) {
                     this.telefoneService.get(telefones[i].id,true).then((telefone) => { this.telefones.push(telefone); });
                 }
             } else { $('md-divider.hide').hide(); $('.md-subheader.hide').hide(); }
         }
-        
+
         validaCampo() { this.util.validaCampo(); }
-        
+
         validar() {
             var obrigatorios = this.util.validar(this.nomeForm);
             if (this.cidade.id === null) { obrigatorios = false; }
             if (this.scope.pessoa.certidaoNascimento.length > 0 && this.scope.pessoa.certidaoNascimento.length < 32) { this.util.toast("Certidão de Nascimento deve ter 32 dígitos."); return false; }
             if (obrigatorios) { return true; } else { return false; }
         }
-        
+
         salvar() {
             /*if (this.abaAtiva === 2) {
                 if (this.senha === this.novaSenha) {
@@ -295,12 +295,12 @@
                     this.scope.pessoa.dataNascimento = this.util.converteData(this.scope.pessoa.dataNascimento);
                     this.scope.pessoa.estadoCivil = {id:this.scope.pessoa.estadoCivil.id};
                     this.scope.pessoa.raca = {id:this.scope.pessoa.raca.id};
-                    if (!this.util.isVazio(this.scope.pessoa.naturalidade)) { this.scope.pessoa.naturalidade = {id:this.scope.pessoa.naturalidade.id}; }                
+                    if (!this.util.isVazio(this.scope.pessoa.naturalidade)) { this.scope.pessoa.naturalidade = {id:this.scope.pessoa.naturalidade.id}; }
                     if (!this.util.isVazio(this.scope.pessoa.dataExpedicaoRg)) { this.scope.pessoa.dataExpedicaoRg = this.util.converteData(this.scope.pessoa.dataExpedicaoRg); }
                     if (!this.util.isVazio(this.scope.pessoa.dataExpedicaoCertidaoNascimento)) { this.scope.pessoa.dataExpedicaoCertidaoNascimento = this.util.converteData(this.scope.pessoa.dataExpedicaoCertidaoNascimento); }
                     if (this.tipoCertidao === "certidao-antiga") { this.scope.pessoa.certidaoNascimento = this.livro + this.folha + this.termo + "00000000000000000"; }
                     resultado = this.service.atualizar(this.scope.pessoa,true);
-                    resultado.then(() => { 
+                    resultado.then(() => {
                         /*if (this.scope.pessoa.cpfCnpj !== this.cpfAtual) { this.atualizarUsuario();
                         } else { */
                             this.util.redirect(this.erudioConfig.dominio + this.linkModulo);
@@ -321,7 +321,7 @@
                 });
             });
         }
-        
+
         adicionarTelefone() {
             var self = this; var tamanhoTelefone = this.scope.telefone.numero.length;
             if (!this.util.isVazio(this.scope.telefone.numero) && !this.util.isVazio(this.scope.telefone.descricao)) {
@@ -332,7 +332,7 @@
                 this.util.toast('Ambos os campos devem ser preenchidos para adicionar um telefone.');
             }
         }
-        
+
         removerTelefone(telefone, index) {
             var self = this;
             if (this.util.isNovoObjeto(telefone)) {
@@ -344,7 +344,7 @@
                 });
             }
         }
-        
+
         initMapa() {
             var lat; var lng;
             if (this.util.isVazio(this.scope.pessoa.endereco.latitude)) {
@@ -362,25 +362,25 @@
             this.marker = L.marker([lat, lng]).addTo(this.mapa);
             this.mapa.on('click', this.adicionarMarcador.bind(this));
         }
-        
+
         adicionarMarcador(event) {
-            this.mapa.removeLayer(this.marker); 
+            this.mapa.removeLayer(this.marker);
             var self = this;
             this.marker = L.marker([event.latlng.lat, event.latlng.lng]).addTo(this.mapa);
             this.marker.bindPopup('<div class="map-popup-content"><strong>Este é o endereço desejado?</strong><br /><br /><button id="btnMapaSim" class="material-btn">Sim</md-button><button class="material-btn">Não</md-button></div>').openPopup();
             $("#btnMapaSim").on('click',function(ev){ ev.preventDefault(); self.confirmaLatLng(event); });
         }
-        
+
         confirmaLatLng(event) {
             var lt = parseFloat(event.latlng.lat).toFixed(6); var ln = parseFloat(event.latlng.lng).toFixed(6);
             this.scope.pessoa.endereco.latitude = parseFloat(lt); this.scope.pessoa.endereco.longitude = parseFloat(ln); this.mapa.closePopup();
         }
-        
+
         preencheCEP() {
             var self = this;
             this.timeout(function(){ $("input[name=cep]").change(function(){ self.buscaCEP(); }); },500);
         }
-        
+
         buscaCEP () {
             if (!this.util.isVazio(this.scope.pessoa.endereco.cep) && this.scope.pessoa.endereco.cep.length === 8) {
                 this.util.buscaCEP(this.scope.pessoa.endereco.cep).then((addr) => {
@@ -388,7 +388,7 @@
                     if(!this.util.isVazio(addr.logradouro)) { this.scope.pessoa.endereco.logradouro = addr.logradouro; this.util.validarCampos(); }
                     if(!this.util.isVazio(addr.uf)) {
                         this.estados.forEach((estado) => {
-                            if(estado.sigla === addr.uf) { 
+                            if(estado.sigla === addr.uf) {
                                 this.scope.pessoa.endereco.cidade.estado.id = estado.id;
                                 this.util.validarCampos();
                                 if (!this.util.isVazio(addr.localidade)) {
@@ -405,7 +405,7 @@
                 });
             }
         }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); var self = this;
             //if (permissao) {
@@ -423,7 +423,7 @@
             //} else { this.util.semPermissao(); }
         }
     }
-    
+
     PerfilController.$inject = ["PessoaService","Util","ErudioConfig","$routeParams","$timeout","EstadoService","CidadeService","EnderecoService","TelefoneService","$scope","BeneficioService","NecessidadeEspecialService","UsuarioService","$http"];
     angular.module('PerfilController',['ngMaterial', 'util', 'erudioConfig']).controller('PerfilController',PerfilController);
 })();

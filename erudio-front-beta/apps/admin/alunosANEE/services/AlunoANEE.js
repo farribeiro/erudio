@@ -30,7 +30,7 @@
      * @Service AlunoANEEService
      */
     'use strict';
-    class AlunoANEEService {        
+    class AlunoANEEService {
         constructor(rest,erudioConfig){
             this.rest = rest;
             this.erudioConfig = erudioConfig;
@@ -53,7 +53,7 @@
          */
         getURLPorInstituicao(instituicao){ return this.urlPorInstituicao+'?instituicao='+instituicao; }
     };
-    
+
     angular.module('AlunoANEEService',['erudioConfig']).service('AlunoANEEService',AlunoANEEService);
     AlunoANEEService.$inject = ["BaseService","ErudioConfig"];
 })();

@@ -22,7 +22,7 @@ class AppKernel extends Kernel
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Ps\PdfBundle\PsPdfBundle(),
-            
+
             new CoreBundle\CoreBundle(),
             new AuthBundle\AuthBundle(),
             new PessoaBundle\PessoaBundle(),
@@ -36,7 +36,7 @@ class AppKernel extends Kernel
             new VagaBundle\VagaBundle(),
             new ReportBundle\ReportBundle(),
             new AlunoBundle\AlunoBundle(),
-            
+
             //Integrações SME
             new IntegracaoIEducarBundle\IntegracaoIEducarBundle(),
             new IntegracaoSigAlimentarBundle\IntegracaoSigAlimentarBundle()

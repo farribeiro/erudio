@@ -4,9 +4,9 @@
             <h1>Alunos ANEE</h1>
             <h3>Nominal</h3>
         {% endblock %}
-        
-        {% block info %}{% endblock %}  
-        
+
+        {% block info %}{% endblock %}
+
         {% block content %}
             {% for relatorio in relatorios %}
                 {% for curso, alunos in relatorio.alunosPorCurso if alunos|length > 0  %}

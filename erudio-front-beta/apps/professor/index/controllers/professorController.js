@@ -27,10 +27,10 @@
             this.buscarDisciplinas();
         }
 
-        refresh() { 
-            sessionStorage.setItem('turmaSelecionada',JSON.stringify(this.turmaSelecionada)); 
+        refresh() {
+            sessionStorage.setItem('turmaSelecionada',JSON.stringify(this.turmaSelecionada));
             this.enturmacaoService.getAll({encerrado: 0, turma: this.turmaSelecionada.turma.id},true).then((enturmacoes) => {
-                if (enturmacoes.length > 0) { sessionStorage.setItem('possuiEnturmacoes',1); this.timeout(() => {location.reload();}, 500); } 
+                if (enturmacoes.length > 0) { sessionStorage.setItem('possuiEnturmacoes',1); this.timeout(() => {location.reload();}, 500); }
                 else { sessionStorage.removeItem('possuiEnturmacoes'); sessionStorage.setItem('possuiEnturmacoes',0); this.timeout(() => {location.reload();}, 500); }
             });
         }
@@ -44,7 +44,7 @@
                     if (!this.util.isVazio(obj) && disciplina.id === parseInt(obj.id)){
                         this.turmaSelecionada = disciplina;
                     } else {
-                        if (disciplinas.length === 1) { 
+                        if (disciplinas.length === 1) {
                             sessionStorage.setItem('turmaSelecionada',null);
                             sessionStorage.setItem('turmaSelecionada',JSON.stringify(disciplina));
                             this.turmaSelecionada = disciplina;
@@ -75,7 +75,7 @@
             }
         }
     }
-    
+
     ProfessorController.$inject = ["Util","$mdDialog","ErudioConfig","$timeout","BaseService","EnturmacaoService","Shared"];
     angular.module('ProfessorController',['ngMaterial', 'util', 'erudioConfig']).controller('ProfessorController',ProfessorController);
 })();

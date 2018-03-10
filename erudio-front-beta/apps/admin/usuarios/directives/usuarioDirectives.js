@@ -1,6 +1,6 @@
 (function (){
     var usuarioDirectives = angular.module('usuarioDirectives', []);
-    usuarioDirectives.directive('inputUsuario', function (){ return { 
+    usuarioDirectives.directive('inputUsuario', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/input-template.html',
             scope: { type:'=', model:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', classe:'@', id:'@' },

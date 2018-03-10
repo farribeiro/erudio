@@ -1,6 +1,6 @@
 (function (){
     var disciplinaDirectives = angular.module('disciplinaDirectives', []);
-    disciplinaDirectives.directive('inputDisciplina', function (){ return { 
+    disciplinaDirectives.directive('inputDisciplina', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/input-template.html',
             scope: { type:'=', model:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', classe:'@', id:'@' },
@@ -37,7 +37,7 @@
             }
         };
     });
-    
+
     //FALTA CHECKBOXES - disciplina opcional
-    
+
 })();

@@ -29,10 +29,10 @@
     <md-tab label="boletim por turma" ng-click="ctrl.objetos = []">
         <md-content style="padding: 10px 20px 3px 20px; background: #fff;">
             <div layout-gt-sm="row">
-                        
+
                 <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.isAdmin">
                     <md-icon class="material-icons">account_balance</md-icon>
-                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.unidade" 
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.unidade"
                             md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
                             md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino">
                         <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>
@@ -70,7 +70,7 @@
                         <md-option value="0">Não</md-option>
                     </md-select>
                 </md-input-container>
-                
+
                 <md-input-container class="md-icon-float" md-block flex-gt-sm>
                     <label for="turma">Turma</label>
                     <md-icon class="material-icons">school</md-icon>
@@ -89,10 +89,10 @@
     <md-tab label="boletim por aluno">
         <md-content style="padding: 10px 20px 10px 20px; background: #fff;">
             <div layout-gt-sm="row">
-                        
+
                 <md-input-container class="md-icon-float" md-block flex-gt-sm>
                     <md-icon class="material-icons">people</md-icon>
-                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.matricula" 
+                    <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.scope.matricula"
                             md-search-text="ctrl.itemBuscaMatricula" md-items="item in ctrl.filtrarMatricula(ctrl.itemBuscaMatricula)"  md-input-name="aluno"
                             md-item-text="item.aluno.nome" md-floating-label="Nome do Aluno">
                         <span md-highlight-text="ctrl.itemBuscaMatricula">{{ item.aluno.nome }} - {{ item.aluno.dataNascimento | date:'dd/MM/yyyy' }} - {{ item.curso.nome }}</span>

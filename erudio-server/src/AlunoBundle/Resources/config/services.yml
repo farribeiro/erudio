@@ -1,13 +1,13 @@
 services:
-    
+
     _defaults:
         autowire: true
         autoconfigure: true
         public: false
-    
+
     AlunoBundle\:
         resource: '../../{Service,Listener}'
-       
+
     AlunoBundle\Controller\:
         resource: '../../Controller'
         public: true

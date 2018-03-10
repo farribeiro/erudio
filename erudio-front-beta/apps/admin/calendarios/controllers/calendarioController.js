@@ -37,21 +37,21 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "CALENDARIO";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Calendários";
             /*
             * @attr linkModulo
             * @attrType int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/calendarios/";
             this.iniciar();
@@ -104,16 +104,16 @@
          */
         buscarCalendarios(loader) {
             var options = null;
-            if (!this.isAdmin) { 
+            if (!this.isAdmin) {
                 let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
                 options = {page: this.pagina, instituicao: unidade};
             } else { options = {page: this.pagina}; };
-            if (this.util.isAdmin()) { options = {page: this.pagina}; } else { 
+            if (this.util.isAdmin()) { options = {page: this.pagina}; } else {
                 let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
                 options = {page: this.pagina, instituicao: unidade };
             }
             this.service.getAll(options,loader).then((calendarios) => {
-                if (this.pagina === 0) { this.objetos = calendarios; } else { 
+                if (this.pagina === 0) { this.objetos = calendarios; } else {
                     if (calendarios.length !== 0) { this.objetos = this.objetos.concat(calendarios); } else { this.finalLista = true; this.pagina--; }
                 }
             });
@@ -180,7 +180,7 @@
                 let tamanho = query.length;
                 if (tamanho > 3) {
                     let options = null;
-                    if (!self.isAdmin) { 
+                    if (!self.isAdmin) {
                         let unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao.id;
                         options = {nome: query, instituicao: unidade};
                     } else { options = {nome: query}; };
@@ -222,7 +222,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     CalendarioController.$inject = ["CalendarioService","Util","$mdDialog","ErudioConfig","$timeout"];
     angular.module('CalendarioController',['ngMaterial', 'util', 'erudioConfig']).controller('CalendarioController',CalendarioController);
 })();

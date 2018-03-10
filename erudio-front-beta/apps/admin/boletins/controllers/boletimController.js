@@ -40,21 +40,21 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "RELATORIOS";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Boletim Escolar";
             /*
             * @attr linkModulo
             * @attrType int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/boletins/";
             this.iniciar();
@@ -105,7 +105,7 @@
          * @methodParams nome|String
          * @methodDescription Filtra as unidades de ensino do autocomplete.
          */
-        filtrar (query) { 
+        filtrar (query) {
             if (query.length > 2) {
                 return this.unidadeService.getAll({nome: query},true);
             } else { return []; }
@@ -116,7 +116,7 @@
          * @methodParams nome|String
          * @methodDescription Filtra os nomes de aluno no autocomplete.
          */
-        filtrarMatricula (query) { 
+        filtrarMatricula (query) {
             this.objetos = [];
             if (query.length > 2) {
                 return this.matriculaService.getAll({aluno_nome: query},true);
@@ -214,7 +214,7 @@
                 this.util.comPermissao();
                 this.util.setTitulo(this.titulo);
                 this.escrita = this.verificaEscrita();
-                if (this.util.isAdmin()) { this.isAdmin = true;} else { 
+                if (this.util.isAdmin()) { this.isAdmin = true;} else {
                     this.isAdmin = false;
                     this.scope.unidade = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
                     this.buscarCursos();
@@ -233,7 +233,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     BoletimController.$inject = ["EtapaService","Util","$mdDialog","ErudioConfig","$timeout","CursoService","UnidadeService","MatriculaService","$scope","CursoOfertadoService","TurmaService","EnturmacaoService"];
     angular.module('BoletimController',['ngMaterial', 'util', 'erudioConfig']).controller('BoletimController',BoletimController);
 })();

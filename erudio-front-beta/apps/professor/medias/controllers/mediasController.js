@@ -15,7 +15,7 @@
             this.disciplinaOfertadaService = disciplinaOfertadaService; this.possuiEnturmacoes = parseInt(sessionStorage.getItem('possuiEnturmacoes'));
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
@@ -39,7 +39,7 @@
                         }
                         cursada.matricula.aluno.foto = this.util.avatarPadrao();
                         this.carregarFoto(cursada.matricula.aluno.id).then((foto) => { cursada.matricula.aluno.foto = foto; });
-                    });     
+                    });
                 });
             }
         }
@@ -80,7 +80,7 @@
         }
 
         ultimoPainel(index) {
-            if (this.cursadas.length-1 === index) { 
+            if (this.cursadas.length-1 === index) {
                 return 'ultimo-panel';
             } else {
                 return '';
@@ -90,7 +90,7 @@
         calcularMedia(media,$index) {
             this.mediaService.get(media.id,true).then((mediaObj) => {
                 mediaObj.valor = null; mediaObj.disciplinaCursada = { id: mediaObj.disciplinaCursada.id }; delete mediaObj.faltas;
-                this.mediaService.atualizar(mediaObj).then((mediaCalculada) => { 
+                this.mediaService.atualizar(mediaObj).then((mediaCalculada) => {
                     this.buscarAlunos(false, mediaCalculada);
                 });
             });
@@ -130,14 +130,14 @@
             this.shared.setCursada(null);
             this.timeout(() => {
                 this.shared.setCursada(cursada);
-                this.shared.setAvaliacao(avaliacao); var self = this;            
+                this.shared.setAvaliacao(avaliacao); var self = this;
                 angular.forEach(angular.element(".md-tab"), (val,key) => {
                     if ($(val).text() === 'avaliações') { setTimeout(() => { $(val).trigger('click'); },10); }
                 });
             },200);
         }
 
-        calcularMediaFinal() { 
+        calcularMediaFinal() {
             let confirm = this.util.customDialog(event, "Média Final", "Deseja realmente calcular a média final?", 'calcular', this.mdDialog);
             this.mdDialog.show(confirm).then(() => {
                 this.disciplinaOfertadaService.fecharMediaFinal(this.disciplina).then(() => { this.buscarAlunos(true); }, () => {
@@ -160,7 +160,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
      MediaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","$mdDialog","DisciplinaCursadaService","AvaliacaoService","EtapaService","$http","MediaService","DisciplinaOfertadaService","Shared","$scope"];
     angular.module('MediaController',['ngMaterial', 'util', 'erudioConfig']).controller('MediaController',MediaController);
 })();

@@ -2,11 +2,11 @@
 (function (){
     var erudio = angular.module('Erudio',['ngMaterial', 'restangular', 'erudioConfig', 'ngRoute', 'appDirectives', 'modules', 'util', 'validator', 'pascalprecht.translate']);
     erudio.config(['$mdThemingProvider', '$routeProvider', 'RestangularProvider', 'ErudioConfigProvider', '$translateProvider','$mdDateLocaleProvider', function ($mdThemingProvider, $routeProvider, RestangularProvider, ErudioConfigProvider, $translateProvider,$mdDateLocaleProvider) {
-        
+
         //DEFININDO TEMA - CORES PRIMARIAS E SECUNDARIAS
-        var tema = $mdThemingProvider.theme('default'); 
+        var tema = $mdThemingProvider.theme('default');
         tema.primaryPalette("blue",{ 'default': '800', 'hue-1': '700', 'hue-2': '500' }); tema.accentPalette('pink');
-        
+
         //DEFININDO FORMATO DE DATA
         $mdDateLocaleProvider.formatDate = function (date) {
             return moment(date).format('DD/MM/YYYY');
@@ -21,7 +21,7 @@
 
         //CRIANDO ROTAS
         $routeProvider
-            .when('/',{ templateUrl: 'apps/admin/home/partials/template.html', controller: 'HomeController' })            
+            .when('/',{ templateUrl: 'apps/admin/home/partials/template.html', controller: 'HomeController' })
             .when('/instituicoes',{ templateUrl: 'apps/admin/instituicoes/partials/index.html', controller: 'InstituicaoController', controllerAs: 'ctrl' })
             .when('/instituicoes/:id',{ templateUrl: 'apps/admin/instituicoes/partials/form.html', controller: 'InstituicaoFormController', controllerAs: 'ctrl' })
             .when('/tipos-unidade',{ templateUrl: 'apps/admin/tiposUnidade/partials/index.html', controller: 'TipoUnidadeController', controllerAs: 'ctrl' })
@@ -70,32 +70,32 @@
             .when('/teste',{ templateUrl: 'apps/admin/teste/partials/teste.html', controller: 'TESTE', controllerAs: 'ctrl' })
             .otherwise({ redirectTo: '/404' })
         ;
-        
+
         //DEFININDO TRADUÇÕES
         $translateProvider.useStaticFilesLoader({ prefix:ErudioConfigProvider.$get().dominio+'/apps/admin/util/translations/locale-', suffix: '.json' });
-        $translateProvider.translations('en'); 
+        $translateProvider.translations('en');
         $translateProvider.translations('ptbr');
         $translateProvider.preferredLanguage('ptbr');
-        
+
         //DEFININDO URL DO SERVIDOR REST
         RestangularProvider.setBaseUrl(ErudioConfigProvider.$get().urlServidor);
     }]);
-    
+
     erudio.controller('AppController',['$scope', '$http', '$mdSidenav', '$mdDialog', 'Util', '$translate', '$timeout', 'ErudioConfig', 'BaseService', function($scope, $http, $mdSidenav, $mdDialog, Util, $translate, $timeout, ErudioConfig, BaseService){
-        
+
         //SE NÃO TEM SESSÃO, REDIRECIONA PRO LOGIN
         if (!sessionStorage.getItem('autenticado')) { window.location = ErudioConfig.dominio + '/login.html'; }
-        
+
         //TITULO DA TOOLBAR
         $scope.titulo = 'Erudio';
         $scope.foto = null;
         $scope.atribuicoes = [];
         $scope.cortinaAlocacao = true;
         $('.loader').hide();
-        
+
         //ATRIBUTOS
         $scope.attrAtual = { attr:{id:null}, alocacao:{id:null} };
-        
+
         //BUSCAR USUARIO
         $scope.buscarUsuario = function () {
             $scope.atribuicoes = JSON.parse(sessionStorage.getItem('atribuicoes'));
@@ -118,20 +118,20 @@
             }, (error) => { return new Promise((resolve) => { resolve(ErudioConfig.dominio+"/apps/professor/avaliacoes/assets/images/avatar.png"); }) });
         };
         $scope.carregarFoto().then((foto) => { $scope.foto = foto; });
-                
+
         //CARREGAR ABTRIBUICAO
-        $scope.carregarAtribuicao = function (id) { 
+        $scope.carregarAtribuicao = function (id) {
             $scope.atribuicoes.atribuicoes.forEach(function(attr){ if (attr.id === parseInt(id)) { sessionStorage.setItem('atribuicao-ativa',JSON.stringify(attr)); } });
             $timeout(function(){ location.reload(); },500);
         };
-                
+
         //CRIANDO LABELS DOS MENUS
         var menuLabels = ['INSTITUICOES_UNIDADES','INSTITUICOES','TIPOS_UNIDADE','UNIDADES_ENSINO',"GESTAO","REGIMES_ENSINO","CURSOS","ETAPAS","DISCIPLINAS",
             "MODULOS","TURNOS","MODELOS_HORARIO","QUADROS_HORARIO","CALENDARIOS","EVENTOS","VIDA_ESCOLAR","TURMAS","MATRICULAS","MOVIMENTACOES","NOTAS",
             "PESSOAS_TITULO","PESSOAS","CARGOS","FUNCIONARIOS","AVALIACOES_TITLE","TIPOS_AVALIACAO","HABILIDADES","DOCUMENTOS","BOLETIM",
             "DIARIO_FREQUENCIA","DIARIO_NOTAS","RELATORIOS","ALUNOS_DEFASADOS","ATA_FINAL","CERTIFICADOS","REMATRICULA","HISTORICO","ALUNOS_ENTURMADOS","ESPELHO_NOTA","ADMINISTRADOR", "USUARIOS","PERMISSOES","GRUPOS_PERMISSOES",
             "PERFIL","SOBRE","MUDOU","CONFIG","SAIR","IEDUCAR","ANEE"];
-        
+
         $timeout(function(){
             $translate(menuLabels).then(function(traducoes){
                 //CRIANDO MENUS
@@ -140,19 +140,19 @@
                 $scope.mudou = traducoes.MUDOU;
                 $scope.config = traducoes.CONFIG;
                 $scope.sair = traducoes.SAIR;
-                
+
                 $scope.menus = [
-                    { 
+                    {
                         categoria: traducoes.INSTITUICOES_UNIDADES, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.INSTITUICOES, href: "#!/instituicoes", permissao: 'INSTITUICOES' },
                             { label: traducoes.TIPOS_UNIDADE, href: "#!/tipos-unidade", permissao: 'TIPO_UNIDADE' },
                             { label: traducoes.UNIDADES_ENSINO, href: "#!/unidades", permissao: 'UNIDADE_ENSINO' }
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.GESTAO, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.REGIMES_ENSINO, href: "#!/regimes", permissao: 'REGIME_ENSINO' },
                             { label: traducoes.CURSOS, href: "#!/cursos", permissao: 'CURSO' },
                             { label: traducoes.ETAPAS, href: "#!/etapas", permissao: 'ETAPA' },
@@ -165,33 +165,33 @@
                             { label: traducoes.EVENTOS, href: "#!/eventos", permissao: 'EVENTOS' }
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.VIDA_ESCOLAR, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.TURMAS, href: "#!/turmas", permissao: 'TURMA' },
                             { label: traducoes.MATRICULAS, href: "#!/matriculas", permissao: 'MATRICULA' },
                             { label: traducoes.MOVIMENTACOES, href: "#!/movimentacoes", permissao: 'MOVIMENTACAO' },
                             { label: traducoes.NOTAS, href: "#!/disciplinas", permissao: 'MEDIAS' }
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.PESSOAS_TITULO, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.PESSOAS, href: "#!/pessoas", permissao: 'PESSOA' },
                             { label: traducoes.CARGOS, href: "#!/cargos", permissao: 'CARGO' },
                             { label: traducoes.FUNCIONARIOS, href: "#!/funcionarios", permissao: 'FUNCIONARIO' }
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.AVALIACOES_TITLE, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.TIPOS_AVALIACAO, href: "#!/tipos-avaliacao", permissao: 'TIPOS_AVALIACAO' },
                             { label: traducoes.HABILIDADES, href: "#!/habilidades", permissao: 'HABILIDADES' },
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.DOCUMENTOS, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.BOLETIM, href: "#!/boletins", permissao: 'BOLETIM_ESCOLAR' },
                             { label: traducoes.ATA_FINAL, href: "#!/ata-final", permissao: 'RELATORIOS' },
                             { label: traducoes.CERTIFICADOS, href: "#!/certificados", permissao: 'RELATORIOS' },
@@ -202,18 +202,18 @@
                             { label: traducoes.IEDUCAR, href: "#!/ieducar", permissao: 'RELATORIOS' },
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.RELATORIOS, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.ALUNOS_DEFASADOS, href: "#!/alunos-defasados", permissao: 'RELATORIOS' },
                             { label: traducoes.ALUNOS_ENTURMADOS, href: "#!/alunos-enturmados", permissao: 'RELATORIOS' },
                             { label: traducoes.ANEE, href: "#!/alunos-anee", permissao: 'RELATORIOS' },
                             { label: traducoes.ESPELHO_NOTA, href: "#!/espelho-notas", permissao: 'RELATORIOS' }
                         ]
                     },
-                    { 
+                    {
                         categoria: traducoes.ADMINISTRADOR, temSubmenu : true,
-                        links: [ 
+                        links: [
                             { label: traducoes.USUARIOS, href: "#!/usuarios", permissao: 'USUARIOS' },
                             { label: traducoes.PERMISSOES, href: "#!/permissoes", permissao: 'PERMISSOES' },
                             { label: traducoes.GRUPOS_PERMISSOES, href: "#!/grupos-permissoes", permissao: 'GRUPO_PERMISSOES' }
@@ -224,17 +224,17 @@
         },200);
 
         $scope.redirect = function (url){ window.location = ErudioConfig.dominio + url; };
-        
+
         //VERIFICA PERMISSÃO
         $scope.verificaPermissao = function (role) { return Util.verificaPermissao(role); };
 
         //CONTROLE DE MENU
         $scope.abrirMenu = function () { $mdSidenav('left').toggle(); }; $scope.menuAberto = null;
         $scope.menuToggle = function (index) { if (index !== $scope.menuAberto) { $('.submenu').hide(); } $scope.menuAberto = index; $(".submenu"+index).slideToggle(150); };
-        
+
         //ABRINDO MODAL O QUE MUDOU
         $scope.oQueMudou = function (event) { Util.modal(event, 'apps/admin/templates/partials/oQueMudou.html', $mdDialog); };
-        
+
         //TELA CHEIA
         $scope.ajustarTelaCheia = function () {
             if ($scope.isProfessor) { return 'tela-cheia'; } else { return ''; }
@@ -249,10 +249,10 @@
         if (!Util.isVazio(sessionStorage.getItem('atribuicao-ativa'))) {
             $scope.isProfessor = false;
             var ativa = JSON.parse(sessionStorage.getItem('atribuicao-ativa'));
-            if (ativa.grupo.nome === "Professor") { 
+            if (ativa.grupo.nome === "Professor") {
                 $scope.isProfessor = true;
             }
         }
-        
+
     }]);
 })();

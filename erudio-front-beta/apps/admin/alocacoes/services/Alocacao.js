@@ -29,7 +29,7 @@
      * @Module alocacoes
      * @Service AlocacaoService
      */
-    'use strict';    
+    'use strict';
     class AlocacaoService {
         constructor(rest){
             this.rest = rest;
@@ -71,7 +71,7 @@
          */
         remover(objeto,loader) { this.rest.remover(objeto, "Alocação", "F",loader); }
     };
-    
+
     angular.module('AlocacaoService',[]).service('AlocacaoService',AlocacaoService);
     AlocacaoService.$inject = ["BaseService"];
 })();

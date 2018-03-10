@@ -1,6 +1,6 @@
 (function (){
     var cargosDirectives = angular.module('cargosDirectives', []);
-    cargosDirectives.directive('inputCargo', function (){ return { 
+    cargosDirectives.directive('inputCargo', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/input-template.html',
             scope: { type:'=', model:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', classe:'@', id:'@' },
@@ -21,8 +21,8 @@
             }
         };
     });
-    
-    cargosDirectives.directive('selectCargo', function (){ return { 
+
+    cargosDirectives.directive('selectCargo', function (){ return {
             restrict: 'E',
             templateUrl: 'apps/templates/partials/select-template.html',
             scope: { type:'=', model:'=', items:'=', icone:'@', campoId:'@', label:'@', required:'@', dica:'@', formError:'@', errors:'@', pattern:'@', classe:'@', nomeComum:'@', nomeExibicao:'@', nomeCompleto:'@', simples:'@', id:'@' },
@@ -44,6 +44,6 @@
             }
         };
     });
-    
+
     //falta check de professor em sala
 })();

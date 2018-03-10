@@ -1,14 +1,14 @@
 (function (){
     var rest = angular.module('rest',['structure', 'validator', 'angular-md5', 'angular-sha1', 'erudioConfig', 'ngMaterial', 'util']);
-    
+
     rest.service('REST', ['Restangular', '$mdToast', '$http', function(Restangular, $mdToast, $http) {
-        
+
         //CONTROLE DA TELA DE PROGRESSO
         this.abreProgresso = function () { $('.progresso').show(); $('.cortina').show(); };
         this.fechaProgresso = function () { $('.progresso').hide(); $('.cortina').hide(); };
         this.abreLoader = function () { $('.loader').show(); };
         this.fechaLoader = function () { $('.loader').hide(); };
-        
+
         //PREPARA HEADER X-WSSE
         this.criarHeader = function () { var token = sessionStorage.getItem('token'); var header = "Bearer "+token; return header; };
 
@@ -25,15 +25,15 @@
             var rest = Restangular.withConfig(function(conf){ conf.setDefaultHeaders({ "JWT-Authorization": header }); });
             return rest;
         };
-        
+
         //RECUPERA TOKEN PARA OPERACOES DE BUSCAR POR ID
         this.retrieveAndRetry = function () {
             var rest = this.preparaRestangular();
             var promise = rest.all('tokens');
-            var auth = {username: sessionStorage.getItem('username'), password: sessionStorage.getItem('pass')}; 
+            var auth = {username: sessionStorage.getItem('username'), password: sessionStorage.getItem('pass')};
             return promise.post(auth);
         };
-        
+
         //BUSCA POR ID
         this.um = function (endereco, id, callback, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }
@@ -51,13 +51,13 @@
                 });
             });
         };
-        
+
         //BUSCA POR LISTA
         this.buscar = function(endereco, opcoes, callback, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }
             var rest = this.preparaRestangular(); rest.setFullResponse(true);
             var promise = rest.all(endereco).getList(opcoes); var self = this;
-            promise.then(function(response){ 
+            promise.then(function(response){
                 if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
                 if(callback !== null && callback !== undefined){ callback(response); }
             }, function (){
@@ -69,18 +69,18 @@
                 });
             });
         };
-        
+
         //HELPER PARA ORIENTACAO DAS PALAVRAS
         this.orientarLabel = function (label, orientacao){ var retorno = ''; if (orientacao === "M") { retorno = label+"o"; } else if (orientacao === "F") { retorno = label+"a"; } else { retorno = label+"e"; } return retorno; };
-        
+
         //REMOVER OBJETO
         this.remover = function (objeto, label, orientacao, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }
             var result = objeto.remove(); var self = this;
             var sufix = this.orientarLabel('removid', orientacao);
-            result.then(function (response){ 
+            result.then(function (response){
                 if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
-                if (label !== null && label !== '') { $mdToast.show($mdToast.simple().textContent(label+' '+sufix)); } 
+                if (label !== null && label !== '') { $mdToast.show($mdToast.simple().textContent(label+' '+sufix)); }
             },function (){
                 if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
                 var res = self.retrieveAndRetry();
@@ -90,7 +90,7 @@
                 });
             });
         };
-        
+
         //SALVAR
         this.salvar = function(objeto,endereco,label,gen, callback, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }
@@ -113,7 +113,7 @@
                 });
             });
         };
-        
+
         //UPDATE
         this.atualizar = function (objeto,endereco,label,gen, callback, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }
@@ -137,7 +137,7 @@
                 });
             }
         };
-        
+
         //SALVAR EM BATCH
         this.salvarLote = function(objeto, endereco, label, gen, callback, loader) {
             if (loader === undefined) { this.abreLoader(); } else { this.abreProgresso(); }  var self = this;
@@ -154,7 +154,7 @@
                     if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
                     if (label !== null && label !== '' && label !== undefined) { $mdToast.show($mdToast.simple().textContent(label+' salv'+artigo+' com sucesso.')); }
                 }
-            }, function() { 
+            }, function() {
                 if (loader === undefined) { self.fechaLoader(); } else { self.fechaProgresso(); }
                 var res = self.retrieveAndRetry();
                 res.then(function(response){

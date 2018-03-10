@@ -3,10 +3,10 @@
     <input id="foto-perfil" style="position: absolute; z-index: -1;" accept="image/*;capture=camera" type="file" name="foto-perfil"/>
 
     <div class="cortina-foto"></div>
-    
+
     <div layout="row" layout-align="center center" class="start-video" style="display: none; overflow: hidden; margin-top: 30px; margin-bottom: 15px;">
         <video id="camera-stream" class="video-mobile md-whiteframe-2dp" style="width: 68%;"></video>
-    
+
         <md-button ng-click="ctrl.capturar()" ng-hide="ctrl.temFoto" hide show-gt-sm style="top: 25% !important;" class="md-fab btn-tirar-foto" aria-label="Capturar foto">
             <md-icon class="material-icons">photo_camera</md-icon>
         </md-button>
@@ -14,11 +14,11 @@
         <md-button ng-click="ctrl.capturar()" ng-hide="ctrl.temFoto" hide-gt-sm style="top: 12% !important;" class="md-fab btn-tirar-foto" aria-label="Capturar foto">
             <md-icon class="material-icons">photo_camera</md-icon>
         </md-button>
-    
+
         <md-button ng-click="ctrl.salvarFoto()" ng-show="ctrl.temFoto" hide show-gt-sm style="top: 25% !important;" class="md-fab btn-deletar-foto" aria-label="Enviar foto">
             <md-icon class="material-icons">done</md-icon>
         </md-button>
-    
+
         <md-button ng-click="ctrl.salvarFoto()" ng-show="ctrl.temFoto" hide-gt-sm style="top: 12% !important;" class="md-fab btn-deletar-foto" aria-label="Enviar foto">
             <md-icon class="material-icons">done</md-icon>
         </md-button>
@@ -26,11 +26,11 @@
         <md-button ng-click="ctrl.removerPreFoto()" ng-show="ctrl.temFoto" hide show-gt-sm style="top: 25% !important;" class="md-fab btn-salvar-foto" aria-label="Remover foto">
             <md-icon class="material-icons">delete</md-icon>
         </md-button>
-    
+
         <md-button ng-click="ctrl.removerPreFoto()" ng-show="ctrl.temFoto" hide-gt-sm style="top: 12% !important;" class="md-fab btn-salvar-foto" aria-label="Remover foto">
             <md-icon class="material-icons">delete</md-icon>
         </md-button>
-        
+
         <md-button ng-click="ctrl.cancelarFoto()" ng-hide="ctrl.temFoto" hide show-gt-sm style="top: 25% !important;" class="md-fab btn-cancelar-foto" aria-label="Cancelar foto">
             <md-icon class="material-icons">clear</md-icon>
         </md-button>
@@ -38,7 +38,7 @@
         <md-button ng-click="ctrl.cancelarFoto()" ng-hide="ctrl.temFoto" hide-gt-sm style="top: 12% !important;" class="md-fab btn-cancelar-foto" aria-label="Cancelar foto">
             <md-icon class="material-icons">clear</md-icon>
         </md-button>
-        
+
         <img id="foto-perfil-preview" class="invisivel foto-fixed"></img>
         <canvas style="display: none; position: absolute;"></canvas>
     </div>
@@ -204,7 +204,7 @@
             </div>
         </div>
     </div>
-    
+
     <div layout="row" ng-if="!ctrl.possuiEnturmacoes" layout-align="center center" style="margin-top: 25px;">
         Não há alunos enturmados.
     </div>

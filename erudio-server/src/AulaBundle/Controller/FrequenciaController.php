@@ -43,71 +43,71 @@ use AulaBundle\Service\FrequenciaFacade;
  * @FOS\NamePrefix("frequencias")
  */
 class FrequenciaController extends AbstractEntityController {
-    
+
     function __construct(FrequenciaFacade $facade) {
         parent::__construct($facade);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Get("frequencias/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Get("frequencias")
     * @FOS\QueryParam(name = "page", requirements="\d+", default = null)
-    * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true) 
-    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true) 
+    * @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
+    * @FOS\QueryParam(name = "matricula", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "aula", requirements="\d+", nullable = true)
     * @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
-    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)     
+    * @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     */
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Put("frequencias/{id}")
     * @ParamConverter("frequencia", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Frequencia $frequencia, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $frequencia, $errors);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Post("frequencias")
     * @ParamConverter("frequencias", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Frequencia $frequencia, ConstraintViolationListInterface $errors) {
         return $this->post($request, $frequencia, $errors);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Put("frequencias")
     * @ParamConverter("frequencias", converter="fos_rest.request_body")
     */
     function putBatchAction(Request $request, FrequenciaCollection $frequencias, ConstraintViolationListInterface $errors) {
         return $this->updateBatch($request, $frequencias->frequencias, $errors);
     }
-      
+
 }
 
 /**  Wrapper class for batch operations*/
 class FrequenciaCollection {
-    
+
     /** @JMS\Type("ArrayCollection<AulaBundle\Entity\Frequencia>") */
     public $frequencias;
-    
+
 }

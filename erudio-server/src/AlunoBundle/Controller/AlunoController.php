@@ -14,18 +14,18 @@ use MatriculaBundle\Service\DisciplinaCursadaFacade;
  * @FOS\NamePrefix("alunos")
  */
 class AlunoController extends Controller {
-    
+
     private $matriculaFacade;
     private $enturmacaoFacade;
     private $disciplinaFacade;
-    
-    function __construct(MatriculaFacade $matriculaFacade, EnturmacaoFacade $enturmacaoFacade, 
+
+    function __construct(MatriculaFacade $matriculaFacade, EnturmacaoFacade $enturmacaoFacade,
             DisciplinaCursadaFacade $disciplinaFacade) {
         $this->matriculaFacade = $matriculaFacade;
         $this->enturmacaoFacade = $enturmacaoFacade;
         $this->disciplinaFacade = $disciplinaFacade;
     }
-    
+
     /**
     * @ApiDoc(
     *   resource = true,
@@ -35,8 +35,8 @@ class AlunoController extends Controller {
     *       200 = "Array de matrículas"
     *   }
     * )
-    * 
-    * 
+    *
+    *
     * @FOS\Get("matriculas")
     */
     function getMatriculas() {
@@ -54,18 +54,18 @@ class AlunoController extends Controller {
             ];
         }, $matriculas));
     }
-    
+
     /**
     * @ApiDoc(
     *   resource = true,
     *   section = "Módulo Alunos",
-    *   description = "Retorna todas as enturmações ativas da matrícula, ou seja, 
+    *   description = "Retorna todas as enturmações ativas da matrícula, ou seja,
     *   as que estão em andamento ou concluídas.",
     *   statusCodes = {
     *       200 = "Array de enturmações"
     *   }
     * )
-    * 
+    *
     * @FOS\Get("matriculas/{id}/enturmacoes")
     */
     function getEnturmacoes($id) {
@@ -85,7 +85,7 @@ class AlunoController extends Controller {
             ];
         }, $enturmacoes));
     }
-    
+
     /**
     * @ApiDoc(
     *   resource = true,
@@ -96,7 +96,7 @@ class AlunoController extends Controller {
     *       200 = "Array de disciplinas, cada uma contendo suas médias parciais"
     *   }
     * )
-    * 
+    *
     * @FOS\Get("enturmacoes/{id}/disciplinas")
     */
     function getDisciplinas($id) {
@@ -125,5 +125,5 @@ class AlunoController extends Controller {
             ];
         }, $disciplinas));
     }
-    
+
 }

@@ -34,9 +34,9 @@
             <md-card style="max-height: none;" flex-gt-sm="{{ ctrl.tamanhoCard }}" class="no-margin-up-down" ng-hide="ctrl.msgVazio || ctrl.listaQualitativa">
                 <md-card-content>
                     <div flex-gt-sm="100" layout="column">
-                                
-                        <div flex-gt-sm="100" ng-show="ctrl.editando">                       
-                            
+
+                        <div flex-gt-sm="100" ng-show="ctrl.editando">
+
                             <form id="avaliacaoForm" name="avaliacaoForm">
                                 <md-input-container class="md-icon-float" md-block flex-gt-sm>
                                     <label for="nome">Nome</label>
@@ -46,7 +46,7 @@
                                         <div ng-message="required">Este campo é obrigatório.</div>
                                     </div>
                                 </md-input-container>
-        
+
                                 <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
                                     <label for="dataEntrega" class="date-label">Data Entrega</label>
                                     <md-icon class="material-icons">event</md-icon>
@@ -56,7 +56,7 @@
                                         <div ng-message="required">Este campo é obrigatório.</div>
                                     </div>
                                 </md-input-container>
-        
+
                                 <md-input-container class="md-icon-float" md-block flex-gt-sm>
                                     <label for="media">Média</label>
                                     <md-icon class="material-icons">filter_7</md-icon>
@@ -78,7 +78,7 @@
                                         <div ng-message="required">Este campo é obrigatório.</div>
                                     </div>
                                 </md-input-container>
-        
+
                                 <md-input-container ng-show="!ctrl.isQualitativa" class="md-icon-float" md-block flex-gt-sm>
                                     <label for="tipoAvaliacao">Tipo</label>
                                     <md-icon class="material-icons">playlist_add_check</md-icon>
@@ -102,14 +102,14 @@
                                         <div ng-message="required">Este campo é obrigatório.</div>
                                     </div>
                                 </md-input-container>
-        
+
                                 <md-button md-colors="::{backgroundColor: 'default-accent-500'}" ng-click="ctrl.salvar('avaliacaoForm')" class="md-raised save-button-fix">Salvar</md-button>
                             </form>
-        
+
                         </div>
-        
+
                         <div flex="100" ng-hide="ctrl.editando">
-        
+
                             <md-list flex class="no-padding white-content">
                                 <md-list-item style="border-bottom: 1px solid #eee;" id="objeto{{ objeto.id }}" class="md-2-line" ng-repeat="objeto in ctrl.objetos">
                                     <a class="link-list"><div class="md-list-item-text" ng-click="ctrl.carregarAvaliacao(objeto)" layout="column">
@@ -206,7 +206,7 @@
                 </md-card-content>
             </md-card>
         </div>
-        
+
     </div>
 
     <div style="margin-top: 150px; text-align: center;" layout-gt-sm="column" layout-align="center center" ng-show="ctrl.msgVazio && !ctrl.editando && ctrl.possuiEnturmacoes">

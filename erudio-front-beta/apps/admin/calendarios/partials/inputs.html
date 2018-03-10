@@ -25,7 +25,7 @@
  *                                                                         *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 -->
-<div layout-gt-sm="row">    
+<div layout-gt-sm="row">
 
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="base">Calendário Base</label>
@@ -76,10 +76,10 @@
 </div>
 
 <div layout-gt-sm="column" style="margin-bottom: 20px;" ng-show="ctrl.novo">
-        
+
     <md-input-container class="md-icon-float autocomplete-wrap fix-wrap" md-block flex-gt-sm ng-show="ctrl.isAdmin && ctrl.novo">
         <md-icon class="material-icons">account_balance</md-icon>
-        <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.unidade" 
+        <md-autocomplete class="autocomplete-form" flex md-input-minlength="3" md-selected-item="ctrl.unidade"
                 md-search-text="ctrl.itemBusca" md-items="item in ctrl.filtrar(ctrl.itemBusca)"  md-input-name="unidade"
                 md-item-text="item.nomeCompleto" md-floating-label="Unidade de Ensino" md-require-match required>
             <span md-highlight-text="ctrl.itemBusca">{{ item.nomeCompleto }}</span>

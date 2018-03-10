@@ -13,7 +13,7 @@
          * @attrExample http://erudio.itajai.sc.gov.br
          */
         this.dominio = 'http://10.100.2.99/erudio/erudio-front-beta';
-        
+
         /*
          * @attr urlTemplates
          * @attrType string
@@ -21,7 +21,7 @@
          * @attrExample /apps/admin/templates/partials/
          */
         this.urlTemplates = '/apps/admin/templates/partials/';
-        
+
         /*
          * @attr extraUrl
          * @attrType string
@@ -29,7 +29,7 @@
          * @attrExample /erudio/erudio-front-beta
          */
         this.extraUrl = '/erudio/erudio-front-beta';
-        
+
         /*
          * @attr urlServidor
          * @attrType string
@@ -39,7 +39,7 @@
         //this.urlServidor = 'http://10.1.11.7/erudio/erudio-server/web/app_dev.php/api';
         //this.urlServidor = 'http://10.100.2.243/erudio/erudio-server/web/app_dev.php/api';
         this.urlServidor = 'http://10.100.2.92/erudio/erudio-server/web/app_dev.php/api';
-        
+
         /*
          * @attr urlRelatorios
          * @attrType string
@@ -49,7 +49,7 @@
         //this.urlRelatorios = 'http://10.1.11.7/erudio/erudio-server/web/app_dev.php/api/report';
         //this.urlRelatorios = 'http://10.100.2.243/erudio/erudio-server/web/app_dev.php/api/report';
         this.urlRelatorios = 'http://10.100.2.92/erudio/erudio-server/web/app_dev.php/api/report';
-        
+
         /*
          * @attr urlUpload
          * @attrType string

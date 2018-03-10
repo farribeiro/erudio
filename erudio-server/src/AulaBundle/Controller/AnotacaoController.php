@@ -42,56 +42,56 @@ use AulaBundle\Service\AnotacaoFacade;
  * @FOS\NamePrefix("anotacoes-aula")
  */
 class AnotacaoController extends AbstractEntityController {
-    
+
     function __construct(AnotacaoFacade $facade) {
         parent::__construct($facade);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Get("anotacoes-aula/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
     }
-    
+
     /**
     *  @ApiDoc()
-    * 
+    *
     *  @FOS\Get("anotacoes-aula")
-    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null)
     *  @FOS\QueryParam(name = "aula", requirements="\d+", nullable = true)
      * @FOS\QueryParam(name = "observacao", nullable = true)
     */
-    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) { 
+    function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Post("anotacoes-aula")
     * @ParamConverter("anotacao", converter="fos_rest.request_body")
     */
     function postAction(Request $request, Anotacao $anotacao, ConstraintViolationListInterface $errors) {
         return $this->post($request, $anotacao, $errors);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Put("anotacoes-aula/{id}")
     * @ParamConverter("anotacao", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Anotacao $anotacao, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $anotacao, $errors);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
-    * @FOS\Delete("anotacoes-aula/{id}") 
+    *
+    * @FOS\Delete("anotacoes-aula/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);

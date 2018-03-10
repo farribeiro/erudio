@@ -22,11 +22,11 @@
             this.chamada = false; this.alunos = null; this.anotacoes = null; this.alunoSelecionado = null;
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         resetCalendario() { this.mesCalendario = []; this.semanaCalendario = []; }
 
         preparaCalendario(mes,ano) {
@@ -108,7 +108,7 @@
                             }
                         });
                     } else {
-                        aulas.forEach((aula) => { 
+                        aulas.forEach((aula) => {
                             if (!this.util.isVazio(aula.horario)) {
                                 aula.horario.inicio = this.util.converteHora(aula.horario.inicio);
                             }
@@ -131,21 +131,21 @@
         }
 
         initFotos (id) {
-            
+
         }
 
         buscarAlunos(disciplina){
-            this.alunos = []; 
+            this.alunos = [];
             this.disciplinaCursadaService.getAll({ disciplinaOfertada: disciplina.id, view:'medias' },true).then((cursadas) => {
                 cursadas.forEach((cursada,i) => {
                     var frequencia = this.frequenciaService.getEstruturaFrequencia();
                     var aluno = cursada.matricula.aluno; aluno.foto = this.util.avatarPadrao();
-                    this.carregarFoto(cursada.matricula.aluno.id).then((foto) => { 
+                    this.carregarFoto(cursada.matricula.aluno.id).then((foto) => {
                         aluno.urlFoto = foto;
                         frequencia.aluno = aluno; frequencia.aula.id = this.aula.id;
                         this.alunos.push(frequencia);
                     });
-                });     
+                });
             });
         }
 
@@ -230,14 +230,14 @@
                 if (frequencia.status === "PRESENCA") {
                     frequencia.status = "FALTA";
                     if (!this.util.isVazio(frequencia.justificativa)) { frequencia.justificativa = ''; }
-                    //if (!this.util.isVazio(frequencia.id)) { 
+                    //if (!this.util.isVazio(frequencia.id)) {
                         this.frequenciaService.atualizar(frequencia,true);
                     //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
                 } else {
                     frequencia.status = "PRESENCA"; frequencia.justificativa = "";
                     $(".justificativa-aluno-"+frequencia.id).hide();
-                    //if (!this.util.isVazio(frequencia.id)) { 
-                        this.frequenciaService.atualizar(frequencia,true); 
+                    //if (!this.util.isVazio(frequencia.id)) {
+                        this.frequenciaService.atualizar(frequencia,true);
                     //} else { this.frequenciaService.salvar(frequencia,true).then((novaFrequencia) => { frequencia.id = novaFrequencia.id}); }
                 }
             } else {
@@ -254,11 +254,11 @@
             this.alunoSelecionado = aluno;
             $(".justificativa-aluno-"+alunoId).toggle();
         }
-        
+
         buscarEventos() {
             this.service.getDiasPorMes(this.calendario,this.mes+1,true).then((dias) => {
                 this.dias = dias;
-                for (var i=0; i<this.diasMes; i++) {                        
+                for (var i=0; i<this.diasMes; i++) {
                     this.counterCalendario++; this.semanaCalendario.push(this.dias[i]);
                     if (this.counterCalendario === 7) { this.mesCalendario.push(this.semanaCalendario); this.counterCalendario = 0; this.semanaCalendario = []; }
                     if (i === this.diasMes-1) {
@@ -268,24 +268,24 @@
                 }
             });
         }
-        
+
         linkPaginacao() {
             this.proximoMes = new Date(this.ano,this.mes,1); this.proximoMes.setMonth(this.proximoMes.getMonth()+1);
             this.mesAnterior = new Date(this.ano,this.mes,1); this.mesAnterior.setMonth(this.mesAnterior.getMonth()-1);
         }
-        
-        classeTipoDia(dia, aulas){ 
+
+        classeTipoDia(dia, aulas){
             var classe = '';
-            if (!this.util.isVazio(dia)) { 
-                if (dia.efetivo) { 
-                    classe += 'calendario-dia-efetivo'; 
+            if (!this.util.isVazio(dia)) {
+                if (dia.efetivo) {
+                    classe += 'calendario-dia-efetivo';
                     if (!this.util.isVazio(aulas) && aulas.length > 0) { return classe +' clicavel';  } else { return classe; }
-                } 
-                else if (dia.letivo) { classe += 'calendario-dia-letivo'; return classe; } 
-                else { classe += 'calendario-dia-nao-letivo'; return classe; } 
-            } 
+                }
+                else if (dia.letivo) { classe += 'calendario-dia-letivo'; return classe; }
+                else { classe += 'calendario-dia-nao-letivo'; return classe; }
+            }
         }
-        
+
         paginaProxima(){ this.resetCalendario(); this.preparaCalendario(this.proximoMes.getMonth(),this.proximoMes.getFullYear()); }
         paginaAnterior(){ this.resetCalendario(); this.preparaCalendario(this.mesAnterior.getMonth(),this.mesAnterior.getFullYear()); }
 
@@ -305,7 +305,7 @@
 
         ultimoPainel(index,status) {
             var classe = '';
-            if (status === "PRESENCA") { 
+            if (status === "PRESENCA") {
                 classe += "nao-clicavel"
                 if (this.alunos.length-1 === index) { return classe + ' ultimo-panel'; } else { return classe; }
             } else {
@@ -391,7 +391,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     AulaController.$inject = ["CalendarioService","Util","ErudioConfig","$timeout","TurmaService","AulaService","DiaService","QuadroHorarioService","FrequenciaService","$http","$mdDialog","$mdMenu","DisciplinaCursadaService","Shared","$scope"];
     angular.module('AulaController',['ngMaterial', 'util', 'erudioConfig']).controller('AulaController',AulaController);
 })();

@@ -43,28 +43,28 @@ use AulaBundle\Service\AulaFacade;
 * @FOS\NamePrefix("aulas")
 */
 class AulaController extends AbstractEntityController {
-    
+
     function __construct(AulaFacade $facade) {
         parent::__construct($facade);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
+    *
     * @FOS\Get("aulas/{id}")
     */
     function getAction(Request $request, $id) {
         return $this->getOne($request, $id);
     }
-    
+
     /**
     *  @ApiDoc()
-    * 
+    *
     *  @FOS\Get("aulas")
-    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null) 
+    *  @FOS\QueryParam(name = "page", requirements="\d+", default = null)
     *  @FOS\QueryParam(name = "dia", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "mes", requirements="\d+", nullable = true)
-    *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true) 
+    *  @FOS\QueryParam(name = "turma", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "disciplina", requirements="\d+", nullable = true)
     *  @FOS\QueryParam(name = "dataInicio", nullable = true)
     *  @FOS\QueryParam(name = "dataFim", nullable = true)
@@ -72,10 +72,10 @@ class AulaController extends AbstractEntityController {
     function getListAction(Request $request, ParamFetcherInterface $paramFetcher) {
         return $this->getList($request, $paramFetcher->all());
     }
-    
+
     /**
     *  @ApiDoc()
-    * 
+    *
     *  @FOS\Post("aulas")
     *  @ParamConverter("aulas", converter="fos_rest.request_body")
     */
@@ -85,32 +85,32 @@ class AulaController extends AbstractEntityController {
         }
         return $this->postBatch($request, $aulas->aulas, $errors);
     }
-    
+
     /**
     *  @ApiDoc()
-    * 
+    *
     *  @FOS\Put("aulas/{id}")
     *  @ParamConverter("aula", converter="fos_rest.request_body")
     */
     function putAction(Request $request, $id, Aula $aula, ConstraintViolationListInterface $errors) {
         return $this->put($request, $id, $aula, $errors);
     }
-    
+
     /**
     * @ApiDoc()
-    * 
-    * @FOS\Delete("aulas/{id}") 
+    *
+    * @FOS\Delete("aulas/{id}")
     */
     function deleteAction(Request $request, $id) {
         return $this->delete($request, $id);
     }
-    
+
 }
 
 /**  Wrapper class for batch operations*/
 class AulaCollection {
-    
+
     /** @JMS\Type("ArrayCollection<AulaBundle\Entity\Aula>") */
     public $aulas;
-    
+
 }

@@ -29,8 +29,8 @@
      * @Module avaliacoes
      * @Controller AvaliacaoService
      */
-    'use strict';    
-    class AvaliacaoService {        
+    'use strict';
+    class AvaliacaoService {
         constructor(rest,cursoService,etapaService,disciplinaService,tipoAvaliacaoService,turmaService, conceitoService, habilidadeService){
             this.rest = rest;
             this.cursoService = cursoService;
@@ -45,9 +45,9 @@
             this.urlSalvarQuali = 'notas-qualitativas';
             this.urlSalvarQuanti = 'notas-quantitativas';
         }
-        
+
         //QUALITATIVA
-        
+
         /*
          * @method getNotaQualitativa
          * @methodReturn Object
@@ -94,7 +94,7 @@
          * @methodParams objeto|Object,label|String,loader|Boolean
          * @methodDescription Cria uma avaliação qualitativa nova.
          */
-        salvarAvaliacaoQuali(objeto,label,loader) { 
+        salvarAvaliacaoQuali(objeto,label,loader) {
             if (label) { return this.rest.salvar(this.urlQuali, objeto, "Avaliação", "F", loader); }
             else { return this.rest.salvar(this.urlQuali, objeto, null, null, loader); }
         }
@@ -104,13 +104,13 @@
          * @methodParams objeto|Object,label|String,loader|Boolean
          * @methodDescription Cria uma nota qualitativa nova.
          */
-        salvarQualitativa(objeto,label,loader) { 
+        salvarQualitativa(objeto,label,loader) {
             if (label) { return this.rest.salvar(this.urlSalvarQuali, objeto, "Avaliação", "F", loader); }
             else { return this.rest.salvar(this.urlSalvarQuali, objeto, null, null, loader); }
         }
 
         //QUANTITATIVA
-        
+
         /*
          * @method getNotaQuantitativa
          * @methodReturn Object
@@ -157,7 +157,7 @@
          * @methodParams objeto|Object,label|String,loader|Boolean
          * @methodDescription Cria uma avaliação quantitativa nova.
          */
-        salvarAvaliacaoQuanti(objeto,label,loader) { 
+        salvarAvaliacaoQuanti(objeto,label,loader) {
             if (label) { return this.rest.salvar(this.urlQuanti, objeto, "Avaliação", "F", loader); }
             else { return this.rest.salvar(this.urlQuanti, objeto, null, null, loader); }
         }
@@ -167,7 +167,7 @@
          * @methodParams objeto|Object,label|String,loader|Boolean
          * @methodDescription Cria uma nota quantitativa nova.
          */
-        salvarQuantitativa(objeto,label,loader) { 
+        salvarQuantitativa(objeto,label,loader) {
             if (label) { return this.rest.salvar(this.urlSalvarQuanti, objeto, "Avaliação", "F", loader);  }
             else { return this.rest.salvar(this.urlSalvarQuanti, objeto, null, null ,loader);  }
         }
@@ -177,7 +177,7 @@
          * @methodParams objeto|Object,label|String,loader|Boolean
          * @methodDescription Atualiza uma avaliação ou nota.
          */
-        atualizar(objeto, label, loader) { 
+        atualizar(objeto, label, loader) {
             if (label) { return this.rest.atualizar(objeto, "Avaliação", "F", loader);  }
             else { return this.rest.atualizar(objeto, null, null, loader);  }
         }
@@ -245,7 +245,7 @@
          */
         getTiposAvaliacaoQuali() { return [{id:'DIAGNOSTICO',nome:'Diagnóstico'},{id:'PROCESSUAL',nome:'Processual'},{id:'FINAL',nome:'Final'}]; }
     };
-    
+
     angular.module('AvaliacaoService',[]).service('AvaliacaoService',AvaliacaoService);
     AvaliacaoService.$inject = ["BaseService","CursoService","EtapaService","DisciplinaService","TipoAvaliacaoService","TurmaService","ConceitoService","HabilidadeService"];
 })();

@@ -1,5 +1,5 @@
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="cep">CEP</label>
         <md-icon class="material-icons">home</md-icon>
@@ -9,7 +9,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="logradouro">Logradouro</label>
         <md-icon class="material-icons">location_on</md-icon>
@@ -18,11 +18,11 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="numero">Número</label>
         <md-icon class="material-icons">looks_one</md-icon>
@@ -32,13 +32,13 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="complemento">Complemento</label>
         <md-icon class="material-icons">change_history</md-icon>
         <input id="complemento" ng-model="pessoa.endereco.complemento" type="text" name="complemento"/>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="bairro">Bairro</label>
         <md-icon class="material-icons">card_travel</md-icon>
@@ -47,11 +47,11 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="estados">Estado</label>
         <md-icon class="material-icons">my_location</md-icon>
@@ -63,7 +63,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float autocomplete-wrap" md-block flex-gt-sm>
         <md-icon class="material-icons">location_city</md-icon>
         <md-autocomplete class="autocomplete-form" flex md-input-name="cidades" md-input-minlength="3" md-selected-item="ctrl.cidade" md-search-text="ctrl.nomeCidade" md-items="item in ctrl.buscarCidades(ctrl.nomeCidade, pessoa)" md-item-text="item.nome" md-floating-label="Cidade" md-require-match required>
@@ -73,7 +73,7 @@
             <div ng-message="required" class="autocomplete-error">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">

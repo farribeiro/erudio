@@ -1,15 +1,15 @@
 
 (function (){
     var appDirectives = angular.module('appDirectives', []);
-    
+
     appDirectives.directive('botaoAdicionar', function (){ return { restrict: 'E', templateUrl: 'apps/admin/templates/partials/botaoAdicionar.html' }; });
     appDirectives.directive('botaoVoltar', function (){ return { restrict: 'E', templateUrl: 'apps/admin/templates/partials/botaoVoltar.html' }; });
     appDirectives.directive('paginador', function (){ return { restrict: 'E', templateUrl: 'apps/admin/templates/partials/paginador.html' }; });
     appDirectives.directive('opcaoLista', function (){ return { restrict: 'E', templateUrl: 'apps/admin/templates/partials/opcaoLista.html' }; });
     appDirectives.directive('mapa', function (){ return { restrict: 'E', templateUrl: 'apps/admin/templates/partials/mapa.html' }; });
-    
-    appDirectives.directive('formInput', function ($compile){ return { 
-            restrict: 'E', 
+
+    appDirectives.directive('formInput', function ($compile){ return {
+            restrict: 'E',
             scope: {
                 grid: '=grid', label: '=label', tipo: '=tipo', nome: '=nome', obrigatorio: '=obrigatorio', colunas: '=colunas', dica: '=dica', model: '=', campo: '@', mensagem: '=mensagem', troca: '=',
                 padrao: '=padrao', minimo: '=minimo', maximo: '=maximo', identidade: '=identidade', desabilitado: '=desabilitado', icone: '=icone', classe: '=classe', erro: '=erro'
@@ -38,7 +38,7 @@
                 //TROCA
                 if (!isVazio($attributes.troca)) { $('#'+$attributes.identidade).find('input').attr('ng-change',$attributes.troca); }
                 //ERROR
-                if (!isVazio($attributes.erro)) { 
+                if (!isVazio($attributes.erro)) {
                     var erro = $attributes.erro.replace(/'/g,""); var elem = $('<div></div>');
                     elem.attr('ng-messages',erro); elem.addClass('messages-container'); $('#'+$attributes.identidade).find('.messages-wrapper').append(elem);
                 }
@@ -50,7 +50,7 @@
                         elem.attr(message,msg[0]); elem.addClass('message-list'); elem.html(msg[1]); $('#'+$attributes.identidade).find('.messages-container').append(elem);
                     }
                 }
-                
+
                 if (tipo === 'text') {
                     //PÀTTERN
                     //if (!isVazio($attributes.padrao)) { var exp = $attributes.padrao.replace(/'/g,""); $('#'+$attributes.identidade).find(input).attr("ng-pattern",exp); }
@@ -59,11 +59,11 @@
                     if (!isVazio($attributes.colunas)) { $('#'+$attributes.identidade).find("textarea").attr("rows",$attributes.colunas); }
                 }
             },
-            templateUrl: 'apps/admin/templates/partials/input.html' }; 
+            templateUrl: 'apps/admin/templates/partials/input.html' };
     });
-    
+
     appDirectives.directive('formSelect', function ($compile){ return {
-            restrict: 'E', 
+            restrict: 'E',
             scope: {
                 grid: '=grid', label: '=label', nome: '=nome', identidade: '=identidade', desabilitado: '=desabilitado', dica: '=dica', icone: '=icone'
             },
@@ -79,7 +79,7 @@
                 //ICON
                 if (!isVazio($attributes.icone)) { $('#'+$attributes.identidade).addClass("md-icon-float").addClass('md-icon-left'); }
                 //ERROR
-                if (!isVazio($attributes.erro)) { 
+                if (!isVazio($attributes.erro)) {
                     var erro = $attributes.erro.replace(/'/g,""); var elem = $('<div></div>');
                     elem.attr('ng-messages',erro); elem.addClass('messages-container'); $('#'+$attributes.identidade).find('.messages-wrapper').append(elem);
                 }
@@ -92,11 +92,11 @@
                     }
                 }
             },
-            templateUrl: 'apps/admin/templates/partials/select.html' }; 
+            templateUrl: 'apps/admin/templates/partials/select.html' };
     });
-    
-    appDirectives.directive('formDatepicker', function ($compile){ return { 
-            restrict: 'E', 
+
+    appDirectives.directive('formDatepicker', function ($compile){ return {
+            restrict: 'E',
             scope: {
                 grid: '=grid', label: '=label', nome: '=nome', obrigatorio: '=obrigatorio', identidade: '=identidade', desabilitado: '=desabilitado', dica: '=dica', icone: '=icone'
             },
@@ -114,6 +114,6 @@
                 //ICON
                 if (!isVazio($attributes.icone)) { $('#'+$attributes.identidade).addClass("md-icon-float").addClass('md-icon-left'); }
             },
-            templateUrl: 'apps/admin/templates/partials/datepicker.html' }; 
+            templateUrl: 'apps/admin/templates/partials/datepicker.html' };
     });
 })();

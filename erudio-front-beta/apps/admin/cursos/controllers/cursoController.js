@@ -21,11 +21,11 @@
             this.buscaIcone = 'search';
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaLista(){
             this.subheaders = [{ label: 'Nome do Curso' }];
             this.opcoes = [{tooltip: 'Etapas', icone: 'chrome_reader_mode', opcao: 'etapas', validarEscrita: false, opcaoPublica: true},{tooltip: 'Remover', icone: 'delete', opcao: 'remover', validarEscrita: true}];
@@ -34,20 +34,20 @@
             this.template = this.util.getTemplateLista();
             this.lista = this.util.getTemplateListaEspecifica('cursos');
         }
-        
+
         preparaBusca(){
             this.busca = '';
             this.buscaSimples = this.util.getTemplateBuscaSimples();
         }
-        
+
         buscarCursos(loader) {
             this.service.getAll({page: this.pagina},loader).then((cursos) => {
-                if (this.pagina === 0) { this.objetos = cursos; } else { 
+                if (this.pagina === 0) { this.objetos = cursos; } else {
                     if (cursos.length !== 0) { this.objetos = this.objetos.concat(cursos); } else { this.finalLista = true; this.pagina--; }
                 }
             });
         }
-        
+
         executarOpcao(event,opcao,objeto) {
             this.curso = objeto;
             switch (opcao.opcao) {
@@ -56,7 +56,7 @@
                 default: return false; break;
             }
         }
-        
+
         modalExclusao(event) {
             var self = this;
             let confirm = this.util.modalExclusao(event, "Remover Curso", "Deseja remover este curso?", 'remover', this.mdDialog);
@@ -69,9 +69,9 @@
                 }
             });
         }
-        
+
         verificaBusca(query) { if (this.util.isVazio(query)) { this.buscarCursos(); this.buscaIcone = 'search'; } else { this.executarBusca(query); self.buscaIcone = 'clear'; } }
-        
+
         limparBusca() { this.busca = ''; $('.busca-simples').val(''); this.buscaIcone = 'search'; this.buscarCursos(true); }
 
         executarBusca(query) {
@@ -87,14 +87,14 @@
                 }
             },800);
         }
-        
+
         verEtapas() {
             this.sharedService.setCursoEtapa(this.curso.id);
             this.util.redirect(this.erudioConfig.dominio + '/#!/etapas');
         }
-        
+
         paginar(){ this.pagina++; this.buscarCursos(true); }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); let self = this;
             if (permissao) {
@@ -115,7 +115,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     CursoController.$inject = ["CursoService","Util","$mdDialog","ErudioConfig","$timeout","Shared"];
     angular.module('CursoController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('CursoController',CursoController);
 })();

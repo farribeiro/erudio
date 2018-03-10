@@ -42,21 +42,21 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "RELATORIOS";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Alunos Enturmados";
             /*
             * @attr linkModulo
             * @attrType int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/alunos-enturmados/";
             this.iniciar();
@@ -141,7 +141,7 @@
          * @methodParams nome|String
          * @methodDescription Filtra as unidades de ensino do autocomplete.
          */
-        filtrar (query) { 
+        filtrar (query) {
             if (query.length > 2) {
                 return this.unidadeService.getAll({nome: query},true);
             } else { return []; }
@@ -254,7 +254,7 @@
                 this.util.comPermissao();
                 this.util.setTitulo(this.titulo);
                 this.escrita = this.verificaEscrita();
-                if (this.util.isAdmin()) { this.isAdmin = true;} else { 
+                if (this.util.isAdmin()) { this.isAdmin = true;} else {
                     this.isAdmin = false;
                     this.scope.busca.unidadeEnsino = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
                     this.scope.buscaPorUnidade.unidadeEnsino = JSON.parse(sessionStorage.getItem('atribuicao-ativa')).instituicao;
@@ -266,18 +266,18 @@
                 this.preparaBusca();
                 this.buscarInstituicoes();
                 this.buscarCursos();
-                this.timeout(() => { 
+                this.timeout(() => {
                     $('.empty-state').hide(); $('botao-adicionar').hide();
                     this.util.aplicarMascaras();
                     this.scope.$watch("busca.unidadeEnsino", (query) => {
                         if (!this.util.isVazio(this.scope.busca.unidadeEnsino)) { this.buscarCursosOfertados(); }
-                    }); 
+                    });
                 },500);
                 this.util.inicializar();
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     AlunosEnturmadosController.$inject = ["AlunosEnturmadosService","Util","$mdDialog","ErudioConfig","$timeout","$scope","UnidadeService","EtapaService","CursoService","CursoOfertadoService","TurmaService","InstituicaoService","EtapaOfertadaService"];
     angular.module('AlunosEnturmadosController',['ngMaterial', 'util', 'erudioConfig']).controller('AlunosEnturmadosController',AlunosEnturmadosController);
 })();

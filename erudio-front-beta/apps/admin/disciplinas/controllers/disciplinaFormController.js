@@ -24,11 +24,11 @@
             this.nomeForm = "disciplinaForm";
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaForm() {
             this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
             this.leitura = this.util.getTemplateLeitura();
@@ -39,11 +39,11 @@
             ];
             this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
         }
-        
+
         buscarCursos() { this.cursoService.getAll(null,true).then((cursos) => this.cursos = cursos); }
         buscarEtapas() { this.etapaService.getAll({curso: this.scope.disciplina.curso.id},true).then((etapas) => this.etapas = etapas); }
-        
-        buscarCursoEtapa() { 
+
+        buscarCursoEtapa() {
             this.cursoEtapa = this.sharedService.getCursoEtapa();
             this.etapaDisciplina = this.sharedService.getEtapaDisciplina();
             if (this.util.isVazio(this.cursoEtapa)) {
@@ -54,7 +54,7 @@
                 this.mostraEtapa = true;
             } else { this.mostraEtapa = false; this.scope.disciplina.etapa.id = this.etapaDisciplina; }
         }
-        
+
         buscarDisicplina() {
             var self = this;
             this.scope.disciplina = this.service.getEstrutura();
@@ -70,11 +70,11 @@
                 this.timeout(function(){ self.util.aplicarMascaras(); },300);
             }
         }
-        
+
         validaCampo() { this.util.validaCampo(); }
-        
+
         validar() { return this.util.validar(this.nomeForm); }
-        
+
         salvar() {
             if (this.validar()) {
                 var resultado = null;
@@ -86,7 +86,7 @@
                 resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
             }
         }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); var self = this;
             if (permissao) {
@@ -105,7 +105,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     DisciplinaFormController.$inject = ["DisciplinaService","Util","ErudioConfig","$routeParams","$timeout","$scope","Shared","CursoService","EtapaService"];
     angular.module('DisciplinaFormController',['ngMaterial', 'util', 'erudioConfig','shared']).controller('DisciplinaFormController',DisciplinaFormController);
 })();

@@ -29,8 +29,8 @@
      * @Module atribuicoes
      * @Controller AtribuicaoService
      */
-    'use strict';    
-    class AtribuicaoService {        
+    'use strict';
+    class AtribuicaoService {
         constructor(rest,grupoService,permissaoService){
             this.rest = rest;
             this.grupoService = grupoService;
@@ -86,7 +86,7 @@
          */
         remover(objeto,loader) { this.rest.remover(objeto, "Atribuição", "F",loader); }
     };
-    
+
     angular.module('AtribuicaoService',[]).service('AtribuicaoService',AtribuicaoService);
     AtribuicaoService.$inject = ["BaseService","GrupoService","PermissaoService"];
 })();

@@ -20,11 +20,11 @@
             this.nomeForm = "cursoForm";
             this.iniciar();
         }
-        
+
         verificarPermissao(){ return this.util.verificaPermissao(this.permissaoLabel); }
         verificaEscrita() { return this.util.verificaEscrita(this.permissaoLabel); }
         validarEscrita(opcao) { if (opcao.validarEscrita) { return this.util.validarEscrita(opcao.opcao, this.opcoes, this.escrita); } else { return true; } }
-        
+
         preparaForm() {
             this.fab = {tooltip: 'Voltar à lista', icone: 'arrow_back', href: this.erudioConfig.dominio + this.linkModulo};
             this.leitura = this.util.getTemplateLeitura();
@@ -35,9 +35,9 @@
             ];
             this.forms = [{ nome: this.nomeForm, formCards: this.formCards }];
         }
-        
+
         buscarModalidades() { this.modalidadeEnsinoService.getAll(null,true).then((modalidades) => this.modalidades = modalidades); }
-        
+
         buscarCurso() {
             var self = this;
             this.scope.curso = this.service.getEstrutura();
@@ -52,11 +52,11 @@
                 this.timeout(function(){ self.util.aplicarMascaras(); },300);
             }
         }
-        
+
         validaCampo() { this.util.validaCampo(); }
-        
+
         validar() { return this.util.validar(this.nomeForm); }
-        
+
         salvar() {
             if (this.validar()) {
                 var resultado = null;
@@ -68,7 +68,7 @@
                 resultado.then(() => { this.util.redirect(this.erudioConfig.dominio + this.linkModulo); });
             }
         }
-        
+
         iniciar(){
             let permissao = this.verificarPermissao(); var self = this;
             if (permissao) {
@@ -88,7 +88,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     CursoFormController.$inject = ["CursoService","Util","ErudioConfig","$routeParams","$timeout","$scope","ModalidadeEnsinoService"];
     angular.module('CursoFormController',['ngMaterial', 'util', 'erudioConfig']).controller('CursoFormController',CursoFormController);
 })();

@@ -1,5 +1,5 @@
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="nome">Nome</label>
         <md-icon class="material-icons">account_circle</md-icon>
@@ -8,7 +8,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="nomeExibicao">Nome de Exibição</label>
         <md-icon class="material-icons">assignment_ind</md-icon>
@@ -21,7 +21,7 @@
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="ordem">Ordem</label>
         <md-icon class="material-icons">list</md-icon>
@@ -31,7 +31,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="limite">Limite de Alunos</label>
         <md-icon class="material-icons">crop_free</md-icon>
@@ -41,11 +41,11 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="modulo">Módulo</label>
         <md-icon class="material-icons">extension</md-icon>
@@ -57,7 +57,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="sistemaavaliacao">Sistema de Avaliação</label>
         <md-icon class="material-icons">receipt</md-icon>
@@ -69,11 +69,11 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="modelohorario">Modelo de Grade de Horário</label>
         <md-icon class="material-icons">view_quilt</md-icon>
@@ -85,7 +85,7 @@
             <div ng-message="required">Este campo é obrigatório.</div>
         </div>
     </md-input-container>
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm ng-show="ctrl.mostraCurso">
         <label for="curso">Curso</label>
         <md-icon class="material-icons">school</md-icon>
@@ -94,11 +94,11 @@
             <md-option ng-repeat="item in ctrl.cursos track by $index" value="{{ item.id }}">{{ item.nome }}</md-option>
         </md-select>
     </md-input-container>
-    
+
 </div>
 
 <div layout-gt-sm="row">
-    
+
     <md-input-container class="md-icon-float" md-block flex-gt-sm>
         <label for="idade">Idade Recomendada</label>
         <md-icon class="material-icons">filter_7</md-icon>

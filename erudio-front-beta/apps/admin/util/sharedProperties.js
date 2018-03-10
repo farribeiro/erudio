@@ -4,29 +4,29 @@
      * @Service Shared
      */
     var shared = angular.module('shared',['erudioConfig', 'ngMaterial']);
-    
+
     shared.service('Shared', ['$timeout', 'ErudioConfig', function($timeout, ErudioConfig) {
         /*
          * @attr cursoEtapa
          * @attrType int
          * @attrDescription Id do curso para buscar etapa.
-         * @attrExample 
+         * @attrExample
          */
         this.cursoEtapa = null;
-        
+
         /*
          * @attr etapaDisciplina
          * @attrType int
          * @attrDescription Id da etapa para buscar disciplina.
-         * @attrExample 
+         * @attrExample
          */
         this.etapaDisciplina = null;
-        
+
         /*
          * @attr avaliacaoAbrir
          * @attrType int
          * @attrDescription Id da avaliação a ser aberta no app de professor.
-         * @attrExample 
+         * @attrExample
          */
         this.avaliacaoAbrir = {id:null};
 
@@ -34,7 +34,7 @@
          * @attr trocaAbaHome
          * @attrType string
          * @attrDescription Nome da aba ativa na tela de professor
-         * @attrExample 
+         * @attrExample
          */
         this.abaHome = 'aulas';
 
@@ -42,7 +42,7 @@
          * @attr cursada
          * @attrType object
          * @attrDescription Objeto disciplina cursada
-         * @attrExample 
+         * @attrExample
          */
         this.cursada = null;
 
@@ -50,7 +50,7 @@
          * @attr avaliacaoNota
          * @attrType float
          * @attrDescription Nota da avaliação
-         * @attrExample 
+         * @attrExample
          */
         this.avaliacaoNota = null;
 
@@ -58,7 +58,7 @@
          * @attr retornarParaMedias
          * @attrType boolean
          * @attrDescription Flag de controle da tela de médias finais
-         * @attrExample 
+         * @attrExample
          */
         this.retornarParaMedias = false;
 
@@ -69,7 +69,7 @@
          * @methodDescription Nome da aba ativa na tela de professor
          */
         this.setAbaHome = function (aba){ this.abaHome = aba; };
-        
+
         /*
          * @method getAbaHome
          * @methodReturn string
@@ -84,14 +84,14 @@
          * @methodDescription Guarda id do curso para buscar etapas do mesmo.
          */
         this.setCursoEtapa = function (curso){ this.cursoEtapa = curso; };
-        
+
         /*
          * @method getCursoEtapa
          * @methodReturn int
          * @methodDescription Retorna id do curso para buscar etapas do mesmo.
          */
         this.getCursoEtapa = function (){ return this.cursoEtapa; };
-        
+
         /*
          * @method setEtapaDisciplina
          * @methodReturn void
@@ -99,7 +99,7 @@
          * @methodDescription Guarda id da etapa para buscar disciplinas da mesma.
          */
         this.setEtapaDisciplina = function (etapa){ this.etapaDisciplina = etapa; };
-        
+
         /*
          * @method getEtapaDisciplina
          * @methodReturn int
@@ -114,7 +114,7 @@
          * @methodDescription Guarda id da avaliação a ser mostrada.
          */
         this.setAvaliacao = function (avaliacao){ this.avaliacaoAbrir = avaliacao; };
-        
+
         /*
          * @method getAvaliacaoNota
          * @methodReturn float
@@ -129,7 +129,7 @@
          * @methodDescription Guarda nota da avaliação a ser mostrada.
          */
         this.setAvaliacaoNota = function (avaliacaoNota){ this.avaliacaoNota = avaliacaoNota; };
-        
+
         /*
          * @method getAvaliacao
          * @methodReturn int
@@ -144,7 +144,7 @@
          * @methodDescription Guarda id da disciplina cursada.
          */
         this.setCursada = function (cursada){ this.cursada = cursada; };
-        
+
         /*
          * @method getCursada
          * @methodReturn object

@@ -39,28 +39,28 @@
             * @attr permissaoLabel
             * @attrType String
             * @attrDescription Nome da permissão do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.permissaoLabel = "CALENDARIO";
             /*
             * @attr titulo
             * @attrType String
             * @attrDescription Título da página.
-            * @attrExample 
+            * @attrExample
             */
             this.titulo = "Calendários";
             /*
             * @attr linkModulo
             * @attrType Int
             * @attrDescription Link raiz do módulo.
-            * @attrExample 
+            * @attrExample
             */
             this.linkModulo = "/#!/calendarios/";
             /*
             * @attr nomeForm
             * @attrType String
             * @attrDescription Id do formulário
-            * @attrExample 
+            * @attrExample
             */
             this.nomeForm = "calendarioForm";
         }
@@ -210,7 +210,7 @@
             } else { this.util.semPermissao(); }
         }
     }
-    
+
     CalendarioFormController.$inject = ["CalendarioService","Util","ErudioConfig","$routeParams","$timeout","$scope","UnidadeService","SistemaAvaliacaoService"];
     angular.module('CalendarioFormController',['ngMaterial', 'util', 'erudioConfig']).controller('CalendarioFormController',CalendarioFormController);
 })();

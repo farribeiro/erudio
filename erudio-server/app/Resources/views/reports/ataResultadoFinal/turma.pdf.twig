@@ -18,9 +18,9 @@
         {% endblock %}
         {% block content %}
             <p margin-bottom="10px">
-                Aos {{turma.dataEncerramento|dataPorExtenso}}, terminou-se o processo de 
-                apuração das notas finais dos alunos do {{turma.etapa.nome}}, turma {{turma.nomeExibicao}}, 
-                turno {{turma.turno.nome}}, do {{turma.etapa.curso.nome}} 
+                Aos {{turma.dataEncerramento|dataPorExtenso}}, terminou-se o processo de
+                apuração das notas finais dos alunos do {{turma.etapa.nome}}, turma {{turma.nomeExibicao}},
+                turno {{turma.turno.nome}}, do {{turma.etapa.curso.nome}}
                 desta unidade de ensino, com os seguintes resultados:
             </p>
             <div margin="0" padding="0" font-size="8px">
@@ -81,7 +81,7 @@
                             {% if 'APROVADO' in r.status %}
                                 {% set aprovados = aprovados + 1 %}
                             {% elseif  'REPROVADO' in r.status %}
-                                {% set reprovados = reprovados + 1 %} 
+                                {% set reprovados = reprovados + 1 %}
                             {% endif %}
                         </tr>
                     {% endfor %}

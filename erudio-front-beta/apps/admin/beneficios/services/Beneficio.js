@@ -29,8 +29,8 @@
      * @Module beneficios
      * @Controller BeneficioService
      */
-    'use strict';    
-    class BeneficioService {        
+    'use strict';
+    class BeneficioService {
         constructor(rest){
             this.rest = rest;
             this.url = 'beneficios-sociais';
@@ -50,7 +50,7 @@
          */
         getAll(opcoes,loader){ return this.rest.buscar(this.url,opcoes,loader); }
     };
-    
+
     angular.module('BeneficioService',[]).service('BeneficioService',BeneficioService);
     BeneficioService.$inject = ["BaseService"];
 })();
